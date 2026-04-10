@@ -1,191 +1,282 @@
 const https = require('https');
 const http = require('http');
 
-// ─── Fetch a single page ───────────────────────────────────────────────────────
-function fetchPage(targetUrl, redirectCount = 0) {
+// ─── Fetch a URL ───────────────────────────────────────────────────────────────
+function fetchUrl(targetUrl, redirectCount = 0) {
   return new Promise((resolve) => {
-    if (redirectCount > 3) return resolve({ html: '', headers: {}, status: 0, finalUrl: targetUrl });
+    if (redirectCount > 4) return resolve({ html: '', headers: {}, status: 0 });
     let parsed;
-    try { parsed = new URL(targetUrl); } catch { return resolve({ html: '', headers: {}, status: 0, finalUrl: targetUrl }); }
+    try { parsed = new URL(targetUrl); } catch { return resolve({ html: '', headers: {}, status: 0 }); }
 
     const lib = parsed.protocol === 'https:' ? https : http;
-    const options = {
+    const reqOptions = {
       hostname: parsed.hostname,
+      port: parsed.port || (parsed.protocol === 'https:' ? 443 : 80),
       path: (parsed.pathname || '/') + (parsed.search || ''),
       method: 'GET',
-      timeout: 8000,
+      timeout: 9000,
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'identity',
+        'Connection': 'close',
       },
     };
 
     let data = '';
-    const req = lib.request(options, (res) => {
+    const req = lib.request(reqOptions, (res) => {
       if ([301, 302, 303, 307, 308].includes(res.statusCode) && res.headers.location) {
         const loc = res.headers.location;
-        const redirectUrl = loc.startsWith('http') ? loc : `${parsed.protocol}//${parsed.hostname}${loc}`;
-        return fetchPage(redirectUrl, redirectCount + 1).then(resolve).catch(() => resolve({ html: '', headers: {}, status: 0, finalUrl: targetUrl }));
+        const next = loc.startsWith('http') ? loc : `${parsed.protocol}//${parsed.hostname}${loc}`;
+        return fetchUrl(next, redirectCount + 1).then(resolve);
       }
       res.setEncoding('utf8');
-      res.on('data', (chunk) => { if (data.length < 300000) data += chunk; });
-      res.on('end', () => resolve({ html: data, headers: res.headers, status: res.statusCode, finalUrl: targetUrl }));
+      res.on('data', (chunk) => { if (data.length < 400000) data += chunk; });
+      res.on('end', () => resolve({ html: data, headers: res.headers, status: res.statusCode }));
     });
-    req.on('error', () => resolve({ html: '', headers: {}, status: 0, finalUrl: targetUrl }));
-    req.on('timeout', () => { req.destroy(); resolve({ html: '', headers: {}, status: 0, finalUrl: targetUrl }); });
+    req.on('error', () => resolve({ html: '', headers: {}, status: 0 }));
+    req.on('timeout', () => { req.destroy(); resolve({ html: '', headers: {}, status: 0 }); });
     req.end();
   });
 }
 
-// ─── Extract internal links from HTML ─────────────────────────────────────────
-function extractInternalLinks(html, baseUrl) {
-  const base = new URL(baseUrl);
-  const links = new Set();
-  const hrefRegex = /href=["']([^"'#?][^"']*?)["']/gi;
-  let match;
-  while ((match = hrefRegex.exec(html)) !== null) {
-    const href = match[1].trim();
-    try {
-      const full = href.startsWith('http') ? new URL(href) : new URL(href, base.origin);
-      if (full.hostname === base.hostname && !href.match(/\.(jpg|jpeg|png|gif|svg|webp|ico|pdf|zip|css|js|xml|json|txt|woff|woff2|ttf|eot)$/i)) {
-        links.add(full.origin + full.pathname);
-      }
-    } catch {}
-  }
-  return [...links].slice(0, 30); // cap at 30 to avoid too many fetches
+// ─── Normalise URL (remove trailing slash, fragments) ─────────────────────────
+function normaliseUrl(href, base) {
+  try {
+    const u = href.startsWith('http') ? new URL(href) : new URL(href, base);
+    return u.origin + u.pathname.replace(/\/$/, '') || '/';
+  } catch { return null; }
 }
 
-// ─── Sitemap parser ────────────────────────────────────────────────────────────
-async function getSitemapUrls(baseUrl) {
+// ─── Extract internal page links from HTML (skip assets, feeds, sitemaps) ─────
+function extractPageLinks(html, baseUrl) {
   const base = new URL(baseUrl);
-  const urls = [];
-  for (const path of ['/sitemap.xml', '/sitemap_index.xml', '/sitemap.xml.gz']) {
+  const seen = new Set();
+  const links = [];
+  const skipExt = /\.(jpg|jpeg|png|gif|svg|webp|ico|pdf|zip|css|js|xml|json|txt|woff|woff2|ttf|eot|mp4|mp3|avi)$/i;
+  const skipPath = /\/(feed|rss|sitemap|xmlrpc|wp-json|api\/|wp-admin|wp-login)/i;
+
+  const re = /href=["']([^"'#]+)["']/gi;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const href = m[1].trim();
+    if (skipExt.test(href) || skipPath.test(href)) continue;
+    const full = normaliseUrl(href, base.origin);
+    if (!full) continue;
     try {
-      const res = await fetchPage(`${base.origin}${path}`);
-      if (res.status === 200 && res.html.includes('<loc>')) {
-        const locs = [...res.html.matchAll(/<loc>(.*?)<\/loc>/gi)].map(m => m[1].trim());
-        urls.push(...locs.filter(u => {
-          try { return new URL(u).hostname === base.hostname; } catch { return false; }
-        }));
-        if (urls.length > 0) break;
-      }
+      const u = new URL(full);
+      if (u.hostname !== base.hostname) continue;
+      if (seen.has(full)) continue;
+      seen.add(full);
+      links.push(full);
     } catch {}
   }
-  return urls.slice(0, 20);
+  return links;
 }
 
-// ─── Analyse a single page for SEO issues ─────────────────────────────────────
+// ─── Parse sitemap and return only HTML page URLs (not sub-sitemap URLs) ──────
+async function getPageUrlsFromSitemap(baseUrl) {
+  const base = new URL(baseUrl);
+  const sitemapPaths = ['/sitemap.xml', '/sitemap_index.xml', '/sitemap/sitemap.xml', '/page-sitemap.xml', '/post-sitemap.xml'];
+  const htmlPageUrls = [];
+
+  for (const path of sitemapPaths) {
+    try {
+      const res = await fetchUrl(`${base.origin}${path}`);
+      if (res.status !== 200 || !res.html.includes('<loc>')) continue;
+
+      const locs = [...res.html.matchAll(/<loc>\s*(.*?)\s*<\/loc>/gi)].map(m => m[1].trim());
+
+      // If it's a sitemap INDEX (contains other sitemaps), fetch each child sitemap
+      const isIndex = res.html.includes('<sitemapindex') || res.html.includes('<sitemap>');
+      if (isIndex) {
+        for (const sitemapUrl of locs.slice(0, 5)) {
+          try {
+            const child = await fetchUrl(sitemapUrl);
+            if (child.status === 200 && child.html.includes('<loc>')) {
+              const childLocs = [...child.html.matchAll(/<loc>\s*(.*?)\s*<\/loc>/gi)].map(m => m[1].trim());
+              for (const loc of childLocs) {
+                if (isHtmlPage(loc, base.hostname)) htmlPageUrls.push(loc);
+              }
+            }
+          } catch {}
+          if (htmlPageUrls.length >= 20) break;
+        }
+      } else {
+        // Regular sitemap — filter to only real HTML pages
+        for (const loc of locs) {
+          if (isHtmlPage(loc, base.hostname)) htmlPageUrls.push(loc);
+        }
+      }
+
+      if (htmlPageUrls.length > 0) break; // found pages, stop trying other sitemap paths
+    } catch {}
+  }
+
+  return htmlPageUrls.slice(0, 20);
+}
+
+// ─── Check if a URL is likely an HTML page (not a sitemap, image, feed etc) ───
+function isHtmlPage(url, hostname) {
+  try {
+    const u = new URL(url);
+    if (u.hostname !== hostname) return false;
+    if (/\.(xml|json|txt|pdf|jpg|jpeg|png|gif|svg|webp|ico|css|js|zip|mp4|mp3)$/i.test(u.pathname)) return false;
+    if (/sitemap|feed|rss|xmlrpc/i.test(u.pathname)) return false;
+    return true;
+  } catch { return false; }
+}
+
+// ─── Get page title from HTML ──────────────────────────────────────────────────
+function getPageTitle(html, fallbackUrl) {
+  const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  if (m && m[1].trim()) return m[1].trim().slice(0, 70);
+  const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  if (h1) return h1[1].replace(/<[^>]+>/g, '').trim().slice(0, 70);
+  try { return new URL(fallbackUrl).pathname || 'Homepage'; } catch { return fallbackUrl; }
+}
+
+// ─── Analyse a page for SEO issues ────────────────────────────────────────────
 function analysePage(html, pageUrl) {
-  const issues = {
-    missingMetaTitle: false,
-    missingMetaDescription: false,
-    missingAltTags: [],        // array of img src values missing alt
-    missingH1: false,
-    multipleH1: false,
-    lowWordCount: false,
-    missingCanonical: false,
-    brokenInternalLinks: [],
-    noInternalLinks: false,
-    largePage: false,
+  const base = new URL(pageUrl);
+  const result = {
+    url: pageUrl,
+    title: getPageTitle(html, pageUrl),
+    issues: {
+      missingTitle: false,
+      shortTitle: false,
+      missingMetaDescription: false,
+      shortMetaDescription: false,
+      imagesWithoutAlt: [],   // will hold { src, fullSrc } objects
+      missingH1: false,
+      multipleH1: false,
+      lowWordCount: false,
+      wordCount: 0,
+      missingCanonical: false,
+      noInternalLinks: false,
+      internalLinkCount: 0,
+    }
   };
 
-  if (!html || html.length < 100) return issues;
+  if (!html || html.length < 100) return result;
 
-  // Meta title
+  // ── Title ──
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  if (!titleMatch || titleMatch[1].trim().length === 0) issues.missingMetaTitle = true;
-
-  // Meta description
-  if (!/<meta[^>]+name=["']description["'][^>]+content=["'][^"']{10,}/i.test(html) &&
-      !/<meta[^>]+content=["'][^"']{10,}["'][^>]+name=["']description["']/i.test(html)) {
-    issues.missingMetaDescription = true;
+  if (!titleMatch || !titleMatch[1].trim()) {
+    result.issues.missingTitle = true;
+  } else if (titleMatch[1].trim().length < 20) {
+    result.issues.shortTitle = true;
   }
 
-  // Images missing alt
-  const imgTags = [...html.matchAll(/<img([^>]*)>/gi)];
-  for (const img of imgTags) {
-    const attrs = img[1];
-    const hasAlt = /alt=["'][^"']*["']/i.test(attrs);
-    const srcMatch = attrs.match(/src=["']([^"']+)["']/i);
-    if (!hasAlt && srcMatch) {
-      issues.missingAltTags.push(srcMatch[1].slice(0, 80));
-    }
+  // ── Meta description ──
+  const metaDescMatch = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']*)["']/i)
+    || html.match(/<meta[^>]+content=["']([^"']*)["'][^>]+name=["']description["']/i);
+  if (!metaDescMatch) {
+    result.issues.missingMetaDescription = true;
+  } else if (metaDescMatch[1].trim().length < 50) {
+    result.issues.shortMetaDescription = true;
   }
 
-  // H1 tags
-  const h1Matches = [...html.matchAll(/<h1[^>]*>/gi)];
-  if (h1Matches.length === 0) issues.missingH1 = true;
-  if (h1Matches.length > 1) issues.multipleH1 = true;
+  // ── Images without alt ──
+  const imgRegex = /<img([^>]*)>/gi;
+  let imgMatch;
+  while ((imgMatch = imgRegex.exec(html)) !== null) {
+    const attrs = imgMatch[1];
+    // Skip if alt attribute exists and is non-empty
+    const altMatch = attrs.match(/alt=["']([^"']*)["']/i);
+    if (altMatch && altMatch[1].trim().length > 0) continue;
 
-  // Word count (strip tags)
-  const text = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  const wordCount = text.split(' ').filter(w => w.length > 2).length;
-  if (wordCount < 300) issues.lowWordCount = true;
+    // Get the src
+    const srcMatch = attrs.match(/src=["']([^"']+)["']/i)
+      || attrs.match(/data-src=["']([^"']+)["']/i);
+    if (!srcMatch) continue;
 
-  // Canonical
-  if (!/<link[^>]+rel=["']canonical["']/i.test(html)) issues.missingCanonical = true;
+    const rawSrc = srcMatch[1].trim();
+    // Skip tracking pixels and data URIs
+    if (rawSrc.startsWith('data:') || rawSrc.includes('pixel') || rawSrc.length < 5) continue;
 
-  // Internal links count
-  const internalLinkCount = (html.match(/<a[^>]+href=["'][^"'#][^"']*["']/gi) || []).length;
-  if (internalLinkCount < 2) issues.noInternalLinks = true;
+    // Build full image URL
+    let fullSrc = rawSrc;
+    try {
+      fullSrc = rawSrc.startsWith('http') ? rawSrc : new URL(rawSrc, base.origin).href;
+    } catch {}
 
-  // Page size
-  if (html.length > 200000) issues.largePage = true;
+    result.issues.imagesWithoutAlt.push({ src: rawSrc.slice(0, 120), fullSrc: fullSrc.slice(0, 200) });
+  }
 
-  return issues;
+  // ── H1 tags ──
+  const h1Count = (html.match(/<h1[^>]*>/gi) || []).length;
+  if (h1Count === 0) result.issues.missingH1 = true;
+  if (h1Count > 1) result.issues.multipleH1 = true;
+
+  // ── Word count (strip all tags and scripts) ──
+  const textOnly = html
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const words = textOnly.split(' ').filter(w => w.length > 2);
+  result.issues.wordCount = words.length;
+  if (words.length < 300) result.issues.lowWordCount = true;
+
+  // ── Canonical ──
+  if (!/<link[^>]+rel=["']canonical["']/i.test(html)) result.issues.missingCanonical = true;
+
+  // ── Internal links ──
+  const internalLinks = (html.match(new RegExp(`href=["'][^"']*${base.hostname}[^"']*["']`, 'gi')) || []).length
+    + (html.match(/href=["']\/[^"']*["']/gi) || []).length;
+  result.issues.internalLinkCount = internalLinks;
+  if (internalLinks < 2) result.issues.noInternalLinks = true;
+
+  return result;
 }
 
 // ─── CMS Detection ────────────────────────────────────────────────────────────
 function detectCMS(html, headers) {
-  const cookieHeader = Array.isArray(headers['set-cookie']) ? headers['set-cookie'].join(' ') : (headers['set-cookie'] || '');
-  const xPoweredBy = (headers['x-powered-by'] || '').toLowerCase();
-  const xGenerator = (headers['x-generator'] || '').toLowerCase();
-  const serverHeader = (headers['server'] || '').toLowerCase();
+  const cookie = Array.isArray(headers['set-cookie']) ? headers['set-cookie'].join(' ') : (headers['set-cookie'] || '');
+  const xpow = (headers['x-powered-by'] || '').toLowerCase();
+  const xgen = (headers['x-generator'] || '').toLowerCase();
 
-  const cmsList = [
-    { name: 'WordPress', tests: [/\/wp-content\/(themes|plugins|uploads)\//i.test(html), /\/wp-includes\//i.test(html), /<meta[^>]+generator[^>]*WordPress/i.test(html), /wp-json/i.test(html), /wpemoji|wp\.i18n/i.test(html), cookieHeader.toLowerCase().includes('wordpress') || cookieHeader.toLowerCase().includes('wp-settings'), xGenerator.includes('wordpress')], getVersion: () => { const m = html.match(/<meta[^>]+generator[^>]*WordPress\s*([\d.]+)/i); return m ? m[1] : null; } },
-    { name: 'Shopify', tests: [/cdn\.shopify\.com/i.test(html), /shopify\.com\/s\/files/i.test(html), /<meta[^>]+generator[^>]*Shopify/i.test(html), /Shopify\.(theme|shop|locale)/i.test(html), cookieHeader.toLowerCase().includes('_shopify')], getVersion: () => null },
-    { name: 'Wix', tests: [/static\.wixstatic\.com/i.test(html), /wixsite\.com|wix-code/i.test(html), /<meta[^>]+generator[^>]*Wix/i.test(html), /wixBiSession/i.test(html), xPoweredBy.includes('wix')], getVersion: () => null },
-    { name: 'Squarespace', tests: [/static\.squarespace\.com/i.test(html), /<meta[^>]+generator[^>]*Squarespace/i.test(html), /Static\.SQUARESPACE_CONTEXT/i.test(html), cookieHeader.toLowerCase().includes('squarespace')], getVersion: () => null },
-    { name: 'Webflow', tests: [/\.webflow\.io/i.test(html), /webflow\.com\/css|webflow\.js/i.test(html), /<meta[^>]+generator[^>]*Webflow/i.test(html), /data-wf-page/i.test(html), xGenerator.includes('webflow')], getVersion: () => null },
-    { name: 'Joomla', tests: [/<meta[^>]+generator[^>]*Joomla/i.test(html), /\/components\/com_/i.test(html), /\/media\/jui\//i.test(html), cookieHeader.toLowerCase().includes('joomla')], getVersion: () => { const m = html.match(/<meta[^>]+generator[^>]*Joomla!\s*([\d.]+)/i); return m ? m[1] : null; } },
-    { name: 'Drupal', tests: [/<meta[^>]+generator[^>]*Drupal/i.test(html), /\/sites\/default\/files\//i.test(html), /Drupal\.settings/i.test(html), xGenerator.includes('drupal')], getVersion: () => { const m = xGenerator.match(/drupal\s*([\d.]+)/i); return m ? m[1] : null; } },
-    { name: 'Ghost', tests: [/<meta[^>]+generator[^>]*Ghost/i.test(html), /ghost\.io|ghost\/content/i.test(html), xGenerator.includes('ghost')], getVersion: () => null },
-    { name: 'Next.js', tests: [/\/_next\/static\//i.test(html), /__NEXT_DATA__/i.test(html), xPoweredBy.includes('next.js')], getVersion: () => { const m = xPoweredBy.match(/next\.js\s*([\d.]+)/i); return m ? m[1] : null; } },
-    { name: 'Nuxt.js', tests: [/\/_nuxt\//i.test(html), /window\.__NUXT__/i.test(html), xPoweredBy.includes('nuxt')], getVersion: () => null },
-    { name: 'PrestaShop', tests: [/<meta[^>]+generator[^>]*PrestaShop/i.test(html), /\/modules\/ps_/i.test(html)], getVersion: () => null },
-    { name: 'HubSpot CMS', tests: [/hs-scripts\.com|hs-analytics\.net/i.test(html), /hbspt\./i.test(html), /hub_generated/i.test(html)], getVersion: () => null },
-    { name: 'Laravel', tests: [cookieHeader.toLowerCase().includes('laravel_session'), cookieHeader.toLowerCase().includes('xsrf-token') && xPoweredBy.includes('php')], getVersion: () => null },
+  const checks = [
+    { name: 'WordPress', tests: [/\/wp-content\/(themes|plugins|uploads)\//i.test(html), /\/wp-includes\//i.test(html), /<meta[^>]+generator[^>]*WordPress/i.test(html), /wp-json/i.test(html), /wpemoji|wp\.i18n/i.test(html), cookie.toLowerCase().includes('wordpress') || cookie.toLowerCase().includes('wp-settings'), xgen.includes('wordpress')], ver: () => { const m = html.match(/<meta[^>]+generator[^>]*WordPress\s*([\d.]+)/i); return m ? m[1] : null; } },
+    { name: 'Shopify', tests: [/cdn\.shopify\.com/i.test(html), /shopify\.com\/s\/files/i.test(html), /<meta[^>]+generator[^>]*Shopify/i.test(html), /Shopify\.(theme|shop)/i.test(html), cookie.toLowerCase().includes('_shopify')], ver: () => null },
+    { name: 'Wix', tests: [/static\.wixstatic\.com/i.test(html), /wixsite\.com|wix-code/i.test(html), /<meta[^>]+generator[^>]*Wix/i.test(html), /wixBiSession/i.test(html)], ver: () => null },
+    { name: 'Squarespace', tests: [/static\.squarespace\.com/i.test(html), /<meta[^>]+generator[^>]*Squarespace/i.test(html), /Static\.SQUARESPACE_CONTEXT/i.test(html), cookie.toLowerCase().includes('squarespace')], ver: () => null },
+    { name: 'Webflow', tests: [/\.webflow\.io/i.test(html), /webflow\.com\/css|webflow\.js/i.test(html), /<meta[^>]+generator[^>]*Webflow/i.test(html), /data-wf-page/i.test(html)], ver: () => null },
+    { name: 'Joomla', tests: [/<meta[^>]+generator[^>]*Joomla/i.test(html), /\/components\/com_/i.test(html), /\/media\/jui\//i.test(html), cookie.toLowerCase().includes('joomla')], ver: () => null },
+    { name: 'Drupal', tests: [/<meta[^>]+generator[^>]*Drupal/i.test(html), /\/sites\/default\/files\//i.test(html), /Drupal\.settings/i.test(html), xgen.includes('drupal')], ver: () => null },
+    { name: 'Ghost', tests: [/<meta[^>]+generator[^>]*Ghost/i.test(html), /ghost\.io|ghost\/content/i.test(html), xgen.includes('ghost')], ver: () => null },
+    { name: 'Next.js', tests: [/\/_next\/static\//i.test(html), /__NEXT_DATA__/i.test(html), xpow.includes('next.js')], ver: () => null },
+    { name: 'Nuxt.js', tests: [/\/_nuxt\//i.test(html), /window\.__NUXT__/i.test(html), xpow.includes('nuxt')], ver: () => null },
+    { name: 'PrestaShop', tests: [/<meta[^>]+generator[^>]*PrestaShop/i.test(html), /\/modules\/ps_/i.test(html)], ver: () => null },
+    { name: 'HubSpot CMS', tests: [/hs-scripts\.com/i.test(html), /hbspt\./i.test(html)], ver: () => null },
+    { name: 'Laravel', tests: [cookie.toLowerCase().includes('laravel_session'), cookie.toLowerCase().includes('xsrf-token') && xpow.includes('php')], ver: () => null },
   ];
 
-  const results = [];
-  for (const c of cmsList) {
-    const hits = c.tests.filter(Boolean).length;
-    if (hits >= 1) results.push({ name: c.name, hits, confidence: hits >= 3 ? 'High' : hits === 2 ? 'Medium' : 'Low', version: c.getVersion ? c.getVersion() : null });
-  }
-  results.sort((a, b) => b.hits - a.hits);
-
-  if (results.length === 0) {
-    const genMatch = html.match(/<meta[^>]+name=["']generator["'][^>]+content=["']([^"'<>]+)["']/i) || html.match(/<meta[^>]+content=["']([^"'<>]+)["'][^>]+name=["']generator["']/i);
-    if (genMatch) return { name: genMatch[1].split(' ').slice(0, 3).join(' ').trim(), confidence: 'Medium', version: null, notes: 'Detected via <meta name="generator"> tag' };
+  const hits = checks.map(c => ({ ...c, count: c.tests.filter(Boolean).length })).filter(c => c.count > 0).sort((a, b) => b.count - a.count);
+  if (!hits.length) {
+    const gen = html.match(/<meta[^>]+name=["']generator["'][^>]+content=["']([^"'<>]+)["']/i);
+    if (gen) return { name: gen[1].trim().slice(0, 40), confidence: 'Medium', version: null, notes: 'Detected via generator meta tag' };
     return { name: 'Custom / Unknown', confidence: 'Low', version: null, notes: 'No known CMS fingerprints found' };
   }
-
-  const top = results[0];
-  return { name: top.name, confidence: top.confidence, version: top.version, notes: `Matched ${top.hits} fingerprint(s): HTML paths, meta tags, cookies, headers` };
+  const top = hits[0];
+  return { name: top.name, confidence: top.count >= 3 ? 'High' : top.count === 2 ? 'Medium' : 'Low', version: top.ver ? top.ver() : null, notes: `Matched ${top.count} fingerprint(s)` };
 }
 
-// ─── POST helper ──────────────────────────────────────────────────────────────
-function httpsPost(url, headers, body) {
+// ─── Groq POST ────────────────────────────────────────────────────────────────
+function groqPost(apiKey, messages, maxTokens = 3000) {
   return new Promise((resolve, reject) => {
-    const urlObj = new URL(url);
-    const options = { hostname: urlObj.hostname, path: urlObj.pathname + urlObj.search, method: 'POST', headers: { ...headers, 'Content-Length': Buffer.byteLength(body) } };
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => resolve({ status: res.statusCode, body: data }));
+    const body = JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: maxTokens, messages });
+    const urlObj = new URL('https://api.groq.com/openai/v1/chat/completions');
+    const req = https.request({
+      hostname: urlObj.hostname, path: urlObj.pathname, method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}`, 'Content-Length': Buffer.byteLength(body) },
+    }, (res) => {
+      let d = '';
+      res.on('data', c => d += c);
+      res.on('end', () => resolve({ status: res.statusCode, body: d }));
     });
     req.on('error', reject);
     req.write(body);
@@ -198,162 +289,204 @@ exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
 
   const GROQ_API_KEY = process.env.GROQ_API_KEY;
-  if (!GROQ_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'GROQ_API_KEY is not set. Go to Netlify → Site configuration → Environment variables and add it.' }) };
+  if (!GROQ_API_KEY) return { statusCode: 500, body: JSON.stringify({ error: 'GROQ_API_KEY is not set.' }) };
 
   let body;
-  try { body = JSON.parse(event.body); } catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON body' }) }; }
+  try { body = JSON.parse(event.body); } catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
   const { url, options, prompt } = body;
-  if (!url) return { statusCode: 400, body: JSON.stringify({ error: 'Missing url parameter' }) };
+  if (!url) return { statusCode: 400, body: JSON.stringify({ error: 'Missing url' }) };
 
   const targetUrl = url.startsWith('http') ? url : `https://${url}`;
+  const base = new URL(targetUrl);
 
-  // ── Step 1: Fetch homepage ──
+  // ── 1. Fetch homepage ──────────────────────────────────────────────────────
   let homePage = { html: '', headers: {}, status: 0 };
-  try { homePage = await fetchPage(targetUrl); } catch {}
+  try { homePage = await fetchUrl(targetUrl); } catch {}
 
-  // ── Step 2: Detect CMS from real HTML ──
-  let cmsData = { name: 'Unknown', confidence: 'Low', version: null, notes: 'Site could not be fetched' };
-  if (homePage.html) cmsData = detectCMS(homePage.html, homePage.headers);
+  // ── 2. Detect CMS ──────────────────────────────────────────────────────────
+  const cmsData = homePage.html
+    ? detectCMS(homePage.html, homePage.headers)
+    : { name: 'Unknown', confidence: 'Low', version: null, notes: 'Could not fetch site' };
 
-  // ── Step 3: Discover real pages (sitemap first, then crawl links) ──
-  let pagesToCheck = [targetUrl];
+  // ── 3. Collect real page URLs to audit ────────────────────────────────────
+  // Try sitemap first (filtered to HTML pages only), then crawl homepage links
+  let pageUrls = [targetUrl];
   try {
-    const sitemapUrls = await getSitemapUrls(targetUrl);
-    if (sitemapUrls.length > 0) {
-      pagesToCheck = [targetUrl, ...sitemapUrls.filter(u => u !== targetUrl)].slice(0, 12);
-    } else {
-      const crawled = extractInternalLinks(homePage.html, targetUrl);
-      pagesToCheck = [targetUrl, ...crawled.filter(u => u !== targetUrl)].slice(0, 12);
+    const sitemapPages = await getPageUrlsFromSitemap(targetUrl);
+    if (sitemapPages.length >= 2) {
+      // Use sitemap pages but always include homepage
+      const withHome = [targetUrl, ...sitemapPages.filter(u => normaliseUrl(u, base.origin) !== normaliseUrl(targetUrl, base.origin))];
+      pageUrls = [...new Set(withHome)].slice(0, 12);
+    } else if (homePage.html) {
+      // Fall back to crawling links from homepage
+      const crawled = extractPageLinks(homePage.html, targetUrl);
+      pageUrls = [...new Set([targetUrl, ...crawled])].slice(0, 12);
     }
   } catch {}
 
-  // ── Step 4: Fetch each discovered page and analyse for real SEO issues ──
-  const pageReports = [];
-  const fetchPromises = pagesToCheck.map(async (pageUrl) => {
+  // ── 4. Fetch & analyse each page in parallel ──────────────────────────────
+  const pageAnalyses = [];
+  await Promise.all(pageUrls.map(async (pageUrl) => {
     try {
-      const page = pageUrl === targetUrl ? homePage : await fetchPage(pageUrl);
+      const page = (normaliseUrl(pageUrl, base.origin) === normaliseUrl(targetUrl, base.origin))
+        ? homePage
+        : await fetchUrl(pageUrl);
       if (page.html && page.html.length > 200) {
-        const issues = analysePage(page.html, pageUrl);
-        const titleMatch = page.html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-        const pageTitle = titleMatch ? titleMatch[1].trim().slice(0, 60) : pageUrl;
-        pageReports.push({ url: pageUrl, title: pageTitle, issues });
+        pageAnalyses.push(analysePage(page.html, pageUrl));
       }
     } catch {}
-  });
-  await Promise.all(fetchPromises);
+  }));
 
-  // ── Step 5: Build structured real findings ──
-  const realFindings = {
-    missingMetaTitlePages: pageReports.filter(p => p.issues.missingMetaTitle).map(p => ({ label: p.title || 'Page', url: p.url })),
-    missingMetaDescPages: pageReports.filter(p => p.issues.missingMetaDescription).map(p => ({ label: p.title || 'Page', url: p.url })),
-    missingAltPages: pageReports.filter(p => p.issues.missingAltTags.length > 0).map(p => ({ label: p.title || 'Page', url: p.url, count: p.issues.missingAltTags.length })),
-    missingH1Pages: pageReports.filter(p => p.issues.missingH1).map(p => ({ label: p.title || 'Page', url: p.url })),
-    multipleH1Pages: pageReports.filter(p => p.issues.multipleH1).map(p => ({ label: p.title || 'Page', url: p.url })),
-    lowWordCountPages: pageReports.filter(p => p.issues.lowWordCount).map(p => ({ label: p.title || 'Page', url: p.url })),
-    missingCanonicalPages: pageReports.filter(p => p.issues.missingCanonical).map(p => ({ label: p.title || 'Page', url: p.url })),
-    noInternalLinksPages: pageReports.filter(p => p.issues.noInternalLinks).map(p => ({ label: p.title || 'Page', url: p.url })),
-    totalPagesCrawled: pageReports.length,
-    crawledUrls: pageReports.map(p => p.url),
+  // ── 5. Build structured findings with EXACT URLs ──────────────────────────
+  const findings = {
+    crawledPages: pageAnalyses.map(p => ({ url: p.url, title: p.title })),
+
+    // Meta title issues → exact page URLs
+    missingTitlePages: pageAnalyses
+      .filter(p => p.issues.missingTitle || p.issues.shortTitle)
+      .map(p => ({ label: p.title, url: p.url })),
+
+    // Meta description issues → exact page URLs
+    missingDescPages: pageAnalyses
+      .filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription)
+      .map(p => ({ label: p.title, url: p.url })),
+
+    // Images without alt → exact image URLs (not page URLs)
+    imagesWithoutAlt: pageAnalyses.flatMap(p =>
+      p.issues.imagesWithoutAlt.map(img => ({
+        label: img.fullSrc.split('/').pop().slice(0, 60) || 'image',
+        url: img.fullSrc,
+        onPage: p.url,
+      }))
+    ).slice(0, 10),
+
+    // Also group by page for image suggestions
+    pagesWithMissingAlt: pageAnalyses
+      .filter(p => p.issues.imagesWithoutAlt.length > 0)
+      .map(p => ({
+        label: `${p.title} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`,
+        url: p.url,
+        imageUrls: p.issues.imagesWithoutAlt.map(i => i.fullSrc),
+      })),
+
+    // H1 issues → exact page URLs
+    missingH1Pages: pageAnalyses
+      .filter(p => p.issues.missingH1)
+      .map(p => ({ label: p.title, url: p.url })),
+
+    multipleH1Pages: pageAnalyses
+      .filter(p => p.issues.multipleH1)
+      .map(p => ({ label: p.title, url: p.url })),
+
+    // Thin content → exact page URLs
+    thinContentPages: pageAnalyses
+      .filter(p => p.issues.lowWordCount)
+      .map(p => ({ label: `${p.title} (${p.issues.wordCount} words)`, url: p.url })),
+
+    // Missing canonical → exact page URLs
+    missingCanonicalPages: pageAnalyses
+      .filter(p => p.issues.missingCanonical)
+      .map(p => ({ label: p.title, url: p.url })),
+
+    // No internal links → exact page URLs
+    noInternalLinkPages: pageAnalyses
+      .filter(p => p.issues.noInternalLinks)
+      .map(p => ({ label: p.title, url: p.url })),
   };
 
-  // ── Step 6: Build the AI prompt with REAL findings injected ──
-  const findingsContext = `
-REAL CRAWL DATA (use these exact URLs for affected_pages in suggestions — do not invent URLs):
-- Pages crawled (${realFindings.totalPagesCrawled}): ${realFindings.crawledUrls.join(', ')}
-- Missing meta title (${realFindings.missingMetaTitlePages.length} pages): ${JSON.stringify(realFindings.missingMetaTitlePages)}
-- Missing meta description (${realFindings.missingMetaDescPages.length} pages): ${JSON.stringify(realFindings.missingMetaDescPages)}
-- Images missing alt text (${realFindings.missingAltPages.length} pages): ${JSON.stringify(realFindings.missingAltPages)}
-- Missing H1 tag (${realFindings.missingH1Pages.length} pages): ${JSON.stringify(realFindings.missingH1Pages)}
-- Multiple H1 tags (${realFindings.multipleH1Pages.length} pages): ${JSON.stringify(realFindings.multipleH1Pages)}
-- Low word count <300 words (${realFindings.lowWordCountPages.length} pages): ${JSON.stringify(realFindings.lowWordCountPages)}
-- Missing canonical tag (${realFindings.missingCanonicalPages.length} pages): ${JSON.stringify(realFindings.missingCanonicalPages)}
-- No/few internal links (${realFindings.noInternalLinksPages.length} pages): ${JSON.stringify(realFindings.noInternalLinksPages)}
+  // ── 6. Build AI prompt with real data ─────────────────────────────────────
+  const crawlSummary = `
+=== REAL CRAWL DATA — USE ONLY THESE EXACT URLS IN affected_pages ===
+Pages audited (${findings.crawledPages.length}):
+${findings.crawledPages.map(p => `  - ${p.url} ("${p.title}")`).join('\n')}
 
-RULES FOR affected_pages:
-1. ONLY use URLs from the crawled pages list above.
-2. For "Optimize Images" suggestion → use ONLY pages from missingAltPages list above.
-3. For "Meta Tags" / "Title Tag" suggestion → use ONLY pages from missingMetaTitlePages or missingMetaDescPages above.
-4. For "Internal Linking" suggestion → use ONLY pages from noInternalLinksPages above.
-5. For "Content Quality" / "High-Quality Content" suggestion → use ONLY pages from lowWordCountPages above.
-6. If a finding has 0 affected pages, do NOT include that suggestion.
-7. Never invent or guess URLs — only use URLs from the crawled list.`;
+ISSUE FINDINGS:
+• Missing/short title tag (${findings.missingTitlePages.length} pages): ${JSON.stringify(findings.missingTitlePages)}
+• Missing/short meta description (${findings.missingDescPages.length} pages): ${JSON.stringify(findings.missingDescPages)}
+• Images without alt text — by PAGE (${findings.pagesWithMissingAlt.length} pages): ${JSON.stringify(findings.pagesWithMissingAlt.map(p => ({ label: p.label, url: p.url })))}
+• Images without alt text — EXACT IMAGE URLS: ${JSON.stringify(findings.imagesWithoutAlt.map(i => ({ label: i.label, url: i.url })))}
+• Missing H1 tag (${findings.missingH1Pages.length} pages): ${JSON.stringify(findings.missingH1Pages)}
+• Multiple H1 tags (${findings.multipleH1Pages.length} pages): ${JSON.stringify(findings.multipleH1Pages)}
+• Thin content <300 words (${findings.thinContentPages.length} pages): ${JSON.stringify(findings.thinContentPages)}
+• Missing canonical tag (${findings.missingCanonicalPages.length} pages): ${JSON.stringify(findings.missingCanonicalPages)}
+• No internal links (${findings.noInternalLinkPages.length} pages): ${JSON.stringify(findings.noInternalLinkPages)}
 
-  const finalPrompt = (prompt || '') + '\n\n' + findingsContext;
+STRICT RULES for affected_pages in your JSON:
+1. "Optimize Images" suggestion → affected_pages = EXACT IMAGE URLS (the image file URLs, not the page URLs)
+2. "Meta Tags" / "Title" suggestion → affected_pages = pages from missingTitlePages or missingDescPages
+3. "Internal Linking" suggestion → affected_pages = pages from noInternalLinkPages
+4. "Content Quality" / "High-Quality Content" suggestion → affected_pages = pages from thinContentPages
+5. "H1" / "Heading" suggestion → affected_pages = pages from missingH1Pages or multipleH1Pages
+6. "Canonical" suggestion → affected_pages = pages from missingCanonicalPages
+7. If a finding list is empty (0 pages), skip that suggestion entirely — do NOT fabricate URLs.
+8. NEVER use sitemap.xml, robots.txt, or any .xml/.txt file as an affected page URL.
+9. NEVER invent URLs — every URL in affected_pages must come from the crawl data above.
+=== END CRAWL DATA ===`;
 
-  const requestBody = JSON.stringify({
-    model: 'llama-3.3-70b-versatile',
-    max_tokens: 3000,
-    messages: [
+  const finalPrompt = (prompt || '') + '\n\n' + crawlSummary;
+
+  // ── 7. Call Groq ──────────────────────────────────────────────────────────
+  try {
+    const groqRes = await groqPost(GROQ_API_KEY, [
       {
         role: 'system',
-        content: `You are an expert SEO auditor. CMS has been fingerprinted as: "${cmsData.name}" (${cmsData.confidence} confidence). You have been given REAL crawl data with exact page URLs. You MUST use only those exact URLs in affected_pages — never fabricate or guess URLs.`,
+        content: `You are an expert SEO auditor. CMS has been fingerprinted as: "${cmsData.name}" (${cmsData.confidence} confidence${cmsData.version ? ', v' + cmsData.version : ''}). You have been given REAL crawl data. Every URL in affected_pages MUST come from the provided crawl data — never guess or invent URLs.`,
       },
       { role: 'user', content: finalPrompt },
-    ],
-  });
+    ]);
 
-  try {
-    const response = await httpsPost(
-      'https://api.groq.com/openai/v1/chat/completions',
-      { 'Content-Type': 'application/json', 'Authorization': `Bearer ${GROQ_API_KEY}` },
-      requestBody
-    );
+    if (groqRes.status !== 200) return { statusCode: groqRes.status, body: JSON.stringify({ error: `Groq error ${groqRes.status}: ${groqRes.body}` }) };
 
-    if (response.status !== 200) return { statusCode: response.status, body: JSON.stringify({ error: `Groq API returned ${response.status}: ${response.body}` }) };
-
-    const data = JSON.parse(response.body);
-    const text = data.choices[0].message.content;
-    const clean = text.replace(/```json|```/g, '').trim();
+    const aiText = JSON.parse(groqRes.body).choices[0].message.content;
+    const cleaned = aiText.replace(/```json|```/g, '').trim();
 
     let parsed;
-    try { parsed = JSON.parse(clean); }
-    catch {
-      const jsonMatch = clean.match(/\{[\s\S]*\}/);
-      if (jsonMatch) parsed = JSON.parse(jsonMatch[0]);
-      else throw new Error('Could not parse AI response as JSON');
-    }
+    try { parsed = JSON.parse(cleaned); }
+    catch { const m = cleaned.match(/\{[\s\S]*\}/); if (m) parsed = JSON.parse(m[0]); else throw new Error('JSON parse failed'); }
 
-    // ── Hard-override CMS and affected_pages with real data ──
+    // ── 8. Hard-override CMS with fingerprinted result ──────────────────────
     parsed.cms = { name: cmsData.name, confidence: cmsData.confidence, version: cmsData.version || null, notes: cmsData.notes };
 
-    // Post-process suggestions: replace affected_pages with our real crawled data
-    const issueMap = {
-      'meta title': realFindings.missingMetaTitlePages,
-      'title tag': realFindings.missingMetaTitlePages,
-      'meta description': realFindings.missingMetaDescPages,
-      'meta tag': [...realFindings.missingMetaTitlePages, ...realFindings.missingMetaDescPages],
-      'image': realFindings.missingAltPages,
-      'alt': realFindings.missingAltPages,
-      'optimize image': realFindings.missingAltPages,
-      'internal link': realFindings.noInternalLinksPages,
-      'internal linking': realFindings.noInternalLinksPages,
-      'content': realFindings.lowWordCountPages,
-      'word count': realFindings.lowWordCountPages,
-      'high-quality': realFindings.lowWordCountPages,
-      'canonical': realFindings.missingCanonicalPages,
-      'h1': [...realFindings.missingH1Pages, ...realFindings.multipleH1Pages],
-      'heading': [...realFindings.missingH1Pages, ...realFindings.multipleH1Pages],
-    };
+    // ── 9. Hard-override affected_pages with real crawled data ──────────────
+    const allCrawledUrls = new Set(findings.crawledPages.map(p => p.url));
+    const issueKeywordMap = [
+      { keywords: ['optimize image', 'image alt', 'alt text', 'missing alt', 'alt tag'], pages: findings.imagesWithoutAlt.length > 0 ? findings.imagesWithoutAlt.map(i => ({ label: i.label, url: i.url })) : findings.pagesWithMissingAlt.map(p => ({ label: p.label, url: p.url })) },
+      { keywords: ['meta title', 'title tag', 'page title', 'missing title'], pages: findings.missingTitlePages },
+      { keywords: ['meta description', 'missing description', 'meta tag', 'complete meta'], pages: findings.missingDescPages.length > 0 ? findings.missingDescPages : findings.missingTitlePages },
+      { keywords: ['internal link', 'internal linking'], pages: findings.noInternalLinkPages },
+      { keywords: ['content quality', 'high-quality content', 'thin content', 'word count', 'create content'], pages: findings.thinContentPages },
+      { keywords: ['h1', 'heading tag', 'heading structure', 'missing h1', 'multiple h1'], pages: [...findings.missingH1Pages, ...findings.multipleH1Pages] },
+      { keywords: ['canonical', 'duplicate url', 'canonical tag'], pages: findings.missingCanonicalPages },
+    ];
 
     if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
-      parsed.suggestions = parsed.suggestions.map(s => {
-        const titleLower = (s.title || '').toLowerCase();
-        const descLower = (s.description || '').toLowerCase();
-        for (const [keyword, pages] of Object.entries(issueMap)) {
-          if ((titleLower.includes(keyword) || descLower.includes(keyword)) && pages.length > 0) {
-            s.affected_pages = pages.slice(0, 5).map(p => ({ label: p.label || p.url, url: p.url }));
-            break;
+      parsed.suggestions = parsed.suggestions
+        .map(s => {
+          const key = ((s.title || '') + ' ' + (s.description || '')).toLowerCase();
+          for (const { keywords, pages } of issueKeywordMap) {
+            if (keywords.some(kw => key.includes(kw)) && pages.length > 0) {
+              s.affected_pages = pages.slice(0, 6);
+              return s;
+            }
           }
-        }
-        // If no match found but AI gave fake URLs, clear them if they're not in crawled list
-        if (s.affected_pages && Array.isArray(s.affected_pages)) {
-          const crawledSet = new Set(realFindings.crawledUrls);
-          const validPages = s.affected_pages.filter(p => crawledSet.has(p.url));
-          if (validPages.length > 0) s.affected_pages = validPages;
-        }
-        return s;
-      });
+          // Validate any remaining AI-given URLs — remove ones not in crawled set
+          if (s.affected_pages && Array.isArray(s.affected_pages)) {
+            const valid = s.affected_pages.filter(p => {
+              // Allow image URLs (they won't be in crawledPages but are real)
+              if (/\.(jpg|jpeg|png|gif|svg|webp|ico|bmp|tiff|avif|webp)($|\?)/i.test(p.url)) return true;
+              return allCrawledUrls.has(p.url);
+            });
+            s.affected_pages = valid.length > 0 ? valid : s.affected_pages.slice(0, 3);
+          }
+          return s;
+        })
+        // Remove suggestions where affected_pages only contain .xml/.txt/.json files
+        .filter(s => {
+          if (!s.affected_pages || s.affected_pages.length === 0) return true;
+          const allBad = s.affected_pages.every(p => /\.(xml|txt|json|csv|gz)$/i.test(p.url));
+          return !allBad;
+        });
     }
 
     return {
