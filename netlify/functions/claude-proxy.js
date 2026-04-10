@@ -366,7 +366,14 @@ async function fetchPageSpeedData(url, apiKey) {
 // ─── Groq POST ─────────────────────────────────────────────────────────────────
 function groqPost(apiKey, messages, maxTokens = 3000) {
   return new Promise((resolve, reject) => {
-    const body = JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: maxTokens, messages });
+    // Sanitize all message content to prevent JSON corruption from special characters
+    const safeMessages = messages.map(m => ({
+      ...m,
+      content: typeof m.content === 'string'
+        ? m.content.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // strip dangerous control chars but keep \n \r \t
+        : m.content
+    }));
+    const body = JSON.stringify({ model: 'llama-3.3-70b-versatile', max_tokens: maxTokens, messages: safeMessages });
     const urlObj = new URL('https://api.groq.com/openai/v1/chat/completions');
     const req = https.request({
       hostname: urlObj.hostname, path: urlObj.pathname, method: 'POST',
@@ -463,16 +470,16 @@ exports.handler = async function (event) {
 
   // ── 8. Build structured findings ──────────────────────────────────────────
   const findings = {
-    crawledPages: pageAnalyses.map(p => ({ url: p.url, title: safeText(p.title) })),
-    missingTitlePages: pageAnalyses.filter(p => p.issues.missingTitle || p.issues.shortTitle).map(p => ({ label: safeText(p.title), url: p.url })),
-    missingDescPages: pageAnalyses.filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription).map(p => ({ label: safeText(p.title), url: p.url })),
-    imagesWithoutAlt: pageAnalyses.flatMap(p => p.issues.imagesWithoutAlt.map(img => ({ label: img.fullSrc.split('/').pop().slice(0, 60) || 'image', url: img.fullSrc, onPage: p.url }))).slice(0, 10),
-    pagesWithMissingAlt: pageAnalyses.filter(p => p.issues.imagesWithoutAlt.length > 0).map(p => ({ label: `${safeText(p.title)} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`, url: p.url, imageUrls: p.issues.imagesWithoutAlt.map(i => i.fullSrc) })),
-    missingH1Pages: pageAnalyses.filter(p => p.issues.missingH1).map(p => ({ label: safeText(p.title), url: p.url })),
-    multipleH1Pages: pageAnalyses.filter(p => p.issues.multipleH1).map(p => ({ label: safeText(p.title), url: p.url })),
-    thinContentPages: pageAnalyses.filter(p => p.issues.lowWordCount).map(p => ({ label: `${safeText(p.title)} (${p.issues.wordCount} words)`, url: p.url })),
-    missingCanonicalPages: pageAnalyses.filter(p => p.issues.missingCanonical).map(p => ({ label: safeText(p.title), url: p.url })),
-    noInternalLinkPages: pageAnalyses.filter(p => p.issues.noInternalLinks).map(p => ({ label: safeText(p.title), url: p.url })),
+    crawledPages: pageAnalyses.map(p => ({ url: safeText(p.url), title: safeText(p.title) })),
+    missingTitlePages: pageAnalyses.filter(p => p.issues.missingTitle || p.issues.shortTitle).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
+    missingDescPages: pageAnalyses.filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
+    imagesWithoutAlt: pageAnalyses.flatMap(p => p.issues.imagesWithoutAlt.map(img => ({ label: safeText(img.fullSrc.split('/').pop().slice(0, 60) || 'image'), url: safeText(img.fullSrc), onPage: safeText(p.url) }))).slice(0, 10),
+    pagesWithMissingAlt: pageAnalyses.filter(p => p.issues.imagesWithoutAlt.length > 0).map(p => ({ label: `${safeText(p.title)} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`, url: safeText(p.url), imageUrls: p.issues.imagesWithoutAlt.map(i => safeText(i.fullSrc)) })),
+    missingH1Pages: pageAnalyses.filter(p => p.issues.missingH1).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
+    multipleH1Pages: pageAnalyses.filter(p => p.issues.multipleH1).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
+    thinContentPages: pageAnalyses.filter(p => p.issues.lowWordCount).map(p => ({ label: `${safeText(p.title)} (${p.issues.wordCount} words)`, url: safeText(p.url) })),
+    missingCanonicalPages: pageAnalyses.filter(p => p.issues.missingCanonical).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
+    noInternalLinkPages: pageAnalyses.filter(p => p.issues.noInternalLinks).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
   };
 
   // ── 9. Build AI prompt with REAL data injected ────────────────────────────
@@ -540,7 +547,7 @@ STRICT RULES:
 6. Include crawl_failed: ${crawlFailed} as a top-level field in your JSON.
 === END REAL DATA ===`;
 
-  const finalPrompt = (prompt || '') + '\n\n' + realDataSummary;
+  const finalPrompt = safeText((prompt || '')) + '\n\n' + realDataSummary;
 
   // ── 10. Call Groq ─────────────────────────────────────────────────────────
   try {
