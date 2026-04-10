@@ -403,6 +403,109 @@ h1 span {
 .bar-amber { background: var(--amber); }
 .bar-red { background: var(--red); }
 .bar-blue { background: var(--blue); }
+/* CMS DETECTION */
+.cms-panel {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 640px) { .cms-panel { grid-template-columns: 1fr; } }
+.cms-hero-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.75rem;
+  grid-column: 1 / -1;
+  display: flex; align-items: center; gap: 1.75rem;
+  position: relative; overflow: hidden;
+}
+.cms-hero-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(124,111,247,0.06), rgba(34,211,238,0.03), transparent 60%);
+  pointer-events: none;
+}
+.cms-logo-wrap {
+  width: 72px; height: 72px; border-radius: 16px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; flex-shrink: 0;
+}
+.cms-hero-info { flex: 1; min-width: 0; }
+.cms-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.6rem; font-weight: 800; line-height: 1.1;
+  margin-bottom: 0.3rem;
+}
+.cms-hero-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.cms-confidence-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.cms-confidence-bar {
+  flex: 1; height: 8px; background: var(--bg3);
+  border-radius: 999px; overflow: hidden; max-width: 200px;
+}
+.cms-confidence-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--cyan));
+  transition: width 1s ease;
+}
+.cms-confidence-label {
+  font-size: 0.82rem; font-weight: 600; color: var(--accent2);
+  white-space: nowrap;
+}
+.cms-info-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem;
+}
+.cms-info-title {
+  font-size: 0.7rem; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+.cms-info-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;
+}
+.cms-info-sub { font-size: 0.8rem; color: var(--muted); }
+.tech-stack-grid {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+}
+.tech-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 0.4rem 0.75rem;
+  font-size: 0.8rem; font-weight: 500; color: var(--text);
+}
+.tech-chip .tech-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.tech-chip.cat-cms { border-color: rgba(167,139,250,0.4); }
+.tech-chip.cat-cms .tech-dot { background: var(--accent2); }
+.tech-chip.cat-hosting { border-color: rgba(34,211,238,0.4); }
+.tech-chip.cat-hosting .tech-dot { background: var(--cyan); }
+.tech-chip.cat-analytics { border-color: rgba(251,191,36,0.4); }
+.tech-chip.cat-analytics .tech-dot { background: var(--amber); }
+.tech-chip.cat-js { border-color: rgba(96,165,250,0.4); }
+.tech-chip.cat-js .tech-dot { background: var(--blue); }
+.tech-chip.cat-cdn { border-color: rgba(52,211,153,0.4); }
+.tech-chip.cat-cdn .tech-dot { background: var(--green); }
+.tech-chip.cat-other { border-color: var(--border2); }
+.tech-chip.cat-other .tech-dot { background: var(--muted); }
+.signals-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.signal-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.82rem; color: var(--muted); line-height: 1.4;
+}
+.signal-item::before {
+  content: '✓'; color: var(--green);
+  font-size: 0.75rem; margin-top: 1px; flex-shrink: 0;
+}
+.cms-loading {
+  display: flex; align-items: center; gap: 0.75rem;
+  color: var(--muted); font-size: 0.9rem; padding: 2rem;
+  justify-content: center;
+}
+.cms-mini-spinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite; flex-shrink: 0;
+}
 /* FEATURES SECTION */
 .features {
   max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
@@ -610,6 +713,7 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
       <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
+      <button class="tab-btn" onclick="switchTab('techstack')">🧩 Tech Stack</button>
     </div>
 
     <div class="tab-panel active" id="tab-overview">
@@ -635,6 +739,11 @@ footer .logo-f {
     </div>
     <div class="tab-panel" id="tab-keywords">
       <div class="cards-grid" id="keywords-content"></div>
+    </div>
+    <div class="tab-panel" id="tab-techstack">
+      <div id="techstack-content">
+        <div class="cms-loading"><div class="cms-mini-spinner"></div> Loading tech stack…</div>
+      </div>
     </div>
   </div>
 </div>
@@ -746,8 +855,8 @@ function toggleChip(el) {
 }
 
 function switchTab(name) {
+  const names = ['overview', 'suggestions', 'metrics', 'keywords', 'techstack'];
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const names = ['overview', 'suggestions', 'metrics', 'keywords'];
     b.classList.toggle('active', names[i] === name);
   });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -976,7 +1085,11 @@ async function startAudit() {
   }, 900);
 
   try {
-    const auditData = await callClaudeForAudit(url, options);
+    // Run CMS detection + SEO audit in parallel
+    const [auditData, cmsData] = await Promise.all([
+      callClaudeForAudit(url, options),
+      detectCMSRemote(url),
+    ]);
     clearInterval(stepInterval);
     steps.forEach(s => {
       const el = document.getElementById(s);
@@ -986,6 +1099,7 @@ async function startAudit() {
     await new Promise(r => setTimeout(r, 600));
     document.getElementById('loading-state').style.display = 'none';
     renderResults(url, auditData);
+    renderTechStack(cmsData, url);
   } catch (err) {
     clearInterval(stepInterval);
     document.getElementById('loading-state').style.display = 'none';
@@ -1072,7 +1186,148 @@ Generate at least 6 suggestions and 8 metrics. Make all data realistic for the d
   return await res.json();
 }
 
-function getScoreColor(score) {
+// ─────────────────────────────────────────────────────────────────────────────
+// CMS DETECTION
+// ─────────────────────────────────────────────────────────────────────────────
+async function detectCMSRemote(url) {
+  try {
+    const res = await fetch('/api/detect-cms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    if (!res.ok) throw new Error('CMS detect failed: ' + res.status);
+    return await res.json();
+  } catch (e) {
+    return { cms: 'Unknown', confidence: 0, signals: [], server: 'Unknown', hosting: 'Unknown', error: e.message };
+  }
+}
+
+// CMS emoji map
+const CMS_ICONS = {
+  'WordPress':    '📝', 'Shopify':      '🛒', 'Wix':          '🎨',
+  'Squarespace':  '⬛', 'Webflow':      '🌊', 'Joomla':       '🔶',
+  'Drupal':       '💧', 'Ghost':        '👻', 'Next.js':      '▲',
+  'Nuxt':         '💚', 'Gatsby':       '💜', 'Hugo':         '🚀',
+  'Jekyll':       '💎', 'Magento':      '🛍️', 'PrestaShop':   '🏪',
+  'BigCommerce':  '🏬', 'Blogger':      '📰', 'Contentful':   '📦',
+  'Sanity':       '🧱', 'Framer':       '🖼️', 'Custom / Unknown': '⚙️',
+};
+
+const CAT_LABELS = {
+  cms: 'CMS', hosting: 'Hosting', cdn: 'CDN', js: 'JS Framework',
+  analytics: 'Analytics', payment: 'Payment', ecommerce: 'E-commerce',
+  chat: 'Live Chat', crm: 'CRM', consent: 'Cookie Consent',
+  css: 'CSS Framework', other: 'Other',
+};
+const CAT_COLORS = {
+  cms: 'var(--accent2)', hosting: 'var(--cyan)', cdn: 'var(--green)',
+  js: 'var(--blue)', analytics: 'var(--amber)', payment: '#f472b6',
+  ecommerce: '#fb923c', chat: '#a3e635', crm: '#38bdf8',
+  consent: '#e879f9', css: '#93c5fd', other: 'var(--muted)',
+};
+
+function renderTechStack(cmsData, url) {
+  const el = document.getElementById('techstack-content');
+  const icon = CMS_ICONS[cmsData.cms] || '⚙️';
+  const confidence = cmsData.confidence || 0;
+  const confLabel = confidence >= 75 ? 'High confidence' : confidence >= 40 ? 'Medium confidence' : confidence > 0 ? 'Low confidence' : 'Not detected';
+  const hosting = cmsData.hosting || 'Unknown';
+  const server  = cmsData.server  || 'Unknown';
+  const signals = cmsData.signals || [];
+  const techStack = cmsData.tech_stack || [];
+
+  let hostname = url;
+  try { hostname = new URL(url).hostname; } catch {}
+
+  // Group techStack by category
+  const grouped = {};
+  techStack.forEach(t => {
+    const cat = t.category || 'other';
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(t);
+  });
+
+  const totalTech = techStack.length;
+
+  el.innerHTML = `
+    <div class="cms-panel">
+      <!-- Hero CMS card -->
+      <div class="cms-hero-card">
+        <div class="cms-logo-wrap">${icon}</div>
+        <div class="cms-hero-info">
+          <div class="cms-name">${cmsData.cms || 'Unknown'}</div>
+          <div class="cms-hero-meta">CMS / Platform detected for <strong style="color:var(--text)">${hostname}</strong></div>
+          <div class="cms-confidence-wrap">
+            <div class="cms-confidence-bar">
+              <div class="cms-confidence-fill" style="width:${confidence}%"></div>
+            </div>
+            <span class="cms-confidence-label">${confidence}% — ${confLabel}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hosting -->
+      <div class="cms-info-card">
+        <div class="cms-info-title">🏠 Hosting Provider</div>
+        <div class="cms-info-value">${hosting}</div>
+        <div class="cms-info-sub">${server}</div>
+      </div>
+
+      <!-- Server -->
+      <div class="cms-info-card">
+        <div class="cms-info-title">⚡ Server / Runtime</div>
+        <div class="cms-info-value" style="font-size:0.95rem">${server}</div>
+        <div class="cms-info-sub">${cmsData.powered_by ? 'Powered by: ' + cmsData.powered_by : 'No X-Powered-By header'}</div>
+      </div>
+
+      <!-- Full tech stack grouped -->
+      ${totalTech > 0 ? `
+      <div class="cms-info-card" style="grid-column: 1 / -1">
+        <div class="cms-info-title">🧩 Full Tech Stack (${totalTech} technologies)</div>
+        ${Object.entries(grouped).map(([cat, items]) => `
+          <div style="margin-top:1rem">
+            <div style="font-size:0.72rem;font-weight:600;color:${CAT_COLORS[cat]||'var(--muted)'};text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem">
+              ${CAT_LABELS[cat] || cat}
+            </div>
+            <div class="tech-stack-grid">
+              ${items.map(t => `
+                <span class="tech-chip cat-${cat}" title="${t.signals.join(' · ')}">
+                  <span class="tech-dot" style="background:${CAT_COLORS[cat]||'var(--muted)'}"></span>
+                  ${t.name}
+                  ${t.confidence < 100 ? `<span style="font-size:0.68rem;color:var(--muted);margin-left:2px">${t.confidence}%</span>` : ''}
+                </span>`).join('')}
+            </div>
+          </div>`).join('')}
+      </div>` : `
+      <div class="cms-info-card" style="grid-column: 1 / -1">
+        <div class="cms-info-title">🧩 Tech Stack</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">No technologies detected in page source. The site may be a SPA, block crawlers, or use heavy client-side rendering.</div>
+      </div>`}
+
+      <!-- Detection signals -->
+      ${signals.length > 0 ? `
+      <div class="cms-info-card" style="grid-column: 1 / -1">
+        <div class="cms-info-title">🔍 CMS Detection Signals (${signals.length})</div>
+        <div class="signals-list" style="margin-top:0.75rem">
+          ${signals.map(s => `<div class="signal-item">${s}</div>`).join('')}
+        </div>
+      </div>` : ''}
+
+      <!-- Error / low-confidence note -->
+      ${cmsData.error || confidence === 0 ? `
+      <div class="cms-info-card" style="grid-column: 1 / -1; border-color: rgba(251,191,36,0.3)">
+        <div class="cms-info-title" style="color:var(--amber)">⚠ Detection Note</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6">
+          ${cmsData.error
+            ? 'CMS detection failed: ' + cmsData.error + '. The site may block automated requests or use strict CSP policies.'
+            : 'No CMS was identified. This may indicate a custom-built site, a heavily cached or JS-rendered SPA, or a site that restricts crawlers.'}
+        </div>
+      </div>` : ''}
+    </div>
+  `;
+}
+
   if (score >= 80) return 'var(--green)';
   if (score >= 60) return 'var(--amber)';
   return 'var(--red)';
