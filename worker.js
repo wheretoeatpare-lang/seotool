@@ -149,7 +149,83 @@ function detectCMS(html, headers, finalUrl) {
     // Framer
     { cms: 'Framer',    pattern: /framer\.com/i,              signal: 'Framer reference' },
     { cms: 'Framer',    pattern: /framerusercontent\.com/i,   signal: 'Framer user content CDN' },
+
+    // ── Analytics ────────────────────────────────────────────
+    { cms: 'Google Analytics 4',  pattern: /gtag\('config',\s*'G-/i,              signal: 'GA4 gtag config' },
+    { cms: 'Google Analytics 4',  pattern: /googletagmanager\.com\/gtag/i,         signal: 'GA4 gtag.js script' },
+    { cms: 'Google Analytics UA', pattern: /gtag\('config',\s*'UA-/i,             signal: 'Universal Analytics config' },
+    { cms: 'Google Analytics UA', pattern: /google-analytics\.com\/analytics\.js/i,signal: 'analytics.js script' },
+    { cms: 'Google Tag Manager',  pattern: /googletagmanager\.com\/gtm\.js/i,      signal: 'GTM container script' },
+    { cms: 'Google Tag Manager',  pattern: /GTM-[A-Z0-9]+/,                        signal: 'GTM container ID' },
+    { cms: 'Facebook Pixel',      pattern: /connect\.facebook\.net.*fbevents/i,    signal: 'Facebook Pixel script' },
+    { cms: 'Hotjar',              pattern: /static\.hotjar\.com/i,                 signal: 'Hotjar script' },
+    { cms: 'Hotjar',              pattern: /hjid:/i,                               signal: 'Hotjar site ID' },
+    { cms: 'Microsoft Clarity',   pattern: /clarity\.ms\/tag/i,                    signal: 'Microsoft Clarity' },
+    { cms: 'Mixpanel',            pattern: /cdn\.mxpnl\.com/i,                     signal: 'Mixpanel CDN' },
+    { cms: 'Segment',             pattern: /cdn\.segment\.com/i,                   signal: 'Segment analytics' },
+    { cms: 'Plausible',           pattern: /plausible\.io\/js/i,                   signal: 'Plausible analytics' },
+
+    // ── JS Frameworks ─────────────────────────────────────────
+    { cms: 'React',      pattern: /__reactFiber|__reactProps|data-reactroot/i,     signal: 'React runtime/DOM attributes' },
+    { cms: 'Vue.js',     pattern: /__vue__|data-v-[a-f0-9]{7}/i,                   signal: 'Vue.js runtime/scoped attr' },
+    { cms: 'Angular',    pattern: /ng-version=|angular\.min\.js/i,                 signal: 'Angular framework' },
+    { cms: 'Alpine.js',  pattern: /x-data=|x-init=|alpinejs/i,                     signal: 'Alpine.js directives' },
+    { cms: 'HTMX',       pattern: /hx-get=|hx-post=|htmx\.org/i,                  signal: 'HTMX attributes' },
+    { cms: 'Svelte',     pattern: /svelte-[a-z0-9]+/i,                             signal: 'Svelte class hashes' },
+    { cms: 'Astro',      pattern: /astro-island|astro:load/i,                      signal: 'Astro island component' },
+
+    // ── CSS Frameworks ────────────────────────────────────────
+    { cms: 'Tailwind CSS', pattern: /tailwindcss/i,                                signal: 'Tailwind CSS' },
+    { cms: 'Bootstrap',    pattern: /bootstrap\.min\.css|bootstrap\.bundle/i,      signal: 'Bootstrap CSS/JS' },
+
+    // ── Payments ──────────────────────────────────────────────
+    { cms: 'Stripe',    pattern: /js\.stripe\.com/i,                               signal: 'Stripe.js payment' },
+    { cms: 'PayPal',    pattern: /paypal\.com\/sdk\/js/i,                          signal: 'PayPal SDK' },
+    { cms: 'WooCommerce',pattern: /\/wp-content\/plugins\/woocommerce/i,           signal: 'WooCommerce plugin path' },
+
+    // ── Live Chat ─────────────────────────────────────────────
+    { cms: 'Intercom',  pattern: /widget\.intercom\.io|intercomSettings/i,         signal: 'Intercom chat widget' },
+    { cms: 'Zendesk',   pattern: /static\.zdassets\.com|zopim/i,                   signal: 'Zendesk/Zopim chat' },
+    { cms: 'Crisp',     pattern: /client\.crisp\.chat/i,                           signal: 'Crisp chat widget' },
+    { cms: 'Tidio',     pattern: /code\.tidio\.co/i,                               signal: 'Tidio chat' },
+    { cms: 'Tawk.to',   pattern: /embed\.tawk\.to/i,                               signal: 'Tawk.to live chat' },
+    { cms: 'HubSpot',   pattern: /js\.hs-scripts\.com/i,                           signal: 'HubSpot script' },
+
+    // ── Cookie Consent ────────────────────────────────────────
+    { cms: 'Cookiebot', pattern: /consent\.cookiebot\.com/i,                       signal: 'Cookiebot consent' },
+    { cms: 'OneTrust',  pattern: /onetrust|optanon/i,                              signal: 'OneTrust cookie banner' },
+
+    // ── CDN ───────────────────────────────────────────────────
+    { cms: 'jsDelivr',  pattern: /cdn\.jsdelivr\.net/i,                            signal: 'jsDelivr CDN' },
+    { cms: 'unpkg',     pattern: /unpkg\.com\//i,                                  signal: 'unpkg CDN' },
   ];
+
+  // Category map — these never win the "top CMS" vote
+  const NON_CMS = new Set([
+    'Google Analytics 4','Google Analytics UA','Google Tag Manager','Facebook Pixel',
+    'Hotjar','Microsoft Clarity','Mixpanel','Segment','Plausible',
+    'React','Vue.js','Angular','Alpine.js','HTMX','Svelte','Astro',
+    'Tailwind CSS','Bootstrap',
+    'Stripe','PayPal','WooCommerce',
+    'Intercom','Zendesk','Crisp','Tidio','Tawk.to','HubSpot',
+    'Cookiebot','OneTrust',
+    'jsDelivr','unpkg',
+  ]);
+
+  const CATEGORIES = {
+    'Google Analytics 4':'analytics','Google Analytics UA':'analytics',
+    'Google Tag Manager':'analytics','Facebook Pixel':'analytics',
+    'Hotjar':'analytics','Microsoft Clarity':'analytics',
+    'Mixpanel':'analytics','Segment':'analytics','Plausible':'analytics',
+    'React':'js','Vue.js':'js','Angular':'js','Alpine.js':'js',
+    'HTMX':'js','Svelte':'js','Astro':'js',
+    'Tailwind CSS':'css','Bootstrap':'css',
+    'Stripe':'payment','PayPal':'payment','WooCommerce':'ecommerce',
+    'Intercom':'chat','Zendesk':'chat','Crisp':'chat','Tidio':'chat',
+    'Tawk.to':'chat','HubSpot':'crm',
+    'Cookiebot':'consent','OneTrust':'consent',
+    'jsDelivr':'cdn','unpkg':'cdn',
+  };
 
   const scores = {};
 
@@ -173,12 +249,13 @@ function detectCMS(html, headers, finalUrl) {
   // Hosting detection
   const hosting = detectHosting(headers);
 
-  // Find winner
+  // Find CMS winner — only from actual CMS platforms, not analytics/frameworks
   let topCMS = 'Custom / Unknown';
   let topCount = 0;
   let topSignals = [];
 
   for (const [cms, sigs] of Object.entries(scores)) {
+    if (NON_CMS.has(cms)) continue;
     if (sigs.length > topCount) {
       topCount = sigs.length;
       topCMS = cms;
@@ -188,6 +265,20 @@ function detectCMS(html, headers, finalUrl) {
 
   const confidence = Math.min(100, topCount * 25);
 
+  // Build full tech stack list with categories
+  const techStack = Object.entries(scores).map(([name, sigs]) => ({
+    name,
+    category: CATEGORIES[name] || 'cms',
+    signals: sigs,
+    confidence: Math.min(100, sigs.length * 25),
+  })).sort((a, b) => {
+    const aIsCMS = !NON_CMS.has(a.name);
+    const bIsCMS = !NON_CMS.has(b.name);
+    if (aIsCMS && !bIsCMS) return -1;
+    if (!aIsCMS && bIsCMS) return 1;
+    return b.signals.length - a.signals.length;
+  });
+
   return {
     cms: topCMS,
     confidence,
@@ -196,6 +287,7 @@ function detectCMS(html, headers, finalUrl) {
     powered_by: powered || null,
     hosting,
     all_detected: Object.keys(scores),
+    tech_stack: techStack,
   };
 }
 

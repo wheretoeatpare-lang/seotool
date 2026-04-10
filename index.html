@@ -403,6 +403,48 @@ h1 span {
 .bar-amber { background: var(--amber); }
 .bar-red { background: var(--red); }
 .bar-blue { background: var(--blue); }
+/* CMS / TECH STACK */
+.cms-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 640px) { .cms-panel { grid-template-columns: 1fr; } }
+.cms-hero-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.75rem;
+  grid-column: 1 / -1; display: flex; align-items: center; gap: 1.75rem;
+  position: relative; overflow: hidden;
+}
+.cms-hero-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(124,111,247,0.06), rgba(34,211,238,0.03), transparent 60%);
+  pointer-events: none;
+}
+.cms-logo-wrap {
+  width: 72px; height: 72px; border-radius: 16px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; flex-shrink: 0;
+}
+.cms-hero-info { flex: 1; min-width: 0; }
+.cms-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.3rem; }
+.cms-hero-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.cms-confidence-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.cms-confidence-bar { flex: 1; height: 8px; background: var(--bg3); border-radius: 999px; overflow: hidden; max-width: 200px; }
+.cms-confidence-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--cyan)); transition: width 1s ease; }
+.cms-confidence-label { font-size: 0.82rem; font-weight: 600; color: var(--accent2); white-space: nowrap; }
+.cms-info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.cms-info-title { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.cms-info-value { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.cms-info-sub { font-size: 0.8rem; color: var(--muted); }
+.tech-stack-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.tech-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 0.4rem 0.75rem;
+  font-size: 0.8rem; font-weight: 500; color: var(--text);
+}
+.tech-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.signals-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.signal-item { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
+.signal-item::before { content: '✓'; color: var(--green); font-size: 0.75rem; margin-top: 1px; flex-shrink: 0; }
 /* FEATURES SECTION */
 .features {
   max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
@@ -610,6 +652,7 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
       <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
+      <button class="tab-btn" onclick="switchTab('techstack')">🧩 Tech Stack</button>
     </div>
 
     <div class="tab-panel active" id="tab-overview">
@@ -635,6 +678,11 @@ footer .logo-f {
     </div>
     <div class="tab-panel" id="tab-keywords">
       <div class="cards-grid" id="keywords-content"></div>
+    </div>
+    <div class="tab-panel" id="tab-techstack">
+      <div id="techstack-content" style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">
+        Detecting tech stack…
+      </div>
     </div>
   </div>
 </div>
@@ -746,8 +794,8 @@ function toggleChip(el) {
 }
 
 function switchTab(name) {
+  const names = ['overview', 'suggestions', 'metrics', 'keywords', 'techstack'];
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const names = ['overview', 'suggestions', 'metrics', 'keywords'];
     b.classList.toggle('active', names[i] === name);
   });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -976,7 +1024,10 @@ async function startAudit() {
   }, 900);
 
   try {
-    const auditData = await callClaudeForAudit(url, options);
+    const [auditData, cmsData] = await Promise.all([
+      callClaudeForAudit(url, options),
+      detectCMSRemote(url),
+    ]);
     clearInterval(stepInterval);
     steps.forEach(s => {
       const el = document.getElementById(s);
@@ -986,6 +1037,7 @@ async function startAudit() {
     await new Promise(r => setTimeout(r, 600));
     document.getElementById('loading-state').style.display = 'none';
     renderResults(url, auditData);
+    renderTechStack(cmsData, url);
   } catch (err) {
     clearInterval(stepInterval);
     document.getElementById('loading-state').style.display = 'none';
@@ -1217,6 +1269,140 @@ function renderResults(url, data) {
   // Show results
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CMS / TECH STACK DETECTION ────────────────────────────────
+async function detectCMSRemote(url) {
+  try {
+    const res = await fetch('/api/detect-cms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return await res.json();
+  } catch (e) {
+    return { cms: 'Unknown', confidence: 0, signals: [], server: 'Unknown', hosting: 'Unknown', error: e.message };
+  }
+}
+
+const CMS_ICONS = {
+  'WordPress':'📝','Shopify':'🛒','Wix':'🎨','Squarespace':'⬛','Webflow':'🌊',
+  'Joomla':'🔶','Drupal':'💧','Ghost':'👻','Next.js':'▲','Nuxt':'💚',
+  'Gatsby':'💜','Hugo':'🚀','Jekyll':'💎','Magento':'🛍️','PrestaShop':'🏪',
+  'BigCommerce':'🏬','Blogger':'📰','Contentful':'📦','Sanity':'🧱','Framer':'🖼️',
+  'Custom / Unknown':'⚙️',
+};
+
+const CAT_META = {
+  cms:      { label: 'CMS / Platform',   color: 'var(--accent2)' },
+  js:       { label: 'JS Framework',     color: 'var(--blue)'    },
+  analytics:{ label: 'Analytics',        color: 'var(--amber)'   },
+  cdn:      { label: 'CDN',              color: 'var(--green)'   },
+  payment:  { label: 'Payment',          color: '#f472b6'        },
+  ecommerce:{ label: 'E-commerce',       color: '#fb923c'        },
+  chat:     { label: 'Live Chat',        color: '#a3e635'        },
+  crm:      { label: 'CRM',             color: '#38bdf8'        },
+  consent:  { label: 'Cookie Consent',   color: '#e879f9'        },
+  css:      { label: 'CSS Framework',    color: '#93c5fd'        },
+  other:    { label: 'Other',            color: 'var(--muted)'   },
+};
+
+function renderTechStack(cmsData, url) {
+  const el = document.getElementById('techstack-content');
+  const icon       = CMS_ICONS[cmsData.cms] || '⚙️';
+  const confidence = cmsData.confidence || 0;
+  const confLabel  = confidence >= 75 ? 'High confidence'
+                   : confidence >= 40 ? 'Medium confidence'
+                   : confidence  >  0 ? 'Low confidence' : 'Not detected';
+  const signals    = cmsData.signals || [];
+  const techStack  = cmsData.tech_stack || [];
+  let hostname = url;
+  try { hostname = new URL(url).hostname; } catch {}
+
+  // Group by category
+  const grouped = {};
+  techStack.forEach(t => {
+    const c = t.category || 'other';
+    if (!grouped[c]) grouped[c] = [];
+    grouped[c].push(t);
+  });
+
+  // Category order
+  const catOrder = ['cms','js','analytics','cdn','payment','ecommerce','chat','crm','consent','css','other'];
+
+  el.innerHTML = `
+    <div class="cms-panel">
+
+      <div class="cms-hero-card">
+        <div class="cms-logo-wrap">${icon}</div>
+        <div class="cms-hero-info">
+          <div class="cms-name">${cmsData.cms || 'Unknown'}</div>
+          <div class="cms-hero-meta">Detected for <strong style="color:var(--text)">${hostname}</strong></div>
+          <div class="cms-confidence-wrap">
+            <div class="cms-confidence-bar">
+              <div class="cms-confidence-fill" style="width:${confidence}%"></div>
+            </div>
+            <span class="cms-confidence-label">${confidence}% — ${confLabel}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cms-info-card">
+        <div class="cms-info-title">🏠 Hosting</div>
+        <div class="cms-info-value">${cmsData.hosting || 'Unknown'}</div>
+        <div class="cms-info-sub">${cmsData.server || 'Unknown'}</div>
+      </div>
+
+      <div class="cms-info-card">
+        <div class="cms-info-title">⚡ Server / Runtime</div>
+        <div class="cms-info-value" style="font-size:0.95rem">${cmsData.server || 'Unknown'}</div>
+        <div class="cms-info-sub">${cmsData.powered_by ? 'Powered by: ' + cmsData.powered_by : 'No X-Powered-By header'}</div>
+      </div>
+
+      ${techStack.length > 0 ? `
+      <div class="cms-info-card" style="grid-column:1/-1">
+        <div class="cms-info-title">🧩 Full Tech Stack — ${techStack.length} technologies detected</div>
+        ${catOrder.filter(c => grouped[c]).map(c => {
+          const meta = CAT_META[c] || CAT_META.other;
+          return `
+          <div style="margin-top:1rem">
+            <div style="font-size:0.7rem;font-weight:600;color:${meta.color};text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem">${meta.label}</div>
+            <div class="tech-stack-grid">
+              ${grouped[c].map(t => `
+                <span class="tech-chip" style="border-color:${meta.color}33">
+                  <span class="tech-dot" style="background:${meta.color}"></span>
+                  ${t.name}
+                  ${t.confidence < 100 ? `<span style="font-size:0.68rem;color:var(--muted)">${t.confidence}%</span>` : ''}
+                </span>`).join('')}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>` : `
+      <div class="cms-info-card" style="grid-column:1/-1">
+        <div class="cms-info-title">🧩 Tech Stack</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">No technologies detected. The site may block crawlers or use heavy client-side rendering.</div>
+      </div>`}
+
+      ${signals.length > 0 ? `
+      <div class="cms-info-card" style="grid-column:1/-1">
+        <div class="cms-info-title">🔍 CMS Detection Signals (${signals.length})</div>
+        <div class="signals-list" style="margin-top:0.75rem">
+          ${signals.map(s => `<div class="signal-item">${s}</div>`).join('')}
+        </div>
+      </div>` : ''}
+
+      ${(cmsData.error || confidence === 0) ? `
+      <div class="cms-info-card" style="grid-column:1/-1;border-color:rgba(251,191,36,0.3)">
+        <div class="cms-info-title" style="color:var(--amber)">⚠ Detection Note</div>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6">
+          ${cmsData.error
+            ? 'Detection failed: ' + cmsData.error + '. The site may block automated requests.'
+            : 'No CMS identified. This may be a custom-built site, a JS SPA, or a site blocking crawlers.'}
+        </div>
+      </div>` : ''}
+
+    </div>`;
 }
 </script>
 </body>
