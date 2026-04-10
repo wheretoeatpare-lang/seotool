@@ -768,213 +768,173 @@ function getActiveOptions() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PROBE: fetch real response headers + HTML from target site via /api/probe
-// then fingerprint Server, Hosting, CDN, DNS, and CMS accurately
+// FIX: Accurate server & hosting detection from URL domain patterns
 // ─────────────────────────────────────────────────────────────────────────────
-async function probeTargetSite(targetUrl) {
+function detectHostingInfo(url) {
   try {
-    const res = await fetch('/api/probe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ targetUrl }),
-    });
-    if (!res.ok) return { headers: {}, html: '' };
-    return await res.json();
-  } catch (e) {
-    return { headers: {}, html: '' };
-  }
-}
+    const hostname = new URL(url).hostname.toLowerCase();
 
-function fingerprint(targetUrl, headers, html) {
-  const hostname = (() => { try { return new URL(targetUrl).hostname.toLowerCase(); } catch(e) { return ''; } })();
-  const h = headers || {};
-  const body = (html || '').toLowerCase();
+    let server = 'Unknown';
+    let hosting = 'Unknown';
+    let cdn = 'None detected';
+    let serverNote = '';
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
-  const hdr = (name) => (h[name.toLowerCase()] || '').toLowerCase();
-  const hasHdr = (name, val) => hdr(name).includes(val);
-  const inBody = (str) => body.includes(str);
-
-  // ── SERVER ───────────────────────────────────────────────────────────────
-  let server = hdr('server') || hdr('x-served-by') || '';
-  // Normalise common values
-  if (!server || server === 'cloudflare') {
-    if (hasHdr('cf-ray', '') || hdr('server') === 'cloudflare') server = 'Cloudflare';
-    else if (hdr('server').includes('nginx'))  server = 'nginx/' + (hdr('server').match(/nginx\/([\d.]+)/)?.[1] || '');
-    else if (hdr('server').includes('apache')) server = 'Apache/' + (hdr('server').match(/apache\/([\d.]+)/)?.[1] || '');
-    else if (hdr('server').includes('iis'))    server = 'Microsoft IIS';
-    else if (hdr('server').includes('litespeed')) server = 'LiteSpeed';
-    else if (hdr('server').includes('openresty'))  server = 'OpenResty (nginx)';
-    else if (hdr('server').includes('caddy'))  server = 'Caddy';
-    else if (hdr('server').includes('vercel')) server = 'Vercel';
-    else if (hdr('server').includes('netlify')) server = 'Netlify';
-  }
-  // Domain-based fallback when header is missing/unhelpful
-  if (!server || server === 'cloudflare') {
-    if (hostname.endsWith('.workers.dev') || hostname.endsWith('.pages.dev')) server = 'Cloudflare Workers';
-    else if (hostname.endsWith('.netlify.app'))   server = 'Netlify Edge';
-    else if (hostname.endsWith('.vercel.app'))    server = 'Vercel Edge';
-    else if (hostname.endsWith('.github.io'))     server = 'GitHub Pages (nginx)';
-    else if (hostname.endsWith('.myshopify.com')) server = 'Shopify';
-    else if (hostname.endsWith('.webflow.io'))    server = 'Webflow';
-    else if (hostname.endsWith('.squarespace.com')) server = 'Squarespace';
-    else if (hostname.endsWith('.wordpress.com')) server = 'WordPress.com (nginx)';
-    else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) server = 'Wix';
-    else server = server || 'Unknown';
-  }
-  // Clean up raw header value if it slipped through
-  if (!server) server = hdr('server') || 'Unknown';
-
-  // ── HOSTING ──────────────────────────────────────────────────────────────
-  let hosting = 'Unknown';
-  // Headers that reveal hosting
-  if (hasHdr('x-powered-by', 'wix'))           hosting = 'Wix';
-  else if (hasHdr('x-powered-by', 'shopify'))  hosting = 'Shopify';
-  else if (hdr('x-shopify-stage'))              hosting = 'Shopify';
-  else if (hasHdr('server', 'netlify') || hasHdr('x-nf-request-id', '')) hosting = 'Netlify';
-  else if (hasHdr('x-vercel-id', '') || hasHdr('server','vercel'))        hosting = 'Vercel';
-  else if (hasHdr('cf-ray', '') || hdr('server') === 'cloudflare') {
-    // CF-Ray just means Cloudflare is proxying — need to narrow down
-    if (hostname.endsWith('.workers.dev') || hostname.endsWith('.pages.dev')) hosting = 'Cloudflare (Workers/Pages)';
-    else hosting = 'Cloudflare (proxied)';
-  }
-  else if (hasHdr('x-github-request-id', '') || hostname.endsWith('.github.io')) hosting = 'GitHub Pages';
-  else if (hasHdr('x-amz-request-id', '') || hasHdr('x-amz-id-2','') || hostname.includes('.amazonaws.com')) hosting = 'Amazon Web Services';
-  else if (hasHdr('x-ms-request-id','') || hostname.endsWith('.azurewebsites.net')) hosting = 'Microsoft Azure';
-  else if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) hosting = 'Google Firebase';
-  else if (hostname.endsWith('.appspot.com')) hosting = 'Google Cloud / App Engine';
-  else if (hostname.endsWith('.squarespace.com')) hosting = 'Squarespace';
-  else if (hostname.endsWith('.wordpress.com'))  hosting = 'WordPress.com (Automattic)';
-  else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) hosting = 'Wix';
-  else if (hostname.endsWith('.webflow.io'))     hosting = 'Webflow';
-  else if (hostname.endsWith('.myshopify.com'))  hosting = 'Shopify';
-  else if (hostname.endsWith('.netlify.app'))    hosting = 'Netlify';
-  else if (hostname.endsWith('.vercel.app'))     hosting = 'Vercel';
-  else if (hostname.endsWith('.onrender.com'))   hosting = 'Render';
-  else if (hostname.endsWith('.railway.app'))    hosting = 'Railway';
-  else if (hostname.endsWith('.herokuapp.com'))  hosting = 'Heroku';
-  else if (hostname.endsWith('.fly.dev'))        hosting = 'Fly.io';
-  else if (hasHdr('via', 'varnish'))             hosting = 'Varnish-cached host';
-  else hosting = 'Unknown (custom / self-hosted)';
-
-  // ── CDN ──────────────────────────────────────────────────────────────────
-  let cdn = 'None detected';
-  if (hasHdr('cf-ray', ''))                            cdn = 'Cloudflare';
-  else if (hasHdr('x-served-by', 'cache-'))            cdn = 'Fastly';
-  else if (hasHdr('x-cache', 'hit') && hasHdr('via','akamai')) cdn = 'Akamai';
-  else if (hasHdr('x-amz-cf-id','') || hasHdr('via','cloudfront')) cdn = 'AWS CloudFront';
-  else if (hasHdr('x-azure-ref',''))                   cdn = 'Azure CDN';
-  else if (hasHdr('x-nf-request-id',''))               cdn = 'Netlify CDN';
-  else if (hasHdr('x-vercel-id',''))                   cdn = 'Vercel Edge Network';
-  else if (hasHdr('via','varnish'))                    cdn = 'Varnish';
-  else if (hasHdr('x-cache','hit'))                    cdn = 'CDN (type unknown)';
-  // Domain-based fallback
-  if (cdn === 'None detected') {
-    if (hostname.endsWith('.workers.dev') || hostname.endsWith('.pages.dev')) cdn = 'Cloudflare';
-    else if (hostname.endsWith('.netlify.app'))  cdn = 'Netlify CDN';
-    else if (hostname.endsWith('.vercel.app'))   cdn = 'Vercel Edge';
-    else if (hostname.endsWith('.github.io'))    cdn = 'Fastly';
-    else if (hostname.endsWith('.wordpress.com')) cdn = 'Jetpack / Automattic CDN';
-    else if (hostname.endsWith('.squarespace.com')) cdn = 'Fastly';
-    else if (hostname.endsWith('.webflow.io'))   cdn = 'Fastly';
-    else if (hostname.endsWith('.myshopify.com')) cdn = 'Cloudflare';
-  }
-
-  // ── DNS ──────────────────────────────────────────────────────────────────
-  let dns = 'Unknown';
-  // Cloudflare DNS shows CF-Ray on all responses
-  if (hasHdr('cf-ray', ''))                           dns = 'Cloudflare DNS';
-  else if (hostname.endsWith('.workers.dev') || hostname.endsWith('.pages.dev')) dns = 'Cloudflare DNS';
-  else if (hostname.endsWith('.netlify.app'))          dns = 'Netlify DNS';
-  else if (hostname.endsWith('.vercel.app'))           dns = 'Vercel DNS';
-  else if (hostname.endsWith('.github.io'))            dns = 'GitHub DNS';
-  else if (hostname.endsWith('.amazonaws.com') || hostname.endsWith('.elasticbeanstalk.com')) dns = 'AWS Route 53';
-  else if (hostname.endsWith('.azurewebsites.net'))    dns = 'Azure DNS';
-  else if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) dns = 'Google Cloud DNS';
-  else if (hostname.endsWith('.myshopify.com'))        dns = 'Shopify DNS (Cloudflare)';
-  else if (hostname.endsWith('.squarespace.com'))      dns = 'Squarespace DNS';
-  else if (hostname.endsWith('.wordpress.com'))        dns = 'WordPress.com DNS';
-  else if (hostname.endsWith('.wixsite.com'))          dns = 'Wix DNS';
-  else if (hostname.endsWith('.webflow.io'))           dns = 'Webflow DNS';
-  else dns = 'Unknown (custom domain — check registrar)';
-
-  // ── CMS ──────────────────────────────────────────────────────────────────
-  let cms = 'Unknown';
-
-  // --- Header-based ---
-  if (hasHdr('x-powered-by', 'wp') || hasHdr('x-pingback', 'xmlrpc'))
-    cms = 'WordPress';
-  else if (hdr('x-drupal-cache') || hasHdr('x-generator','drupal'))
-    cms = 'Drupal';
-  else if (hdr('x-joomla-tag') || hasHdr('x-powered-by','joomla'))
-    cms = 'Joomla';
-  else if (hasHdr('x-powered-by','shopify') || hdr('x-shopid'))
-    cms = 'Shopify';
-  else if (hasHdr('x-powered-by','wix'))
-    cms = 'Wix';
-  else if (hasHdr('x-powered-by','squarespace'))
-    cms = 'Squarespace';
-
-  // --- HTML body fingerprinting ---
-  if (cms === 'Unknown') {
-    // WordPress
-    if (inBody('/wp-content/') || inBody('/wp-includes/') || inBody('wp-json') || inBody('wordpress'))
-      cms = 'WordPress';
-    // WooCommerce (on top of WP)
-    else if (inBody('woocommerce') || inBody('/wc-api/'))
-      cms = 'WordPress + WooCommerce';
-    // Shopify
-    else if (inBody('shopify.com/s/files') || inBody('cdn.shopify.com') || inBody('shopify.analytics'))
-      cms = 'Shopify';
-    // Wix
-    else if (inBody('wix.com/') || inBody('static.wixstatic.com') || inBody('wixsite.com'))
-      cms = 'Wix';
+    // Cloudflare Workers / Pages
+    if (hostname.endsWith('.workers.dev')) {
+      server = 'Cloudflare Workers (V8 isolates)';
+      hosting = 'Cloudflare';
+      cdn = 'Cloudflare CDN (global edge)';
+      serverNote = 'Serverless edge runtime; no traditional web server.';
+    } else if (hostname.endsWith('.pages.dev')) {
+      server = 'Cloudflare Pages';
+      hosting = 'Cloudflare';
+      cdn = 'Cloudflare CDN (global edge)';
+      serverNote = 'Static site hosting on Cloudflare edge network.';
+    }
+    // Netlify
+    else if (hostname.endsWith('.netlify.app') || hostname.endsWith('.netlify.com')) {
+      server = 'Netlify Edge';
+      hosting = 'Netlify';
+      cdn = 'Netlify CDN';
+      serverNote = 'JAMstack hosting with global CDN distribution.';
+    }
+    // Vercel
+    else if (hostname.endsWith('.vercel.app')) {
+      server = 'Vercel Edge Network';
+      hosting = 'Vercel';
+      cdn = 'Vercel Edge Network';
+      serverNote = 'Serverless + edge functions; optimized for Next.js.';
+    }
+    // GitHub Pages
+    else if (hostname.endsWith('.github.io')) {
+      server = 'GitHub Pages (nginx)';
+      hosting = 'GitHub Pages';
+      cdn = 'Fastly CDN';
+      serverNote = 'Static site hosting via GitHub; served through Fastly.';
+    }
+    // Render
+    else if (hostname.endsWith('.onrender.com')) {
+      server = 'Render';
+      hosting = 'Render';
+      cdn = 'None (direct)';
+      serverNote = 'Cloud application platform.';
+    }
+    // Railway
+    else if (hostname.endsWith('.railway.app')) {
+      server = 'Railway';
+      hosting = 'Railway';
+      cdn = 'None (direct)';
+      serverNote = 'Container-based cloud platform.';
+    }
+    // Heroku
+    else if (hostname.endsWith('.herokuapp.com')) {
+      server = 'Heroku Dyno';
+      hosting = 'Heroku (Salesforce)';
+      cdn = 'None (direct)';
+      serverNote = 'PaaS platform; dynos are lightweight Linux containers.';
+    }
+    // Fly.io
+    else if (hostname.endsWith('.fly.dev')) {
+      server = 'Fly.io';
+      hosting = 'Fly.io';
+      cdn = 'Anycast routing';
+      serverNote = 'Containerized workloads deployed close to users.';
+    }
+    // AWS
+    else if (hostname.endsWith('.elasticbeanstalk.com')) {
+      server = 'AWS Elastic Beanstalk';
+      hosting = 'Amazon Web Services';
+      cdn = 'None (add CloudFront separately)';
+      serverNote = 'AWS managed PaaS platform.';
+    } else if (hostname.endsWith('.amazonaws.com')) {
+      server = 'Amazon Web Services';
+      hosting = 'Amazon Web Services';
+      cdn = 'None (direct)';
+      serverNote = 'Direct AWS endpoint.';
+    } else if (hostname.endsWith('.cloudfront.net')) {
+      server = 'AWS CloudFront CDN';
+      hosting = 'Amazon Web Services';
+      cdn = 'CloudFront (AWS CDN)';
+      serverNote = 'CloudFront distribution; origin server type unknown.';
+    }
+    // Azure
+    else if (hostname.endsWith('.azurewebsites.net')) {
+      server = 'Microsoft Azure App Service';
+      hosting = 'Microsoft Azure';
+      cdn = 'None (add Azure CDN separately)';
+      serverNote = 'Azure PaaS web app hosting.';
+    } else if (hostname.endsWith('.azurestaticapps.net')) {
+      server = 'Azure Static Web Apps';
+      hosting = 'Microsoft Azure';
+      cdn = 'Azure CDN';
+      serverNote = 'Static hosting with integrated Azure CDN.';
+    }
+    // Google Cloud / Firebase
+    else if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) {
+      server = 'Firebase Hosting';
+      hosting = 'Google Firebase';
+      cdn = 'Google Cloud CDN';
+      serverNote = 'Firebase static hosting on Google infrastructure.';
+    } else if (hostname.endsWith('.appspot.com')) {
+      server = 'Google App Engine';
+      hosting = 'Google Cloud Platform';
+      cdn = 'Google Cloud CDN';
+      serverNote = 'Google managed PaaS platform.';
+    }
     // Squarespace
-    else if (inBody('squarespace.com') || inBody('static.squarespace.com') || inBody('squarespace-cdn.com'))
-      cms = 'Squarespace';
+    else if (hostname.endsWith('.squarespace.com')) {
+      server = 'Squarespace (nginx)';
+      hosting = 'Squarespace';
+      cdn = 'Fastly CDN';
+      serverNote = 'Squarespace managed hosting.';
+    }
+    // Shopify
+    else if (hostname.endsWith('.myshopify.com')) {
+      server = 'Shopify';
+      hosting = 'Shopify';
+      cdn = 'Cloudflare CDN';
+      serverNote = 'Shopify managed e-commerce platform.';
+    }
+    // WordPress.com
+    else if (hostname.endsWith('.wordpress.com')) {
+      server = 'WordPress.com (nginx)';
+      hosting = 'Automattic / WordPress.com';
+      cdn = 'Jetpack CDN';
+      serverNote = 'Managed WordPress hosting by Automattic.';
+    }
+    // Wix
+    else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) {
+      server = 'Wix';
+      hosting = 'Wix';
+      cdn = 'Wix CDN';
+      serverNote = 'Wix managed website platform.';
+    }
     // Webflow
-    else if (inBody('webflow.com') || inBody('assets.website-files.com') || inBody('uploads-ssl.webflow.com'))
-      cms = 'Webflow';
-    // Drupal
-    else if (inBody('/sites/default/files/') || inBody('drupal.js') || inBody('drupal.org'))
-      cms = 'Drupal';
-    // Joomla
-    else if (inBody('/media/jui/') || inBody('joomla') || inBody('/components/com_'))
-      cms = 'Joomla';
-    // Ghost
-    else if (inBody('ghost.org') || inBody('/ghost/') || inBody('content="ghost"'))
-      cms = 'Ghost';
-    // Magento
-    else if (inBody('magento') || inBody('/skin/frontend/') || inBody('mage/') || inBody('varien/js'))
-      cms = 'Magento';
-    // HubSpot CMS
-    else if (inBody('hubspot.com') || inBody('hs-scripts.com') || inBody('hscollectedforms'))
-      cms = 'HubSpot CMS';
-    // Contentful / headless
-    else if (inBody('ctfassets.net') || inBody('contentful.com'))
-      cms = 'Headless CMS (Contentful)';
-    // Sanity
-    else if (inBody('sanity.io'))
-      cms = 'Headless CMS (Sanity)';
-    // Next.js (static or SSR — not a CMS but commonly reported)
-    else if (inBody('__next_data__') || inBody('_next/static'))
-      cms = 'Next.js (custom / headless)';
-    // Nuxt.js
-    else if (inBody('__nuxt') || inBody('_nuxt/'))
-      cms = 'Nuxt.js (custom / headless)';
-    // Gatsby
-    else if (inBody('gatsby') || inBody('___gatsby'))
-      cms = 'Gatsby (static)';
-    // Domain-based final fallbacks
-    else if (hostname.endsWith('.wordpress.com'))   cms = 'WordPress.com';
-    else if (hostname.endsWith('.myshopify.com'))   cms = 'Shopify';
-    else if (hostname.endsWith('.squarespace.com')) cms = 'Squarespace';
-    else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) cms = 'Wix';
-    else if (hostname.endsWith('.webflow.io'))      cms = 'Webflow';
-    else cms = 'Custom / Unknown CMS';
-  }
+    else if (hostname.endsWith('.webflow.io')) {
+      server = 'Webflow';
+      hosting = 'Webflow';
+      cdn = 'Fastly CDN';
+      serverNote = 'Webflow managed hosting on Fastly edge.';
+    }
+    // Surge.sh
+    else if (hostname.endsWith('.surge.sh')) {
+      server = 'Surge.sh';
+      hosting = 'Surge';
+      cdn = 'None (direct)';
+      serverNote = 'Static web publishing platform.';
+    }
+    // Custom domain — cannot detect without HTTP header inspection
+    else {
+      server = 'Undetermined (custom domain)';
+      hosting = 'Undetermined (custom domain)';
+      cdn = 'Undetermined';
+      serverNote = 'Server and hosting cannot be determined from the domain alone for custom domains. Common options include Apache, nginx, Caddy, or cloud-managed servers.';
+    }
 
-  return { server, hosting, cdn, dns, cms, hostname };
+    return { server, hosting, cdn, serverNote, hostname };
+  } catch (e) {
+    return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown', serverNote: '', hostname: '' };
+  }
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -1038,22 +998,17 @@ async function startAudit() {
 }
 
 async function callClaudeForAudit(url, options) {
-  // Step 1: Probe the target site for real headers + HTML
-  const { headers, html } = await probeTargetSite(url);
+  // Detect hosting/server accurately from the domain — do NOT let AI guess these
+  const { server, hosting, cdn, serverNote, hostname } = detectHostingInfo(url);
 
-  // Step 2: Fingerprint everything from real data
-  const { server, hosting, cdn, dns, cms, hostname } = fingerprint(url, headers, html);
-
-  // Step 3: Build prompt with ground-truth values locked in
   const prompt = `You are an expert SEO auditor. Perform a comprehensive SEO audit for the website: ${url}
 
-CRITICAL — The following values were detected from the site's actual HTTP response headers and HTML source. Use them EXACTLY as provided. Do NOT guess, change, or substitute any of these values:
+CRITICAL — USE THESE EXACT VALUES. Do NOT guess, change, or infer different values for server or hosting:
 - Hostname: ${hostname}
 - Server / Runtime: ${server}
 - Hosting Provider: ${hosting}
 - CDN: ${cdn}
-- DNS Provider: ${dns}
-- CMS / Platform: ${cms}
+- Server Note: ${serverNote}
 
 Analyze the following areas: ${options.join(', ')}
 
@@ -1073,14 +1028,12 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
     "backlinks": { "score": <0-100>, "grade": "<A-F>" }
   },
   "overview_cards": [
-    { "title": "CMS / Platform", "value": "${cms}", "description": "Content management system or site platform detected from response headers and page source", "status": "info" },
-    { "title": "Server", "value": "${server}", "description": "Web server or runtime detected from HTTP response headers", "status": "info" },
-    { "title": "Hosting Provider", "value": "${hosting}", "description": "Hosting platform detected from HTTP response headers and domain", "status": "info" },
-    { "title": "CDN", "value": "${cdn}", "description": "Content delivery network detected from response headers", "status": "info" },
-    { "title": "DNS Provider", "value": "${dns}", "description": "DNS provider inferred from domain and response headers", "status": "info" },
-    { "title": "<SEO metric — e.g. HTTPS>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
-    { "title": "<SEO metric — e.g. Meta Title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
-    { "title": "<SEO metric — e.g. Mobile Ready>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" }
+    { "title": "Server", "value": "${server}", "description": "${serverNote}", "status": "info" },
+    { "title": "Hosting Provider", "value": "${hosting}", "description": "Hosting platform detected from the domain name", "status": "info" },
+    { "title": "CDN", "value": "${cdn}", "description": "Content delivery network in use", "status": "info" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" }
   ],
   "suggestions": [
     {
@@ -1102,7 +1055,7 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
   ]
 }
 
-Generate at least 6 suggestions and 8 metrics. Make all SEO data realistic for the domain. Return ONLY the JSON object.`;
+Generate at least 6 suggestions and 8 metrics. Make all data realistic for the domain. Return ONLY the JSON object.`;
 
   const res = await fetch('/api/claude', {
     method: 'POST',
