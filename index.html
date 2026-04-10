@@ -1015,7 +1015,7 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
 
 Generate at least 6 suggestions and 8 metrics. Return ONLY the JSON object.`;
 
-  const res = await fetch('/.netlify/functions/claude-proxy', {
+  const res = await fetch('/api/claude', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url, options, prompt })
