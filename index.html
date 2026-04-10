@@ -451,6 +451,40 @@
     font-size: 0.7rem; font-weight: 600;
   }
 
+  /* AFFECTED IMAGES */
+  .affected-images-grid {
+    display: flex; flex-direction: column; gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+  .affected-image-item {
+    display: flex; align-items: center; gap: 0.65rem;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.5rem 0.65rem;
+  }
+  .img-thumb-wrap {
+    width: 38px; height: 38px; flex-shrink: 0;
+    border-radius: 5px; overflow: hidden;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .img-thumb {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .img-info {
+    flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
+  }
+  .img-name {
+    font-family: monospace; font-size: 0.78rem; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    display: block;
+  }
+  .img-page-link {
+    font-size: 0.72rem; color: var(--accent2); text-decoration: none;
+    font-family: 'DM Sans', sans-serif; transition: color 0.2s;
+  }
+  .img-page-link:hover { color: var(--text); text-decoration: underline; }
+
   /* FEATURES SECTION */
   .features {
     max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
@@ -1124,6 +1158,23 @@ function renderResults(url, data) {
       <div class="suggestion-pages">
         ${s.affected_pages.map(p => `<a class="page-link" href="${p.url}" target="_blank" rel="noopener noreferrer">${p.label}</a>`).join('')}
       </div>` : '';
+    const imagesHtml = (s.affected_images && s.affected_images.length) ? `
+      <div class="pages-label" style="margin-top:0.75rem;">🖼️ Images Missing Alt Text</div>
+      <div class="affected-images-grid">
+        ${s.affected_images.map(img => {
+          const pagePath = img.onPage ? img.onPage.replace(/^https?:\/\/[^\/]+/, '') || '/' : '';
+          return `<div class="affected-image-item">
+            <div class="img-thumb-wrap">
+              <img src="${img.url}" alt="" class="img-thumb" loading="lazy"
+                onerror="this.style.display='none';this.parentElement.textContent='🖼️'">
+            </div>
+            <div class="img-info">
+              <span class="img-name" title="${img.url}">${img.label}</span>
+              ${img.onPage ? `<a href="${img.onPage}" class="img-page-link" target="_blank" rel="noopener noreferrer">📄 ${pagePath}</a>` : ''}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>` : '';
     const locationHtml = s.location ? `
       <div style="display:flex; align-items:center; gap:6px; margin-top:0.6rem;">
         <span style="font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">📌 Location</span>
@@ -1139,6 +1190,7 @@ function renderResults(url, data) {
       <div class="suggestion-body">${s.description}</div>
       ${locationHtml}
       ${pagesHtml}
+      ${imagesHtml}
       <div class="suggestion-fix" style="margin-top:0.75rem;">
         <div class="fix-label">Recommended Fix</div>
         ${s.fix}
