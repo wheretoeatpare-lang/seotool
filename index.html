@@ -550,6 +550,39 @@
     font-size: 0.9rem; color: var(--text); line-height: 1.7;
   }
 
+  /* OVERVIEW METRICS SECTION */
+  .overview-metrics-section {
+    margin-top: 1.5rem;
+  }
+  .overview-section-label {
+    font-size: 0.72rem; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.85rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .metrics-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0.65rem;
+  }
+  .metric-mini-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.85rem 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+    transition: border-color 0.2s;
+  }
+  .metric-mini-card:hover { border-color: var(--border2); }
+  .metric-mini-name {
+    font-size: 0.8rem; color: var(--muted); flex: 1; line-height: 1.4;
+  }
+  .metric-mini-right {
+    display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
+  }
+  .metric-mini-value {
+    font-size: 0.88rem; font-weight: 600; font-family: 'Syne', sans-serif;
+    color: var(--text);
+  }
+
   /* RESPONSIVE */
   @media (max-width: 640px) {
     nav { padding: 1rem 1.25rem; }
@@ -683,6 +716,10 @@
 
     <div class="tab-panel active" id="tab-overview" role="tabpanel">
       <div class="cards-grid" id="overview-cards"></div>
+      <div class="overview-metrics-section" id="overview-metrics-section" style="display:none;">
+        <div class="overview-section-label">📊 Key Metrics at a Glance</div>
+        <div class="metrics-mini-grid" id="overview-metrics-grid"></div>
+      </div>
     </div>
     <div class="tab-panel" id="tab-suggestions" role="tabpanel">
       <div id="suggestions-list"></div>
@@ -1056,6 +1093,28 @@ function renderResults(url, data) {
       <div class="card-desc">${card.description}</div>
     </div>
   `).join('');
+
+  // Overview metrics section
+  const overviewMetricsSection = document.getElementById('overview-metrics-section');
+  const overviewMetricsGrid = document.getElementById('overview-metrics-grid');
+  if (data.metrics && data.metrics.length > 0) {
+    overviewMetricsGrid.innerHTML = data.metrics.map(m => `
+      <div class="metric-mini-card">
+        <div class="metric-mini-name">${m.name}</div>
+        <div class="metric-mini-right">
+          <span class="metric-mini-value">${m.value}</span>
+          <span class="status-badge status-${m.status}" style="font-size:0.68rem; padding:0.15rem 0.45rem;">${
+            m.status === 'pass' ? '✓' : m.status === 'warn' ? '~' : '✗'
+          }</span>
+          ${m.real_data
+            ? '<span class="real-data-badge" style="font-size:0.62rem; padding:0.1rem 0.35rem;">Real</span>'
+            : '<span class="estimated-badge" style="font-size:0.62rem; padding:0.1rem 0.35rem;">Est.</span>'
+          }
+        </div>
+      </div>
+    `).join('');
+    overviewMetricsSection.style.display = 'block';
+  }
 
   // Suggestions
   const sugEl = document.getElementById('suggestions-list');
