@@ -25,11 +25,11 @@ exports.handler = async function (event) {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
   }
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_API_KEY) {
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
+  if (!GROQ_API_KEY) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'GEMINI_API_KEY is not set. Go to Netlify → Site configuration → Environment variables and add it.' })
+      body: JSON.stringify({ error: 'GROQ_API_KEY is not set. Go to Netlify → Site configuration → Environment variables and add it.' })
     };
   }
 
@@ -48,26 +48,30 @@ exports.handler = async function (event) {
   const finalPrompt = prompt || `You are an expert SEO auditor. Perform a comprehensive SEO audit for: ${url}. Respond with ONLY valid JSON.`;
 
   const requestBody = JSON.stringify({
-    contents: [{ parts: [{ text: finalPrompt }] }],
-    generationConfig: { maxOutputTokens: 3000 },
+    model: 'llama-3.3-70b-versatile',
+    max_tokens: 3000,
+    messages: [{ role: 'user', content: finalPrompt }],
   });
 
   try {
     const response = await httpsPost(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
-      { 'Content-Type': 'application/json' },
+      'https://api.groq.com/openai/v1/chat/completions',
+      {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
+      },
       requestBody
     );
 
     if (response.status !== 200) {
       return {
         statusCode: response.status,
-        body: JSON.stringify({ error: `Gemini API returned ${response.status}: ${response.body}` })
+        body: JSON.stringify({ error: `Groq API returned ${response.status}: ${response.body}` })
       };
     }
 
     const data = JSON.parse(response.body);
-    const text = data.candidates[0].content.parts.map(p => p.text || '').join('');
+    const text = data.choices[0].message.content;
     const clean = text.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
 
