@@ -500,7 +500,7 @@ exports.handler = async function (event) {
     crawledPages: pageAnalyses.map(p => ({ url: safeText(p.url), title: safeText(p.title) })),
     missingTitlePages: pageAnalyses.filter(p => p.issues.missingTitle || p.issues.shortTitle).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
     missingDescPages: pageAnalyses.filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
-    imagesWithoutAlt: pageAnalyses.flatMap(p => p.issues.imagesWithoutAlt.map(img => ({ label: safeText(img.fullSrc.split('/').pop().slice(0, 60) || 'image'), url: safeText(img.fullSrc), onPage: safeText(p.url) }))).slice(0, 10),
+    imagesWithoutAlt: pageAnalyses.flatMap(p => p.issues.imagesWithoutAlt.map(img => ({ label: safeText(img.fullSrc.split('/').pop().slice(0, 60) || 'image'), url: safeText(img.fullSrc), onPage: safeText(p.url) }))),
     pagesWithMissingAlt: pageAnalyses.filter(p => p.issues.imagesWithoutAlt.length > 0).map(p => ({ label: `${safeText(p.title)} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`, url: safeText(p.url), imageUrls: p.issues.imagesWithoutAlt.map(i => safeText(i.fullSrc)) })),
     missingH1Pages: pageAnalyses.filter(p => p.issues.missingH1).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
     multipleH1Pages: pageAnalyses.filter(p => p.issues.multipleH1).map(p => ({ label: safeText(p.title), url: safeText(p.url) })),
@@ -752,7 +752,7 @@ Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
               // Attach per-image detail (with page location) for alt-text suggestions
               const isAltIssue = ['image alt', 'alt text', 'missing alt', 'alt tag', 'optimize image'].some(kw => key.includes(kw));
               if (isAltIssue && findings.imagesWithoutAlt.length > 0) {
-                s.affected_images = findings.imagesWithoutAlt.slice(0, 10);
+                s.affected_images = findings.imagesWithoutAlt;
               }
               return s;
             }
