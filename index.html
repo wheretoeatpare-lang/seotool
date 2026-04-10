@@ -518,7 +518,7 @@ footer .logo-f {
   <div class="nav-links">
     <a href="#features">Features</a>
     <a href="#" onclick="scrollToAudit()">Audit Now</a>
-    <button class="settings-btn" onclick="openKeyModal()">⚙ API Key</button>
+
   </div>
 </nav>
 
@@ -1057,10 +1057,10 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
 
 Generate at least 6 suggestions and 8 metrics. Make all data realistic for the domain. Return ONLY the JSON object.`;
 
-  const res = await fetch('/.netlify/functions/claude-proxy', {
+  const res = await fetch('/api/claude', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, options, prompt })
+    body: JSON.stringify({ prompt })
   });
 
   if (!res.ok) {
