@@ -149,9 +149,93 @@ function detectCMS(html, headers, finalUrl) {
     // Framer
     { cms: 'Framer',    pattern: /framer\.com/i,              signal: 'Framer reference' },
     { cms: 'Framer',    pattern: /framerusercontent\.com/i,   signal: 'Framer user content CDN' },
+
+    // ── Analytics & Tag Managers ──────────────────────────────────────────
+    { cms: 'Google Analytics 4', pattern: /gtag\('config',\s*'G-/i,       signal: 'GA4 gtag config' },
+    { cms: 'Google Analytics 4', pattern: /googletagmanager\.com\/gtag/i,  signal: 'GA4 gtag.js script' },
+    { cms: 'Google Analytics (UA)', pattern: /gtag\('config',\s*'UA-/i,   signal: 'Universal Analytics config' },
+    { cms: 'Google Analytics (UA)', pattern: /google-analytics\.com\/analytics\.js/i, signal: 'analytics.js script' },
+    { cms: 'Google Tag Manager', pattern: /googletagmanager\.com\/gtm\.js/i, signal: 'GTM container script' },
+    { cms: 'Google Tag Manager', pattern: /GTM-[A-Z0-9]+/i,               signal: 'GTM container ID' },
+    { cms: 'Facebook Pixel',    pattern: /connect\.facebook\.net.*fbevents/i, signal: 'Facebook Pixel script' },
+    { cms: 'Hotjar',            pattern: /static\.hotjar\.com/i,           signal: 'Hotjar script' },
+    { cms: 'Hotjar',            pattern: /hjid:/i,                         signal: 'Hotjar site ID' },
+    { cms: 'Clarity',           pattern: /clarity\.ms\/tag/i,              signal: 'Microsoft Clarity script' },
+    { cms: 'Mixpanel',          pattern: /cdn\.mxpnl\.com/i,               signal: 'Mixpanel CDN' },
+    { cms: 'Segment',           pattern: /cdn\.segment\.com/i,             signal: 'Segment analytics' },
+    { cms: 'Plausible',         pattern: /plausible\.io\/js/i,             signal: 'Plausible analytics' },
+    { cms: 'Umami',             pattern: /umami\.is\/script/i,             signal: 'Umami analytics script' },
+
+    // ── JS Frameworks ──────────────────────────────────────────────────────
+    { cms: 'React',     pattern: /__reactFiber|__reactProps|react\.development|react\.production\.min/i, signal: 'React runtime detected' },
+    { cms: 'React',     pattern: /data-reactroot|data-reactid/i,           signal: 'React DOM attributes' },
+    { cms: 'Vue.js',    pattern: /__vue__|vue\.runtime|vue@[0-9]/i,        signal: 'Vue.js runtime' },
+    { cms: 'Vue.js',    pattern: /data-v-[a-f0-9]{7,}/i,                  signal: 'Vue scoped attribute' },
+    { cms: 'Angular',   pattern: /ng-version=|angular\.min\.js|@angular\//i, signal: 'Angular framework' },
+    { cms: 'Alpine.js', pattern: /x-data=|x-init=|alpinejs/i,             signal: 'Alpine.js directives' },
+    { cms: 'HTMX',      pattern: /hx-get=|hx-post=|htmx\.org/i,           signal: 'HTMX attributes' },
+    { cms: 'Svelte',    pattern: /svelte-[a-z0-9]+/i,                     signal: 'Svelte class hashes' },
+    { cms: 'Astro',     pattern: /astro-island|astro:load/i,               signal: 'Astro island component' },
+    { cms: 'Remix',     pattern: /__remixContext|\/build\/root-[a-z0-9]+\.js/i, signal: 'Remix runtime' },
+    { cms: 'Ember.js',  pattern: /ember-application|emberjs\.com/i,        signal: 'Ember.js framework' },
+
+    // ── CSS Frameworks ─────────────────────────────────────────────────────
+    { cms: 'Tailwind CSS', pattern: /tailwindcss|class="[^"]*(?:flex|grid|px-|py-|text-|bg-)[^"]*"/i, signal: 'Tailwind utility classes' },
+    { cms: 'Bootstrap',    pattern: /bootstrap\.min\.css|bootstrap\.min\.js|class="[^"]*(?:btn btn-|col-md-|navbar-)/i, signal: 'Bootstrap classes/scripts' },
+
+    // ── E-commerce & Payments ──────────────────────────────────────────────
+    { cms: 'Stripe',       pattern: /js\.stripe\.com/i,                    signal: 'Stripe.js payment' },
+    { cms: 'PayPal',       pattern: /paypal\.com\/sdk\/js/i,               signal: 'PayPal SDK' },
+    { cms: 'WooCommerce',  pattern: /woocommerce/i,                        signal: 'WooCommerce plugin' },
+    { cms: 'WooCommerce',  pattern: /\/wp-content\/plugins\/woocommerce/i, signal: 'WooCommerce plugin path' },
+
+    // ── Live Chat & Support ────────────────────────────────────────────────
+    { cms: 'Intercom',     pattern: /widget\.intercom\.io|intercomSettings/i, signal: 'Intercom chat widget' },
+    { cms: 'Zendesk',      pattern: /static\.zdassets\.com|zopim/i,        signal: 'Zendesk/Zopim chat' },
+    { cms: 'Crisp',        pattern: /client\.crisp\.chat/i,                signal: 'Crisp chat widget' },
+    { cms: 'Tidio',        pattern: /code\.tidio\.co/i,                    signal: 'Tidio chat' },
+    { cms: 'Tawk.to',      pattern: /embed\.tawk\.to/i,                    signal: 'Tawk.to live chat' },
+    { cms: 'HubSpot',      pattern: /js\.hs-scripts\.com|hubspot/i,        signal: 'HubSpot script' },
+
+    // ── Cookie Consent ─────────────────────────────────────────────────────
+    { cms: 'Cookiebot',    pattern: /consent\.cookiebot\.com/i,            signal: 'Cookiebot consent' },
+    { cms: 'OneTrust',     pattern: /onetrust|optanon/i,                   signal: 'OneTrust cookie banner' },
+    { cms: 'Osano',        pattern: /osano\.com/i,                         signal: 'Osano consent' },
+
+    // ── CDN / Performance ──────────────────────────────────────────────────
+    { cms: 'Cloudflare',   pattern: /cloudflare\.com\/ajax|cdnjs\.cloudflare/i, signal: 'Cloudflare CDN assets' },
+    { cms: 'jsDelivr',     pattern: /cdn\.jsdelivr\.net/i,                 signal: 'jsDelivr CDN' },
+    { cms: 'unpkg',        pattern: /unpkg\.com\//i,                       signal: 'unpkg CDN' },
   ];
 
   const scores = {};
+
+  // Category mapping — these won't compete for "top CMS"
+  const NON_CMS = new Set([
+    'Google Analytics 4','Google Analytics (UA)','Google Tag Manager',
+    'Facebook Pixel','Hotjar','Clarity','Mixpanel','Segment','Plausible','Umami',
+    'React','Vue.js','Angular','Alpine.js','HTMX','Svelte','Astro','Remix','Ember.js',
+    'Tailwind CSS','Bootstrap',
+    'Stripe','PayPal','WooCommerce',
+    'Intercom','Zendesk','Crisp','Tidio','Tawk.to','HubSpot',
+    'Cookiebot','OneTrust','Osano',
+    'Cloudflare','jsDelivr','unpkg',
+  ]);
+
+  const CATEGORIES = {
+    'Google Analytics 4':'analytics','Google Analytics (UA)':'analytics',
+    'Google Tag Manager':'analytics','Facebook Pixel':'analytics',
+    'Hotjar':'analytics','Clarity':'analytics','Mixpanel':'analytics',
+    'Segment':'analytics','Plausible':'analytics','Umami':'analytics',
+    'React':'js','Vue.js':'js','Angular':'js','Alpine.js':'js',
+    'HTMX':'js','Svelte':'js','Astro':'js','Remix':'js','Ember.js':'js',
+    'Tailwind CSS':'css','Bootstrap':'css',
+    'Stripe':'payment','PayPal':'payment','WooCommerce':'ecommerce',
+    'Intercom':'chat','Zendesk':'chat','Crisp':'chat','Tidio':'chat',
+    'Tawk.to':'chat','HubSpot':'crm',
+    'Cookiebot':'consent','OneTrust':'consent','Osano':'consent',
+    'Cloudflare':'cdn','jsDelivr':'cdn','unpkg':'cdn',
+  };
 
   for (const check of checks) {
     if (check.pattern.test(html)) {
@@ -173,12 +257,13 @@ function detectCMS(html, headers, finalUrl) {
   // Hosting detection
   const hosting = detectHosting(headers);
 
-  // Find winner
+  // Find CMS winner — only from CMS candidates (not analytics/js/etc.)
   let topCMS = 'Custom / Unknown';
   let topCount = 0;
   let topSignals = [];
 
   for (const [cms, sigs] of Object.entries(scores)) {
+    if (NON_CMS.has(cms)) continue;
     if (sigs.length > topCount) {
       topCount = sigs.length;
       topCMS = cms;
@@ -188,6 +273,25 @@ function detectCMS(html, headers, finalUrl) {
 
   const confidence = Math.min(100, topCount * 25);
 
+  // Build full tech stack list
+  const techStack = [];
+  for (const [tech, sigs] of Object.entries(scores)) {
+    techStack.push({
+      name: tech,
+      category: CATEGORIES[tech] || 'cms',
+      signals: sigs,
+      confidence: Math.min(100, sigs.length * 25),
+    });
+  }
+  // Sort: cms first, then by signal count
+  techStack.sort((a, b) => {
+    const aIsCMS = !NON_CMS.has(a.name);
+    const bIsCMS = !NON_CMS.has(b.name);
+    if (aIsCMS && !bIsCMS) return -1;
+    if (!aIsCMS && bIsCMS) return 1;
+    return b.signals.length - a.signals.length;
+  });
+
   return {
     cms: topCMS,
     confidence,
@@ -196,6 +300,7 @@ function detectCMS(html, headers, finalUrl) {
     powered_by: powered || null,
     hosting,
     all_detected: Object.keys(scores),
+    tech_stack: techStack,
   };
 }
 
