@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSight — AI SEO Auditor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a27;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0eff8;
+    --muted: #8b8aaa;
+    --accent: #7c6ff7;
+    --accent2: #a78bfa;
+    --accent-glow: rgba(124,111,247,0.2);
+    --green: #34d399;
+    --red: #f87171;
+    --amber: #fbbf24;
+    --blue: #60a5fa;
+    --cyan: #22d3ee;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.4rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem;
+    font-weight: 500; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent); color: white !important;
+    padding: 0.5rem 1.2rem; border-radius: 8px;
+    font-size: 0.85rem !important;
+  }
+  .nav-cta:hover { background: var(--accent2) !important; color: white !important; }
+
+  /* HERO */
+  .hero {
+    padding: 10rem 2rem 5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 500px;
+    background: radial-gradient(ellipse, rgba(124,111,247,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.3);
+    color: var(--accent2); padding: 0.4rem 1rem; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 500; margin-bottom: 2rem;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  h1 span {
+    background: linear-gradient(135deg, var(--accent2), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--muted); font-size: 1.1rem; max-width: 580px;
+    margin: 0 auto 3rem; line-height: 1.7; font-weight: 300;
+  }
+
+  /* AUDIT BOX */
+  .audit-container {
+    max-width: 700px; margin: 0 auto;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 20px; padding: 2rem;
+    position: relative;
+  }
+  .audit-container::before {
+    content: '';
+    position: absolute; inset: -1px; border-radius: 21px;
+    background: linear-gradient(135deg, rgba(124,111,247,0.3), rgba(34,211,238,0.1), transparent 60%);
+    pointer-events: none; z-index: -1;
+  }
+  .url-row {
+    display: flex; gap: 0.75rem; margin-bottom: 1rem;
+  }
+  #url-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    padding: 0.85rem 1.2rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #url-input:focus { border-color: var(--accent); }
+  #url-input::placeholder { color: var(--muted); }
+  #audit-btn {
+    background: linear-gradient(135deg, var(--accent), #5a4fcc);
+    color: white; border: none;
+    padding: 0.85rem 1.8rem;
+    border-radius: 10px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem; font-weight: 500; cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  #audit-btn:hover { opacity: 0.9; }
+  #audit-btn:active { transform: scale(0.98); }
+  #audit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .options-row {
+    display: flex; flex-wrap: wrap; gap: 0.6rem;
+  }
+  .option-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 999px; padding: 0.4rem 0.9rem;
+    font-size: 0.8rem; color: var(--muted); cursor: pointer;
+    transition: all 0.2s; user-select: none;
+  }
+  .option-chip.active {
+    border-color: var(--accent); color: var(--accent2);
+    background: rgba(124,111,247,0.1);
+  }
+  .option-chip input { display: none; }
+
+  /* LOADING */
+  #loading-state {
+    display: none; text-align: center; padding: 3rem 2rem;
+  }
+  .spinner-ring {
+    width: 60px; height: 60px; border-radius: 50%;
+    border: 3px solid var(--border2);
+    border-top-color: var(--accent);
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 1.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-steps { list-style: none; text-align: left; display: inline-block; }
+  .loading-steps li {
+    display: flex; align-items: center; gap: 0.75rem;
+    color: var(--muted); font-size: 0.9rem; padding: 0.3rem 0;
+    transition: color 0.4s;
+  }
+  .loading-steps li.done { color: var(--green); }
+  .loading-steps li.active { color: var(--text); }
+  .step-icon { width: 18px; height: 18px; font-size: 16px; }
+
+  /* RESULTS */
+  #results-section { display: none; }
+
+  .score-header {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 20px; padding: 2.5rem;
+    margin-bottom: 2rem;
+    display: grid; grid-template-columns: auto 1fr; gap: 2.5rem;
+    align-items: center;
+  }
+  .score-ring-wrap { position: relative; }
+  .score-ring-wrap svg { overflow: visible; }
+  .score-number {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .score-number .num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.2rem; font-weight: 800; line-height: 1;
+  }
+  .score-number .label {
+    font-size: 0.7rem; color: var(--muted); font-weight: 500; letter-spacing: 0.05em;
+  }
+  .score-meta h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+  }
+  .score-meta .url-display {
+    color: var(--muted); font-size: 0.85rem; margin-bottom: 1.25rem;
+    word-break: break-all;
+  }
+  .grade-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .grade-chip {
+    padding: 0.3rem 0.8rem; border-radius: 6px;
+    font-size: 0.78rem; font-weight: 500;
+  }
+  .grade-A { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+  .grade-B { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+  .grade-C { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+  .grade-D { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .grade-F { background: rgba(248,113,113,0.2); color: var(--red); border: 1px solid rgba(248,113,113,0.4); }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 0.25rem; margin-bottom: 1.5rem;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 0.35rem;
+  }
+  .tab-btn {
+    flex: 1; background: none; border: none;
+    color: var(--muted); font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 500; padding: 0.6rem 1rem;
+    border-radius: 8px; cursor: pointer; transition: all 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--bg3); color: var(--text);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* CARDS GRID */
+  .cards-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .audit-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.4rem;
+    transition: border-color 0.2s;
+  }
+  .audit-card:hover { border-color: var(--border2); }
+  .card-header {
+    display: flex; align-items: flex-start;
+    justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+  }
+  .status-badge {
+    flex-shrink: 0;
+    padding: 0.2rem 0.6rem; border-radius: 5px;
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .status-pass { background: rgba(52,211,153,0.15); color: var(--green); }
+  .status-warn { background: rgba(251,191,36,0.15); color: var(--amber); }
+  .status-fail { background: rgba(248,113,113,0.15); color: var(--red); }
+  .status-info { background: rgba(96,165,250,0.15); color: var(--blue); }
+  .card-value {
+    font-size: 1.6rem; font-weight: 700;
+    font-family: 'Syne', sans-serif; margin-bottom: 0.3rem;
+    color: var(--text);
+  }
+  .card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* SUGGESTIONS */
+  .suggestion-item {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.4rem;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .suggestion-item.priority-high { border-left-color: var(--red); }
+  .suggestion-item.priority-medium { border-left-color: var(--amber); }
+  .suggestion-item.priority-low { border-left-color: var(--blue); }
+  .suggestion-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  .priority-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-high { background: var(--red); }
+  .dot-medium { background: var(--amber); }
+  .dot-low { background: var(--blue); }
+  .suggestion-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem; font-weight: 600; flex: 1;
+  }
+  .impact-tag {
+    font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 5px;
+    font-weight: 600; background: var(--bg3); color: var(--muted);
+  }
+  .suggestion-body {
+    font-size: 0.85rem; color: var(--muted); line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .suggestion-fix {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.75rem;
+    font-size: 0.82rem; color: var(--text);
+    font-family: monospace; line-height: 1.5;
+  }
+  .fix-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem; font-weight: 600;
+    color: var(--accent2); text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 0.3rem;
+  }
+
+  /* METRICS TABLE */
+  .metrics-table { width: 100%; border-collapse: collapse; }
+  .metrics-table th {
+    text-align: left; padding: 0.75rem 1rem;
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+  }
+  .metrics-table td {
+    padding: 0.85rem 1rem;
+    font-size: 0.88rem; border-bottom: 1px solid var(--border);
+  }
+  .metrics-table tr:last-child td { border-bottom: none; }
+  .metric-bar-wrap {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .metric-bar {
+    flex: 1; height: 6px; background: var(--bg3);
+    border-radius: 999px; overflow: hidden;
+  }
+  .metric-bar-fill {
+    height: 100%; border-radius: 999px;
+    transition: width 0.8s ease;
+  }
+  .bar-green { background: var(--green); }
+  .bar-amber { background: var(--amber); }
+  .bar-red { background: var(--red); }
+  .bar-blue { background: var(--blue); }
+
+  /* FEATURES SECTION */
+  .features {
+    max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
+  }
+  .section-label {
+    display: flex; align-items: center; gap: 0.75rem;
+    color: var(--accent2); font-size: 0.8rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .section-label::before, .section-label::after {
+    content: ''; flex: 1; max-width: 60px;
+    height: 1px; background: rgba(167,139,250,0.3);
+  }
+  .section-label::before { display: none; }
+  .section-label::after { max-width: 999px; }
+  .features h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em;
+  }
+  .features > p { color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 3rem; }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .feature-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.75rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .feat-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 1rem;
+  }
+  .feat-icon.purple { background: rgba(124,111,247,0.15); }
+  .feat-icon.cyan { background: rgba(34,211,238,0.12); }
+  .feat-icon.green { background: rgba(52,211,153,0.12); }
+  .feat-icon.amber { background: rgba(251,191,36,0.12); }
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
+  }
+  .feature-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 3rem 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: 0.85rem;
+  }
+  footer .logo-f {
+    font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--cyan));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 0.75rem; display: block;
+  }
+
+  /* RESULT SECTION WRAPPER */
+  #main-results {
+    max-width: 900px; margin: 3rem auto 6rem; padding: 0 2rem;
+  }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--muted); font-size: 0.85rem; cursor: pointer;
+    margin-bottom: 2rem; background: none; border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+  }
+  .back-btn:hover { color: var(--text); }
+
+  /* STREAMING TEXT */
+  .streaming-text { white-space: pre-wrap; }
+  .cursor {
+    display: inline-block; width: 2px; height: 1em;
+    background: var(--accent2); animation: blink 1s infinite;
+    vertical-align: text-bottom; margin-left: 2px;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+  /* AI SUMMARY */
+  .ai-summary {
+    background: linear-gradient(135deg, rgba(124,111,247,0.08), rgba(34,211,238,0.05));
+    border: 1px solid rgba(124,111,247,0.2);
+    border-radius: 14px; padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .ai-label {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; font-weight: 600; color: var(--accent2);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
+  }
+  .ai-icon { font-size: 14px; }
+  .ai-summary p {
+    font-size: 0.9rem; color: var(--text); line-height: 1.7;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.25rem 4rem; }
+    .audit-container { padding: 1.25rem; border-radius: 14px; }
+    .url-row { flex-direction: column; }
+    .score-header { grid-template-columns: 1fr; text-align: center; }
+    .score-ring-wrap { margin: 0 auto; }
+    .grade-chips { justify-content: center; }
+    .tabs { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">RankSight</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#" onclick="scrollToAudit()">Audit Now</a>
+    <a href="#" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    AI-Powered SEO Intelligence
+  </div>
+  <h1>Rank Higher with<br><span>Intelligent Audits</span></h1>
+  <p>Enter any website URL and get a comprehensive SEO score, deep analysis, and actionable recommendations — powered by Claude AI.</p>
+
+  <div class="audit-container" id="audit-box">
+    <div class="url-row">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off" />
+      <button id="audit-btn" onclick="startAudit()">Audit Now</button>
+    </div>
+    <div class="options-row" id="options-row">
+      <label class="option-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" checked name="seo"> 🔍 Technical SEO
+      </label>
+      <label class="option-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" checked name="perf"> ⚡ Performance
+      </label>
+      <label class="option-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" checked name="content"> ✍️ Content
+      </label>
+      <label class="option-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" checked name="ux"> 📱 UX & Mobile
+      </label>
+      <label class="option-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" checked name="backlinks"> 🔗 Backlinks
+      </label>
+    </div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div id="loading-state">
+  <div class="spinner-ring"></div>
+  <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Analyzing <strong id="loading-url" style="color: var(--text);"></strong></p>
+  <ul class="loading-steps" id="loading-steps">
+    <li id="step1"><span class="step-icon">○</span> Crawling website structure</li>
+    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags & content</li>
+    <li id="step3"><span class="step-icon">○</span> Evaluating performance signals</li>
+    <li id="step4"><span class="step-icon">○</span> Checking mobile & UX factors</li>
+    <li id="step5"><span class="step-icon">○</span> Scoring backlink profile</li>
+    <li id="step6"><span class="step-icon">○</span> Generating AI recommendations</li>
+  </ul>
+</div>
+
+<!-- RESULTS -->
+<div id="results-section">
+  <div id="main-results">
+    <button class="back-btn" onclick="resetAudit()">← New Audit</button>
+
+    <!-- Score Header -->
+    <div class="score-header" id="score-header">
+      <div class="score-ring-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+          <circle id="score-arc" cx="60" cy="60" r="50" fill="none"
+            stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="314" stroke-dashoffset="314"
+            transform="rotate(-90 60 60)"
+            style="transition: stroke-dashoffset 1.2s ease, stroke 0.5s;"/>
+        </svg>
+        <div class="score-number">
+          <div class="num" id="score-num">—</div>
+          <div class="label">/ 100</div>
+        </div>
+      </div>
+      <div class="score-meta">
+        <h2 id="result-title">SEO Audit Complete</h2>
+        <div class="url-display" id="result-url"></div>
+        <div class="grade-chips" id="grade-chips"></div>
+      </div>
+    </div>
+
+    <!-- AI Summary -->
+    <div class="ai-summary">
+      <div class="ai-label"><span class="ai-icon">◆</span> AI Analysis</div>
+      <p id="ai-summary-text" class="streaming-text"></p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
+      <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
+      <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-overview">
+      <div class="cards-grid" id="overview-cards"></div>
+    </div>
+    <div class="tab-panel" id="tab-suggestions">
+      <div id="suggestions-list"></div>
+    </div>
+    <div class="tab-panel" id="tab-metrics">
+      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;">
+        <table class="metrics-table" id="metrics-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th>Score</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="metrics-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-keywords">
+      <div class="cards-grid" id="keywords-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">What We Analyze</div>
+  <h2>Everything that<br>affects your rank</h2>
+  <p>RankSight audits over 50 SEO factors across 5 major categories, giving you the most thorough analysis available.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feat-icon purple">🔍</div>
+      <h3>Technical SEO</h3>
+      <p>Meta tags, canonical URLs, structured data, sitemap, robots.txt, redirects, hreflang, and crawlability checks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon cyan">⚡</div>
+      <h3>Performance</h3>
+      <p>Core Web Vitals (LCP, FID, CLS), page speed, server response time, resource optimization, and caching.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon green">✍️</div>
+      <h3>Content Quality</h3>
+      <p>Keyword density, readability score, duplicate content detection, heading structure, and content freshness.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon amber">📱</div>
+      <h3>UX & Mobile</h3>
+      <p>Mobile responsiveness, tap targets, viewport configuration, font sizing, and accessibility compliance.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon purple">🔗</div>
+      <h3>Backlink Profile</h3>
+      <p>Domain authority estimation, link quality analysis, anchor text diversity, and toxic link detection.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon cyan">◆</div>
+      <h3>AI Recommendations</h3>
+      <p>Claude AI synthesizes all findings into prioritized, actionable steps tailored to your specific site.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="logo-f">RankSight</span>
+  <p>AI-Powered SEO Auditing &mdash; Built with Claude</p>
+</footer>
+
+<script>
+const CLAUDE_API = '/.netlify/functions/claude-proxy';
+
+function scrollToAudit() {
+  document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleChip(el) {
+  el.classList.toggle('active');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const names = ['overview', 'suggestions', 'metrics', 'keywords'];
+    b.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function resetAudit() {
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('hero').style.display = 'block';
+  document.getElementById('features').style.display = 'block';
+  document.querySelector('footer').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function getActiveOptions() {
+  const chips = document.querySelectorAll('.option-chip.active input');
+  return Array.from(chips).map(i => i.name);
+}
+
+async function startAudit() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) {
+    document.getElementById('url-input').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('url-input').style.borderColor = '', 2000);
+    return;
+  }
+
+  const options = getActiveOptions();
+  const btn = document.getElementById('audit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Analyzing…';
+
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('features').style.display = 'none';
+  document.querySelector('footer').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('loading-state').style.display = 'block';
+  document.getElementById('loading-url').textContent = url;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Animate loading steps
+  const steps = ['step1','step2','step3','step4','step5','step6'];
+  const icons = ['○','○','○','○','○','○'];
+  let stepIdx = 0;
+  const stepInterval = setInterval(() => {
+    if (stepIdx > 0) {
+      const prev = document.getElementById(steps[stepIdx - 1]);
+      prev.classList.add('done');
+      prev.querySelector('.step-icon').textContent = '✓';
+    }
+    if (stepIdx < steps.length) {
+      const cur = document.getElementById(steps[stepIdx]);
+      cur.classList.add('active');
+    }
+    stepIdx++;
+  }, 900);
+
+  try {
+    const auditData = await callClaudeForAudit(url, options);
+    clearInterval(stepInterval);
+
+    steps.forEach(s => {
+      const el = document.getElementById(s);
+      el.classList.add('done');
+      el.querySelector('.step-icon').textContent = '✓';
+    });
+
+    await new Promise(r => setTimeout(r, 600));
+
+    document.getElementById('loading-state').style.display = 'none';
+    renderResults(url, auditData);
+
+  } catch (err) {
+    clearInterval(stepInterval);
+    document.getElementById('loading-state').style.display = 'none';
+    alert('Audit failed: ' + err.message);
+    resetAudit();
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Audit Now';
+}
+
+async function callClaudeForAudit(url, options) {
+  const prompt = `You are an expert SEO auditor. Perform a comprehensive SEO audit for the website: ${url}
+
+Analyze the following areas: ${options.join(', ')}
+
+Based on common SEO best practices and what you know about this URL/domain, generate a realistic, detailed SEO audit report.
+
+Respond with ONLY valid JSON in this exact structure (no markdown, no explanation):
+{
+  "score": <integer 0-100>,
+  "grade": "<A/B/C/D/F>",
+  "summary": "<2-3 sentence AI summary of the site's SEO health, specific to the domain>",
+  "categories": {
+    "technical": { "score": <0-100>, "grade": "<A-F>" },
+    "performance": { "score": <0-100>, "grade": "<A-F>" },
+    "content": { "score": <0-100>, "grade": "<A-F>" },
+    "ux": { "score": <0-100>, "grade": "<A-F>" },
+    "backlinks": { "score": <0-100>, "grade": "<A-F>" }
+  },
+  "overview_cards": [
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
+    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" }
+  ],
+  "suggestions": [
+    {
+      "title": "<string>",
+      "priority": "<high|medium|low>",
+      "impact": "<High Impact|Medium Impact|Low Impact>",
+      "description": "<detailed description of the issue>",
+      "fix": "<specific actionable fix or code snippet>"
+    }
+  ],
+  "metrics": [
+    { "name": "<string>", "value": "<string>", "score": <0-100>, "status": "<pass|warn|fail>" }
+  ],
+  "keywords": [
+    { "title": "Target Keywords", "value": "<keyword1, keyword2, keyword3>", "description": "Detected primary keywords", "status": "info" },
+    { "title": "Keyword Density", "value": "<percentage>", "description": "Primary keyword density", "status": "<pass|warn|fail>" },
+    { "title": "Missing Keywords", "value": "<keywords>", "description": "Suggested keywords to add", "status": "warn" },
+    { "title": "Long-tail Opportunities", "value": "<number>", "description": "Potential long-tail keyword phrases", "status": "info" }
+  ]
+}
+
+Generate at least 6 suggestions and 8 metrics. Make data realistic for the domain. Return ONLY the JSON object.`;
+
+  const res = await fetch(CLAUDE_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 3000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!res.ok) throw new Error('API error: ' + res.status);
+  const data = await res.json();
+  const text = data.content.map(b => b.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+function getScoreColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function getBarClass(score) {
+  if (score >= 80) return 'bar-green';
+  if (score >= 60) return 'bar-amber';
+  return 'bar-red';
+}
+
+function renderResults(url, data) {
+  // Score ring
+  const arc = document.getElementById('score-arc');
+  const circumference = 314;
+  const offset = circumference - (data.score / 100) * circumference;
+  arc.style.strokeDashoffset = offset;
+  arc.style.stroke = getScoreColor(data.score);
+
+  // Score number (count up)
+  const numEl = document.getElementById('score-num');
+  numEl.style.color = getScoreColor(data.score);
+  let count = 0;
+  const target = data.score;
+  const interval = setInterval(() => {
+    count = Math.min(count + 2, target);
+    numEl.textContent = count;
+    if (count >= target) clearInterval(interval);
+  }, 20);
+
+  // URL & title
+  document.getElementById('result-url').textContent = url;
+  document.getElementById('result-title').textContent =
+    data.score >= 80 ? 'Excellent SEO Health' :
+    data.score >= 60 ? 'Good — Room to Improve' :
+    data.score >= 40 ? 'Needs Attention' : 'Critical Issues Found';
+
+  // Grade chips
+  const cats = data.categories;
+  const chipsEl = document.getElementById('grade-chips');
+  chipsEl.innerHTML = Object.entries(cats).map(([key, val]) => {
+    const labels = { technical: '🔍 Technical', performance: '⚡ Performance', content: '✍️ Content', ux: '📱 UX', backlinks: '🔗 Backlinks' };
+    return `<span class="grade-chip grade-${val.grade}">${labels[key] || key}: ${val.grade} (${val.score})</span>`;
+  }).join('');
+
+  // AI Summary (typewriter)
+  const summaryEl = document.getElementById('ai-summary-text');
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  summaryEl.textContent = '';
+  summaryEl.appendChild(cursor);
+  let charIdx = 0;
+  const summary = data.summary;
+  const typeInterval = setInterval(() => {
+    summaryEl.textContent = summary.slice(0, charIdx);
+    summaryEl.appendChild(cursor);
+    charIdx++;
+    if (charIdx > summary.length) clearInterval(typeInterval);
+  }, 18);
+
+  // Overview cards
+  const cardsEl = document.getElementById('overview-cards');
+  cardsEl.innerHTML = (data.overview_cards || []).map(card => `
+    <div class="audit-card">
+      <div class="card-header">
+        <div class="card-title">${card.title}</div>
+        <div class="status-badge status-${card.status}">${
+          card.status === 'pass' ? 'Pass' :
+          card.status === 'warn' ? 'Warning' :
+          card.status === 'fail' ? 'Fail' : 'Info'
+        }</div>
+      </div>
+      <div class="card-value">${card.value}</div>
+      <div class="card-desc">${card.description}</div>
+    </div>
+  `).join('');
+
+  // Suggestions
+  const sugEl = document.getElementById('suggestions-list');
+  sugEl.innerHTML = (data.suggestions || []).map(s => `
+    <div class="suggestion-item priority-${s.priority}">
+      <div class="suggestion-header">
+        <span class="priority-dot dot-${s.priority}"></span>
+        <span class="suggestion-title">${s.title}</span>
+        <span class="impact-tag">${s.impact}</span>
+      </div>
+      <div class="suggestion-body">${s.description}</div>
+      <div class="suggestion-fix">
+        <div class="fix-label">Recommended Fix</div>
+        ${s.fix}
+      </div>
+    </div>
+  `).join('');
+
+  // Metrics table
+  const metricsTbody = document.getElementById('metrics-body');
+  metricsTbody.innerHTML = (data.metrics || []).map(m => `
+    <tr>
+      <td>${m.name}</td>
+      <td style="font-weight: 500;">${m.value}</td>
+      <td>
+        <div class="metric-bar-wrap">
+          <div class="metric-bar">
+            <div class="metric-bar-fill ${getBarClass(m.score)}" style="width: ${m.score}%"></div>
+          </div>
+          <span style="font-size: 0.8rem; color: var(--muted); min-width: 30px;">${m.score}</span>
+        </div>
+      </td>
+      <td><span class="status-badge status-${m.status}">${
+        m.status === 'pass' ? 'Good' : m.status === 'warn' ? 'Fair' : 'Poor'
+      }</span></td>
+    </tr>
+  `).join('');
+
+  // Keywords
+  const kwEl = document.getElementById('keywords-content');
+  kwEl.innerHTML = (data.keywords || []).map(card => `
+    <div class="audit-card">
+      <div class="card-header">
+        <div class="card-title">${card.title}</div>
+        <div class="status-badge status-${card.status}">${
+          card.status === 'pass' ? 'Good' :
+          card.status === 'warn' ? 'Review' :
+          card.status === 'fail' ? 'Issue' : 'Info'
+        }</div>
+      </div>
+      <div class="card-value" style="font-size: 1rem; word-break: break-word;">${card.value}</div>
+      <div class="card-desc">${card.description}</div>
+    </div>
+  `).join('');
+
+  // Show results
+  document.getElementById('results-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
