@@ -733,7 +733,7 @@ Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
     // ── 12. Hard-override affected_pages with real crawled data ──────────────
     const allCrawledUrls = new Set(findings.crawledPages.map(p => p.url));
     const issueKeywordMap = [
-      { keywords: ['optimize image', 'image alt', 'alt text', 'missing alt', 'alt tag'], pages: findings.imagesWithoutAlt.length > 0 ? findings.imagesWithoutAlt.map(i => ({ label: i.label, url: i.url })) : findings.pagesWithMissingAlt.map(p => ({ label: p.label, url: p.url })) },
+      { keywords: ['optimize image', 'image alt', 'alt text', 'missing alt', 'alt tag'], pages: findings.pagesWithMissingAlt.map(p => ({ label: p.label, url: p.url })) },
       { keywords: ['meta title', 'title tag', 'page title', 'missing title'], pages: findings.missingTitlePages },
       { keywords: ['meta description', 'missing description', 'meta tag', 'complete meta'], pages: findings.missingDescPages.length > 0 ? findings.missingDescPages : findings.missingTitlePages },
       { keywords: ['internal link', 'internal linking'], pages: findings.noInternalLinkPages },
@@ -749,6 +749,11 @@ Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
           for (const { keywords, pages } of issueKeywordMap) {
             if (keywords.some(kw => key.includes(kw)) && pages.length > 0) {
               s.affected_pages = pages.slice(0, 6);
+              // Attach per-image detail (with page location) for alt-text suggestions
+              const isAltIssue = ['image alt', 'alt text', 'missing alt', 'alt tag', 'optimize image'].some(kw => key.includes(kw));
+              if (isAltIssue && findings.imagesWithoutAlt.length > 0) {
+                s.affected_images = findings.imagesWithoutAlt.slice(0, 10);
+              }
               return s;
             }
           }
