@@ -1167,7 +1167,7 @@ function renderResults(url, data) {
           const pagePath = img.onPage ? img.onPage.replace(/^https?:\/\/[^\/]+/, '') || '/' : '';
           return `<div class="affected-image-item">
             <a href="${img.url}" class="img-thumb-wrap" target="_blank" rel="noopener noreferrer" title="View image: ${img.label}" style="cursor:pointer;">
-              <img src="${img.url}" alt="" class="img-thumb" loading="lazy"
+              <img src="${img.url}" alt="${img.label}" class="img-thumb" loading="lazy"
                 onerror="this.style.display='none';this.parentElement.textContent='🖼️'">
             </a>
             <div class="img-info">
