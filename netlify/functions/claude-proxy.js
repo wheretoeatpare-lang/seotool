@@ -364,7 +364,7 @@ async function fetchPageSpeedData(url, apiKey) {
 }
 
 // ─── Groq POST ─────────────────────────────────────────────────────────────────
-function groqPost(apiKey, messages, maxTokens = 3000) {
+function groqPost(apiKey, messages, maxTokens = 6000) {
   return new Promise((resolve, reject) => {
     // Sanitize all message content to prevent JSON corruption from special characters
     const safeMessages = messages.map(m => ({
@@ -565,11 +565,74 @@ Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
     if (groqRes.status !== 200) return { statusCode: groqRes.status, body: JSON.stringify({ error: `Groq error ${groqRes.status}: ${groqRes.body}` }) };
 
     const aiText = JSON.parse(groqRes.body).choices[0].message.content;
-    const cleaned = aiText.replace(/```json|```/g, '').trim();
 
+    // ── Robust JSON extraction and repair ────────────────────────────────────
     let parsed;
-    try { parsed = JSON.parse(cleaned); }
-    catch { const m = cleaned.match(/\{[\s\S]*\}/); if (m) parsed = JSON.parse(m[0]); else throw new Error('JSON parse failed'); }
+    try {
+      // Step 1: strip markdown fences
+      let cleaned = aiText.replace(/```json[\s\S]*?```|```[\s\S]*?```/g, m => m.replace(/```json|```/g, '')).trim();
+
+      // Step 2: extract outermost {...} block
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+      if (start === -1 || end === -1) throw new Error('No JSON object found');
+      cleaned = cleaned.slice(start, end + 1);
+
+      // Step 3: attempt direct parse
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (e1) {
+        // Step 4: repair common LLM JSON issues
+        let repaired = cleaned
+          // Remove trailing commas before } or ]
+          .replace(/,\s*([\]}])/g, '$1')
+          // Replace unescaped newlines inside strings (the most common LLM mistake)
+          .replace(/"([^"]*)"/g, (match) =>
+            match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t')
+          )
+          // Remove control characters
+          .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+
+        try {
+          parsed = JSON.parse(repaired);
+        } catch (e2) {
+          // Step 5: last resort — truncated JSON, try to close open structures
+          // Count unclosed braces/brackets and append closers
+          let open = 0;
+          let inStr = false;
+          let escape = false;
+          for (const ch of repaired) {
+            if (escape) { escape = false; continue; }
+            if (ch === '\\' && inStr) { escape = true; continue; }
+            if (ch === '"') { inStr = !inStr; continue; }
+            if (inStr) continue;
+            if (ch === '{' || ch === '[') open++;
+            if (ch === '}' || ch === ']') open--;
+          }
+          // Truncate at last complete key-value pair before the break
+          const lastComma = repaired.lastIndexOf(',');
+          const lastBrace = repaired.lastIndexOf('}');
+          const truncateAt = Math.max(lastComma > lastBrace ? lastComma : lastBrace, repaired.length - 200);
+          let truncated = repaired.slice(0, truncateAt > 0 ? truncateAt : repaired.length);
+          // Close all open structures
+          const closers = [];
+          let o2 = 0; let inS2 = false; let esc2 = false;
+          for (const ch of truncated) {
+            if (esc2) { esc2 = false; continue; }
+            if (ch === '\\' && inS2) { esc2 = true; continue; }
+            if (ch === '"') { inS2 = !inS2; continue; }
+            if (inS2) continue;
+            if (ch === '{') closers.push('}');
+            else if (ch === '[') closers.push(']');
+            else if (ch === '}' || ch === ']') closers.pop();
+          }
+          const closed = truncated + closers.reverse().join('');
+          parsed = JSON.parse(closed);
+        }
+      }
+    } catch (parseErr) {
+      throw new Error('JSON parse failed: ' + parseErr.message);
+    }
 
     // ── 11. Hard overrides — CMS and real scores ───────────────────────────
     parsed.cms = { name: cmsData.name, confidence: cmsData.confidence, version: cmsData.version || null, notes: cmsData.notes };
