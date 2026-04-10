@@ -339,6 +339,38 @@
     letter-spacing: 0.05em; margin-bottom: 0.3rem;
   }
 
+  /* CMS BADGE */
+  .cms-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.25);
+    color: var(--cyan); padding: 0.3rem 0.8rem; border-radius: 6px;
+    font-size: 0.78rem; font-weight: 600; margin-top: 0.5rem;
+  }
+  .cms-badge .cms-icon { font-size: 13px; }
+
+  /* SUGGESTION PAGES */
+  .suggestion-pages {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    margin-top: 0.75rem;
+  }
+  .page-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.25);
+    color: var(--accent2); padding: 0.25rem 0.65rem; border-radius: 5px;
+    font-size: 0.75rem; text-decoration: none; transition: all 0.2s;
+    font-family: monospace;
+  }
+  .page-link:hover {
+    background: rgba(124,111,247,0.2); border-color: var(--accent);
+    color: var(--text);
+  }
+  .page-link::before { content: '🔗'; font-size: 10px; }
+  .pages-label {
+    font-size: 0.7rem; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-top: 0.75rem; margin-bottom: 0.3rem;
+  }
+
   /* METRICS TABLE */
   .metrics-table { width: 100%; border-collapse: collapse; }
   .metrics-table th {
@@ -564,6 +596,7 @@
       <div class="score-meta">
         <h2 id="result-title">SEO Audit Complete</h2>
         <div class="url-display" id="result-url"></div>
+        <div id="cms-info" style="margin-bottom: 0.75rem;"></div>
         <div class="grade-chips" id="grade-chips"></div>
       </div>
     </div>
@@ -774,6 +807,12 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
   "score": <integer 0-100>,
   "grade": "<A/B/C/D/F>",
   "summary": "<2-3 sentence AI summary of the site's SEO health, specific to the domain>",
+  "cms": {
+    "name": "<detected CMS name e.g. WordPress, Shopify, Wix, Squarespace, Webflow, Next.js, Custom, Unknown>",
+    "confidence": "<High|Medium|Low>",
+    "version": "<version if known, else null>",
+    "notes": "<brief note about CMS detection clue e.g. wp-content paths, generator meta tag, etc.>"
+  },
   "categories": {
     "technical": { "score": <0-100>, "grade": "<A-F>" },
     "performance": { "score": <0-100>, "grade": "<A-F>" },
@@ -795,7 +834,11 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
       "priority": "<high|medium|low>",
       "impact": "<High Impact|Medium Impact|Low Impact>",
       "description": "<detailed description of the issue>",
-      "fix": "<specific actionable fix or code snippet>"
+      "fix": "<specific actionable fix or code snippet>",
+      "affected_pages": [
+        { "label": "<short page name e.g. Homepage, About, Blog Index>", "url": "<full URL of the page where this issue exists>" }
+      ],
+      "location": "<where exactly on the page or site this issue is found, e.g. '<head> meta tags', 'footer links', 'all blog post pages', 'product pages'>"
     }
   ],
   "metrics": [
@@ -809,7 +852,7 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
   ]
 }
 
-Generate at least 6 suggestions and 8 metrics. Make data realistic for the domain. Return ONLY the JSON object.`;
+Generate at least 6 suggestions and 8 metrics. Each suggestion must include at least 1-3 affected_pages with real plausible URLs based on the domain. Make data realistic for the domain. Return ONLY the JSON object.`;
 
   const res = await fetch('/.netlify/functions/claude-proxy', {
     method: 'POST',
@@ -871,6 +914,24 @@ function renderResults(url, data) {
     return `<span class="grade-chip grade-${val.grade}">${labels[key] || key}: ${val.grade} (${val.score})</span>`;
   }).join('');
 
+  // CMS Detection
+  const cmsEl = document.getElementById('cms-info');
+  if (data.cms) {
+    const cmsIcons = {
+      'WordPress': '🟦', 'Shopify': '🟩', 'Wix': '🟨', 'Squarespace': '⬛',
+      'Webflow': '🟣', 'Next.js': '⚫', 'Drupal': '🔵', 'Joomla': '🟠',
+      'Magento': '🔴', 'Ghost': '👻', 'Custom': '⚙️', 'Unknown': '❓'
+    };
+    const icon = cmsIcons[data.cms.name] || '🌐';
+    const confidenceColor = data.cms.confidence === 'High' ? 'var(--green)' : data.cms.confidence === 'Medium' ? 'var(--amber)' : 'var(--muted)';
+    cmsEl.innerHTML = `
+      <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+        <span class="cms-badge"><span class="cms-icon">${icon}</span> ${data.cms.name}${data.cms.version ? ' ' + data.cms.version : ''}</span>
+        <span style="font-size:0.75rem; color:${confidenceColor};">${data.cms.confidence} confidence</span>
+        ${data.cms.notes ? `<span style="font-size:0.75rem; color:var(--muted);">· ${data.cms.notes}</span>` : ''}
+      </div>`;
+  }
+
   // AI Summary (typewriter)
   const summaryEl = document.getElementById('ai-summary-text');
   const cursor = document.createElement('span');
@@ -905,7 +966,18 @@ function renderResults(url, data) {
 
   // Suggestions
   const sugEl = document.getElementById('suggestions-list');
-  sugEl.innerHTML = (data.suggestions || []).map(s => `
+  sugEl.innerHTML = (data.suggestions || []).map(s => {
+    const pagesHtml = (s.affected_pages && s.affected_pages.length) ? `
+      <div class="pages-label">📍 Affected Pages</div>
+      <div class="suggestion-pages">
+        ${s.affected_pages.map(p => `<a class="page-link" href="${p.url}" target="_blank" rel="noopener">${p.label}</a>`).join('')}
+      </div>` : '';
+    const locationHtml = s.location ? `
+      <div style="display:flex; align-items:center; gap:6px; margin-top:0.6rem;">
+        <span style="font-size:0.7rem; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.05em;">📌 Location</span>
+        <span style="font-size:0.78rem; color:var(--text); background:var(--bg3); padding:0.2rem 0.6rem; border-radius:5px; border:1px solid var(--border);">${s.location}</span>
+      </div>` : '';
+    return `
     <div class="suggestion-item priority-${s.priority}">
       <div class="suggestion-header">
         <span class="priority-dot dot-${s.priority}"></span>
@@ -913,12 +985,14 @@ function renderResults(url, data) {
         <span class="impact-tag">${s.impact}</span>
       </div>
       <div class="suggestion-body">${s.description}</div>
-      <div class="suggestion-fix">
+      ${locationHtml}
+      ${pagesHtml}
+      <div class="suggestion-fix" style="margin-top:0.75rem;">
         <div class="fix-label">Recommended Fix</div>
         ${s.fix}
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   // Metrics table
   const metricsTbody = document.getElementById('metrics-body');
