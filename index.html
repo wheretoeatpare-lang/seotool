@@ -470,7 +470,9 @@
   }
   .img-thumb {
     width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: opacity 0.2s;
   }
+  .img-thumb-wrap:hover .img-thumb { opacity: 0.75; }
   .img-info {
     flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px;
   }
@@ -1164,12 +1166,12 @@ function renderResults(url, data) {
         ${s.affected_images.map(img => {
           const pagePath = img.onPage ? img.onPage.replace(/^https?:\/\/[^\/]+/, '') || '/' : '';
           return `<div class="affected-image-item">
-            <div class="img-thumb-wrap">
+            <a href="${img.url}" class="img-thumb-wrap" target="_blank" rel="noopener noreferrer" title="View image: ${img.label}" style="cursor:pointer;">
               <img src="${img.url}" alt="" class="img-thumb" loading="lazy"
                 onerror="this.style.display='none';this.parentElement.textContent='🖼️'">
-            </div>
+            </a>
             <div class="img-info">
-              <span class="img-name" title="${img.url}">${img.label}</span>
+              <a href="${img.url}" class="img-name" title="${img.url}" target="_blank" rel="noopener noreferrer" style="color:var(--text);text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">${img.label}</a>
               ${img.onPage ? `<a href="${img.onPage}" class="img-page-link" target="_blank" rel="noopener noreferrer">📄 ${pagePath}</a>` : ''}
             </div>
           </div>`;
