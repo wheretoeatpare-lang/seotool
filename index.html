@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSight — Free AI SEO Auditor</title>
-<meta name="description" content="Free AI-powered SEO audit tool. Get a comprehensive SEO score, CMS detection, Core Web Vitals, and actionable recommendations. No signup required.">
+<title>RankSight — AI SEO Auditor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -34,6 +33,7 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+/* NAV */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
@@ -61,8 +61,59 @@ nav {
   padding: 0.5rem 1.2rem; border-radius: 8px;
   font-size: 0.85rem !important;
 }
-.nav-cta:hover { background: var(--accent2) !important; }
-
+.nav-cta:hover { background: var(--accent2) !important; color: white !important; }
+/* KEY MODAL */
+#key-modal {
+  display: none; position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+  align-items: center; justify-content: center; padding: 1.5rem;
+}
+.modal-box {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 2rem; max-width: 480px; width: 100%;
+  position: relative;
+}
+.modal-box h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.3rem;
+  font-weight: 700; margin-bottom: 0.5rem;
+}
+.modal-box p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.25rem; }
+.modal-box a { color: var(--accent2); }
+#key-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.85rem 1rem; border-radius: 10px;
+  font-family: monospace; font-size: 0.88rem; outline: none;
+  margin-bottom: 0.5rem;
+}
+#key-input:focus { border-color: var(--accent); }
+#key-error {
+  display: none; color: var(--red); font-size: 0.8rem; margin-bottom: 0.75rem;
+}
+.modal-btns { display: flex; gap: 0.75rem; }
+.modal-save {
+  flex: 1; background: var(--accent); color: white; border: none;
+  padding: 0.75rem; border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; font-weight: 500; cursor: pointer;
+}
+.modal-save:hover { opacity: 0.9; }
+.modal-cancel {
+  background: var(--bg3); color: var(--muted); border: 1px solid var(--border);
+  padding: 0.75rem 1.25rem; border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; cursor: pointer;
+}
+.modal-cancel:hover { color: var(--text); }
+.key-status {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.78rem; margin-top: 0.6rem;
+}
+.key-dot { width: 7px; height: 7px; border-radius: 50%; }
+.settings-btn {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--muted); padding: 0.45rem 1rem; border-radius: 8px;
+  font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.settings-btn:hover { color: var(--text); border-color: var(--accent); }
 /* HERO */
 .hero {
   padding: 10rem 2rem 5rem;
@@ -107,7 +158,6 @@ h1 span {
   color: var(--muted); font-size: 1.1rem; max-width: 580px;
   margin: 0 auto 3rem; line-height: 1.7; font-weight: 300;
 }
-
 /* AUDIT BOX */
 .audit-container {
   max-width: 700px; margin: 0 auto;
@@ -166,7 +216,6 @@ h1 span {
   background: rgba(124,111,247,0.1);
 }
 .option-chip input { display: none; }
-
 /* LOADING */
 #loading-state {
   display: none; text-align: center; padding: 3rem 2rem;
@@ -188,7 +237,6 @@ h1 span {
 .loading-steps li.done { color: var(--green); }
 .loading-steps li.active { color: var(--text); }
 .step-icon { width: 18px; height: 18px; font-size: 16px; }
-
 /* RESULTS */
 #results-section { display: none; }
 .score-header {
@@ -230,48 +278,6 @@ h1 span {
 .grade-C { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
 .grade-D { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
 .grade-F { background: rgba(248,113,113,0.2); color: var(--red); border: 1px solid rgba(248,113,113,0.4); }
-
-/* CMS BANNER */
-.cms-banner {
-  background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 14px; padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
-  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-}
-.cms-badge {
-  display: flex; align-items: center; gap: 8px;
-  background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.3);
-  padding: 0.4rem 1rem; border-radius: 999px;
-  font-size: 0.85rem; font-weight: 600; color: var(--accent2);
-}
-.cms-details { display: flex; gap: 1rem; flex-wrap: wrap; }
-.cms-detail {
-  font-size: 0.8rem; color: var(--muted);
-  display: flex; align-items: center; gap: 4px;
-}
-.cms-detail strong { color: var(--text); }
-.cms-signals {
-  margin-top: 0.6rem; width: 100%;
-  display: flex; gap: 0.4rem; flex-wrap: wrap;
-}
-.cms-signal {
-  font-size: 0.72rem; background: var(--bg3);
-  border: 1px solid var(--border); border-radius: 4px;
-  padding: 0.15rem 0.5rem; color: var(--muted);
-}
-.confidence-bar-wrap {
-  display: flex; align-items: center; gap: 0.6rem; margin-left: auto;
-}
-.confidence-label { font-size: 0.75rem; color: var(--muted); }
-.confidence-bar {
-  width: 80px; height: 6px; background: var(--bg3);
-  border-radius: 999px; overflow: hidden;
-}
-.confidence-fill {
-  height: 100%; border-radius: 999px; background: var(--accent);
-  transition: width 0.8s ease;
-}
-
 /* TABS */
 .tabs {
   display: flex; gap: 0.25rem; margin-bottom: 1.5rem;
@@ -290,7 +296,6 @@ h1 span {
 }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-
 /* CARDS GRID */
 .cards-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -325,25 +330,27 @@ h1 span {
   color: var(--text);
 }
 .card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-
 /* SUGGESTIONS */
 .suggestion-item {
   background: var(--bg2); border: 1px solid var(--border);
   border-radius: 14px; padding: 1.4rem;
   margin-bottom: 0.75rem;
   border-left: 3px solid transparent;
+  transition: border-color 0.2s;
 }
-.suggestion-item.priority-high   { border-left-color: var(--red); }
+.suggestion-item.priority-high { border-left-color: var(--red); }
 .suggestion-item.priority-medium { border-left-color: var(--amber); }
-.suggestion-item.priority-low    { border-left-color: var(--blue); }
+.suggestion-item.priority-low { border-left-color: var(--blue); }
 .suggestion-header {
   display: flex; align-items: center; gap: 0.75rem;
   margin-bottom: 0.75rem;
 }
-.priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.dot-high   { background: var(--red); }
+.priority-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-high { background: var(--red); }
 .dot-medium { background: var(--amber); }
-.dot-low    { background: var(--blue); }
+.dot-low { background: var(--blue); }
 .suggestion-title {
   font-family: 'Syne', sans-serif;
   font-size: 0.95rem; font-weight: 600; flex: 1;
@@ -368,7 +375,6 @@ h1 span {
   color: var(--accent2); text-transform: uppercase;
   letter-spacing: 0.05em; margin-bottom: 0.3rem;
 }
-
 /* METRICS TABLE */
 .metrics-table { width: 100%; border-collapse: collapse; }
 .metrics-table th {
@@ -382,17 +388,21 @@ h1 span {
   font-size: 0.88rem; border-bottom: 1px solid var(--border);
 }
 .metrics-table tr:last-child td { border-bottom: none; }
-.metric-bar-wrap { display: flex; align-items: center; gap: 0.75rem; }
+.metric-bar-wrap {
+  display: flex; align-items: center; gap: 0.75rem;
+}
 .metric-bar {
   flex: 1; height: 6px; background: var(--bg3);
   border-radius: 999px; overflow: hidden;
 }
-.metric-bar-fill { height: 100%; border-radius: 999px; transition: width 0.8s ease; }
+.metric-bar-fill {
+  height: 100%; border-radius: 999px;
+  transition: width 0.8s ease;
+}
 .bar-green { background: var(--green); }
 .bar-amber { background: var(--amber); }
-.bar-red   { background: var(--red); }
-.bar-blue  { background: var(--blue); }
-
+.bar-red { background: var(--red); }
+.bar-blue { background: var(--blue); }
 /* FEATURES SECTION */
 .features {
   max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
@@ -403,10 +413,12 @@ h1 span {
   text-transform: uppercase; letter-spacing: 0.1em;
   margin-bottom: 1rem;
 }
-.section-label::after {
-  content: ''; flex: 1;
+.section-label::before, .section-label::after {
+  content: ''; flex: 1; max-width: 60px;
   height: 1px; background: rgba(167,139,250,0.3);
 }
+.section-label::before { display: none; }
+.section-label::after { max-width: 999px; }
 .features h2 {
   font-family: 'Syne', sans-serif;
   font-size: clamp(1.8rem, 3vw, 2.8rem);
@@ -429,15 +441,14 @@ h1 span {
   font-size: 1.2rem; margin-bottom: 1rem;
 }
 .feat-icon.purple { background: rgba(124,111,247,0.15); }
-.feat-icon.cyan   { background: rgba(34,211,238,0.12); }
-.feat-icon.green  { background: rgba(52,211,153,0.12); }
-.feat-icon.amber  { background: rgba(251,191,36,0.12); }
+.feat-icon.cyan { background: rgba(34,211,238,0.12); }
+.feat-icon.green { background: rgba(52,211,153,0.12); }
+.feat-icon.amber { background: rgba(251,191,36,0.12); }
 .feature-card h3 {
   font-family: 'Syne', sans-serif;
   font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
 }
 .feature-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-
 /* FOOTER */
 footer {
   text-align: center; padding: 3rem 2rem;
@@ -450,7 +461,6 @@ footer .logo-f {
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; margin-bottom: 0.75rem; display: block;
 }
-
 /* RESULT SECTION WRAPPER */
 #main-results {
   max-width: 900px; margin: 3rem auto 6rem; padding: 0 2rem;
@@ -463,7 +473,14 @@ footer .logo-f {
   transition: color 0.2s;
 }
 .back-btn:hover { color: var(--text); }
-
+/* STREAMING TEXT */
+.streaming-text { white-space: pre-wrap; }
+.cursor {
+  display: inline-block; width: 2px; height: 1em;
+  background: var(--accent2); animation: blink 1s infinite;
+  vertical-align: text-bottom; margin-left: 2px;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 /* AI SUMMARY */
 .ai-summary {
   background: linear-gradient(135deg, rgba(124,111,247,0.08), rgba(34,211,238,0.05));
@@ -476,16 +493,10 @@ footer .logo-f {
   font-size: 0.72rem; font-weight: 600; color: var(--accent2);
   text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
 }
+.ai-icon { font-size: 14px; }
 .ai-summary p {
   font-size: 0.9rem; color: var(--text); line-height: 1.7;
 }
-.cursor {
-  display: inline-block; width: 2px; height: 1em;
-  background: var(--accent2); animation: blink 1s infinite;
-  vertical-align: text-bottom; margin-left: 2px;
-}
-@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
 /* RESPONSIVE */
 @media (max-width: 640px) {
   nav { padding: 1rem 1.25rem; }
@@ -497,8 +508,6 @@ footer .logo-f {
   .score-ring-wrap { margin: 0 auto; }
   .grade-chips { justify-content: center; }
   .tabs { flex-wrap: wrap; }
-  .cms-banner { flex-direction: column; align-items: flex-start; }
-  .confidence-bar-wrap { margin-left: 0; }
 }
 </style>
 </head>
@@ -508,7 +517,8 @@ footer .logo-f {
   <div class="logo">RankSight</div>
   <div class="nav-links">
     <a href="#features">Features</a>
-    <a href="#audit-box" class="nav-cta">Audit Now</a>
+    <a href="#" onclick="scrollToAudit()">Audit Now</a>
+    <button class="settings-btn" onclick="openKeyModal()">⚙ API Key</button>
   </div>
 </nav>
 
@@ -519,7 +529,7 @@ footer .logo-f {
     AI-Powered SEO Intelligence
   </div>
   <h1>Rank Higher with<br><span>Intelligent Audits</span></h1>
-  <p>Enter any website URL and get a comprehensive SEO score, real CMS detection, deep analysis, and actionable recommendations — 100% free, no signup required.</p>
+  <p>Enter any website URL and get a comprehensive SEO score, deep analysis, and actionable recommendations — powered by Claude AI.</p>
 
   <div class="audit-container" id="audit-box">
     <div class="url-row">
@@ -549,14 +559,12 @@ footer .logo-f {
 <!-- LOADING -->
 <div id="loading-state">
   <div class="spinner-ring"></div>
-  <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
-    Analyzing <strong id="loading-url" style="color: var(--text);"></strong>
-  </p>
+  <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Analyzing <strong id="loading-url" style="color: var(--text);"></strong></p>
   <ul class="loading-steps" id="loading-steps">
-    <li id="step1"><span class="step-icon">○</span> Detecting CMS & technology stack</li>
-    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags & content</li>
+    <li id="step1"><span class="step-icon">○</span> Crawling website structure</li>
+    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags &amp; content</li>
     <li id="step3"><span class="step-icon">○</span> Evaluating performance signals</li>
-    <li id="step4"><span class="step-icon">○</span> Checking mobile & UX factors</li>
+    <li id="step4"><span class="step-icon">○</span> Checking mobile &amp; UX factors</li>
     <li id="step5"><span class="step-icon">○</span> Scoring backlink profile</li>
     <li id="step6"><span class="step-icon">○</span> Generating AI recommendations</li>
   </ul>
@@ -590,24 +598,10 @@ footer .logo-f {
       </div>
     </div>
 
-    <!-- CMS Detection Banner -->
-    <div class="cms-banner" id="cms-banner" style="display:none;">
-      <div class="cms-badge" id="cms-badge">🔍 Detecting...</div>
-      <div class="cms-details" id="cms-details"></div>
-      <div class="confidence-bar-wrap" id="cms-confidence-wrap" style="display:none;">
-        <span class="confidence-label">Confidence</span>
-        <div class="confidence-bar">
-          <div class="confidence-fill" id="cms-confidence-fill" style="width:0%"></div>
-        </div>
-        <span class="confidence-label" id="cms-confidence-pct">0%</span>
-      </div>
-      <div class="cms-signals" id="cms-signals"></div>
-    </div>
-
     <!-- AI Summary -->
     <div class="ai-summary">
-      <div class="ai-label">◆ AI Analysis</div>
-      <p id="ai-summary-text"></p>
+      <div class="ai-label"><span class="ai-icon">◆</span> AI Analysis</div>
+      <p id="ai-summary-text" class="streaming-text"></p>
     </div>
 
     <!-- Tabs -->
@@ -649,60 +643,117 @@ footer .logo-f {
 <section class="features" id="features">
   <div class="section-label">What We Analyze</div>
   <h2>Everything that<br>affects your rank</h2>
-  <p>RankSight audits over 50 SEO factors across 5 major categories — with real CMS fingerprinting, not guesswork.</p>
+  <p>RankSight audits over 50 SEO factors across 5 major categories, giving you the most thorough analysis available.</p>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feat-icon purple">🖥️</div>
-      <h3>Real CMS Detection</h3>
-      <p>Accurately identifies WordPress, Shopify, Wix, Squarespace, Webflow, Next.js, Drupal, Ghost, and 20+ more by fingerprinting actual page signals and HTTP headers.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feat-icon cyan">🔍</div>
+      <div class="feat-icon purple">🔍</div>
       <h3>Technical SEO</h3>
       <p>Meta tags, canonical URLs, structured data, sitemap, robots.txt, redirects, hreflang, and crawlability checks.</p>
     </div>
     <div class="feature-card">
-      <div class="feat-icon green">⚡</div>
+      <div class="feat-icon cyan">⚡</div>
       <h3>Performance</h3>
-      <p>Core Web Vitals (LCP, FID, CLS), page speed, server response time, resource optimization, and caching signals.</p>
+      <p>Core Web Vitals (LCP, FID, CLS), page speed, server response time, resource optimization, and caching.</p>
     </div>
     <div class="feature-card">
-      <div class="feat-icon amber">✍️</div>
+      <div class="feat-icon green">✍️</div>
       <h3>Content Quality</h3>
       <p>Keyword density, readability score, duplicate content detection, heading structure, and content freshness.</p>
     </div>
     <div class="feature-card">
-      <div class="feat-icon purple">📱</div>
-      <h3>UX & Mobile</h3>
+      <div class="feat-icon amber">📱</div>
+      <h3>UX &amp; Mobile</h3>
       <p>Mobile responsiveness, tap targets, viewport configuration, font sizing, and accessibility compliance.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon purple">🔗</div>
+      <h3>Backlink Profile</h3>
+      <p>Domain authority estimation, link quality analysis, anchor text diversity, and toxic link detection.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon cyan">◆</div>
       <h3>AI Recommendations</h3>
-      <p>Cloudflare AI synthesizes all findings into prioritized, actionable steps tailored to your specific site.</p>
+      <p>Claude AI synthesizes all findings into prioritized, actionable steps tailored to your specific site.</p>
     </div>
   </div>
 </section>
 
+<!-- API KEY MODAL -->
+<div id="key-modal">
+  <div class="modal-box">
+    <h3>🔑 Enter your API Key</h3>
+    <p>Your key is stored only in your browser (localStorage) and never sent anywhere except directly to Anthropic. Get your key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.</p>
+    <input id="key-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveApiKey()" />
+    <div id="key-error">⚠ Key must start with sk-ant-</div>
+    <div class="modal-btns">
+      <button class="modal-save" onclick="saveApiKey()">Save &amp; Continue</button>
+      <button class="modal-cancel" onclick="closeKeyModal()">Cancel</button>
+    </div>
+    <div class="key-status" id="key-status"></div>
+  </div>
+</div>
+
 <footer>
   <span class="logo-f">RankSight</span>
-  <p>Free AI-Powered SEO Audit Tool &mdash; Powered by Cloudflare AI</p>
+  <p>AI-Powered SEO Auditing &mdash; Built with Claude</p>
 </footer>
 
 <script>
-// ── HELPERS ──────────────────────────────────────────────────
+const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+
+function getApiKey() {
+  return localStorage.getItem('ranksight_api_key') || '';
+}
+
+function openKeyModal() {
+  document.getElementById('key-modal').style.display = 'flex';
+  document.getElementById('key-input').value = getApiKey();
+  document.getElementById('key-input').focus();
+}
+
+function closeKeyModal() {
+  document.getElementById('key-modal').style.display = 'none';
+}
+
+function saveApiKey() {
+  const val = document.getElementById('key-input').value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    document.getElementById('key-error').style.display = 'block';
+    return;
+  }
+  localStorage.setItem('ranksight_api_key', val);
+  closeKeyModal();
+  showToast('✅ API key saved! You can now run audits.');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
+    background:#1a1a27;border:1px solid rgba(52,211,153,0.4);color:#34d399;
+    padding:0.75rem 1.5rem;border-radius:10px;font-size:0.9rem;z-index:9999;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);white-space:nowrap;`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
 function scrollToAudit() {
   document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth' });
 }
+
 function toggleChip(el) {
   el.classList.toggle('active');
 }
+
 function switchTab(name) {
-  const names = ['overview', 'suggestions', 'metrics', 'keywords'];
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', names[i] === name));
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const names = ['overview', 'suggestions', 'metrics', 'keywords'];
+    b.classList.toggle('active', names[i] === name);
+  });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
 }
+
 function resetAudit() {
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('hero').style.display = 'block';
@@ -710,76 +761,183 @@ function resetAudit() {
   document.querySelector('footer').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function getActiveOptions() {
-  return Array.from(document.querySelectorAll('.option-chip.active input')).map(i => i.name);
-}
-function getScoreColor(score) {
-  if (score >= 80) return 'var(--green)';
-  if (score >= 60) return 'var(--amber)';
-  return 'var(--red)';
-}
-function getBarClass(score) {
-  if (score >= 80) return 'bar-green';
-  if (score >= 60) return 'bar-amber';
-  return 'bar-red';
+  const chips = document.querySelectorAll('.option-chip.active input');
+  return Array.from(chips).map(i => i.name);
 }
 
-// ── CMS DETECTION ────────────────────────────────────────────
-async function runCMSDetection(url) {
+// ─────────────────────────────────────────────────────────────────────────────
+// FIX: Accurate server & hosting detection from URL domain patterns
+// ─────────────────────────────────────────────────────────────────────────────
+function detectHostingInfo(url) {
   try {
-    const res = await fetch('/api/detect-cms', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url }),
-    });
-    return await res.json();
-  } catch {
-    return { cms: 'Unknown', confidence: 0, signals: [], server: 'Unknown', hosting: 'Unknown' };
+    const hostname = new URL(url).hostname.toLowerCase();
+
+    let server = 'Unknown';
+    let hosting = 'Unknown';
+    let cdn = 'None detected';
+    let serverNote = '';
+
+    // Cloudflare Workers / Pages
+    if (hostname.endsWith('.workers.dev')) {
+      server = 'Cloudflare Workers (V8 isolates)';
+      hosting = 'Cloudflare';
+      cdn = 'Cloudflare CDN (global edge)';
+      serverNote = 'Serverless edge runtime; no traditional web server.';
+    } else if (hostname.endsWith('.pages.dev')) {
+      server = 'Cloudflare Pages';
+      hosting = 'Cloudflare';
+      cdn = 'Cloudflare CDN (global edge)';
+      serverNote = 'Static site hosting on Cloudflare edge network.';
+    }
+    // Netlify
+    else if (hostname.endsWith('.netlify.app') || hostname.endsWith('.netlify.com')) {
+      server = 'Netlify Edge';
+      hosting = 'Netlify';
+      cdn = 'Netlify CDN';
+      serverNote = 'JAMstack hosting with global CDN distribution.';
+    }
+    // Vercel
+    else if (hostname.endsWith('.vercel.app')) {
+      server = 'Vercel Edge Network';
+      hosting = 'Vercel';
+      cdn = 'Vercel Edge Network';
+      serverNote = 'Serverless + edge functions; optimized for Next.js.';
+    }
+    // GitHub Pages
+    else if (hostname.endsWith('.github.io')) {
+      server = 'GitHub Pages (nginx)';
+      hosting = 'GitHub Pages';
+      cdn = 'Fastly CDN';
+      serverNote = 'Static site hosting via GitHub; served through Fastly.';
+    }
+    // Render
+    else if (hostname.endsWith('.onrender.com')) {
+      server = 'Render';
+      hosting = 'Render';
+      cdn = 'None (direct)';
+      serverNote = 'Cloud application platform.';
+    }
+    // Railway
+    else if (hostname.endsWith('.railway.app')) {
+      server = 'Railway';
+      hosting = 'Railway';
+      cdn = 'None (direct)';
+      serverNote = 'Container-based cloud platform.';
+    }
+    // Heroku
+    else if (hostname.endsWith('.herokuapp.com')) {
+      server = 'Heroku Dyno';
+      hosting = 'Heroku (Salesforce)';
+      cdn = 'None (direct)';
+      serverNote = 'PaaS platform; dynos are lightweight Linux containers.';
+    }
+    // Fly.io
+    else if (hostname.endsWith('.fly.dev')) {
+      server = 'Fly.io';
+      hosting = 'Fly.io';
+      cdn = 'Anycast routing';
+      serverNote = 'Containerized workloads deployed close to users.';
+    }
+    // AWS
+    else if (hostname.endsWith('.elasticbeanstalk.com')) {
+      server = 'AWS Elastic Beanstalk';
+      hosting = 'Amazon Web Services';
+      cdn = 'None (add CloudFront separately)';
+      serverNote = 'AWS managed PaaS platform.';
+    } else if (hostname.endsWith('.amazonaws.com')) {
+      server = 'Amazon Web Services';
+      hosting = 'Amazon Web Services';
+      cdn = 'None (direct)';
+      serverNote = 'Direct AWS endpoint.';
+    } else if (hostname.endsWith('.cloudfront.net')) {
+      server = 'AWS CloudFront CDN';
+      hosting = 'Amazon Web Services';
+      cdn = 'CloudFront (AWS CDN)';
+      serverNote = 'CloudFront distribution; origin server type unknown.';
+    }
+    // Azure
+    else if (hostname.endsWith('.azurewebsites.net')) {
+      server = 'Microsoft Azure App Service';
+      hosting = 'Microsoft Azure';
+      cdn = 'None (add Azure CDN separately)';
+      serverNote = 'Azure PaaS web app hosting.';
+    } else if (hostname.endsWith('.azurestaticapps.net')) {
+      server = 'Azure Static Web Apps';
+      hosting = 'Microsoft Azure';
+      cdn = 'Azure CDN';
+      serverNote = 'Static hosting with integrated Azure CDN.';
+    }
+    // Google Cloud / Firebase
+    else if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) {
+      server = 'Firebase Hosting';
+      hosting = 'Google Firebase';
+      cdn = 'Google Cloud CDN';
+      serverNote = 'Firebase static hosting on Google infrastructure.';
+    } else if (hostname.endsWith('.appspot.com')) {
+      server = 'Google App Engine';
+      hosting = 'Google Cloud Platform';
+      cdn = 'Google Cloud CDN';
+      serverNote = 'Google managed PaaS platform.';
+    }
+    // Squarespace
+    else if (hostname.endsWith('.squarespace.com')) {
+      server = 'Squarespace (nginx)';
+      hosting = 'Squarespace';
+      cdn = 'Fastly CDN';
+      serverNote = 'Squarespace managed hosting.';
+    }
+    // Shopify
+    else if (hostname.endsWith('.myshopify.com')) {
+      server = 'Shopify';
+      hosting = 'Shopify';
+      cdn = 'Cloudflare CDN';
+      serverNote = 'Shopify managed e-commerce platform.';
+    }
+    // WordPress.com
+    else if (hostname.endsWith('.wordpress.com')) {
+      server = 'WordPress.com (nginx)';
+      hosting = 'Automattic / WordPress.com';
+      cdn = 'Jetpack CDN';
+      serverNote = 'Managed WordPress hosting by Automattic.';
+    }
+    // Wix
+    else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) {
+      server = 'Wix';
+      hosting = 'Wix';
+      cdn = 'Wix CDN';
+      serverNote = 'Wix managed website platform.';
+    }
+    // Webflow
+    else if (hostname.endsWith('.webflow.io')) {
+      server = 'Webflow';
+      hosting = 'Webflow';
+      cdn = 'Fastly CDN';
+      serverNote = 'Webflow managed hosting on Fastly edge.';
+    }
+    // Surge.sh
+    else if (hostname.endsWith('.surge.sh')) {
+      server = 'Surge.sh';
+      hosting = 'Surge';
+      cdn = 'None (direct)';
+      serverNote = 'Static web publishing platform.';
+    }
+    // Custom domain — cannot detect without HTTP header inspection
+    else {
+      server = 'Undetermined (custom domain)';
+      hosting = 'Undetermined (custom domain)';
+      cdn = 'Undetermined';
+      serverNote = 'Server and hosting cannot be determined from the domain alone for custom domains. Common options include Apache, nginx, Caddy, or cloud-managed servers.';
+    }
+
+    return { server, hosting, cdn, serverNote, hostname };
+  } catch (e) {
+    return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown', serverNote: '', hostname: '' };
   }
 }
+// ─────────────────────────────────────────────────────────────────────────────
 
-function renderCMSBanner(cmsData) {
-  const banner = document.getElementById('cms-banner');
-  const badge  = document.getElementById('cms-badge');
-  const details = document.getElementById('cms-details');
-  const signalsEl = document.getElementById('cms-signals');
-  const confWrap = document.getElementById('cms-confidence-wrap');
-  const confFill = document.getElementById('cms-confidence-fill');
-  const confPct  = document.getElementById('cms-confidence-pct');
-
-  banner.style.display = 'flex';
-
-  const cmsIcons = {
-    'WordPress': '🟦', 'Shopify': '🟢', 'Wix': '⬛', 'Squarespace': '◼️',
-    'Webflow': '🔷', 'Joomla': '🟠', 'Drupal': '💧', 'Ghost': '👻',
-    'Next.js': '▲', 'Nuxt': '💚', 'Gatsby': '💜', 'Hugo': '🟣',
-    'Jekyll': '💎', 'Magento': '🟠', 'PrestaShop': '🛒', 'BigCommerce': '🛍️',
-    'Blogger': '📝', 'Contentful': '🔵', 'Sanity': '🔴', 'Framer': '🎨',
-  };
-
-  const icon = cmsIcons[cmsData.cms] || '🖥️';
-  badge.innerHTML = `${icon} ${cmsData.cms}`;
-
-  details.innerHTML = `
-    ${cmsData.server !== 'Unknown' ? `<span class="cms-detail">🖥️ Server: <strong>${cmsData.server}</strong></span>` : ''}
-    ${cmsData.hosting !== 'Unknown' ? `<span class="cms-detail">☁️ Hosting: <strong>${cmsData.hosting}</strong></span>` : ''}
-    ${cmsData.powered_by ? `<span class="cms-detail">⚙️ Powered by: <strong>${cmsData.powered_by}</strong></span>` : ''}
-  `;
-
-  if (cmsData.confidence > 0) {
-    confWrap.style.display = 'flex';
-    confFill.style.width = cmsData.confidence + '%';
-    confPct.textContent = cmsData.confidence + '%';
-  }
-
-  if (cmsData.signals && cmsData.signals.length > 0) {
-    signalsEl.innerHTML = cmsData.signals.map(s =>
-      `<span class="cms-signal">✓ ${s}</span>`
-    ).join('');
-  }
-}
-
-// ── AUDIT ─────────────────────────────────────────────────────
 async function startAudit() {
   const url = document.getElementById('url-input').value.trim();
   if (!url) {
@@ -799,10 +957,9 @@ async function startAudit() {
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('loading-url').textContent = url;
-  document.getElementById('cms-banner').style.display = 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Animate steps
+  // Animate loading steps
   const steps = ['step1','step2','step3','step4','step5','step6'];
   let stepIdx = 0;
   const stepInterval = setInterval(() => {
@@ -812,30 +969,23 @@ async function startAudit() {
       prev.querySelector('.step-icon').textContent = '✓';
     }
     if (stepIdx < steps.length) {
-      document.getElementById(steps[stepIdx]).classList.add('active');
+      const cur = document.getElementById(steps[stepIdx]);
+      cur.classList.add('active');
     }
     stepIdx++;
   }, 900);
 
   try {
-    // Run CMS detection and AI audit in parallel
-    const [cmsData, auditData] = await Promise.all([
-      runCMSDetection(url),
-      callCloudflareAI(url, options),
-    ]);
-
+    const auditData = await callClaudeForAudit(url, options);
     clearInterval(stepInterval);
     steps.forEach(s => {
       const el = document.getElementById(s);
       el.classList.add('done');
       el.querySelector('.step-icon').textContent = '✓';
     });
-
-    await new Promise(r => setTimeout(r, 500));
-
+    await new Promise(r => setTimeout(r, 600));
     document.getElementById('loading-state').style.display = 'none';
-    renderResults(url, auditData, cmsData);
-
+    renderResults(url, auditData);
   } catch (err) {
     clearInterval(stepInterval);
     document.getElementById('loading-state').style.display = 'none';
@@ -847,9 +997,18 @@ async function startAudit() {
   btn.textContent = 'Audit Now';
 }
 
-// ── CLOUDFLARE AI CALL ────────────────────────────────────────
-async function callCloudflareAI(url, options) {
+async function callClaudeForAudit(url, options) {
+  // Detect hosting/server accurately from the domain — do NOT let AI guess these
+  const { server, hosting, cdn, serverNote, hostname } = detectHostingInfo(url);
+
   const prompt = `You are an expert SEO auditor. Perform a comprehensive SEO audit for the website: ${url}
+
+CRITICAL — USE THESE EXACT VALUES. Do NOT guess, change, or infer different values for server or hosting:
+- Hostname: ${hostname}
+- Server / Runtime: ${server}
+- Hosting Provider: ${hosting}
+- CDN: ${cdn}
+- Server Note: ${serverNote}
 
 Analyze the following areas: ${options.join(', ')}
 
@@ -862,26 +1021,26 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
   "grade": "<A/B/C/D/F>",
   "summary": "<2-3 sentence AI summary of the site's SEO health, specific to the domain>",
   "categories": {
-    "technical":    { "score": <0-100>, "grade": "<A-F>" },
-    "performance":  { "score": <0-100>, "grade": "<A-F>" },
-    "content":      { "score": <0-100>, "grade": "<A-F>" },
-    "ux":           { "score": <0-100>, "grade": "<A-F>" },
-    "backlinks":    { "score": <0-100>, "grade": "<A-F>" }
+    "technical": { "score": <0-100>, "grade": "<A-F>" },
+    "performance": { "score": <0-100>, "grade": "<A-F>" },
+    "content": { "score": <0-100>, "grade": "<A-F>" },
+    "ux": { "score": <0-100>, "grade": "<A-F>" },
+    "backlinks": { "score": <0-100>, "grade": "<A-F>" }
   },
   "overview_cards": [
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" },
-    { "title": "<string>", "value": "<string>", "description": "<string>", "status": "<pass|warn|fail|info>" }
+    { "title": "Server", "value": "${server}", "description": "${serverNote}", "status": "info" },
+    { "title": "Hosting Provider", "value": "${hosting}", "description": "Hosting platform detected from the domain name", "status": "info" },
+    { "title": "CDN", "value": "${cdn}", "description": "Content delivery network in use", "status": "info" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
+    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" }
   ],
   "suggestions": [
     {
       "title": "<string>",
       "priority": "<high|medium|low>",
       "impact": "<High Impact|Medium Impact|Low Impact>",
-      "description": "<detailed description>",
+      "description": "<detailed description of the issue>",
       "fix": "<specific actionable fix or code snippet>"
     }
   ],
@@ -889,19 +1048,19 @@ Respond with ONLY valid JSON in this exact structure (no markdown, no explanatio
     { "name": "<string>", "value": "<string>", "score": <0-100>, "status": "<pass|warn|fail>" }
   ],
   "keywords": [
-    { "title": "Target Keywords",        "value": "<kw1, kw2, kw3>",  "description": "Detected primary keywords",          "status": "info" },
-    { "title": "Keyword Density",        "value": "<percentage>",     "description": "Primary keyword density",            "status": "<pass|warn|fail>" },
-    { "title": "Missing Keywords",       "value": "<keywords>",       "description": "Suggested keywords to add",          "status": "warn" },
-    { "title": "Long-tail Opportunities","value": "<number>",         "description": "Potential long-tail keyword phrases", "status": "info" }
+    { "title": "Target Keywords", "value": "<keyword1, keyword2, keyword3>", "description": "Detected primary keywords", "status": "info" },
+    { "title": "Keyword Density", "value": "<percentage>", "description": "Primary keyword density", "status": "<pass|warn|fail>" },
+    { "title": "Missing Keywords", "value": "<keywords>", "description": "Suggested keywords to add", "status": "warn" },
+    { "title": "Long-tail Opportunities", "value": "<number>", "description": "Potential long-tail keyword phrases", "status": "info" }
   ]
 }
 
-Generate at least 6 suggestions and 8 metrics. Make data realistic for the domain. Return ONLY the JSON object.`;
+Generate at least 6 suggestions and 8 metrics. Make all data realistic for the domain. Return ONLY the JSON object.`;
 
-  const res = await fetch('/api/claude', {
+  const res = await fetch('/.netlify/functions/claude-proxy', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, options, prompt }),
+    body: JSON.stringify({ url, options, prompt })
   });
 
   if (!res.ok) {
@@ -909,25 +1068,39 @@ Generate at least 6 suggestions and 8 metrics. Make data realistic for the domai
     try { const e = await res.json(); if (e.error) errMsg = e.error; } catch {}
     throw new Error(errMsg);
   }
+
   return await res.json();
 }
 
-// ── RENDER RESULTS ────────────────────────────────────────────
-function renderResults(url, data, cmsData) {
+function getScoreColor(score) {
+  if (score >= 80) return 'var(--green)';
+  if (score >= 60) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function getBarClass(score) {
+  if (score >= 80) return 'bar-green';
+  if (score >= 60) return 'bar-amber';
+  return 'bar-red';
+}
+
+function renderResults(url, data) {
   // Score ring
   const arc = document.getElementById('score-arc');
-  const offset = 314 - (data.score / 100) * 314;
+  const circumference = 314;
+  const offset = circumference - (data.score / 100) * circumference;
   arc.style.strokeDashoffset = offset;
   arc.style.stroke = getScoreColor(data.score);
 
-  // Count-up animation
+  // Score number (count up)
   const numEl = document.getElementById('score-num');
   numEl.style.color = getScoreColor(data.score);
   let count = 0;
-  const countInterval = setInterval(() => {
-    count = Math.min(count + 2, data.score);
+  const target = data.score;
+  const interval = setInterval(() => {
+    count = Math.min(count + 2, target);
     numEl.textContent = count;
-    if (count >= data.score) clearInterval(countInterval);
+    if (count >= target) clearInterval(interval);
   }, 20);
 
   // URL & title
@@ -938,23 +1111,27 @@ function renderResults(url, data, cmsData) {
     data.score >= 40 ? 'Needs Attention' : 'Critical Issues Found';
 
   // Grade chips
-  const cats = data.categories || {};
-  const labels = { technical: '🔍 Technical', performance: '⚡ Perf', content: '✍️ Content', ux: '📱 UX', backlinks: '🔗 Links' };
-  document.getElementById('grade-chips').innerHTML = Object.entries(cats).map(([k, v]) =>
-    `<span class="grade-chip grade-${v.grade}">${labels[k] || k}: ${v.grade} (${v.score})</span>`
-  ).join('');
+  const cats = data.categories;
+  const chipsEl = document.getElementById('grade-chips');
+  chipsEl.innerHTML = Object.entries(cats).map(([key, val]) => {
+    const labels = {
+      technical: '🔍 Technical',
+      performance: '⚡ Performance',
+      content: '✍️ Content',
+      ux: '📱 UX',
+      backlinks: '🔗 Backlinks'
+    };
+    return `<span class="grade-chip grade-${val.grade}">${labels[key] || key}: ${val.grade} (${val.score})</span>`;
+  }).join('');
 
-  // CMS banner
-  if (cmsData) renderCMSBanner(cmsData);
-
-  // AI summary typewriter
+  // AI Summary (typewriter)
   const summaryEl = document.getElementById('ai-summary-text');
   const cursor = document.createElement('span');
   cursor.className = 'cursor';
   summaryEl.textContent = '';
   summaryEl.appendChild(cursor);
   let charIdx = 0;
-  const summary = data.summary || '';
+  const summary = data.summary;
   const typeInterval = setInterval(() => {
     summaryEl.textContent = summary.slice(0, charIdx);
     summaryEl.appendChild(cursor);
@@ -963,7 +1140,8 @@ function renderResults(url, data, cmsData) {
   }, 18);
 
   // Overview cards
-  document.getElementById('overview-cards').innerHTML = (data.overview_cards || []).map(card => `
+  const cardsEl = document.getElementById('overview-cards');
+  cardsEl.innerHTML = (data.overview_cards || []).map(card => `
     <div class="audit-card">
       <div class="card-header">
         <div class="card-title">${card.title}</div>
@@ -973,13 +1151,14 @@ function renderResults(url, data, cmsData) {
           card.status === 'fail' ? 'Fail' : 'Info'
         }</div>
       </div>
-      <div class="card-value">${card.value}</div>
+      <div class="card-value" style="font-size: ${card.value.length > 20 ? '1rem' : '1.6rem'}">${card.value}</div>
       <div class="card-desc">${card.description}</div>
     </div>
   `).join('');
 
   // Suggestions
-  document.getElementById('suggestions-list').innerHTML = (data.suggestions || []).map(s => `
+  const sugEl = document.getElementById('suggestions-list');
+  sugEl.innerHTML = (data.suggestions || []).map(s => `
     <div class="suggestion-item priority-${s.priority}">
       <div class="suggestion-header">
         <div class="priority-dot dot-${s.priority}"></div>
@@ -989,14 +1168,15 @@ function renderResults(url, data, cmsData) {
       <div class="suggestion-body">${s.description}</div>
       ${s.fix ? `
         <div class="suggestion-fix">
-          <div class="fix-label">Fix</div>
+          <div class="fix-label">Recommended Fix</div>
           ${s.fix}
         </div>` : ''}
     </div>
   `).join('');
 
-  // Metrics
-  document.getElementById('metrics-body').innerHTML = (data.metrics || []).map(m => `
+  // Metrics table
+  const tbody = document.getElementById('metrics-body');
+  tbody.innerHTML = (data.metrics || []).map(m => `
     <tr>
       <td>${m.name}</td>
       <td><strong>${m.value}</strong></td>
@@ -1008,25 +1188,29 @@ function renderResults(url, data, cmsData) {
           <span style="font-size:0.8rem;color:var(--muted);min-width:28px">${m.score}</span>
         </div>
       </td>
-      <td><span class="status-badge status-${m.status}">${
-        m.status === 'pass' ? 'Pass' : m.status === 'warn' ? 'Warn' : 'Fail'
-      }</span></td>
+      <td>
+        <span class="status-badge status-${m.status}">${
+          m.status === 'pass' ? 'Pass' :
+          m.status === 'warn' ? 'Warn' : 'Fail'
+        }</span>
+      </td>
     </tr>
   `).join('');
 
-  // Keywords
-  document.getElementById('keywords-content').innerHTML = (data.keywords || []).map(k => `
+  // Keywords tab
+  const kwEl = document.getElementById('keywords-content');
+  kwEl.innerHTML = (data.keywords || []).map(card => `
     <div class="audit-card">
       <div class="card-header">
-        <div class="card-title">${k.title}</div>
-        <div class="status-badge status-${k.status}">${
-          k.status === 'pass' ? 'Pass' :
-          k.status === 'warn' ? 'Warning' :
-          k.status === 'fail' ? 'Fail' : 'Info'
+        <div class="card-title">${card.title}</div>
+        <div class="status-badge status-${card.status}">${
+          card.status === 'pass' ? 'Pass' :
+          card.status === 'warn' ? 'Warning' :
+          card.status === 'fail' ? 'Fail' : 'Info'
         }</div>
       </div>
-      <div class="card-value" style="font-size:1rem">${k.value}</div>
-      <div class="card-desc">${k.description}</div>
+      <div class="card-value" style="font-size:${card.value.length > 20 ? '0.95rem' : '1.4rem'};word-break:break-word">${card.value}</div>
+      <div class="card-desc">${card.description}</div>
     </div>
   `).join('');
 
@@ -1034,11 +1218,6 @@ function renderResults(url, data, cmsData) {
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-// Enter key triggers audit
-document.getElementById('url-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') startAudit();
-});
 </script>
 </body>
 </html>
