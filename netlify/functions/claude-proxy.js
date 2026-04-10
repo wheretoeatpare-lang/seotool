@@ -389,6 +389,33 @@ function groqPost(apiKey, messages, maxTokens = 6000) {
   });
 }
 
+// ─── CMS-Specific Page Size Fix Advice ────────────────────────────────────────
+function getCmsPageSizeFix(cmsName) {
+  const fixes = {
+    'Wix': `Since this site is built on Wix, you cannot directly compress CSS/JS files or modify server settings. Here's what you CAN do through the Wix interface:\n\n1. **Optimize Images via Media Manager** — In the Wix Editor, click each image → "Settings" → "Optimize Image" or upload a pre-compressed version. Use a free tool like TinyPNG or Squoosh to compress images before uploading.\n2. **Enable Wix Turbo / Performance features** — Dashboard → Settings → Performance → enable available speed features (available on certain plans).\n3. **Remove unused Wix Apps** — Dashboard → Add Apps → Manage Apps → uninstall any apps you don't actively use. Each installed app injects code that adds to page weight.\n4. **Remove unused Custom Code** — Dashboard → Settings → Custom Code → delete any tracking pixels or scripts you no longer need.\n5. **Avoid embedding large videos directly** — Use Wix's Video component with a YouTube/Vimeo source instead of self-hosted video files.\n6. **Use Wix's built-in lazy loading** — In the Wix Editor, ensure images below the fold use "Load images as you scroll" (lazy load) in Image Settings.`,
+
+    'Squarespace': `Since this site is built on Squarespace, manual CSS/JS minification is not possible. Here's what you CAN do:\n\n1. **Compress images before uploading** — Squarespace auto-optimizes and serves WebP where supported, but start with images under 500KB. Use TinyPNG or Squoosh before upload.\n2. **Remove unused Code Injection scripts** — Settings → Advanced → Code Injection → remove any third-party scripts, tracking codes, or widgets you no longer use.\n3. **Remove unused Extensions/Integrations** — Settings → Extensions → disconnect any extensions you don't actively use.\n4. **Use Squarespace's Summary Block** instead of loading full blog pages on the homepage.\n5. **Reduce Custom CSS** — Design → Custom CSS → remove unused styles.\n6. **Upgrade to Business/Commerce plan** for access to Squarespace's built-in CDN acceleration and performance enhancements.`,
+
+    'Shopify': `Since this site is built on Shopify, direct file minification is not possible. Here's what you CAN do:\n\n1. **Compress images before uploading** — Use Shopify's built-in image compression or install the free "TinyIMG" app from the Shopify App Store to bulk-compress existing images.\n2. **Audit and remove unused apps** — Admin → Settings → Apps → uninstall apps you don't use. Every installed app injects scripts that increase page size.\n3. **Review theme code for unused scripts** — Online Store → Themes → Edit Code → identify and remove unused JavaScript sections or theme features you haven't enabled.\n4. **Use Shopify's native lazy loading** — Ensure your theme's settings have lazy loading enabled for product images.\n5. **Remove redundant analytics scripts** — Admin → Online Store → Preferences → remove duplicate or unused Google Analytics / third-party tracking tags.\n6. **Consider a lighter theme** — Some themes are significantly leaner. Check the Shopify Theme Store for performance-optimized themes.`,
+
+    'Webflow': `Since this site is built on Webflow, direct CSS/JS compression is managed by Webflow. Here's what you CAN do:\n\n1. **Compress images before uploading** — Upload images at the final display size. Use TinyPNG or Squoosh first. Enable WebP: Project Settings → SEO → tick "Serve images in WebP format".\n2. **Remove unused Custom Code** — Project Settings → Custom Code → remove any unused third-party scripts from the <head> or </body> sections.\n3. **Audit Webflow Interactions** — Complex animations add JavaScript weight. In the Webflow Designer, review and remove interactions that aren't essential.\n4. **Use Webflow's asset clean-up** — Assets panel → delete unused images and files.\n5. **Enable Webflow's CDN** — On paid hosting plans, Webflow serves all assets via Fastly CDN automatically. Ensure you're on a paid plan for this benefit.\n6. **Reduce Font Variants** — In Project Settings → Fonts, remove unused font weights — each variant adds network overhead.`,
+
+    'HubSpot CMS': `Since this site is built on HubSpot CMS, direct file compression requires developer access. Here's what you CAN do:\n\n1. **Compress images before uploading** — Use TinyPNG or Squoosh to reduce image file sizes before uploading to the HubSpot File Manager.\n2. **Audit custom code modules** — Design Manager → check custom HTML/CSS/JS modules and remove unused code.\n3. **Remove unused HubSpot integrations** — Settings → Integrations → disconnect integrations you're not actively using.\n4. **Use HubSpot's built-in CDN** — HubSpot automatically serves assets through a CDN — ensure no self-hosted or externally hosted large assets are being referenced.`,
+  };
+
+  // Generic fallback for unknown or self-hosted CMS
+  return fixes[cmsName] || `1. Use a lossless image compression tool (e.g., TinyPNG, Squoosh) to reduce image file sizes before uploading to your CMS.\n2. Remove unused third-party scripts, tracking pixels, and plugins/extensions from your site's settings or dashboard.\n3. Check your platform's performance or speed settings for any built-in optimization options.\n4. Use a CDN (e.g., Cloudflare free tier) if supported by your hosting platform.\n5. Remove any unused plugins, apps, or extensions that may be adding unnecessary code to your pages.`;
+}
+
+// ─── Hosted CMS instructions for AI system prompt ─────────────────────────────
+function getHostedCmsInstructions(cmsName) {
+  const hostedPlatforms = ['Wix', 'Squarespace', 'Shopify', 'Webflow', 'HubSpot CMS'];
+  if (hostedPlatforms.includes(cmsName)) {
+    return `\nCRITICAL — HOSTED PLATFORM CONSTRAINTS: "${cmsName}" is a hosted/SaaS CMS. Users have NO access to server files, web server configuration, .htaccess, or build tools. Do NOT suggest: manually compressing or minifying CSS/JS files, editing server configs, installing server-side scripts/modules, or using command-line tools. ALL suggestion "fix" fields MUST only describe actions the user can take through the ${cmsName} dashboard, visual editor, or official app/plugin marketplace.\n`;
+  }
+  return '';
+}
+
 // ─── Main handler ──────────────────────────────────────────────────────────────
 exports.handler = async function (event) {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: JSON.stringify({ error: 'Method Not Allowed' }) };
@@ -554,8 +581,8 @@ STRICT RULES:
     const groqRes = await groqPost(GROQ_API_KEY, [
       {
         role: 'system',
-        content: `You are an expert SEO auditor. CMS fingerprinted as: "${cmsData.name}" (${cmsData.confidence} confidence${cmsData.version ? ', v' + cmsData.version : ''}). 
-You have REAL measured data. Your job is ONLY to write narrative text (summary, descriptions) and structured suggestions — NOT to invent scores. 
+        content: `You are an expert SEO auditor. CMS fingerprinted as: "${cmsData.name}" (${cmsData.confidence} confidence${cmsData.version ? ', v' + cmsData.version : ''}).${getHostedCmsInstructions(cmsData.name)}
+You have REAL measured data. Your job is ONLY to write narrative text (summary, descriptions) and structured suggestions — NOT to invent scores.
 All numeric scores in the metrics array MUST come from the real data provided.
 Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
       },
@@ -739,6 +766,29 @@ Never make up URLs. Never invent Core Web Vitals numbers if not provided.`,
           const allBad = s.affected_pages.every(p => /\.(xml|txt|json|csv|gz)$/i.test(p.url));
           return !allBad;
         });
+    }
+
+    // ── 13. CMS-aware fix overrides for page size / performance suggestions ───
+    const hostedPlatforms = ['Wix', 'Squarespace', 'Shopify', 'Webflow', 'HubSpot CMS'];
+    if (hostedPlatforms.includes(cmsData.name) && parsed.suggestions && Array.isArray(parsed.suggestions)) {
+      const pageSizeKeywords = [
+        'page size', 'compress image', 'minify', 'page weight',
+        'reduce size', 'css/js', 'gzip', 'brotli', 'file size',
+        'optimize page', 'code minif', 'htaccess', 'server-side compression'
+      ];
+      parsed.suggestions = parsed.suggestions.map(s => {
+        const combined = ((s.title || '') + ' ' + (s.description || '') + ' ' + (s.fix || '')).toLowerCase();
+        const isPageSizeSuggestion = pageSizeKeywords.some(kw => combined.includes(kw));
+        if (isPageSizeSuggestion) {
+          s.fix = getCmsPageSizeFix(cmsData.name);
+          // Also annotate description if it mentions impossible tasks
+          if (combined.includes('minify') || combined.includes('compress css') || combined.includes('compress js')) {
+            s.description = s.description +
+              ` Note: Since this site is built on ${cmsData.name}, you cannot manually minify CSS/JS or access server configurations. The recommended fix below is tailored specifically for ${cmsData.name} users.`;
+          }
+        }
+        return s;
+      });
     }
 
     return {
