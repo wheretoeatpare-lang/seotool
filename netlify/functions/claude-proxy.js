@@ -49,6 +49,16 @@ function normaliseUrl(href, base) {
   } catch { return null; }
 }
 
+// ─── Sanitize text for safe JSON embedding ─────────────────────────────────────
+function safeText(str) {
+  if (!str) return '';
+  return str
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/[\r\n\t]/g, ' ')
+    .replace(/[\x00-\x1F\x7F]/g, '');
+}
+
 // ─── Extract internal page links ───────────────────────────────────────────────
 function extractPageLinks(html, baseUrl) {
   const base = new URL(baseUrl);
@@ -127,7 +137,7 @@ function isHtmlPage(url, hostname) {
 // ─── Get page title ─────────────────────────────────────────────────────────────
 function getPageTitle(html, fallbackUrl) {
   const m = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  if (m && m[1].trim()) return m[1].trim().slice(0, 70);
+  if (m && m[1].trim()) return m[1].trim().replace(/[\r\n]/g, ' ').slice(0, 70);
   const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   if (h1) return h1[1].replace(/<[^>]+>/g, '').trim().slice(0, 70);
   try { return new URL(fallbackUrl).pathname || 'Homepage'; } catch { return fallbackUrl; }
@@ -453,16 +463,16 @@ exports.handler = async function (event) {
 
   // ── 8. Build structured findings ──────────────────────────────────────────
   const findings = {
-    crawledPages: pageAnalyses.map(p => ({ url: p.url, title: p.title })),
-    missingTitlePages: pageAnalyses.filter(p => p.issues.missingTitle || p.issues.shortTitle).map(p => ({ label: p.title, url: p.url })),
-    missingDescPages: pageAnalyses.filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription).map(p => ({ label: p.title, url: p.url })),
+    crawledPages: pageAnalyses.map(p => ({ url: p.url, title: safeText(p.title) })),
+    missingTitlePages: pageAnalyses.filter(p => p.issues.missingTitle || p.issues.shortTitle).map(p => ({ label: safeText(p.title), url: p.url })),
+    missingDescPages: pageAnalyses.filter(p => p.issues.missingMetaDescription || p.issues.shortMetaDescription).map(p => ({ label: safeText(p.title), url: p.url })),
     imagesWithoutAlt: pageAnalyses.flatMap(p => p.issues.imagesWithoutAlt.map(img => ({ label: img.fullSrc.split('/').pop().slice(0, 60) || 'image', url: img.fullSrc, onPage: p.url }))).slice(0, 10),
-    pagesWithMissingAlt: pageAnalyses.filter(p => p.issues.imagesWithoutAlt.length > 0).map(p => ({ label: `${p.title} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`, url: p.url, imageUrls: p.issues.imagesWithoutAlt.map(i => i.fullSrc) })),
-    missingH1Pages: pageAnalyses.filter(p => p.issues.missingH1).map(p => ({ label: p.title, url: p.url })),
-    multipleH1Pages: pageAnalyses.filter(p => p.issues.multipleH1).map(p => ({ label: p.title, url: p.url })),
-    thinContentPages: pageAnalyses.filter(p => p.issues.lowWordCount).map(p => ({ label: `${p.title} (${p.issues.wordCount} words)`, url: p.url })),
-    missingCanonicalPages: pageAnalyses.filter(p => p.issues.missingCanonical).map(p => ({ label: p.title, url: p.url })),
-    noInternalLinkPages: pageAnalyses.filter(p => p.issues.noInternalLinks).map(p => ({ label: p.title, url: p.url })),
+    pagesWithMissingAlt: pageAnalyses.filter(p => p.issues.imagesWithoutAlt.length > 0).map(p => ({ label: `${safeText(p.title)} (${p.issues.imagesWithoutAlt.length} image${p.issues.imagesWithoutAlt.length > 1 ? 's' : ''})`, url: p.url, imageUrls: p.issues.imagesWithoutAlt.map(i => i.fullSrc) })),
+    missingH1Pages: pageAnalyses.filter(p => p.issues.missingH1).map(p => ({ label: safeText(p.title), url: p.url })),
+    multipleH1Pages: pageAnalyses.filter(p => p.issues.multipleH1).map(p => ({ label: safeText(p.title), url: p.url })),
+    thinContentPages: pageAnalyses.filter(p => p.issues.lowWordCount).map(p => ({ label: `${safeText(p.title)} (${p.issues.wordCount} words)`, url: p.url })),
+    missingCanonicalPages: pageAnalyses.filter(p => p.issues.missingCanonical).map(p => ({ label: safeText(p.title), url: p.url })),
+    noInternalLinkPages: pageAnalyses.filter(p => p.issues.noInternalLinks).map(p => ({ label: safeText(p.title), url: p.url })),
   };
 
   // ── 9. Build AI prompt with REAL data injected ────────────────────────────
@@ -508,7 +518,7 @@ OVERALL SCORE GUIDANCE:
 
 === CRAWL PAGE DATA — USE ONLY THESE EXACT URLS IN affected_pages ===
 Pages audited (${findings.crawledPages.length}):
-${findings.crawledPages.map(p => `  - ${p.url} ("${p.title}")`).join('\n')}
+${findings.crawledPages.map(p => `  - ${p.url} ("${safeText(p.title)}")`).join('\n')}
 
 ISSUE FINDINGS:
 • Missing/short title tag (${findings.missingTitlePages.length} pages): ${JSON.stringify(findings.missingTitlePages)}
