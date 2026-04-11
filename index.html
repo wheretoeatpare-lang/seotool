@@ -1027,7 +1027,13 @@ async function startAudit() {
   } catch (err) {
     clearInterval(stepInterval);
     document.getElementById('loading-state').style.display = 'none';
-    showToast('❌ Audit failed: ' + err.message, 'var(--red)');
+    // FIX #4: Show specific, actionable error — not just a silent reset
+    const msg = err.message || 'Unknown error';
+    const isTimeout = msg.includes('abort') || msg.includes('timeout');
+    const userMsg = isTimeout
+      ? '⏱ Audit timed out — the AI took too long. Please try again.'
+      : '❌ Audit failed: ' + msg;
+    showToast(userMsg, 'var(--red)');
     resetAudit();
   }
 
@@ -1128,16 +1134,18 @@ function renderResults(url, data, cmsData, pageData) {
   }
 
   // Overview cards
-  document.getElementById('overview-cards').innerHTML = (data.overview_cards || []).map(card => `
+  document.getElementById('overview-cards').innerHTML = (data.overview_cards || []).map(card => {
+    const val = String(card.value ?? '—');  // FIX #3: ensure string — AI sometimes returns numbers
+    return `
     <div class="audit-card">
       <div class="card-header">
         <div class="card-title">${card.title}</div>
         <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
       </div>
-      <div class="card-value" style="font-size:${card.value.length > 22 ? '0.95rem' : '1.4rem'}">${card.value}</div>
+      <div class="card-value" style="font-size:${val.length > 22 ? '0.95rem' : '1.4rem'}">${val}</div>
       <div class="card-desc">${card.description}</div>
     </div>
-  `).join('');
+  `}).join('');
 
   // Suggestions
   allSuggestions = data.suggestions || [];
@@ -1162,16 +1170,18 @@ function renderResults(url, data, cmsData, pageData) {
   `).join('');
 
   // Keywords
-  document.getElementById('keywords-content').innerHTML = (data.keywords || []).map(card => `
+  document.getElementById('keywords-content').innerHTML = (data.keywords || []).map(card => {
+    const val = String(card.value ?? '—');  // FIX #3: ensure string
+    return `
     <div class="audit-card">
       <div class="card-header">
         <div class="card-title">${card.title}</div>
         <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
       </div>
-      <div class="card-value" style="font-size:${card.value.length > 22 ? '0.9rem' : '1.3rem'};word-break:break-word">${card.value}</div>
+      <div class="card-value" style="font-size:${val.length > 22 ? '0.9rem' : '1.3rem'};word-break:break-word">${val}</div>
       <div class="card-desc">${card.description}</div>
     </div>
-  `).join('');
+  `}).join('');
 
   // Schema
   renderSchema(data.schema_analysis, pageData);

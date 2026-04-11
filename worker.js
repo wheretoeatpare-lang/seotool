@@ -526,15 +526,26 @@ Generate at least 10 suggestions and 12 metrics. Base all factual data on the re
         { role: 'system', content: systemPrompt },
         { role: 'user',   content: userPrompt },
       ],
-      max_tokens: 4096,
+      max_tokens: 8192,  // FIX #1: was 4096 — too small for full audit JSON, caused truncated/invalid JSON
     });
 
-    let text = response.response;
-    // Robust JSON extraction
+    // FIX #2: Strip markdown code fences BEFORE extracting JSON
+    // LLaMA often wraps output in ```json ... ``` despite instructions
+    let text = (response.response || '').trim();
+    text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
+
+    // Robust JSON extraction — grab outermost { ... }
     const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('No JSON found in AI response');
+    if (!jsonMatch) throw new Error('No JSON found in AI response. Raw: ' + text.slice(0, 200));
     const clean = jsonMatch[0];
-    const parsed = JSON.parse(clean);
+
+    let parsed;
+    try {
+      parsed = JSON.parse(clean);
+    } catch (parseErr) {
+      // Attempt to salvage truncated JSON by finding last complete top-level key
+      throw new Error('JSON parse failed (response may be truncated). Try again. Detail: ' + parseErr.message);
+    }
 
     return new Response(JSON.stringify(parsed), { headers: CORS });
 
