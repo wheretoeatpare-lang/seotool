@@ -536,20 +536,49 @@ Generate at least 10 suggestions and 12 metrics. Base all factual data on the re
         max_tokens: 8192,
       });
     } catch (aiErr) {
-      // Model may have been renamed/deprecated — fallback to stable model
+      // Primary model failed — try stable fallback
       console.error('Primary model failed, trying fallback:', aiErr.message);
-      response = await env.AI.run('@cf/meta/llama-3.1-70b-instruct', {
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user',   content: userPrompt },
-        ],
-        max_tokens: 8192,
-      });
+      try {
+        response = await env.AI.run('@cf/meta/llama-3.1-70b-instruct', {
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user',   content: userPrompt },
+          ],
+          max_tokens: 8192,
+        });
+      } catch (fallbackErr) {
+        throw new Error('All AI models unavailable. Primary: ' + aiErr.message + ' | Fallback: ' + fallbackErr.message);
+      }
     }
 
-    // FIX #2: Strip markdown code fences BEFORE extracting JSON
-    // LLaMA often wraps output in ```json ... ``` despite instructions
-    let text = (response.response || '').trim();
+    // ── BULLETPROOF RESPONSE TEXT EXTRACTION ──────────────────
+    // Cloudflare Workers AI has changed response shapes across model versions:
+    //   Shape A (old llama-3.1):  { response: "string" }
+    //   Shape B (new fp8 models): { response: null, choices: [{message:{content:"string"}}] }
+    //   Shape C (some models):    { result: { response: "string" } }
+    //   Shape D (raw string):     "string"
+    let rawText = '';
+    if (typeof response === 'string') {
+      rawText = response;
+    } else if (response && typeof response.response === 'string') {
+      rawText = response.response;                                          // Shape A
+    } else if (response && Array.isArray(response.choices) && response.choices[0]?.message?.content) {
+      rawText = response.choices[0].message.content;                        // Shape B
+    } else if (response && response.result && typeof response.result.response === 'string') {
+      rawText = response.result.response;                                   // Shape C
+    } else {
+      // Last resort: JSON stringify and try to extract anything useful
+      const dump = JSON.stringify(response || {});
+      const m = dump.match(/"(?:response|content|text)"\s*:\s*"([\s\S]{20,})"/);
+      rawText = m ? m[1].replace(/\\n/g, '\n').replace(/\\"/g, '"') : '';
+    }
+
+    if (!rawText) {
+      throw new Error('AI returned empty response. Model may be rate-limited or temporarily unavailable. Please try again.');
+    }
+
+    // Strip markdown code fences (LLaMA often wraps output in ```json ... ```)
+    let text = rawText.trim();
     text = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/i, '').trim();
 
     // Robust JSON extraction — grab outermost { ... }
