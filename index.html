@@ -3,28 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSight — AI SEO Auditor</title>
+<title>RankSight — AI SEO Auditor | Rank #1 on Google</title>
+<meta name="description" content="Free AI-powered SEO audit tool. Get a comprehensive SEO score, Core Web Vitals, schema analysis, E-E-A-T signals, CMS-specific fixes, and 50+ actionable recommendations to rank #1 on Google.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #0a0a0f;
-  --bg2: #12121a;
-  --bg3: #1a1a27;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --text: #f0eff8;
-  --muted: #8b8aaa;
+  --bg: #07070d;
+  --bg2: #0f0f1a;
+  --bg3: #161624;
+  --bg4: #1e1e30;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --border3: rgba(255,255,255,0.18);
+  --text: #eeedf8;
+  --muted: #8480aa;
+  --muted2: #6b6890;
   --accent: #7c6ff7;
   --accent2: #a78bfa;
-  --accent-glow: rgba(124,111,247,0.2);
+  --accent3: #c4b5fd;
+  --glow: rgba(124,111,247,0.18);
   --green: #34d399;
+  --green2: rgba(52,211,153,0.12);
   --red: #f87171;
+  --red2: rgba(248,113,113,0.12);
   --amber: #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
   --blue: #60a5fa;
+  --blue2: rgba(96,165,250,0.12);
   --cyan: #22d3ee;
+  --pink: #f472b6;
 }
+
 html { scroll-behavior: smooth; }
 body {
   font-family: 'DM Sans', sans-serif;
@@ -32,380 +43,440 @@ body {
   color: var(--text);
   min-height: 100vh;
   overflow-x: hidden;
+  line-height: 1.6;
 }
-/* NAV */
+
+/* ── NAV ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1.2rem 2.5rem;
-  background: rgba(10,10,15,0.85);
-  backdrop-filter: blur(12px);
+  padding: 1rem 2.5rem;
+  background: rgba(7,7,13,0.9);
+  backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.4rem; font-weight: 800;
-  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.02em;
+  background-clip: text; letter-spacing: -0.02em;
 }
-.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links { display: flex; gap: 1.75rem; align-items: center; }
 .nav-links a {
-  color: var(--muted); text-decoration: none; font-size: 0.9rem;
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
   font-weight: 500; transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--text); }
 .nav-cta {
-  background: var(--accent); color: white !important;
-  padding: 0.5rem 1.2rem; border-radius: 8px;
-  font-size: 0.85rem !important;
+  background: linear-gradient(135deg, var(--accent), #5a4fcc);
+  color: white !important; padding: 0.45rem 1.1rem;
+  border-radius: 8px; font-size: 0.83rem !important;
 }
-.nav-cta:hover { background: var(--accent2) !important; color: white !important; }
-/* KEY MODAL */
-#key-modal {
-  display: none; position: fixed; inset: 0; z-index: 500;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
-  align-items: center; justify-content: center; padding: 1.5rem;
-}
-.modal-box {
-  background: var(--bg2); border: 1px solid var(--border2);
-  border-radius: 20px; padding: 2rem; max-width: 480px; width: 100%;
-  position: relative;
-}
-.modal-box h3 {
-  font-family: 'Syne', sans-serif; font-size: 1.3rem;
-  font-weight: 700; margin-bottom: 0.5rem;
-}
-.modal-box p { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 1.25rem; }
-.modal-box a { color: var(--accent2); }
-#key-input {
-  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
-  color: var(--text); padding: 0.85rem 1rem; border-radius: 10px;
-  font-family: monospace; font-size: 0.88rem; outline: none;
-  margin-bottom: 0.5rem;
-}
-#key-input:focus { border-color: var(--accent); }
-#key-error {
-  display: none; color: var(--red); font-size: 0.8rem; margin-bottom: 0.75rem;
-}
-.modal-btns { display: flex; gap: 0.75rem; }
-.modal-save {
-  flex: 1; background: var(--accent); color: white; border: none;
-  padding: 0.75rem; border-radius: 10px; font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem; font-weight: 500; cursor: pointer;
-}
-.modal-save:hover { opacity: 0.9; }
-.modal-cancel {
-  background: var(--bg3); color: var(--muted); border: 1px solid var(--border);
-  padding: 0.75rem 1.25rem; border-radius: 10px; font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem; cursor: pointer;
-}
-.modal-cancel:hover { color: var(--text); }
-.key-status {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 0.78rem; margin-top: 0.6rem;
-}
-.key-dot { width: 7px; height: 7px; border-radius: 50%; }
-.settings-btn {
-  background: var(--bg3); border: 1px solid var(--border2);
-  color: var(--muted); padding: 0.45rem 1rem; border-radius: 8px;
-  font-size: 0.82rem; cursor: pointer; font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s; display: flex; align-items: center; gap: 6px;
-}
-.settings-btn:hover { color: var(--text); border-color: var(--accent); }
-/* HERO */
+.nav-cta:hover { opacity: 0.88; }
+
+/* ── HERO ── */
 .hero {
-  padding: 10rem 2rem 5rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+  padding: 9rem 2rem 5rem; text-align: center;
+  position: relative; overflow: hidden;
 }
 .hero::before {
-  content: '';
-  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 800px; height: 500px;
-  background: radial-gradient(ellipse, rgba(124,111,247,0.15) 0%, transparent 70%);
+  content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(124,111,247,0.13) 0%, transparent 70%);
   pointer-events: none;
 }
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent);
+}
 .hero-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.3);
-  color: var(--accent2); padding: 0.4rem 1rem; border-radius: 999px;
-  font-size: 0.8rem; font-weight: 500; margin-bottom: 2rem;
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.25);
+  color: var(--accent2); padding: 0.38rem 1rem; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 600; margin-bottom: 2rem; letter-spacing: 0.02em;
 }
 .hero-badge .dot {
   width: 6px; height: 6px; border-radius: 50%;
   background: var(--accent); animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.8); }
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(124,111,247,0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(124,111,247,0); }
 }
 h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
   font-weight: 800; line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.035em; margin-bottom: 1.5rem;
 }
 h1 span {
-  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .hero p {
-  color: var(--muted); font-size: 1.1rem; max-width: 580px;
-  margin: 0 auto 3rem; line-height: 1.7; font-weight: 300;
+  color: var(--muted); font-size: 1.08rem; max-width: 560px;
+  margin: 0 auto 3rem; line-height: 1.75; font-weight: 400;
 }
-/* AUDIT BOX */
+
+/* ── AUDIT BOX ── */
 .audit-container {
-  max-width: 700px; margin: 0 auto;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: 20px; padding: 2rem;
-  position: relative;
+  max-width: 720px; margin: 0 auto;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 2rem; position: relative;
 }
 .audit-container::before {
-  content: '';
-  position: absolute; inset: -1px; border-radius: 21px;
-  background: linear-gradient(135deg, rgba(124,111,247,0.3), rgba(34,211,238,0.1), transparent 60%);
+  content: ''; position: absolute; inset: -1px; border-radius: 21px;
+  background: linear-gradient(135deg, rgba(124,111,247,0.25), rgba(34,211,238,0.08), transparent 60%);
   pointer-events: none; z-index: -1;
 }
-.url-row {
-  display: flex; gap: 0.75rem; margin-bottom: 1rem;
-}
+.url-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
 #url-input {
-  flex: 1;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 0.85rem 1.2rem;
-  border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.2s;
+  flex: 1; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.9rem 1.2rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
 }
-#url-input:focus { border-color: var(--accent); }
-#url-input::placeholder { color: var(--muted); }
+#url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+#url-input::placeholder { color: var(--muted2); }
 #audit-btn {
   background: linear-gradient(135deg, var(--accent), #5a4fcc);
-  color: white; border: none;
-  padding: 0.85rem 1.8rem;
+  color: white; border: none; padding: 0.9rem 2rem;
   border-radius: 10px; font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem; font-weight: 500; cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-  white-space: nowrap;
+  font-size: 0.95rem; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(124,111,247,0.35);
 }
-#audit-btn:hover { opacity: 0.9; }
+#audit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 #audit-btn:active { transform: scale(0.98); }
-#audit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.options-row {
-  display: flex; flex-wrap: wrap; gap: 0.6rem;
-}
+#audit-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.options-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem; }
 .option-chip {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 5px;
   background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 999px; padding: 0.4rem 0.9rem;
-  font-size: 0.8rem; color: var(--muted); cursor: pointer;
+  border-radius: 999px; padding: 0.35rem 0.85rem;
+  font-size: 0.78rem; color: var(--muted); cursor: pointer;
   transition: all 0.2s; user-select: none;
 }
 .option-chip.active {
-  border-color: var(--accent); color: var(--accent2);
+  border-color: rgba(124,111,247,0.5); color: var(--accent2);
   background: rgba(124,111,247,0.1);
 }
 .option-chip input { display: none; }
-/* LOADING */
-#loading-state {
-  display: none; text-align: center; padding: 3rem 2rem;
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: flex; justify-content: center; gap: 3rem;
+  padding: 2rem 0 1rem; flex-wrap: wrap;
 }
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+
+/* ── LOADING ── */
+#loading-state {
+  display: none; text-align: center; padding: 4rem 2rem;
+}
+.spinner-wrap { position: relative; width: 72px; height: 72px; margin: 0 auto 2rem; }
 .spinner-ring {
-  width: 60px; height: 60px; border-radius: 50%;
-  border: 3px solid var(--border2);
-  border-top-color: var(--accent);
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
   animation: spin 0.9s linear infinite;
-  margin: 0 auto 1.5rem;
+}
+.spinner-inner {
+  position: absolute; inset: 10px; border-radius: 50%;
+  border: 2px solid transparent; border-top-color: var(--cyan);
+  animation: spin 1.3s linear infinite reverse;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loading-steps { list-style: none; text-align: left; display: inline-block; }
+.loading-steps { list-style: none; text-align: left; display: inline-block; min-width: 280px; }
 .loading-steps li {
   display: flex; align-items: center; gap: 0.75rem;
-  color: var(--muted); font-size: 0.9rem; padding: 0.3rem 0;
+  color: var(--muted); font-size: 0.88rem; padding: 0.35rem 0;
   transition: color 0.4s;
 }
 .loading-steps li.done { color: var(--green); }
 .loading-steps li.active { color: var(--text); }
-.step-icon { width: 18px; height: 18px; font-size: 16px; }
-/* RESULTS */
+.step-icon { width: 18px; text-align: center; }
+
+/* ── RESULTS ── */
 #results-section { display: none; }
+#main-results { max-width: 960px; margin: 3rem auto 6rem; padding: 0 1.5rem; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--muted); font-size: 0.85rem; cursor: pointer;
+  margin-bottom: 2rem; background: none; border: none;
+  font-family: 'DM Sans', sans-serif; transition: color 0.2s;
+  padding: 0.5rem 0;
+}
+.back-btn:hover { color: var(--text); }
+
+/* ── EXPORT BTN ── */
+.export-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--muted2); font-size: 0.82rem; cursor: pointer;
+  padding: 0.45rem 1rem; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+  float: right; margin-bottom: 2rem;
+}
+.export-btn:hover { color: var(--text); border-color: var(--accent); }
+
+/* ── SCORE HEADER ── */
 .score-header {
   background: var(--bg2); border: 1px solid var(--border2);
   border-radius: 20px; padding: 2.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   display: grid; grid-template-columns: auto 1fr; gap: 2.5rem;
   align-items: center;
 }
 .score-ring-wrap { position: relative; }
-.score-ring-wrap svg { overflow: visible; }
 .score-number {
   position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  transform: translate(-50%, -50%); text-align: center;
 }
 .score-number .num {
-  font-family: 'Syne', sans-serif;
-  font-size: 2.2rem; font-weight: 800; line-height: 1;
+  font-family: 'Syne', sans-serif; font-size: 2.4rem;
+  font-weight: 800; line-height: 1;
 }
-.score-number .label {
-  font-size: 0.7rem; color: var(--muted); font-weight: 500; letter-spacing: 0.05em;
-}
+.score-number .label { font-size: 0.68rem; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; }
 .score-meta h2 {
-  font-family: 'Syne', sans-serif;
-  font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+  font-family: 'Syne', sans-serif; font-size: 1.5rem;
+  font-weight: 700; margin-bottom: 0.4rem;
 }
-.score-meta .url-display {
-  color: var(--muted); font-size: 0.85rem; margin-bottom: 1.25rem;
-  word-break: break-all;
+.url-display {
+  color: var(--muted); font-size: 0.83rem; margin-bottom: 1.25rem; word-break: break-all;
 }
-.grade-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.grade-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .grade-chip {
-  padding: 0.3rem 0.8rem; border-radius: 6px;
-  font-size: 0.78rem; font-weight: 500;
+  padding: 0.25rem 0.7rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600;
 }
-.grade-A { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
-.grade-B { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
-.grade-C { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
-.grade-D { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
-.grade-F { background: rgba(248,113,113,0.2); color: var(--red); border: 1px solid rgba(248,113,113,0.4); }
-/* TABS */
+.grade-A { background: rgba(52,211,153,0.14); color: var(--green); border: 1px solid rgba(52,211,153,0.28); }
+.grade-B { background: rgba(96,165,250,0.14); color: var(--blue); border: 1px solid rgba(96,165,250,0.28); }
+.grade-C { background: rgba(251,191,36,0.14); color: var(--amber); border: 1px solid rgba(251,191,36,0.28); }
+.grade-D { background: rgba(248,113,113,0.14); color: var(--red); border: 1px solid rgba(248,113,113,0.28); }
+.grade-F { background: rgba(248,113,113,0.2); color: var(--red); border: 1px solid rgba(248,113,113,0.38); }
+
+/* ── QUICK WINS ── */
+.quick-wins-bar {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(34,211,238,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.qw-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.72rem; font-weight: 700; color: var(--green);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
+}
+.qw-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.qw-item {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.85rem; color: var(--text); line-height: 1.4;
+}
+.qw-bullet {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(52,211,153,0.2); color: var(--green);
+  font-size: 0.65rem; font-weight: 700; display: flex;
+  align-items: center; justify-content: center; margin-top: 1px;
+}
+
+/* ── AI SUMMARY ── */
+.ai-summary {
+  background: linear-gradient(135deg, rgba(124,111,247,0.08), rgba(34,211,238,0.04));
+  border: 1px solid rgba(124,111,247,0.18);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem;
+}
+.ai-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; font-weight: 700; color: var(--accent2);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
+}
+.eeat-summary {
+  background: linear-gradient(135deg, rgba(244,114,182,0.07), rgba(124,111,247,0.04));
+  border: 1px solid rgba(244,114,182,0.2);
+  border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.eeat-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.7rem; font-weight: 700; color: var(--pink);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem;
+}
+
+/* ── TABS ── */
 .tabs {
-  display: flex; gap: 0.25rem; margin-bottom: 1.5rem;
+  display: flex; gap: 0.2rem; margin-bottom: 1.5rem;
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 12px; padding: 0.35rem;
+  border-radius: 12px; padding: 0.3rem; overflow-x: auto;
+  scrollbar-width: none;
 }
+.tabs::-webkit-scrollbar { display: none; }
 .tab-btn {
-  flex: 1; background: none; border: none;
+  flex-shrink: 0; background: none; border: none;
   color: var(--muted); font-family: 'DM Sans', sans-serif;
-  font-size: 0.85rem; font-weight: 500; padding: 0.6rem 1rem;
+  font-size: 0.82rem; font-weight: 500; padding: 0.55rem 1rem;
   border-radius: 8px; cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
 }
 .tab-btn.active {
   background: var(--bg3); color: var(--text);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
-/* CARDS GRID */
+
+/* ── CARDS GRID ── */
 .cards-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
 }
 .audit-card {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.4rem;
-  transition: border-color 0.2s;
+  border-radius: 14px; padding: 1.35rem;
+  transition: border-color 0.2s, transform 0.2s;
 }
-.audit-card:hover { border-color: var(--border2); }
+.audit-card:hover { border-color: var(--border2); transform: translateY(-1px); }
 .card-header {
   display: flex; align-items: flex-start;
-  justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem;
+  justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem;
 }
-.card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.95rem; font-weight: 600;
-}
+.card-title { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 600; }
 .status-badge {
-  flex-shrink: 0;
-  padding: 0.2rem 0.6rem; border-radius: 5px;
-  font-size: 0.72rem; font-weight: 600;
+  flex-shrink: 0; padding: 0.18rem 0.55rem; border-radius: 5px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.03em;
 }
-.status-pass { background: rgba(52,211,153,0.15); color: var(--green); }
-.status-warn { background: rgba(251,191,36,0.15); color: var(--amber); }
-.status-fail { background: rgba(248,113,113,0.15); color: var(--red); }
-.status-info { background: rgba(96,165,250,0.15); color: var(--blue); }
+.status-pass { background: var(--green2); color: var(--green); }
+.status-warn { background: var(--amber2); color: var(--amber); }
+.status-fail { background: var(--red2); color: var(--red); }
+.status-info { background: var(--blue2); color: var(--blue); }
 .card-value {
-  font-size: 1.6rem; font-weight: 700;
-  font-family: 'Syne', sans-serif; margin-bottom: 0.3rem;
-  color: var(--text);
+  font-size: 1.5rem; font-weight: 700; font-family: 'Syne', sans-serif;
+  margin-bottom: 0.3rem; color: var(--text); word-break: break-word;
 }
-.card-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
-/* SUGGESTIONS */
+.card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+/* ── SUGGESTIONS ── */
 .suggestion-item {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.4rem;
-  margin-bottom: 0.75rem;
-  border-left: 3px solid transparent;
-  transition: border-color 0.2s;
+  border-radius: 14px; padding: 1.4rem; margin-bottom: 0.75rem;
+  border-left: 3px solid transparent; transition: border-color 0.2s;
 }
 .suggestion-item.priority-high { border-left-color: var(--red); }
 .suggestion-item.priority-medium { border-left-color: var(--amber); }
 .suggestion-item.priority-low { border-left-color: var(--blue); }
 .suggestion-header {
-  display: flex; align-items: center; gap: 0.75rem;
-  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;
+  flex-wrap: wrap;
 }
-.priority-dot {
-  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-}
-.dot-high { background: var(--red); }
-.dot-medium { background: var(--amber); }
+.priority-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-high { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.5); }
+.dot-medium { background: var(--amber); box-shadow: 0 0 6px rgba(251,191,36,0.5); }
 .dot-low { background: var(--blue); }
-.suggestion-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 0.95rem; font-weight: 600; flex: 1;
+.suggestion-title { font-family: 'Syne', sans-serif; font-size: 0.93rem; font-weight: 600; flex: 1; min-width: 0; }
+.tag {
+  font-size: 0.68rem; padding: 0.18rem 0.55rem; border-radius: 5px;
+  font-weight: 700; white-space: nowrap;
 }
-.impact-tag {
-  font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 5px;
-  font-weight: 600; background: var(--bg3); color: var(--muted);
-}
+.impact-tag { background: var(--bg3); color: var(--muted); }
+.effort-tag { background: rgba(34,211,238,0.1); color: var(--cyan); }
+.cat-tag { background: rgba(124,111,247,0.12); color: var(--accent2); }
 .suggestion-body {
-  font-size: 0.85rem; color: var(--muted); line-height: 1.6;
-  margin-bottom: 0.75rem;
+  font-size: 0.84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1rem;
 }
-.suggestion-fix {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.75rem;
-  font-size: 0.82rem; color: var(--text);
-  font-family: monospace; line-height: 1.5;
+.suggestion-meta {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;
 }
-.fix-label {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem; font-weight: 600;
+.cms-fix-box {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 1rem;
+}
+.cms-fix-label {
+  font-family: 'DM Sans', sans-serif; font-size: 0.68rem; font-weight: 700;
   color: var(--accent2); text-transform: uppercase;
-  letter-spacing: 0.05em; margin-bottom: 0.3rem;
+  letter-spacing: 0.06em; margin-bottom: 0.6rem;
+  display: flex; align-items: center; gap: 5px;
 }
-/* METRICS TABLE */
+.cms-fix-content {
+  font-size: 0.82rem; color: var(--text); line-height: 1.7;
+  font-family: monospace;
+}
+
+/* ── METRICS TABLE ── */
 .metrics-table { width: 100%; border-collapse: collapse; }
 .metrics-table th {
   text-align: left; padding: 0.75rem 1rem;
-  font-size: 0.75rem; font-weight: 600;
-  color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em;
+  font-size: 0.72rem; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
   border-bottom: 1px solid var(--border);
 }
 .metrics-table td {
-  padding: 0.85rem 1rem;
-  font-size: 0.88rem; border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1rem; font-size: 0.86rem;
+  border-bottom: 1px solid var(--border);
 }
 .metrics-table tr:last-child td { border-bottom: none; }
-.metric-bar-wrap {
-  display: flex; align-items: center; gap: 0.75rem;
-}
+.metrics-table tr:hover td { background: rgba(255,255,255,0.015); }
+.metric-bar-wrap { display: flex; align-items: center; gap: 0.6rem; }
 .metric-bar {
-  flex: 1; height: 6px; background: var(--bg3);
+  flex: 1; height: 5px; background: var(--bg3);
   border-radius: 999px; overflow: hidden;
 }
-.metric-bar-fill {
-  height: 100%; border-radius: 999px;
-  transition: width 0.8s ease;
+.metric-bar-fill { height: 100%; border-radius: 999px; transition: width 1s ease; }
+.bar-green { background: linear-gradient(90deg, var(--green), #6ee7b7); }
+.bar-amber { background: linear-gradient(90deg, var(--amber), #fde68a); }
+.bar-red   { background: linear-gradient(90deg, var(--red), #fca5a5); }
+.benchmark-text { font-size: 0.72rem; color: var(--muted2); font-style: italic; margin-top: 2px; }
+
+/* ── SCHEMA PANEL ── */
+.schema-panel { display: grid; gap: 1rem; }
+.schema-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem;
 }
-.bar-green { background: var(--green); }
-.bar-amber { background: var(--amber); }
-.bar-red { background: var(--red); }
-.bar-blue { background: var(--blue); }
-/* CMS / TECH STACK */
+.schema-type-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.25);
+  color: var(--accent2); padding: 0.3rem 0.75rem; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 600; margin: 0.25rem;
+}
+.schema-missing-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--red2); border: 1px solid rgba(248,113,113,0.25);
+  color: var(--red); padding: 0.3rem 0.75rem; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 600; margin: 0.25rem;
+}
+
+/* ── COMPETITOR GAPS ── */
+.gap-item {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem; margin-bottom: 0.75rem;
+  display: grid; grid-template-columns: 1fr auto; gap: 1rem;
+  align-items: start;
+}
+.gap-title { font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 600; margin-bottom: 0.35rem; }
+.gap-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.5rem; }
+.gap-action { font-size: 0.8rem; color: var(--accent2); font-weight: 500; }
+
+/* ── CWV PANEL ── */
+.cwv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.cwv-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.4rem; text-align: center;
+}
+.cwv-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+.cwv-value { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem; }
+.cwv-good { color: var(--green); }
+.cwv-warn { color: var(--amber); }
+.cwv-poor { color: var(--red); }
+.cwv-status { font-size: 0.75rem; color: var(--muted); }
+
+/* ── CMS / TECH STACK ── */
 .cms-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-@media (max-width: 640px) { .cms-panel { grid-template-columns: 1fr; } }
 .cms-hero-card {
   background: var(--bg2); border: 1px solid var(--border2);
   border-radius: 16px; padding: 1.75rem;
@@ -418,138 +489,127 @@ h1 span {
   pointer-events: none;
 }
 .cms-logo-wrap {
-  width: 72px; height: 72px; border-radius: 16px;
+  width: 68px; height: 68px; border-radius: 14px;
   background: var(--bg3); border: 1px solid var(--border2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; flex-shrink: 0;
+  font-size: 1.9rem; flex-shrink: 0;
 }
-.cms-hero-info { flex: 1; min-width: 0; }
-.cms-name { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.3rem; }
-.cms-hero-meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 1rem; }
+.cms-name { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; line-height: 1.1; margin-bottom: 0.25rem; }
+.cms-hero-meta { color: var(--muted); font-size: 0.83rem; margin-bottom: 0.9rem; }
 .cms-confidence-wrap { display: flex; align-items: center; gap: 0.75rem; }
-.cms-confidence-bar { flex: 1; height: 8px; background: var(--bg3); border-radius: 999px; overflow: hidden; max-width: 200px; }
+.cms-confidence-bar { flex: 1; height: 7px; background: var(--bg3); border-radius: 999px; overflow: hidden; max-width: 200px; }
 .cms-confidence-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--cyan)); transition: width 1s ease; }
-.cms-confidence-label { font-size: 0.82rem; font-weight: 600; color: var(--accent2); white-space: nowrap; }
-.cms-info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
-.cms-info-title { font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
-.cms-info-value { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
-.cms-info-sub { font-size: 0.8rem; color: var(--muted); }
-.tech-stack-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.cms-confidence-label { font-size: 0.8rem; font-weight: 700; color: var(--accent2); white-space: nowrap; }
+.cms-info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem; }
+.cms-info-title { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.65rem; }
+.cms-info-value { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.2rem; }
+.cms-info-sub { font-size: 0.78rem; color: var(--muted); }
 .tech-chip {
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; gap: 5px;
   background: var(--bg3); border: 1px solid var(--border2);
-  border-radius: 8px; padding: 0.4rem 0.75rem;
-  font-size: 0.8rem; font-weight: 500; color: var(--text);
+  border-radius: 7px; padding: 0.35rem 0.7rem;
+  font-size: 0.78rem; font-weight: 500; color: var(--text); margin: 0.2rem;
 }
-.tech-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.signals-list { display: flex; flex-direction: column; gap: 0.4rem; }
-.signal-item { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.82rem; color: var(--muted); line-height: 1.4; }
-.signal-item::before { content: '✓'; color: var(--green); font-size: 0.75rem; margin-top: 1px; flex-shrink: 0; }
-/* FEATURES SECTION */
-.features {
-  max-width: 1100px; margin: 6rem auto; padding: 0 2rem;
+.tech-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.signal-item {
+  display: flex; align-items: flex-start; gap: 0.55rem;
+  font-size: 0.8rem; color: var(--muted); line-height: 1.4; padding: 0.25rem 0;
 }
+.signal-item::before { content: '✓'; color: var(--green); font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
+
+/* ── FEATURES SECTION ── */
+.features { max-width: 1100px; margin: 5rem auto; padding: 0 2rem; }
 .section-label {
   display: flex; align-items: center; gap: 0.75rem;
-  color: var(--accent2); font-size: 0.8rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.1em;
-  margin-bottom: 1rem;
+  color: var(--accent2); font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;
 }
-.section-label::before, .section-label::after {
-  content: ''; flex: 1; max-width: 60px;
-  height: 1px; background: rgba(167,139,250,0.3);
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: rgba(167,139,250,0.25);
 }
-.section-label::before { display: none; }
-.section-label::after { max-width: 999px; }
 .features h2 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
   font-weight: 800; margin-bottom: 1rem; letter-spacing: -0.02em;
 }
-.features > p { color: var(--muted); max-width: 520px; line-height: 1.7; margin-bottom: 3rem; }
-.features-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
-}
+.features > p { color: var(--muted); max-width: 520px; line-height: 1.75; margin-bottom: 3rem; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
 .feature-card {
   background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 16px; padding: 1.75rem;
-  transition: border-color 0.2s, transform 0.2s;
+  border-radius: 16px; padding: 1.6rem; transition: border-color 0.2s, transform 0.2s;
 }
 .feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
 .feat-icon {
-  width: 42px; height: 42px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; margin-bottom: 1rem;
+  font-size: 1.15rem; margin-bottom: 1rem;
 }
 .feat-icon.purple { background: rgba(124,111,247,0.15); }
 .feat-icon.cyan { background: rgba(34,211,238,0.12); }
 .feat-icon.green { background: rgba(52,211,153,0.12); }
 .feat-icon.amber { background: rgba(251,191,36,0.12); }
-.feature-card h3 {
-  font-family: 'Syne', sans-serif;
-  font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem;
+.feat-icon.pink { background: rgba(244,114,182,0.12); }
+.feature-card h3 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.45rem; }
+.feature-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+/* ── FILTER BAR (suggestions) ── */
+.filter-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.filter-chip {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.3rem 0.8rem;
+  font-size: 0.75rem; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; user-select: none;
 }
-.feature-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
-/* FOOTER */
+.filter-chip.active {
+  border-color: rgba(124,111,247,0.4); color: var(--accent2);
+  background: rgba(124,111,247,0.1);
+}
+
+/* ── FOOTER ── */
 footer {
   text-align: center; padding: 3rem 2rem;
-  border-top: 1px solid var(--border);
-  color: var(--muted); font-size: 0.85rem;
+  border-top: 1px solid var(--border); color: var(--muted); font-size: 0.83rem;
 }
 footer .logo-f {
-  font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
-  background: linear-gradient(135deg, var(--accent2), var(--cyan));
+  font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 0.75rem; display: block;
+  background-clip: text; margin-bottom: 0.6rem; display: block;
 }
-/* RESULT SECTION WRAPPER */
-#main-results {
-  max-width: 900px; margin: 3rem auto 6rem; padding: 0 2rem;
-}
-.back-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  color: var(--muted); font-size: 0.85rem; cursor: pointer;
-  margin-bottom: 2rem; background: none; border: none;
-  font-family: 'DM Sans', sans-serif;
-  transition: color 0.2s;
-}
-.back-btn:hover { color: var(--text); }
-/* STREAMING TEXT */
-.streaming-text { white-space: pre-wrap; }
+
+/* ── STREAMING ── */
+.streaming-text { white-space: pre-wrap; font-size: 0.9rem; line-height: 1.75; color: var(--text); }
 .cursor {
   display: inline-block; width: 2px; height: 1em;
   background: var(--accent2); animation: blink 1s infinite;
   vertical-align: text-bottom; margin-left: 2px;
 }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-/* AI SUMMARY */
-.ai-summary {
-  background: linear-gradient(135deg, rgba(124,111,247,0.08), rgba(34,211,238,0.05));
-  border: 1px solid rgba(124,111,247,0.2);
-  border-radius: 14px; padding: 1.5rem;
-  margin-bottom: 1.5rem;
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg3); border: 1px solid rgba(52,211,153,0.35);
+  color: var(--green); padding: 0.75rem 1.5rem; border-radius: 10px;
+  font-size: 0.88rem; z-index: 9999; box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  white-space: nowrap; animation: fadeIn 0.3s ease;
 }
-.ai-label {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 0.72rem; font-weight: 600; color: var(--accent2);
-  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
-}
-.ai-icon { font-size: 14px; }
-.ai-summary p {
-  font-size: 0.9rem; color: var(--text); line-height: 1.7;
-}
-/* RESPONSIVE */
-@media (max-width: 640px) {
-  nav { padding: 1rem 1.25rem; }
+@keyframes fadeIn { from { opacity:0; transform: translate(-50%, 10px); } to { opacity:1; transform: translate(-50%, 0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 680px) {
+  nav { padding: 0.9rem 1.25rem; }
   .nav-links { display: none; }
-  .hero { padding: 7rem 1.25rem 4rem; }
+  .hero { padding: 7rem 1.25rem 3.5rem; }
   .audit-container { padding: 1.25rem; border-radius: 14px; }
   .url-row { flex-direction: column; }
   .score-header { grid-template-columns: 1fr; text-align: center; }
   .score-ring-wrap { margin: 0 auto; }
   .grade-chips { justify-content: center; }
-  .tabs { flex-wrap: wrap; }
+  .cwv-grid { grid-template-columns: 1fr; }
+  .cms-panel { grid-template-columns: 1fr; }
+  .cms-hero-card { flex-direction: column; text-align: center; }
+  .stats-bar { gap: 1.5rem; }
 }
 </style>
 </head>
@@ -559,8 +619,8 @@ footer .logo-f {
   <div class="logo">RankSight</div>
   <div class="nav-links">
     <a href="#features">Features</a>
-    <a href="#" onclick="scrollToAudit()">Audit Now</a>
-
+    <a href="#" onclick="scrollToAudit(); return false;">Audit Now</a>
+    <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   </div>
 </nav>
 
@@ -568,65 +628,73 @@ footer .logo-f {
 <section class="hero" id="hero">
   <div class="hero-badge">
     <span class="dot"></span>
-    AI-Powered SEO Intelligence
+    AI-Powered · 60+ SEO Factors · CMS-Aware Fixes
   </div>
-  <h1>Rank Higher with<br><span>Intelligent Audits</span></h1>
-  <p>Enter any website URL and get a comprehensive SEO score, deep analysis, and actionable recommendations — powered by Claude AI.</p>
+  <h1>Rank #1 on Google<br>with <span>Intelligent Audits</span></h1>
+  <p>Enter any URL and get a deep SEO audit with Core Web Vitals, Schema analysis, E-E-A-T scoring, and CMS-specific fixes — all powered by AI.</p>
 
   <div class="audit-container" id="audit-box">
     <div class="url-row">
-      <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off" />
-      <button id="audit-btn" onclick="startAudit()">Audit Now</button>
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off"
+        onkeydown="if(event.key==='Enter')startAudit()" />
+      <button id="audit-btn" onclick="startAudit()">Audit Now →</button>
     </div>
-    <div class="options-row" id="options-row">
-      <label class="option-chip active" onclick="toggleChip(this)">
-        <input type="checkbox" checked name="seo"> 🔍 Technical SEO
-      </label>
-      <label class="option-chip active" onclick="toggleChip(this)">
-        <input type="checkbox" checked name="perf"> ⚡ Performance
-      </label>
-      <label class="option-chip active" onclick="toggleChip(this)">
-        <input type="checkbox" checked name="content"> ✍️ Content
-      </label>
-      <label class="option-chip active" onclick="toggleChip(this)">
-        <input type="checkbox" checked name="ux"> 📱 UX & Mobile
-      </label>
-      <label class="option-chip active" onclick="toggleChip(this)">
-        <input type="checkbox" checked name="backlinks"> 🔗 Backlinks
-      </label>
+    <div class="options-row">
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="technical"> 🔍 Technical SEO</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="performance"> ⚡ Performance</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="content"> ✍️ Content</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="ux"> 📱 UX &amp; Mobile</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="schema"> 🧩 Schema</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="eeat"> 🏆 E-E-A-T</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="social"> 📣 Social/OG</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="backlinks"> 🔗 Backlinks</label>
     </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num">60+</div><div class="stat-label">SEO Factors</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Audit Categories</div></div>
+    <div class="stat-item"><div class="stat-num">CMS</div><div class="stat-label">Aware Fixes</div></div>
+    <div class="stat-item"><div class="stat-num">AI</div><div class="stat-label">Powered</div></div>
   </div>
 </section>
 
 <!-- LOADING -->
 <div id="loading-state">
-  <div class="spinner-ring"></div>
-  <p style="color: var(--muted); margin-bottom: 1.5rem; font-size: 0.9rem;">Analyzing <strong id="loading-url" style="color: var(--text);"></strong></p>
+  <div class="spinner-wrap">
+    <div class="spinner-ring"></div>
+    <div class="spinner-inner"></div>
+  </div>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem">Analyzing <strong id="loading-url" style="color:var(--text)"></strong></p>
   <ul class="loading-steps" id="loading-steps">
-    <li id="step1"><span class="step-icon">○</span> Crawling website structure</li>
-    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags &amp; content</li>
-    <li id="step3"><span class="step-icon">○</span> Evaluating performance signals</li>
-    <li id="step4"><span class="step-icon">○</span> Checking mobile &amp; UX factors</li>
-    <li id="step5"><span class="step-icon">○</span> Scoring backlink profile</li>
-    <li id="step6"><span class="step-icon">○</span> Generating AI recommendations</li>
+    <li id="step1"><span class="step-icon">○</span> Fetching real page data &amp; headers</li>
+    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags, headings &amp; content</li>
+    <li id="step3"><span class="step-icon">○</span> Checking schema markup &amp; Open Graph</li>
+    <li id="step4"><span class="step-icon">○</span> Detecting CMS &amp; tech stack</li>
+    <li id="step5"><span class="step-icon">○</span> Evaluating Core Web Vitals &amp; performance</li>
+    <li id="step6"><span class="step-icon">○</span> Scoring E-E-A-T &amp; backlink signals</li>
+    <li id="step7"><span class="step-icon">○</span> Generating CMS-specific AI recommendations</li>
   </ul>
 </div>
 
 <!-- RESULTS -->
 <div id="results-section">
   <div id="main-results">
-    <button class="back-btn" onclick="resetAudit()">← New Audit</button>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem">
+      <button class="back-btn" onclick="resetAudit()" style="margin-bottom:0">← New Audit</button>
+      <button class="export-btn" onclick="exportReport()" style="float:none;margin-bottom:0">⬇ Export Report</button>
+    </div>
 
     <!-- Score Header -->
     <div class="score-header" id="score-header">
       <div class="score-ring-wrap">
-        <svg width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
-          <circle id="score-arc" cx="60" cy="60" r="50" fill="none"
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+          <circle id="score-arc" cx="65" cy="65" r="54" fill="none"
             stroke-width="10" stroke-linecap="round"
-            stroke-dasharray="314" stroke-dashoffset="314"
-            transform="rotate(-90 60 60)"
-            style="transition: stroke-dashoffset 1.2s ease, stroke 0.5s;"/>
+            stroke-dasharray="339" stroke-dashoffset="339"
+            transform="rotate(-90 65 65)"
+            style="transition: stroke-dashoffset 1.3s ease, stroke 0.5s;"/>
         </svg>
         <div class="score-number">
           <div class="num" id="score-num">—</div>
@@ -640,10 +708,22 @@ footer .logo-f {
       </div>
     </div>
 
+    <!-- Quick Wins -->
+    <div class="quick-wins-bar" id="quick-wins-bar" style="display:none">
+      <div class="qw-label">⚡ Quick Wins — Under 30 Minutes</div>
+      <div class="qw-list" id="quick-wins-list"></div>
+    </div>
+
     <!-- AI Summary -->
     <div class="ai-summary">
-      <div class="ai-label"><span class="ai-icon">◆</span> AI Analysis</div>
+      <div class="ai-label">◆ AI Analysis</div>
       <p id="ai-summary-text" class="streaming-text"></p>
+    </div>
+
+    <!-- E-E-A-T Summary -->
+    <div class="eeat-summary" id="eeat-panel" style="display:none">
+      <div class="eeat-label">🏆 E-E-A-T Assessment</div>
+      <p id="eeat-text" style="font-size:0.87rem;color:var(--text);line-height:1.7"></p>
     </div>
 
     <!-- Tabs -->
@@ -652,24 +732,35 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
       <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
-      <button class="tab-btn" onclick="switchTab('techstack')">🧩 Tech Stack</button>
+      <button class="tab-btn" onclick="switchTab('schema')">🧩 Schema</button>
+      <button class="tab-btn" onclick="switchTab('cwv')">⚡ Core Web Vitals</button>
+      <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
+      <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
     </div>
 
     <div class="tab-panel active" id="tab-overview">
       <div class="cards-grid" id="overview-cards"></div>
     </div>
     <div class="tab-panel" id="tab-suggestions">
+      <div class="filter-bar" id="filter-bar">
+        <span class="filter-chip active" onclick="filterSuggestions('all', this)">All</span>
+        <span class="filter-chip" onclick="filterSuggestions('high', this)">🔴 High</span>
+        <span class="filter-chip" onclick="filterSuggestions('medium', this)">🟡 Medium</span>
+        <span class="filter-chip" onclick="filterSuggestions('low', this)">🔵 Low</span>
+        <span class="filter-chip" onclick="filterSuggestions('Technical', this)">Technical</span>
+        <span class="filter-chip" onclick="filterSuggestions('Schema', this)">Schema</span>
+        <span class="filter-chip" onclick="filterSuggestions('E-E-A-T', this)">E-E-A-T</span>
+        <span class="filter-chip" onclick="filterSuggestions('Content', this)">Content</span>
+        <span class="filter-chip" onclick="filterSuggestions('Performance', this)">Performance</span>
+      </div>
       <div id="suggestions-list"></div>
     </div>
     <div class="tab-panel" id="tab-metrics">
-      <div style="background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;">
-        <table class="metrics-table" id="metrics-table">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <table class="metrics-table">
           <thead>
             <tr>
-              <th>Metric</th>
-              <th>Value</th>
-              <th>Score</th>
-              <th>Status</th>
+              <th>Metric</th><th>Value</th><th>Score</th><th>Status</th>
             </tr>
           </thead>
           <tbody id="metrics-body"></tbody>
@@ -679,10 +770,23 @@ footer .logo-f {
     <div class="tab-panel" id="tab-keywords">
       <div class="cards-grid" id="keywords-content"></div>
     </div>
-    <div class="tab-panel" id="tab-techstack">
-      <div id="techstack-content" style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">
-        Detecting tech stack…
+    <div class="tab-panel" id="tab-schema">
+      <div class="schema-panel" id="schema-content">
+        <div style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">Loading schema analysis…</div>
       </div>
+    </div>
+    <div class="tab-panel" id="tab-cwv">
+      <div id="cwv-content">
+        <div style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">Loading Core Web Vitals…</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-competitors">
+      <div id="competitors-content">
+        <div style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">Loading competitor gap analysis…</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-techstack">
+      <div id="techstack-content" style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">Detecting tech stack…</div>
     </div>
   </div>
 </div>
@@ -690,116 +794,98 @@ footer .logo-f {
 <!-- FEATURES -->
 <section class="features" id="features">
   <div class="section-label">What We Analyze</div>
-  <h2>Everything that<br>affects your rank</h2>
-  <p>RankSight audits over 50 SEO factors across 5 major categories, giving you the most thorough analysis available.</p>
+  <h2>Everything Google<br>actually ranks you on</h2>
+  <p>RankSight audits 60+ SEO factors across 8 categories with real page fetching and CMS-aware fix instructions.</p>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feat-icon purple">🔍</div>
       <h3>Technical SEO</h3>
-      <p>Meta tags, canonical URLs, structured data, sitemap, robots.txt, redirects, hreflang, and crawlability checks.</p>
+      <p>Meta tags, canonical URLs, structured data, sitemap, robots.txt, redirects, hreflang, crawlability and 20+ more checks.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon cyan">⚡</div>
-      <h3>Performance</h3>
-      <p>Core Web Vitals (LCP, FID, CLS), page speed, server response time, resource optimization, and caching.</p>
+      <h3>Core Web Vitals</h3>
+      <p>Real TTFB measurement, LCP/FID/CLS estimates, page size, inline scripts, caching and performance recommendations.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon green">✍️</div>
-      <h3>Content Quality</h3>
-      <p>Keyword density, readability score, duplicate content detection, heading structure, and content freshness.</p>
+      <h3>Content & Keywords</h3>
+      <p>Keyword density, word count, heading structure, LSI keywords, long-tail opportunities and content depth scoring.</p>
     </div>
     <div class="feature-card">
       <div class="feat-icon amber">📱</div>
       <h3>UX &amp; Mobile</h3>
-      <p>Mobile responsiveness, tap targets, viewport configuration, font sizing, and accessibility compliance.</p>
+      <p>Viewport configuration, font sizing, tap targets, accessibility signals, and mobile-first indexing compliance.</p>
     </div>
     <div class="feature-card">
-      <div class="feat-icon purple">🔗</div>
-      <h3>Backlink Profile</h3>
-      <p>Domain authority estimation, link quality analysis, anchor text diversity, and toxic link detection.</p>
+      <div class="feat-icon purple">🧩</div>
+      <h3>Schema Markup</h3>
+      <p>Detects existing schema types, identifies missing schemas for your site type, and generates CMS-specific implementation code.</p>
     </div>
     <div class="feature-card">
-      <div class="feat-icon cyan">◆</div>
-      <h3>AI Recommendations</h3>
-      <p>Claude AI synthesizes all findings into prioritized, actionable steps tailored to your specific site.</p>
+      <div class="feat-icon pink">🏆</div>
+      <h3>E-E-A-T Signals</h3>
+      <p>Analyzes Experience, Expertise, Authoritativeness and Trustworthiness signals — Google's most important quality criteria.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon cyan">📣</div>
+      <h3>Social &amp; Open Graph</h3>
+      <p>OG tags, Twitter cards, social sharing optimization and brand signal consistency across platforms.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feat-icon green">🏁</div>
+      <h3>Competitor Gap Analysis</h3>
+      <p>Identifies what top-ranking competitors likely have that your site is missing, with specific actions to close the gap.</p>
     </div>
   </div>
 </section>
 
-<!-- API KEY MODAL -->
-<div id="key-modal">
-  <div class="modal-box">
-    <h3>🔑 Enter your API Key</h3>
-    <p>Your key is stored only in your browser (localStorage) and never sent anywhere except directly to Anthropic. Get your key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.</p>
-    <input id="key-input" type="password" placeholder="sk-ant-api03-..." autocomplete="off" onkeydown="if(event.key==='Enter')saveApiKey()" />
-    <div id="key-error">⚠ Key must start with sk-ant-</div>
-    <div class="modal-btns">
-      <button class="modal-save" onclick="saveApiKey()">Save &amp; Continue</button>
-      <button class="modal-cancel" onclick="closeKeyModal()">Cancel</button>
-    </div>
-    <div class="key-status" id="key-status"></div>
-  </div>
-</div>
-
 <footer>
   <span class="logo-f">RankSight</span>
-  <p>AI-Powered SEO Auditing &mdash; Built with Claude</p>
+  <p>AI-Powered SEO Auditing — Real Page Analysis — CMS-Aware Fixes</p>
 </footer>
 
 <script>
-const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
+// ─── STATE ────────────────────────────────────────────────────
+let currentAuditData = null;
+let currentCmsData   = null;
+let currentUrl       = '';
+let allSuggestions   = [];
 
-function getApiKey() {
-  return localStorage.getItem('ranksight_api_key') || '';
-}
-
-function openKeyModal() {
-  document.getElementById('key-modal').style.display = 'flex';
-  document.getElementById('key-input').value = getApiKey();
-  document.getElementById('key-input').focus();
-}
-
-function closeKeyModal() {
-  document.getElementById('key-modal').style.display = 'none';
-}
-
-function saveApiKey() {
-  const val = document.getElementById('key-input').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    document.getElementById('key-error').style.display = 'block';
-    return;
-  }
-  localStorage.setItem('ranksight_api_key', val);
-  closeKeyModal();
-  showToast('✅ API key saved! You can now run audits.');
-}
-
-function showToast(msg) {
+// ─── UTILS ───────────────────────────────────────────────────
+function showToast(msg, color = 'var(--green)') {
+  document.querySelectorAll('.toast').forEach(t => t.remove());
   const t = document.createElement('div');
+  t.className = 'toast';
   t.textContent = msg;
-  t.style.cssText = `position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);
-    background:#1a1a27;border:1px solid rgba(52,211,153,0.4);color:#34d399;
-    padding:0.75rem 1.5rem;border-radius:10px;font-size:0.9rem;z-index:9999;
-    box-shadow:0 4px 20px rgba(0,0,0,0.4);white-space:nowrap;`;
+  t.style.color = color;
+  t.style.borderColor = color + '55';
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3500);
 }
 
 function scrollToAudit() {
-  document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-function toggleChip(el) {
-  el.classList.toggle('active');
-}
+function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
-  const names = ['overview', 'suggestions', 'metrics', 'keywords', 'techstack'];
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', names[i] === name);
-  });
+  const names = ['overview','suggestions','metrics','keywords','schema','cwv','competitors','techstack'];
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', names[i] === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
+}
+
+function getActiveOptions() {
+  return Array.from(document.querySelectorAll('.option-chip.active input')).map(i => i.name);
+}
+
+function getScoreColor(s) {
+  return s >= 80 ? 'var(--green)' : s >= 60 ? 'var(--amber)' : 'var(--red)';
+}
+function getBarClass(s) {
+  return s >= 80 ? 'bar-green' : s >= 60 ? 'bar-amber' : 'bar-red';
 }
 
 function resetAudit() {
@@ -810,194 +896,80 @@ function resetAudit() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function getActiveOptions() {
-  const chips = document.querySelectorAll('.option-chip.active input');
-  return Array.from(chips).map(i => i.name);
+function filterSuggestions(filter, el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+
+  const items = document.querySelectorAll('.suggestion-item');
+  items.forEach(item => {
+    const priority = item.dataset.priority;
+    const category = item.dataset.category;
+    const show = filter === 'all'
+      || filter === priority
+      || (category && category.includes(filter));
+    item.style.display = show ? 'block' : 'none';
+  });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FIX: Accurate server & hosting detection from URL domain patterns
-// ─────────────────────────────────────────────────────────────────────────────
-function detectHostingInfo(url) {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-
-    let server = 'Unknown';
-    let hosting = 'Unknown';
-    let cdn = 'None detected';
-    let serverNote = '';
-
-    // Cloudflare Workers / Pages
-    if (hostname.endsWith('.workers.dev')) {
-      server = 'Cloudflare Workers (V8 isolates)';
-      hosting = 'Cloudflare';
-      cdn = 'Cloudflare CDN (global edge)';
-      serverNote = 'Serverless edge runtime; no traditional web server.';
-    } else if (hostname.endsWith('.pages.dev')) {
-      server = 'Cloudflare Pages';
-      hosting = 'Cloudflare';
-      cdn = 'Cloudflare CDN (global edge)';
-      serverNote = 'Static site hosting on Cloudflare edge network.';
-    }
-    // Netlify
-    else if (hostname.endsWith('.netlify.app') || hostname.endsWith('.netlify.com')) {
-      server = 'Netlify Edge';
-      hosting = 'Netlify';
-      cdn = 'Netlify CDN';
-      serverNote = 'JAMstack hosting with global CDN distribution.';
-    }
-    // Vercel
-    else if (hostname.endsWith('.vercel.app')) {
-      server = 'Vercel Edge Network';
-      hosting = 'Vercel';
-      cdn = 'Vercel Edge Network';
-      serverNote = 'Serverless + edge functions; optimized for Next.js.';
-    }
-    // GitHub Pages
-    else if (hostname.endsWith('.github.io')) {
-      server = 'GitHub Pages (nginx)';
-      hosting = 'GitHub Pages';
-      cdn = 'Fastly CDN';
-      serverNote = 'Static site hosting via GitHub; served through Fastly.';
-    }
-    // Render
-    else if (hostname.endsWith('.onrender.com')) {
-      server = 'Render';
-      hosting = 'Render';
-      cdn = 'None (direct)';
-      serverNote = 'Cloud application platform.';
-    }
-    // Railway
-    else if (hostname.endsWith('.railway.app')) {
-      server = 'Railway';
-      hosting = 'Railway';
-      cdn = 'None (direct)';
-      serverNote = 'Container-based cloud platform.';
-    }
-    // Heroku
-    else if (hostname.endsWith('.herokuapp.com')) {
-      server = 'Heroku Dyno';
-      hosting = 'Heroku (Salesforce)';
-      cdn = 'None (direct)';
-      serverNote = 'PaaS platform; dynos are lightweight Linux containers.';
-    }
-    // Fly.io
-    else if (hostname.endsWith('.fly.dev')) {
-      server = 'Fly.io';
-      hosting = 'Fly.io';
-      cdn = 'Anycast routing';
-      serverNote = 'Containerized workloads deployed close to users.';
-    }
-    // AWS
-    else if (hostname.endsWith('.elasticbeanstalk.com')) {
-      server = 'AWS Elastic Beanstalk';
-      hosting = 'Amazon Web Services';
-      cdn = 'None (add CloudFront separately)';
-      serverNote = 'AWS managed PaaS platform.';
-    } else if (hostname.endsWith('.amazonaws.com')) {
-      server = 'Amazon Web Services';
-      hosting = 'Amazon Web Services';
-      cdn = 'None (direct)';
-      serverNote = 'Direct AWS endpoint.';
-    } else if (hostname.endsWith('.cloudfront.net')) {
-      server = 'AWS CloudFront CDN';
-      hosting = 'Amazon Web Services';
-      cdn = 'CloudFront (AWS CDN)';
-      serverNote = 'CloudFront distribution; origin server type unknown.';
-    }
-    // Azure
-    else if (hostname.endsWith('.azurewebsites.net')) {
-      server = 'Microsoft Azure App Service';
-      hosting = 'Microsoft Azure';
-      cdn = 'None (add Azure CDN separately)';
-      serverNote = 'Azure PaaS web app hosting.';
-    } else if (hostname.endsWith('.azurestaticapps.net')) {
-      server = 'Azure Static Web Apps';
-      hosting = 'Microsoft Azure';
-      cdn = 'Azure CDN';
-      serverNote = 'Static hosting with integrated Azure CDN.';
-    }
-    // Google Cloud / Firebase
-    else if (hostname.endsWith('.web.app') || hostname.endsWith('.firebaseapp.com')) {
-      server = 'Firebase Hosting';
-      hosting = 'Google Firebase';
-      cdn = 'Google Cloud CDN';
-      serverNote = 'Firebase static hosting on Google infrastructure.';
-    } else if (hostname.endsWith('.appspot.com')) {
-      server = 'Google App Engine';
-      hosting = 'Google Cloud Platform';
-      cdn = 'Google Cloud CDN';
-      serverNote = 'Google managed PaaS platform.';
-    }
-    // Squarespace
-    else if (hostname.endsWith('.squarespace.com')) {
-      server = 'Squarespace (nginx)';
-      hosting = 'Squarespace';
-      cdn = 'Fastly CDN';
-      serverNote = 'Squarespace managed hosting.';
-    }
-    // Shopify
-    else if (hostname.endsWith('.myshopify.com')) {
-      server = 'Shopify';
-      hosting = 'Shopify';
-      cdn = 'Cloudflare CDN';
-      serverNote = 'Shopify managed e-commerce platform.';
-    }
-    // WordPress.com
-    else if (hostname.endsWith('.wordpress.com')) {
-      server = 'WordPress.com (nginx)';
-      hosting = 'Automattic / WordPress.com';
-      cdn = 'Jetpack CDN';
-      serverNote = 'Managed WordPress hosting by Automattic.';
-    }
-    // Wix
-    else if (hostname.endsWith('.wixsite.com') || hostname.endsWith('.wix.com')) {
-      server = 'Wix';
-      hosting = 'Wix';
-      cdn = 'Wix CDN';
-      serverNote = 'Wix managed website platform.';
-    }
-    // Webflow
-    else if (hostname.endsWith('.webflow.io')) {
-      server = 'Webflow';
-      hosting = 'Webflow';
-      cdn = 'Fastly CDN';
-      serverNote = 'Webflow managed hosting on Fastly edge.';
-    }
-    // Surge.sh
-    else if (hostname.endsWith('.surge.sh')) {
-      server = 'Surge.sh';
-      hosting = 'Surge';
-      cdn = 'None (direct)';
-      serverNote = 'Static web publishing platform.';
-    }
-    // Custom domain — cannot detect without HTTP header inspection
-    else {
-      server = 'Undetermined (custom domain)';
-      hosting = 'Undetermined (custom domain)';
-      cdn = 'Undetermined';
-      serverNote = 'Server and hosting cannot be determined from the domain alone for custom domains. Common options include Apache, nginx, Caddy, or cloud-managed servers.';
-    }
-
-    return { server, hosting, cdn, serverNote, hostname };
-  } catch (e) {
-    return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown', serverNote: '', hostname: '' };
-  }
+// ─── EXPORT REPORT ────────────────────────────────────────────
+function exportReport() {
+  if (!currentAuditData) return;
+  const d = currentAuditData;
+  const lines = [
+    `RankSight SEO Audit Report`,
+    `Generated: ${new Date().toLocaleString()}`,
+    `URL: ${currentUrl}`,
+    `CMS: ${currentCmsData?.cms || 'Unknown'}`,
+    ``,
+    `OVERALL SCORE: ${d.score}/100 (${d.grade})`,
+    ``,
+    `SUMMARY:`,
+    d.summary || '',
+    ``,
+    `CATEGORY SCORES:`,
+    ...Object.entries(d.categories || {}).map(([k,v]) => `  ${k}: ${v.score}/100 (${v.grade}) — ${v.note || ''}`),
+    ``,
+    `QUICK WINS:`,
+    ...(d.quick_wins || []).map((w, i) => `  ${i+1}. ${w}`),
+    ``,
+    `TOP SUGGESTIONS:`,
+    ...(d.suggestions || []).map((s, i) => [
+      ``,
+      `${i+1}. [${s.priority?.toUpperCase()}] ${s.title}`,
+      `   Category: ${s.category} | ${s.impact} | ${s.effort}`,
+      `   Issue: ${s.description}`,
+      `   Fix: ${s.fix}`,
+    ]).flat(),
+    ``,
+    `METRICS:`,
+    ...(d.metrics || []).map(m => `  ${m.name}: ${m.value} (Score: ${m.score}) [${m.status}]${m.benchmark ? ' — ' + m.benchmark : ''}`),
+  ];
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ranksight-audit-${new URL(currentUrl).hostname}-${Date.now()}.txt`;
+  a.click();
+  showToast('✅ Report exported!');
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
+// ─── MAIN AUDIT FLOW ─────────────────────────────────────────
 async function startAudit() {
   const url = document.getElementById('url-input').value.trim();
-  if (!url) {
+  if (!url || !url.startsWith('http')) {
     document.getElementById('url-input').style.borderColor = 'var(--red)';
-    setTimeout(() => document.getElementById('url-input').style.borderColor = '', 2000);
+    document.getElementById('url-input').style.boxShadow = '0 0 0 3px rgba(248,113,113,0.15)';
+    showToast('⚠ Please enter a valid URL (starting with https://)', 'var(--red)');
+    setTimeout(() => {
+      document.getElementById('url-input').style.borderColor = '';
+      document.getElementById('url-input').style.boxShadow = '';
+    }, 2500);
     return;
   }
 
+  currentUrl = url;
   const options = getActiveOptions();
   const btn = document.getElementById('audit-btn');
-  btn.disabled = true;
-  btn.textContent = 'Analyzing…';
+  btn.disabled = true; btn.textContent = 'Analyzing…';
 
   document.getElementById('hero').style.display = 'none';
   document.getElementById('features').style.display = 'none';
@@ -1007,8 +979,14 @@ async function startAudit() {
   document.getElementById('loading-url').textContent = url;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Animate loading steps
-  const steps = ['step1','step2','step3','step4','step5','step6'];
+  // Reset loading steps
+  const steps = ['step1','step2','step3','step4','step5','step6','step7'];
+  steps.forEach(s => {
+    const el = document.getElementById(s);
+    el.className = '';
+    el.querySelector('.step-icon').textContent = '○';
+  });
+
   let stepIdx = 0;
   const stepInterval = setInterval(() => {
     if (stepIdx > 0) {
@@ -1017,281 +995,364 @@ async function startAudit() {
       prev.querySelector('.step-icon').textContent = '✓';
     }
     if (stepIdx < steps.length) {
-      const cur = document.getElementById(steps[stepIdx]);
-      cur.classList.add('active');
+      document.getElementById(steps[stepIdx]).classList.add('active');
     }
     stepIdx++;
-  }, 900);
+  }, 1100);
 
   try {
-    const [auditData, cmsData] = await Promise.all([
-      callClaudeForAudit(url, options),
-      detectCMSRemote(url),
+    // Run page fetch + CMS detect in parallel
+    const [pageData, cmsData] = await Promise.all([
+      fetchPageData(url),
+      detectCMS(url),
     ]);
+
+    currentCmsData = cmsData;
+
+    // Now run AI audit with full context
+    const auditData = await runAIAudit(url, options, pageData, cmsData);
+    currentAuditData = auditData;
+
     clearInterval(stepInterval);
     steps.forEach(s => {
       const el = document.getElementById(s);
       el.classList.add('done');
       el.querySelector('.step-icon').textContent = '✓';
     });
-    await new Promise(r => setTimeout(r, 600));
+
+    await new Promise(r => setTimeout(r, 500));
     document.getElementById('loading-state').style.display = 'none';
-    renderResults(url, auditData);
-    renderTechStack(cmsData, url);
+    renderResults(url, auditData, cmsData, pageData);
+
   } catch (err) {
     clearInterval(stepInterval);
     document.getElementById('loading-state').style.display = 'none';
-    alert('Audit failed: ' + err.message);
+    showToast('❌ Audit failed: ' + err.message, 'var(--red)');
     resetAudit();
   }
 
   btn.disabled = false;
-  btn.textContent = 'Audit Now';
+  btn.textContent = 'Audit Now →';
 }
 
-async function callClaudeForAudit(url, options) {
-  // Detect hosting/server accurately from the domain — do NOT let AI guess these
-  const { server, hosting, cdn, serverNote, hostname } = detectHostingInfo(url);
-
-  const prompt = `You are an expert SEO auditor. Perform a comprehensive SEO audit for the website: ${url}
-
-CRITICAL — USE THESE EXACT VALUES. Do NOT guess, change, or infer different values for server or hosting:
-- Hostname: ${hostname}
-- Server / Runtime: ${server}
-- Hosting Provider: ${hosting}
-- CDN: ${cdn}
-- Server Note: ${serverNote}
-
-Analyze the following areas: ${options.join(', ')}
-
-Based on common SEO best practices and what you know about this URL/domain, generate a realistic, detailed SEO audit report.
-
-Respond with ONLY valid JSON in this exact structure (no markdown, no explanation):
-
-{
-  "score": <integer 0-100>,
-  "grade": "<A/B/C/D/F>",
-  "summary": "<2-3 sentence AI summary of the site's SEO health, specific to the domain>",
-  "categories": {
-    "technical": { "score": <0-100>, "grade": "<A-F>" },
-    "performance": { "score": <0-100>, "grade": "<A-F>" },
-    "content": { "score": <0-100>, "grade": "<A-F>" },
-    "ux": { "score": <0-100>, "grade": "<A-F>" },
-    "backlinks": { "score": <0-100>, "grade": "<A-F>" }
-  },
-  "overview_cards": [
-    { "title": "Server", "value": "${server}", "description": "${serverNote}", "status": "info" },
-    { "title": "Hosting Provider", "value": "${hosting}", "description": "Hosting platform detected from the domain name", "status": "info" },
-    { "title": "CDN", "value": "${cdn}", "description": "Content delivery network in use", "status": "info" },
-    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
-    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" },
-    { "title": "<SEO metric title>", "value": "<value>", "description": "<description>", "status": "<pass|warn|fail|info>" }
-  ],
-  "suggestions": [
-    {
-      "title": "<string>",
-      "priority": "<high|medium|low>",
-      "impact": "<High Impact|Medium Impact|Low Impact>",
-      "description": "<detailed description of the issue>",
-      "fix": "<specific actionable fix or code snippet>"
-    }
-  ],
-  "metrics": [
-    { "name": "<string>", "value": "<string>", "score": <0-100>, "status": "<pass|warn|fail>" }
-  ],
-  "keywords": [
-    { "title": "Target Keywords", "value": "<keyword1, keyword2, keyword3>", "description": "Detected primary keywords", "status": "info" },
-    { "title": "Keyword Density", "value": "<percentage>", "description": "Primary keyword density", "status": "<pass|warn|fail>" },
-    { "title": "Missing Keywords", "value": "<keywords>", "description": "Suggested keywords to add", "status": "warn" },
-    { "title": "Long-tail Opportunities", "value": "<number>", "description": "Potential long-tail keyword phrases", "status": "info" }
-  ]
+async function fetchPageData(url) {
+  try {
+    const res = await fetch('/api/page-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
 }
 
-Generate at least 6 suggestions and 8 metrics. Make all data realistic for the domain. Return ONLY the JSON object.`;
-
-  const res = await fetch('/api/claude', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt })
-  });
-
-  if (!res.ok) {
-    let errMsg = 'API error: ' + res.status;
-    try { const e = await res.json(); if (e.error) errMsg = e.error; } catch {}
-    throw new Error(errMsg);
-  }
-
-  return await res.json();
-}
-
-function getScoreColor(score) {
-  if (score >= 80) return 'var(--green)';
-  if (score >= 60) return 'var(--amber)';
-  return 'var(--red)';
-}
-
-function getBarClass(score) {
-  if (score >= 80) return 'bar-green';
-  if (score >= 60) return 'bar-amber';
-  return 'bar-red';
-}
-
-function renderResults(url, data) {
-  // Score ring
-  const arc = document.getElementById('score-arc');
-  const circumference = 314;
-  const offset = circumference - (data.score / 100) * circumference;
-  arc.style.strokeDashoffset = offset;
-  arc.style.stroke = getScoreColor(data.score);
-
-  // Score number (count up)
-  const numEl = document.getElementById('score-num');
-  numEl.style.color = getScoreColor(data.score);
-  let count = 0;
-  const target = data.score;
-  const interval = setInterval(() => {
-    count = Math.min(count + 2, target);
-    numEl.textContent = count;
-    if (count >= target) clearInterval(interval);
-  }, 20);
-
-  // URL & title
-  document.getElementById('result-url').textContent = url;
-  document.getElementById('result-title').textContent =
-    data.score >= 80 ? 'Excellent SEO Health' :
-    data.score >= 60 ? 'Good — Room to Improve' :
-    data.score >= 40 ? 'Needs Attention' : 'Critical Issues Found';
-
-  // Grade chips
-  const cats = data.categories;
-  const chipsEl = document.getElementById('grade-chips');
-  chipsEl.innerHTML = Object.entries(cats).map(([key, val]) => {
-    const labels = {
-      technical: '🔍 Technical',
-      performance: '⚡ Performance',
-      content: '✍️ Content',
-      ux: '📱 UX',
-      backlinks: '🔗 Backlinks'
-    };
-    return `<span class="grade-chip grade-${val.grade}">${labels[key] || key}: ${val.grade} (${val.score})</span>`;
-  }).join('');
-
-  // AI Summary (typewriter)
-  const summaryEl = document.getElementById('ai-summary-text');
-  const cursor = document.createElement('span');
-  cursor.className = 'cursor';
-  summaryEl.textContent = '';
-  summaryEl.appendChild(cursor);
-  let charIdx = 0;
-  const summary = data.summary;
-  const typeInterval = setInterval(() => {
-    summaryEl.textContent = summary.slice(0, charIdx);
-    summaryEl.appendChild(cursor);
-    charIdx++;
-    if (charIdx > summary.length) clearInterval(typeInterval);
-  }, 18);
-
-  // Overview cards
-  const cardsEl = document.getElementById('overview-cards');
-  cardsEl.innerHTML = (data.overview_cards || []).map(card => `
-    <div class="audit-card">
-      <div class="card-header">
-        <div class="card-title">${card.title}</div>
-        <div class="status-badge status-${card.status}">${
-          card.status === 'pass' ? 'Pass' :
-          card.status === 'warn' ? 'Warning' :
-          card.status === 'fail' ? 'Fail' : 'Info'
-        }</div>
-      </div>
-      <div class="card-value" style="font-size: ${card.value.length > 20 ? '1rem' : '1.6rem'}">${card.value}</div>
-      <div class="card-desc">${card.description}</div>
-    </div>
-  `).join('');
-
-  // Suggestions
-  const sugEl = document.getElementById('suggestions-list');
-  sugEl.innerHTML = (data.suggestions || []).map(s => `
-    <div class="suggestion-item priority-${s.priority}">
-      <div class="suggestion-header">
-        <div class="priority-dot dot-${s.priority}"></div>
-        <div class="suggestion-title">${s.title}</div>
-        <div class="impact-tag">${s.impact}</div>
-      </div>
-      <div class="suggestion-body">${s.description}</div>
-      ${s.fix ? `
-        <div class="suggestion-fix">
-          <div class="fix-label">Recommended Fix</div>
-          ${s.fix}
-        </div>` : ''}
-    </div>
-  `).join('');
-
-  // Metrics table
-  const tbody = document.getElementById('metrics-body');
-  tbody.innerHTML = (data.metrics || []).map(m => `
-    <tr>
-      <td>${m.name}</td>
-      <td><strong>${m.value}</strong></td>
-      <td>
-        <div class="metric-bar-wrap">
-          <div class="metric-bar">
-            <div class="metric-bar-fill ${getBarClass(m.score)}" style="width:${m.score}%"></div>
-          </div>
-          <span style="font-size:0.8rem;color:var(--muted);min-width:28px">${m.score}</span>
-        </div>
-      </td>
-      <td>
-        <span class="status-badge status-${m.status}">${
-          m.status === 'pass' ? 'Pass' :
-          m.status === 'warn' ? 'Warn' : 'Fail'
-        }</span>
-      </td>
-    </tr>
-  `).join('');
-
-  // Keywords tab
-  const kwEl = document.getElementById('keywords-content');
-  kwEl.innerHTML = (data.keywords || []).map(card => `
-    <div class="audit-card">
-      <div class="card-header">
-        <div class="card-title">${card.title}</div>
-        <div class="status-badge status-${card.status}">${
-          card.status === 'pass' ? 'Pass' :
-          card.status === 'warn' ? 'Warning' :
-          card.status === 'fail' ? 'Fail' : 'Info'
-        }</div>
-      </div>
-      <div class="card-value" style="font-size:${card.value.length > 20 ? '0.95rem' : '1.4rem'};word-break:break-word">${card.value}</div>
-      <div class="card-desc">${card.description}</div>
-    </div>
-  `).join('');
-
-  // Show results
-  document.getElementById('results-section').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// ── CMS / TECH STACK DETECTION ────────────────────────────────
-async function detectCMSRemote(url) {
+async function detectCMS(url) {
   try {
     const res = await fetch('/api/detect-cms', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url }),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
+    if (!res.ok) return { cms: 'Unknown', confidence: 0, signals: [], tech_stack: [] };
     return await res.json();
-  } catch (e) {
-    return { cms: 'Unknown', confidence: 0, signals: [], server: 'Unknown', hosting: 'Unknown', error: e.message };
-  }
+  } catch { return { cms: 'Unknown', confidence: 0, signals: [], tech_stack: [] }; }
 }
 
+async function runAIAudit(url, options, pageData, cmsData) {
+  const res = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, options, pageData, cmsData }),
+  });
+  if (!res.ok) {
+    let msg = 'API error ' + res.status;
+    try { const e = await res.json(); if (e.error) msg = e.error; } catch {}
+    throw new Error(msg);
+  }
+  return await res.json();
+}
+
+// ─── RENDER ───────────────────────────────────────────────────
+function renderResults(url, data, cmsData, pageData) {
+  // Score ring
+  const arc = document.getElementById('score-arc');
+  const circumference = 339;
+  arc.style.strokeDashoffset = circumference - (data.score / 100) * circumference;
+  arc.style.stroke = getScoreColor(data.score);
+
+  // Count-up
+  const numEl = document.getElementById('score-num');
+  numEl.style.color = getScoreColor(data.score);
+  let count = 0;
+  const iv = setInterval(() => {
+    count = Math.min(count + 2, data.score);
+    numEl.textContent = count;
+    if (count >= data.score) clearInterval(iv);
+  }, 18);
+
+  // URL & title
+  document.getElementById('result-url').textContent = url;
+  document.getElementById('result-title').textContent =
+    data.score >= 85 ? '🏆 Excellent SEO Health' :
+    data.score >= 70 ? '✅ Good — Room to Improve' :
+    data.score >= 50 ? '⚠ Needs Attention' : '🚨 Critical Issues Found';
+
+  // Grade chips
+  const catLabels = {
+    technical: '🔍 Technical', performance: '⚡ Perf',
+    content: '✍️ Content', ux: '📱 UX',
+    backlinks: '🔗 Links', schema: '🧩 Schema',
+    eeat: '🏆 E-E-A-T', social: '📣 Social',
+  };
+  document.getElementById('grade-chips').innerHTML = Object.entries(data.categories || {}).map(([k, v]) =>
+    `<span class="grade-chip grade-${v.grade}">${catLabels[k] || k}: ${v.grade} (${v.score})</span>`
+  ).join('');
+
+  // Quick wins
+  if (data.quick_wins && data.quick_wins.length) {
+    const qwBar = document.getElementById('quick-wins-bar');
+    qwBar.style.display = 'block';
+    document.getElementById('quick-wins-list').innerHTML = data.quick_wins.map((w, i) =>
+      `<div class="qw-item"><div class="qw-bullet">${i+1}</div><span>${w}</span></div>`
+    ).join('');
+  }
+
+  // AI Summary (typewriter)
+  typewrite('ai-summary-text', data.summary || '');
+
+  // E-E-A-T
+  if (data.eeat_summary) {
+    document.getElementById('eeat-panel').style.display = 'block';
+    document.getElementById('eeat-text').textContent = data.eeat_summary;
+  }
+
+  // Overview cards
+  document.getElementById('overview-cards').innerHTML = (data.overview_cards || []).map(card => `
+    <div class="audit-card">
+      <div class="card-header">
+        <div class="card-title">${card.title}</div>
+        <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
+      </div>
+      <div class="card-value" style="font-size:${card.value.length > 22 ? '0.95rem' : '1.4rem'}">${card.value}</div>
+      <div class="card-desc">${card.description}</div>
+    </div>
+  `).join('');
+
+  // Suggestions
+  allSuggestions = data.suggestions || [];
+  renderSuggestions(allSuggestions, cmsData?.cms);
+
+  // Metrics
+  document.getElementById('metrics-body').innerHTML = (data.metrics || []).map(m => `
+    <tr>
+      <td>
+        <div>${m.name}</div>
+        ${m.benchmark ? `<div class="benchmark-text">${m.benchmark}</div>` : ''}
+      </td>
+      <td><strong>${m.value}</strong></td>
+      <td>
+        <div class="metric-bar-wrap">
+          <div class="metric-bar"><div class="metric-bar-fill ${getBarClass(m.score)}" style="width:${m.score}%"></div></div>
+          <span style="font-size:0.78rem;color:var(--muted);min-width:26px">${m.score}</span>
+        </div>
+      </td>
+      <td><span class="status-badge status-${m.status}">${m.status === 'pass' ? 'Good' : m.status === 'warn' ? 'Fair' : 'Poor'}</span></td>
+    </tr>
+  `).join('');
+
+  // Keywords
+  document.getElementById('keywords-content').innerHTML = (data.keywords || []).map(card => `
+    <div class="audit-card">
+      <div class="card-header">
+        <div class="card-title">${card.title}</div>
+        <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
+      </div>
+      <div class="card-value" style="font-size:${card.value.length > 22 ? '0.9rem' : '1.3rem'};word-break:break-word">${card.value}</div>
+      <div class="card-desc">${card.description}</div>
+    </div>
+  `).join('');
+
+  // Schema
+  renderSchema(data.schema_analysis, pageData);
+
+  // Core Web Vitals
+  renderCWV(data.core_web_vitals, pageData);
+
+  // Competitor gaps
+  renderCompetitorGaps(data.competitor_gaps || []);
+
+  // Tech Stack
+  renderTechStack(cmsData, url);
+
+  // Show results
+  document.getElementById('results-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function typewrite(elId, text) {
+  const el = document.getElementById(elId);
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  el.textContent = '';
+  el.appendChild(cursor);
+  let i = 0;
+  const iv = setInterval(() => {
+    el.textContent = text.slice(0, i);
+    el.appendChild(cursor);
+    i++;
+    if (i > text.length) clearInterval(iv);
+  }, 16);
+}
+
+function statusLabel(s) {
+  return s === 'pass' ? 'Pass' : s === 'warn' ? 'Warning' : s === 'fail' ? 'Fail' : 'Info';
+}
+
+function renderSuggestions(suggestions, cms) {
+  const cmsLabel = cms && cms !== 'Unknown' && cms !== 'Custom / Unknown' ? `📌 ${cms} Fix` : '💡 Fix';
+  document.getElementById('suggestions-list').innerHTML = suggestions.map(s => `
+    <div class="suggestion-item priority-${s.priority}"
+         data-priority="${s.priority}"
+         data-category="${s.category || ''}">
+      <div class="suggestion-header">
+        <div class="priority-dot dot-${s.priority}"></div>
+        <div class="suggestion-title">${s.title}</div>
+        <span class="tag impact-tag">${s.impact || ''}</span>
+        ${s.effort ? `<span class="tag effort-tag">${s.effort}</span>` : ''}
+        ${s.category ? `<span class="tag cat-tag">${s.category}</span>` : ''}
+      </div>
+      <div class="suggestion-body">${s.description}</div>
+      ${s.ranking_impact ? `<div style="font-size:0.78rem;color:var(--muted2);margin-bottom:0.75rem">📈 Ranking impact: <em>${s.ranking_impact}</em></div>` : ''}
+      ${s.fix ? `
+        <div class="cms-fix-box">
+          <div class="cms-fix-label">🔧 ${cmsLabel}</div>
+          <div class="cms-fix-content">${s.fix}</div>
+        </div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderSchema(schemaAnalysis, pageData) {
+  const el = document.getElementById('schema-content');
+  const detected = pageData?.schema?.types || schemaAnalysis?.detected || [];
+  const missing = schemaAnalysis?.missing || [];
+  const priority = schemaAnalysis?.priority_schema || '';
+  const impl = schemaAnalysis?.implementation || '';
+
+  el.innerHTML = `
+    <div class="schema-card" style="grid-column:1/-1">
+      <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
+        ✅ Detected Schema Types (${detected.length})
+      </div>
+      <div>
+        ${detected.length
+          ? detected.map(t => `<span class="schema-type-chip">✓ ${t}</span>`).join('')
+          : '<span style="color:var(--muted);font-size:0.85rem">No schema markup detected on this page.</span>'}
+      </div>
+    </div>
+
+    <div class="schema-card" style="grid-column:1/-1">
+      <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
+        ❌ Missing / Recommended Schema Types
+      </div>
+      <div>
+        ${missing.length
+          ? missing.map(t => `<span class="schema-missing-chip">+ ${t}</span>`).join('')
+          : '<span style="color:var(--muted);font-size:0.85rem">Great — no critical schema gaps detected.</span>'}
+      </div>
+    </div>
+
+    ${priority ? `
+    <div class="schema-card" style="grid-column:1/-1">
+      <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
+        🎯 Highest Priority Schema to Add Next
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.5rem">${priority}</div>
+      ${impl ? `<div class="cms-fix-box" style="margin-top:0.75rem"><div class="cms-fix-label">Implementation</div><div class="cms-fix-content">${impl}</div></div>` : ''}
+    </div>` : ''}
+  `;
+}
+
+function renderCWV(cwv, pageData) {
+  if (!cwv) { document.getElementById('cwv-content').innerHTML = '<p style="color:var(--muted);padding:2rem">Core Web Vitals data unavailable.</p>'; return; }
+
+  function cwvClass(label) {
+    if (!label) return 'cwv-warn';
+    return label.toLowerCase().includes('good') ? 'cwv-good' : label.toLowerCase().includes('poor') ? 'cwv-poor' : 'cwv-warn';
+  }
+
+  const ttfbMs = pageData?.ttfb || cwv.ttfb_actual || '—';
+  const ttfbStatus = typeof ttfbMs === 'number'
+    ? (ttfbMs < 800 ? 'cwv-good' : ttfbMs < 1800 ? 'cwv-warn' : 'cwv-poor')
+    : 'cwv-warn';
+
+  document.getElementById('cwv-content').innerHTML = `
+    <div class="cwv-grid">
+      <div class="cwv-card">
+        <div class="cwv-label">LCP</div>
+        <div class="cwv-value ${cwvClass(cwv.lcp_estimate)}">${cwv.lcp_estimate ? cwv.lcp_estimate.split(' ')[0] : '—'}</div>
+        <div class="cwv-status">Largest Contentful Paint</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.35rem">${cwv.lcp_estimate || ''}</div>
+      </div>
+      <div class="cwv-card">
+        <div class="cwv-label">FID / INP</div>
+        <div class="cwv-value ${cwvClass(cwv.fid_estimate)}">${cwv.fid_estimate ? cwv.fid_estimate.split(' ')[0] : '—'}</div>
+        <div class="cwv-status">Interaction to Next Paint</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.35rem">${cwv.fid_estimate || ''}</div>
+      </div>
+      <div class="cwv-card">
+        <div class="cwv-label">CLS</div>
+        <div class="cwv-value ${cwvClass(cwv.cls_estimate)}">${cwv.cls_estimate ? cwv.cls_estimate.split(' ')[0] : '—'}</div>
+        <div class="cwv-status">Cumulative Layout Shift</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:0.35rem">${cwv.cls_estimate || ''}</div>
+      </div>
+    </div>
+    <div class="cwv-card" style="margin-bottom:1rem">
+      <div class="cwv-label" style="text-align:left;margin-bottom:0.5rem">⚡ TTFB (Real Measurement)</div>
+      <div class="cwv-value ${ttfbStatus}" style="font-size:1.8rem;text-align:left">${typeof ttfbMs === 'number' ? ttfbMs + 'ms' : '—'}</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">Google's threshold: Good &lt; 800ms | Needs Improvement &lt; 1800ms | Poor ≥ 1800ms</div>
+      ${pageData?.pageSizeKb ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.25rem">Page size: ${pageData.pageSizeKb}KB | Inline scripts: ${pageData.inlineScripts} | Cache-Control: ${pageData.cacheControl || 'Not set'}</div>` : ''}
+    </div>
+    ${cwv.recommendations && cwv.recommendations.length ? `
+    <div class="schema-card">
+      <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
+        ⚡ Performance Recommendations
+      </div>
+      ${cwv.recommendations.map(r => `<div class="qw-item" style="margin-bottom:0.5rem"><div class="qw-bullet" style="background:rgba(251,191,36,0.2);color:var(--amber)">→</div><span style="font-size:0.84rem">${r}</span></div>`).join('')}
+    </div>` : ''}
+  `;
+}
+
+function renderCompetitorGaps(gaps) {
+  const el = document.getElementById('competitors-content');
+  if (!gaps || !gaps.length) {
+    el.innerHTML = '<p style="color:var(--muted);padding:2rem;text-align:center">No competitor gap data available.</p>';
+    return;
+  }
+  el.innerHTML = `
+    <div style="margin-bottom:1rem;color:var(--muted);font-size:0.85rem">
+      Based on common patterns among top-ranking pages in your niche, here are key gaps to close:
+    </div>
+    ${gaps.map((g, i) => `
+      <div class="gap-item">
+        <div>
+          <div class="gap-title">${i+1}. ${g.opportunity}</div>
+          <div class="gap-desc">${g.description}</div>
+          <div class="gap-action">→ ${g.action}</div>
+        </div>
+        <div class="status-badge status-warn" style="margin-top:2px">Gap</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ── CMS / TECH STACK ──────────────────────────────────────────
 const CMS_ICONS = {
   'WordPress':'📝','Shopify':'🛒','Wix':'🎨','Squarespace':'⬛','Webflow':'🌊',
   'Joomla':'🔶','Drupal':'💧','Ghost':'👻','Next.js':'▲','Nuxt':'💚',
-  'Gatsby':'💜','Hugo':'🚀','Jekyll':'💎','Magento':'🛍️','PrestaShop':'🏪',
-  'BigCommerce':'🏬','Blogger':'📰','Contentful':'📦','Sanity':'🧱','Framer':'🖼️',
-  'Custom / Unknown':'⚙️',
+  'Gatsby':'💜','Hugo':'🚀','Jekyll':'💎','Magento':'🛍️','BigCommerce':'🏬',
+  'Blogger':'📰','Contentful':'📦','Sanity':'🧱','Framer':'🖼️','Custom / Unknown':'⚙️',
 };
 
 const CAT_META = {
@@ -1310,17 +1371,16 @@ const CAT_META = {
 
 function renderTechStack(cmsData, url) {
   const el = document.getElementById('techstack-content');
+  if (!cmsData) { el.innerHTML = '<p style="color:var(--muted);padding:2rem">Tech stack detection unavailable.</p>'; return; }
+
   const icon       = CMS_ICONS[cmsData.cms] || '⚙️';
   const confidence = cmsData.confidence || 0;
-  const confLabel  = confidence >= 75 ? 'High confidence'
-                   : confidence >= 40 ? 'Medium confidence'
-                   : confidence  >  0 ? 'Low confidence' : 'Not detected';
+  const confLabel  = confidence >= 75 ? 'High confidence' : confidence >= 40 ? 'Medium confidence' : confidence > 0 ? 'Low confidence' : 'Not detected';
   const signals    = cmsData.signals || [];
   const techStack  = cmsData.tech_stack || [];
   let hostname = url;
   try { hostname = new URL(url).hostname; } catch {}
 
-  // Group by category
   const grouped = {};
   techStack.forEach(t => {
     const c = t.category || 'other';
@@ -1328,21 +1388,17 @@ function renderTechStack(cmsData, url) {
     grouped[c].push(t);
   });
 
-  // Category order
   const catOrder = ['cms','js','analytics','cdn','payment','ecommerce','chat','crm','consent','css','other'];
 
   el.innerHTML = `
     <div class="cms-panel">
-
       <div class="cms-hero-card">
         <div class="cms-logo-wrap">${icon}</div>
         <div class="cms-hero-info">
           <div class="cms-name">${cmsData.cms || 'Unknown'}</div>
           <div class="cms-hero-meta">Detected for <strong style="color:var(--text)">${hostname}</strong></div>
           <div class="cms-confidence-wrap">
-            <div class="cms-confidence-bar">
-              <div class="cms-confidence-fill" style="width:${confidence}%"></div>
-            </div>
+            <div class="cms-confidence-bar"><div class="cms-confidence-fill" style="width:${confidence}%"></div></div>
             <span class="cms-confidence-label">${confidence}% — ${confLabel}</span>
           </div>
         </div>
@@ -1351,29 +1407,28 @@ function renderTechStack(cmsData, url) {
       <div class="cms-info-card">
         <div class="cms-info-title">🏠 Hosting</div>
         <div class="cms-info-value">${cmsData.hosting || 'Unknown'}</div>
-        <div class="cms-info-sub">${cmsData.server || 'Unknown'}</div>
+        <div class="cms-info-sub">${cmsData.server || ''}</div>
       </div>
-
       <div class="cms-info-card">
         <div class="cms-info-title">⚡ Server / Runtime</div>
-        <div class="cms-info-value" style="font-size:0.95rem">${cmsData.server || 'Unknown'}</div>
-        <div class="cms-info-sub">${cmsData.powered_by ? 'Powered by: ' + cmsData.powered_by : 'No X-Powered-By header'}</div>
+        <div class="cms-info-value" style="font-size:0.92rem">${cmsData.server || 'Unknown'}</div>
+        <div class="cms-info-sub">${cmsData.powered_by ? 'Powered by: ' + cmsData.powered_by : 'X-Powered-By: hidden'}</div>
       </div>
 
       ${techStack.length > 0 ? `
       <div class="cms-info-card" style="grid-column:1/-1">
-        <div class="cms-info-title">🧩 Full Tech Stack — ${techStack.length} technologies detected</div>
+        <div class="cms-info-title">🧩 Full Tech Stack — ${techStack.length} technologies</div>
         ${catOrder.filter(c => grouped[c]).map(c => {
           const meta = CAT_META[c] || CAT_META.other;
           return `
           <div style="margin-top:1rem">
-            <div style="font-size:0.7rem;font-weight:600;color:${meta.color};text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.5rem">${meta.label}</div>
-            <div class="tech-stack-grid">
+            <div style="font-size:0.68rem;font-weight:700;color:${meta.color};text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem">${meta.label}</div>
+            <div style="display:flex;flex-wrap:wrap">
               ${grouped[c].map(t => `
                 <span class="tech-chip" style="border-color:${meta.color}33">
                   <span class="tech-dot" style="background:${meta.color}"></span>
                   ${t.name}
-                  ${t.confidence < 100 ? `<span style="font-size:0.68rem;color:var(--muted)">${t.confidence}%</span>` : ''}
+                  ${t.confidence < 100 ? `<span style="font-size:0.65rem;color:var(--muted)">${t.confidence}%</span>` : ''}
                 </span>`).join('')}
             </div>
           </div>`;
@@ -1381,28 +1436,18 @@ function renderTechStack(cmsData, url) {
       </div>` : `
       <div class="cms-info-card" style="grid-column:1/-1">
         <div class="cms-info-title">🧩 Tech Stack</div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem">No technologies detected. The site may block crawlers or use heavy client-side rendering.</div>
+        <div style="color:var(--muted);font-size:0.83rem;margin-top:0.5rem">No technologies detected. The site may use heavy client-side rendering or block crawlers.</div>
       </div>`}
 
       ${signals.length > 0 ? `
       <div class="cms-info-card" style="grid-column:1/-1">
-        <div class="cms-info-title">🔍 CMS Detection Signals (${signals.length})</div>
-        <div class="signals-list" style="margin-top:0.75rem">
+        <div class="cms-info-title">🔍 Detection Signals (${signals.length})</div>
+        <div style="margin-top:0.6rem">
           ${signals.map(s => `<div class="signal-item">${s}</div>`).join('')}
         </div>
       </div>` : ''}
-
-      ${(cmsData.error || confidence === 0) ? `
-      <div class="cms-info-card" style="grid-column:1/-1;border-color:rgba(251,191,36,0.3)">
-        <div class="cms-info-title" style="color:var(--amber)">⚠ Detection Note</div>
-        <div style="font-size:0.85rem;color:var(--muted);line-height:1.6">
-          ${cmsData.error
-            ? 'Detection failed: ' + cmsData.error + '. The site may block automated requests.'
-            : 'No CMS identified. This may be a custom-built site, a JS SPA, or a site blocking crawlers.'}
-        </div>
-      </div>` : ''}
-
-    </div>`;
+    </div>
+  `;
 }
 </script>
 </body>
