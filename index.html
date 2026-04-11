@@ -987,52 +987,69 @@ async function startAudit() {
     el.querySelector('.step-icon').textContent = '○';
   });
 
-  let stepIdx = 0;
-  const stepInterval = setInterval(() => {
-    if (stepIdx > 0) {
-      const prev = document.getElementById(steps[stepIdx - 1]);
-      prev.classList.add('done');
+  // Helper: mark a step done and activate the next
+  function advanceStep(idx) {
+    if (idx > 0) {
+      const prev = document.getElementById(steps[idx - 1]);
+      prev.className = 'done';
       prev.querySelector('.step-icon').textContent = '✓';
     }
-    if (stepIdx < steps.length) {
-      document.getElementById(steps[stepIdx]).classList.add('active');
+    if (idx < steps.length) {
+      document.getElementById(steps[idx]).classList.add('active');
     }
-    stepIdx++;
-  }, 1100);
+  }
+
+  advanceStep(0); // Step 1 active: Fetching page data
 
   try {
-    // Run page fetch + CMS detect in parallel
+    // Steps 1-4: page fetch + CMS detect in parallel
     const [pageData, cmsData] = await Promise.all([
       fetchPageData(url),
       detectCMS(url),
     ]);
 
+    // Mark steps 1-4 done, activate step 5
+    advanceStep(1); advanceStep(2); advanceStep(3); advanceStep(4);
     currentCmsData = cmsData;
+
+    // Step 5 active: Core Web Vitals — now fire AI
+    advanceStep(5); // step 6 active: E-E-A-T scoring
 
     // Now run AI audit with full context
     const auditData = await runAIAudit(url, options, pageData, cmsData);
     currentAuditData = auditData;
 
-    clearInterval(stepInterval);
+    // All steps done
     steps.forEach(s => {
       const el = document.getElementById(s);
-      el.classList.add('done');
+      el.className = 'done';
       el.querySelector('.step-icon').textContent = '✓';
     });
 
-    await new Promise(r => setTimeout(r, 500));
+    // Brief pause so user sees all checkmarks before results appear
+    await new Promise(r => setTimeout(r, 600));
     document.getElementById('loading-state').style.display = 'none';
     renderResults(url, auditData, cmsData, pageData);
 
   } catch (err) {
-    clearInterval(stepInterval);
+    // Mark all unfinished steps as failed visually
+    steps.forEach(s => {
+      const el = document.getElementById(s);
+      if (el && !el.classList.contains('done')) {
+        el.querySelector('.step-icon').textContent = '✗';
+        el.style.color = 'var(--red)';
+      }
+    });
+    await new Promise(r => setTimeout(r, 600));
     document.getElementById('loading-state').style.display = 'none';
-    // FIX #4: Show specific, actionable error — not just a silent reset
     const msg = err.message || 'Unknown error';
+    const isInit    = msg.toLowerCase().includes('init') || msg.toLowerCase().includes('binding');
     const isTimeout = msg.includes('abort') || msg.includes('timeout');
-    const userMsg = isTimeout
-      ? '⏱ Audit timed out — the AI took too long. Please try again.'
-      : '❌ Audit failed: ' + msg;
+    const userMsg = isInit
+      ? '❌ AI binding error — redeploy with wrangler deploy and ensure [ai] binding is set in wrangler.toml'
+      : isTimeout
+        ? '⏱ Audit timed out — the AI took too long. Please try again.'
+        : '❌ Audit failed: ' + msg;
     showToast(userMsg, 'var(--red)');
     resetAudit();
   }

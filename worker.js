@@ -521,13 +521,31 @@ Respond with ONLY this exact JSON structure:
 
 Generate at least 10 suggestions and 12 metrics. Base all factual data on the real page signals provided. Return ONLY the JSON object.`;
 
-    const response = await env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: userPrompt },
-      ],
-      max_tokens: 8192,  // FIX #1: was 4096 — too small for full audit JSON, caused truncated/invalid JSON
-    });
+    // Guard: ensure AI binding exists (catches "audit failed function init")
+    if (!env.AI) {
+      throw new Error('Cloudflare Workers AI binding (env.AI) is not available. Check wrangler.toml [ai] binding and redeploy.');
+    }
+
+    let response;
+    try {
+      response = await env.AI.run('@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userPrompt },
+        ],
+        max_tokens: 8192,
+      });
+    } catch (aiErr) {
+      // Model may have been renamed/deprecated — fallback to stable model
+      console.error('Primary model failed, trying fallback:', aiErr.message);
+      response = await env.AI.run('@cf/meta/llama-3.1-70b-instruct', {
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userPrompt },
+        ],
+        max_tokens: 8192,
+      });
+    }
 
     // FIX #2: Strip markdown code fences BEFORE extracting JSON
     // LLaMA often wraps output in ```json ... ``` despite instructions
