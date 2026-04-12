@@ -1024,6 +1024,22 @@ let currentPageData  = null;
 let currentUrl       = '';
 let allSuggestions   = [];
 
+// ─── SAFE DOM HELPERS ────────────────────────────────────────
+// Prevents "cannot set properties of null (setting 'innerHTML')"
+// when an element is missing or the DOM is in a transitional state.
+function safeHTML(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
+}
+function safeText(id, text) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = text;
+}
+function safeStyle(id, prop, val) {
+  const el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+
 // ─── UTILS ───────────────────────────────────────────────────
 function showToast(msg, color = 'var(--green)') {
   document.querySelectorAll('.toast').forEach(t => t.remove());
@@ -1502,6 +1518,7 @@ async function runAIAudit(url, options, pageData, cmsData) {
 // ─── SITE PREVIEW ─────────────────────────────────────────────
 function renderSitePreview(url, pageData, cmsData) {
   const panel = document.getElementById('site-preview-panel');
+  if (!panel) return;
   panel.style.display = 'block';
 
   const pd = pageData || {};
@@ -1509,65 +1526,78 @@ function renderSitePreview(url, pageData, cmsData) {
   try { hostname = new URL(url).hostname; } catch {}
 
   // Browser bar
-  document.getElementById('preview-url-bar').textContent = url.replace(/^https?:\/\//, '');
-  document.getElementById('preview-visit-btn').href = url;
-  document.getElementById('preview-lock').textContent = pd.isHttps === false ? '🔓' : '🔒';
-  document.getElementById('preview-lock').style.color = pd.isHttps === false ? 'var(--red)' : 'var(--green)';
+  safeText('preview-url-bar', url.replace(/^https?:\/\//, ''));
+  const visitBtn = document.getElementById('preview-visit-btn');
+  if (visitBtn) visitBtn.href = url;
 
-  // Info panel
-  document.getElementById('preview-title').textContent = pd.title || 'No title detected';
-  document.getElementById('preview-desc').textContent  = pd.metaDesc || 'No meta description detected.';
-  document.getElementById('preview-cms').textContent   = cmsData?.cms || 'Unknown';
-
-  const ttfb = pd.ttfb;
-  const ttfbEl = document.getElementById('preview-ttfb');
-  if (ttfb) {
-    ttfbEl.textContent = ttfb + 'ms';
-    ttfbEl.style.color = ttfb < 800 ? 'var(--green)' : ttfb < 1800 ? 'var(--amber)' : 'var(--red)';
-  } else {
-    ttfbEl.textContent = '—';
+  const lockEl = document.getElementById('preview-lock');
+  if (lockEl) {
+    lockEl.textContent = pd.isHttps === false ? '🔓' : '🔒';
+    lockEl.style.color = pd.isHttps === false ? 'var(--red)' : 'var(--green)';
   }
 
-  document.getElementById('preview-words').textContent = pd.wordCount ? pd.wordCount.toLocaleString() : '—';
-  document.getElementById('preview-size').textContent  = pd.pageSizeKb ? pd.pageSizeKb + 'KB' : '—';
+  // Info panel
+  safeText('preview-title', pd.title || 'No title detected');
+  safeText('preview-desc',  pd.metaDesc || 'No meta description detected.');
+  safeText('preview-cms',   cmsData?.cms || 'Unknown');
+
+  const ttfb   = pd.ttfb;
+  const ttfbEl = document.getElementById('preview-ttfb');
+  if (ttfbEl) {
+    if (ttfb) {
+      ttfbEl.textContent = ttfb + 'ms';
+      ttfbEl.style.color = ttfb < 800 ? 'var(--green)' : ttfb < 1800 ? 'var(--amber)' : 'var(--red)';
+    } else {
+      ttfbEl.textContent = '—';
+    }
+  }
+
+  safeText('preview-words', pd.wordCount ? pd.wordCount.toLocaleString() : '—');
+  safeText('preview-size',  pd.pageSizeKb ? pd.pageSizeKb + 'KB' : '—');
 
   // Status pills
   const pills = [];
-  if (pd.isHttps !== false) pills.push({ label: '🔒 HTTPS', cls: 'preview-pill-green' });
-  else                       pills.push({ label: '🔓 HTTP', cls: 'preview-pill-red' });
+  if (pd.isHttps !== false) pills.push({ label: '🔒 HTTPS',        cls: 'preview-pill-green' });
+  else                       pills.push({ label: '🔓 HTTP',         cls: 'preview-pill-red'   });
   if (pd.hasViewport)        pills.push({ label: '📱 Mobile-Ready', cls: 'preview-pill-green' });
-  else                       pills.push({ label: '📵 No Viewport', cls: 'preview-pill-red' });
+  else                       pills.push({ label: '📵 No Viewport',  cls: 'preview-pill-red'   });
   if (pd.schema?.count > 0)  pills.push({ label: `🧩 ${pd.schema.count} Schema`, cls: 'preview-pill-blue' });
-  else                       pills.push({ label: '🧩 No Schema', cls: 'preview-pill-amber' });
-  if (pd.isNoindex)          pills.push({ label: '🚫 Noindex!', cls: 'preview-pill-red' });
-  if (pd.hasFavicon)         pills.push({ label: '✅ Favicon', cls: 'preview-pill-green' });
-  if (pd.canonical)          pills.push({ label: '🔗 Canonical', cls: 'preview-pill-blue' });
+  else                       pills.push({ label: '🧩 No Schema',    cls: 'preview-pill-amber' });
+  if (pd.isNoindex)          pills.push({ label: '🚫 Noindex!',     cls: 'preview-pill-red'   });
+  if (pd.hasFavicon)         pills.push({ label: '✅ Favicon',      cls: 'preview-pill-green' });
+  if (pd.canonical)          pills.push({ label: '🔗 Canonical',    cls: 'preview-pill-blue'  });
 
-  document.getElementById('preview-pills').innerHTML = pills.map(p =>
+  safeHTML('preview-pills', pills.map(p =>
     `<span class="preview-pill ${p.cls}">${p.label}</span>`
-  ).join('');
+  ).join(''));
 
   // Favicon
-  const iconEl = document.getElementById('preview-icon');
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
-  iconEl.innerHTML = `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`;
+  safeHTML('preview-icon', `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`);
 
-  // Screenshot — try multiple free screenshot services
-  // Primary: Google PageSpeed screenshot thumbnail (no API key needed)
-  // Fallback: show favicon + domain in a styled placeholder
+  // Screenshot — capture element references NOW (synchronously)
+  // so async onerror callbacks don't try to access stale/missing refs
   const screenshotEl = document.getElementById('preview-screenshot');
   const fallbackEl   = document.getElementById('preview-fallback');
+  if (!screenshotEl || !fallbackEl) return;
 
-  // Use Google's screenshot service (via pagespeed API thumbnail) — no API key
   const screenshotUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
 
   screenshotEl.style.display = 'block';
   fallbackEl.style.display   = 'none';
   screenshotEl.style.opacity = '0';
   screenshotEl.src = screenshotUrl;
-  screenshotEl.onload = () => { screenshotEl.style.opacity = '1'; };
+
+  screenshotEl.onload = () => {
+    // Only update if element still in DOM
+    if (document.getElementById('preview-screenshot')) {
+      screenshotEl.style.opacity = '1';
+    }
+  };
+
   screenshotEl.onerror = () => {
-    // Fallback: styled domain card
+    // Guard: only update if the panel is still visible (user hasn't reset audit)
+    if (!document.getElementById('preview-fallback')) return;
     screenshotEl.style.display = 'none';
     fallbackEl.innerHTML = `
       <div class="preview-site-icon">
@@ -1582,125 +1612,138 @@ function renderSitePreview(url, pageData, cmsData) {
 
 // ─── RENDER ───────────────────────────────────────────────────
 function renderResults(url, data, cmsData, pageData) {
-  // Render site preview first
-  renderSitePreview(url, pageData, cmsData);
-  // Score ring
-  const arc = document.getElementById('score-arc');
-  const circumference = 339;
-  arc.style.strokeDashoffset = circumference - (data.score / 100) * circumference;
-  arc.style.stroke = getScoreColor(data.score);
-
-  // Count-up
-  const numEl = document.getElementById('score-num');
-  numEl.style.color = getScoreColor(data.score);
-  let count = 0;
-  const iv = setInterval(() => {
-    count = Math.min(count + 2, data.score);
-    numEl.textContent = count;
-    if (count >= data.score) clearInterval(iv);
-  }, 18);
-
-  // URL & title
-  document.getElementById('result-url').textContent = url;
-  document.getElementById('result-title').textContent =
-    data.score >= 85 ? '🏆 Excellent SEO Health' :
-    data.score >= 70 ? '✅ Good — Room to Improve' :
-    data.score >= 50 ? '⚠ Needs Attention' : '🚨 Critical Issues Found';
-
-  // Grade chips
-  const catLabels = {
-    technical: '🔍 Technical', performance: '⚡ Perf',
-    content: '✍️ Content', ux: '📱 UX',
-    backlinks: '🔗 Links', schema: '🧩 Schema',
-    eeat: '🏆 E-E-A-T', social: '📣 Social',
-  };
-  document.getElementById('grade-chips').innerHTML = Object.entries(data.categories || {}).map(([k, v]) =>
-    `<span class="grade-chip grade-${v.grade}">${catLabels[k] || k}: ${v.grade} (${v.score})</span>`
-  ).join('');
-
-  // Quick wins
-  if (data.quick_wins && data.quick_wins.length) {
-    const qwBar = document.getElementById('quick-wins-bar');
-    qwBar.style.display = 'block';
-    document.getElementById('quick-wins-list').innerHTML = data.quick_wins.map((w, i) =>
-      `<div class="qw-item"><div class="qw-bullet">${i+1}</div><span>${w}</span></div>`
-    ).join('');
+  // Guard: if AI returned an error object instead of audit data, bail early
+  if (!data || data.error) {
+    showToast('❌ Audit failed: ' + (data?.error || 'No data returned'), 'var(--red)');
+    resetAudit();
+    return;
   }
 
-  // AI Summary (typewriter)
-  typewrite('ai-summary-text', data.summary || '');
+  try {
+    // Render site preview first
+    renderSitePreview(url, pageData, cmsData);
 
-  // E-E-A-T
-  if (data.eeat_summary) {
-    document.getElementById('eeat-panel').style.display = 'block';
-    document.getElementById('eeat-text').textContent = data.eeat_summary;
-  }
+    // Score ring
+    const arc = document.getElementById('score-arc');
+    const score = typeof data.score === 'number' ? data.score : 0;
+    if (arc) {
+      const circumference = 339;
+      arc.style.strokeDashoffset = circumference - (score / 100) * circumference;
+      arc.style.stroke = getScoreColor(score);
+    }
 
-  // Overview cards
-  document.getElementById('overview-cards').innerHTML = (data.overview_cards || []).map(card => {
-    const val = String(card.value ?? '—');  // FIX #3: ensure string — AI sometimes returns numbers
-    return `
-    <div class="audit-card">
-      <div class="card-header">
-        <div class="card-title">${card.title}</div>
-        <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
-      </div>
-      <div class="card-value" style="font-size:${val.length > 22 ? '0.95rem' : '1.4rem'}">${val}</div>
-      <div class="card-desc">${card.description}</div>
-    </div>
-  `}).join('');
+    // Count-up animation
+    const numEl = document.getElementById('score-num');
+    if (numEl) {
+      numEl.style.color = getScoreColor(score);
+      let count = 0;
+      const iv = setInterval(() => {
+        count = Math.min(count + 2, score);
+        numEl.textContent = count;
+        if (count >= score) clearInterval(iv);
+      }, 18);
+    }
 
-  // Suggestions
-  allSuggestions = data.suggestions || [];
-  renderSuggestions(allSuggestions, cmsData?.cms);
+    // URL & title
+    safeText('result-url', url);
+    safeText('result-title',
+      score >= 85 ? '🏆 Excellent SEO Health' :
+      score >= 70 ? '✅ Good — Room to Improve' :
+      score >= 50 ? '⚠ Needs Attention' : '🚨 Critical Issues Found'
+    );
 
-  // Metrics
-  document.getElementById('metrics-body').innerHTML = (data.metrics || []).map(m => `
-    <tr>
-      <td>
-        <div>${m.name}</div>
-        ${m.benchmark ? `<div class="benchmark-text">${m.benchmark}</div>` : ''}
-      </td>
-      <td><strong>${m.value}</strong></td>
-      <td>
-        <div class="metric-bar-wrap">
-          <div class="metric-bar"><div class="metric-bar-fill ${getBarClass(m.score)}" style="width:${m.score}%"></div></div>
-          <span style="font-size:0.78rem;color:var(--muted);min-width:26px">${m.score}</span>
+    // Grade chips
+    const catLabels = {
+      technical: '🔍 Technical', performance: '⚡ Perf',
+      content: '✍️ Content', ux: '📱 UX',
+      backlinks: '🔗 Links', schema: '🧩 Schema',
+      eeat: '🏆 E-E-A-T', social: '📣 Social',
+    };
+    safeHTML('grade-chips', Object.entries(data.categories || {}).map(([k, v]) =>
+      `<span class="grade-chip grade-${v?.grade || 'C'}">${catLabels[k] || k}: ${v?.grade || '?'} (${v?.score ?? '?'})</span>`
+    ).join(''));
+
+    // Quick wins
+    if (data.quick_wins && data.quick_wins.length) {
+      safeStyle('quick-wins-bar', 'display', 'block');
+      safeHTML('quick-wins-list', data.quick_wins.map((w, i) =>
+        `<div class="qw-item"><div class="qw-bullet">${i+1}</div><span>${w}</span></div>`
+      ).join(''));
+    }
+
+    // AI Summary (typewriter)
+    typewrite('ai-summary-text', data.summary || '');
+
+    // E-E-A-T
+    if (data.eeat_summary) {
+      safeStyle('eeat-panel', 'display', 'block');
+      safeText('eeat-text', data.eeat_summary);
+    }
+
+    // Overview cards
+    safeHTML('overview-cards', (data.overview_cards || []).map(card => {
+      const val = String(card.value ?? '—');
+      return `
+      <div class="audit-card">
+        <div class="card-header">
+          <div class="card-title">${card.title}</div>
+          <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
         </div>
-      </td>
-      <td><span class="status-badge status-${m.status}">${m.status === 'pass' ? 'Good' : m.status === 'warn' ? 'Fair' : 'Poor'}</span></td>
-    </tr>
-  `).join('');
+        <div class="card-value" style="font-size:${val.length > 22 ? '0.95rem' : '1.4rem'}">${val}</div>
+        <div class="card-desc">${card.description}</div>
+      </div>`;
+    }).join(''));
 
-  // Keywords
-  document.getElementById('keywords-content').innerHTML = (data.keywords || []).map(card => {
-    const val = String(card.value ?? '—');  // FIX #3: ensure string
-    return `
-    <div class="audit-card">
-      <div class="card-header">
-        <div class="card-title">${card.title}</div>
-        <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
-      </div>
-      <div class="card-value" style="font-size:${val.length > 22 ? '0.9rem' : '1.3rem'};word-break:break-word">${val}</div>
-      <div class="card-desc">${card.description}</div>
-    </div>
-  `}).join('');
+    // Suggestions
+    allSuggestions = data.suggestions || [];
+    renderSuggestions(allSuggestions, cmsData?.cms);
 
-  // Schema
-  renderSchema(data.schema_analysis, pageData);
+    // Metrics
+    safeHTML('metrics-body', (data.metrics || []).map(m => `
+      <tr>
+        <td>
+          <div>${m.name}</div>
+          ${m.benchmark ? `<div class="benchmark-text">${m.benchmark}</div>` : ''}
+        </td>
+        <td><strong>${m.value}</strong></td>
+        <td>
+          <div class="metric-bar-wrap">
+            <div class="metric-bar"><div class="metric-bar-fill ${getBarClass(m.score)}" style="width:${m.score}%"></div></div>
+            <span style="font-size:0.78rem;color:var(--muted);min-width:26px">${m.score}</span>
+          </div>
+        </td>
+        <td><span class="status-badge status-${m.status}">${m.status === 'pass' ? 'Good' : m.status === 'warn' ? 'Fair' : 'Poor'}</span></td>
+      </tr>
+    `).join(''));
 
-  // Core Web Vitals
-  renderCWV(data.core_web_vitals, pageData);
+    // Keywords
+    safeHTML('keywords-content', (data.keywords || []).map(card => {
+      const val = String(card.value ?? '—');
+      return `
+      <div class="audit-card">
+        <div class="card-header">
+          <div class="card-title">${card.title}</div>
+          <div class="status-badge status-${card.status}">${statusLabel(card.status)}</div>
+        </div>
+        <div class="card-value" style="font-size:${val.length > 22 ? '0.9rem' : '1.3rem'};word-break:break-word">${val}</div>
+        <div class="card-desc">${card.description}</div>
+      </div>`;
+    }).join(''));
 
-  // Competitor gaps
-  renderCompetitorGaps(data.competitor_gaps || []);
+    // Schema, CWV, Gaps, Tech Stack
+    renderSchema(data.schema_analysis, pageData);
+    renderCWV(data.core_web_vitals, pageData);
+    renderCompetitorGaps(data.competitor_gaps || []);
+    renderTechStack(cmsData, url);
 
-  // Tech Stack
-  renderTechStack(cmsData, url);
+    // Show results
+    safeStyle('results-section', 'display', 'block');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Show results
-  document.getElementById('results-section').style.display = 'block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (renderErr) {
+    console.error('renderResults error:', renderErr);
+    showToast('❌ Render error: ' + renderErr.message, 'var(--red)');
+  }
 }
 
 function typewrite(elId, text) {
@@ -1724,7 +1767,7 @@ function statusLabel(s) {
 
 function renderSuggestions(suggestions, cms) {
   const cmsLabel = cms && cms !== 'Unknown' && cms !== 'Custom / Unknown' ? `📌 ${cms} Fix` : '💡 Fix';
-  document.getElementById('suggestions-list').innerHTML = suggestions.map(s => `
+  safeHTML('suggestions-list', (suggestions || []).map(s => `
     <div class="suggestion-item priority-${s.priority}"
          data-priority="${s.priority}"
          data-category="${s.category || ''}">
@@ -1747,13 +1790,12 @@ function renderSuggestions(suggestions, cms) {
 }
 
 function renderSchema(schemaAnalysis, pageData) {
-  const el = document.getElementById('schema-content');
   const detected = pageData?.schema?.types || schemaAnalysis?.detected || [];
-  const missing = schemaAnalysis?.missing || [];
+  const missing  = schemaAnalysis?.missing || [];
   const priority = schemaAnalysis?.priority_schema || '';
-  const impl = schemaAnalysis?.implementation || '';
+  const impl     = schemaAnalysis?.implementation || '';
 
-  el.innerHTML = `
+  safeHTML('schema-content', `
     <div class="schema-card" style="grid-column:1/-1">
       <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
         ✅ Detected Schema Types (${detected.length})
@@ -1764,7 +1806,6 @@ function renderSchema(schemaAnalysis, pageData) {
           : '<span style="color:var(--muted);font-size:0.85rem">No schema markup detected on this page.</span>'}
       </div>
     </div>
-
     <div class="schema-card" style="grid-column:1/-1">
       <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
         ❌ Missing / Recommended Schema Types
@@ -1775,7 +1816,6 @@ function renderSchema(schemaAnalysis, pageData) {
           : '<span style="color:var(--muted);font-size:0.85rem">Great — no critical schema gaps detected.</span>'}
       </div>
     </div>
-
     ${priority ? `
     <div class="schema-card" style="grid-column:1/-1">
       <div class="cms-info-title" style="font-size:0.72rem;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem">
@@ -1784,23 +1824,26 @@ function renderSchema(schemaAnalysis, pageData) {
       <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.5rem">${priority}</div>
       ${impl ? `<div class="cms-fix-box" style="margin-top:0.75rem"><div class="cms-fix-label">Implementation</div><div class="cms-fix-content">${impl}</div></div>` : ''}
     </div>` : ''}
-  `;
+  `);
 }
 
 function renderCWV(cwv, pageData) {
-  if (!cwv) { document.getElementById('cwv-content').innerHTML = '<p style="color:var(--muted);padding:2rem">Core Web Vitals data unavailable.</p>'; return; }
+  if (!cwv) {
+    safeHTML('cwv-content', '<p style="color:var(--muted);padding:2rem">Core Web Vitals data unavailable.</p>');
+    return;
+  }
 
   function cwvClass(label) {
     if (!label) return 'cwv-warn';
     return label.toLowerCase().includes('good') ? 'cwv-good' : label.toLowerCase().includes('poor') ? 'cwv-poor' : 'cwv-warn';
   }
 
-  const ttfbMs = pageData?.ttfb || cwv.ttfb_actual || '—';
+  const ttfbMs     = pageData?.ttfb || cwv.ttfb_actual || '—';
   const ttfbStatus = typeof ttfbMs === 'number'
     ? (ttfbMs < 800 ? 'cwv-good' : ttfbMs < 1800 ? 'cwv-warn' : 'cwv-poor')
     : 'cwv-warn';
 
-  document.getElementById('cwv-content').innerHTML = `
+  safeHTML('cwv-content', `
     <div class="cwv-grid">
       <div class="cwv-card">
         <div class="cwv-label">LCP</div>
@@ -1834,16 +1877,15 @@ function renderCWV(cwv, pageData) {
       </div>
       ${cwv.recommendations.map(r => `<div class="qw-item" style="margin-bottom:0.5rem"><div class="qw-bullet" style="background:rgba(251,191,36,0.2);color:var(--amber)">→</div><span style="font-size:0.84rem">${r}</span></div>`).join('')}
     </div>` : ''}
-  `;
+  `);
 }
 
 function renderCompetitorGaps(gaps) {
-  const el = document.getElementById('competitors-content');
   if (!gaps || !gaps.length) {
-    el.innerHTML = '<p style="color:var(--muted);padding:2rem;text-align:center">No competitor gap data available.</p>';
+    safeHTML('competitors-content', '<p style="color:var(--muted);padding:2rem;text-align:center">No competitor gap data available.</p>');
     return;
   }
-  el.innerHTML = `
+  safeHTML('competitors-content', `
     <div style="margin-bottom:1rem;color:var(--muted);font-size:0.85rem">
       Based on common patterns among top-ranking pages in your niche, here are key gaps to close:
     </div>
@@ -1857,7 +1899,7 @@ function renderCompetitorGaps(gaps) {
         <div class="status-badge status-warn" style="margin-top:2px">Gap</div>
       </div>
     `).join('')}
-  `;
+  `);
 }
 
 // ── CMS / TECH STACK ──────────────────────────────────────────
@@ -1883,8 +1925,10 @@ const CAT_META = {
 };
 
 function renderTechStack(cmsData, url) {
-  const el = document.getElementById('techstack-content');
-  if (!cmsData) { el.innerHTML = '<p style="color:var(--muted);padding:2rem">Tech stack detection unavailable.</p>'; return; }
+  if (!cmsData) {
+    safeHTML('techstack-content', '<p style="color:var(--muted);padding:2rem">Tech stack detection unavailable.</p>');
+    return;
+  }
 
   const icon       = CMS_ICONS[cmsData.cms] || '⚙️';
   const confidence = cmsData.confidence || 0;
@@ -1903,7 +1947,7 @@ function renderTechStack(cmsData, url) {
 
   const catOrder = ['cms','js','analytics','cdn','payment','ecommerce','chat','crm','consent','css','other'];
 
-  el.innerHTML = `
+  safeHTML('techstack-content', `
     <div class="cms-panel">
       <div class="cms-hero-card">
         <div class="cms-logo-wrap">${icon}</div>
@@ -1960,7 +2004,7 @@ function renderTechStack(cmsData, url) {
         </div>
       </div>` : ''}
     </div>
-  `;
+  `);
 }
 // ─── ON PAGE LOAD ─────────────────────────────────────────────
 // Restore from shared URL hash if present
