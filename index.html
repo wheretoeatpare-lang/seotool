@@ -1080,7 +1080,8 @@ function resetAudit() {
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('hero').style.display = 'block';
   document.getElementById('features').style.display = 'block';
-  document.querySelector('footer').style.display = 'block';
+  const _footer = document.querySelector('footer');
+  if (_footer) _footer.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1391,7 +1392,8 @@ async function startAudit() {
 
   document.getElementById('hero').style.display = 'none';
   document.getElementById('features').style.display = 'none';
-  document.querySelector('footer').style.display = 'none';
+  const _footer = document.querySelector('footer');
+  if (_footer) _footer.style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('loading-url').textContent = url;
