@@ -245,7 +245,7 @@ function detectHostingInfo(url) {
 // FIX:
 //   1. Compact prompt: signals compressed to ~800 input tokens.
 //   2. Model waterfall: 8b (reliable) → 11b → mistral-7b (fallbacks).
-//   3. max_tokens: 6000 (enough for full JSON output with 8+ suggestions and 10+ metrics).
+//   3. max_tokens: 3000 (enough for full JSON output).
 //   4. Robust extraction handles all known CF AI response shapes.
 // ─────────────────────────────────────────────────────────────
 async function handleClaude(request, env) {
@@ -347,7 +347,7 @@ Generate 8+ suggestions, 10+ metrics, 5+ competitor_gaps. Use real data. Return 
             { role: 'system', content: 'You are an SEO expert. Output ONLY valid JSON. No markdown. No explanation. No code fences.' },
             { role: 'user',   content: prompt },
           ],
-          max_tokens: 6000,
+          max_tokens: 3000,
         });
 
         // Handle all known Cloudflare AI response shapes
