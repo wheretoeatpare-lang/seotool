@@ -206,8 +206,8 @@ h1 span {
 .step-icon { width: 18px; text-align: center; }
 
 /* ── RESULTS ── */
-#results-section { display: none; }
-#main-results { max-width: 960px; margin: 3rem auto 6rem; padding: 0 1.5rem; }
+#results-section { display: none; padding-top: 5rem; }
+#main-results { max-width: 960px; margin: 0 auto 6rem; padding: 0 1.5rem; }
 .back-btn {
   display: inline-flex; align-items: center; gap: 6px;
   color: var(--muted); font-size: 0.85rem; cursor: pointer;
@@ -224,7 +224,6 @@ h1 span {
   color: var(--muted2); font-size: 0.82rem; cursor: pointer;
   padding: 0.45rem 1rem; border-radius: 8px;
   font-family: 'DM Sans', sans-serif; transition: all 0.2s;
-  float: right; margin-bottom: 2rem;
 }
 .export-btn:hover { color: var(--text); border-color: var(--accent); }
 
@@ -699,7 +698,6 @@ footer .logo-f {
   .preview-content { grid-template-columns: 1fr; }
   .preview-info-panel { border-left: none; border-top: 1px solid var(--border); }
   .preview-meta-grid { grid-template-columns: repeat(3, 1fr); }
-}
   nav { padding: 0.9rem 1.25rem; }
   .nav-links { display: none; }
   .hero { padding: 7rem 1.25rem 3.5rem; }
@@ -782,11 +780,11 @@ footer .logo-f {
 <!-- RESULTS -->
 <div id="results-section">
   <div id="main-results">
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:2rem;padding-top:0.5rem">
       <button class="back-btn" onclick="resetAudit()" style="margin-bottom:0">← New Audit</button>
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-        <button class="export-btn" id="share-btn" onclick="shareReport()" style="float:none;margin-bottom:0;color:var(--accent2);border-color:rgba(124,111,247,0.35)">🔗 Share Report</button>
-        <button class="export-btn" onclick="exportReport()" style="float:none;margin-bottom:0">⬇ Export HTML</button>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+        <button class="export-btn" id="share-btn" onclick="shareReport()" style="color:var(--accent2);border-color:rgba(124,111,247,0.35)">🔗 Share Report</button>
+        <button class="export-btn" onclick="exportReport()">⬇ Export HTML</button>
       </div>
     </div>
 

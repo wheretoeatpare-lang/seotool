@@ -321,6 +321,7 @@ CRITICAL SUPPRESSION RULES (MUST FOLLOW — violations make the audit useless):
 ${suppressionRules || 'No suppressions needed.'}
 RULE: Quick wins must only include issues that are ACTUALLY MISSING or broken on this site based on PAGE DATA above. Never suggest fixing something that is already working correctly.
 RULE: HSTS (HTTP Strict Transport Security) is a SECURITY HEADER that tells browsers to always use HTTPS even if the user types http://. It is SEPARATE from having HTTPS. Only suggest it if HSTS header is NOT set AND site is on HTTPS.
+RULE: All string values in the JSON must NOT contain raw double-quotes, raw newlines, or raw tab characters. Use single quotes or rephrase instead. Keep "fix" and "description" values on a single line.
 
 Output ONLY valid JSON (no markdown, no code fences, no explanation):
 {"score":<0-100>,"grade":"<A-F>","summary":"<3 sentences based on real data>","eeat_summary":"<2 sentences on trust/authority signals>","quick_wins":["<win1>","<win2>","<win3>","<win4>","<win5>"],"categories":{"technical":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"performance":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"content":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"ux":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"backlinks":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"schema":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"eeat":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"social":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"}},"overview_cards":[{"title":"Page Title","value":"<title or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Meta Description","value":"<X chars or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"HTTPS","value":"<Secure|Not Secure>","description":"<detail>","status":"<pass|fail>"},{"title":"H1 Tags","value":"<count>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Schema Markup","value":"<X found>","description":"<types>","status":"<pass|warn|fail>"},{"title":"Open Graph","value":"<Complete|Partial|Missing>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Image Alt Text","value":"<X missing / Y total>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Page Speed","value":"<TTFB Xms>","description":"<assessment vs 800ms threshold>","status":"<pass|warn|fail>"},{"title":"Word Count","value":"<X words>","description":"<depth assessment>","status":"<pass|warn|fail>"},{"title":"Canonical URL","value":"<Set|Missing>","description":"<detail>","status":"<pass|warn|fail>"}],"suggestions":[{"title":"<issue title>","priority":"<high|medium|low>","impact":"<High|Medium|Low> Impact","category":"<Technical|Content|Performance|UX|Schema|E-E-A-T|Social|Backlinks>","description":"<why this hurts ranking>","fix":"<exact CMS-specific steps to fix>","effort":"<Quick <30min|Medium 1-2hr|Advanced half-day+>","ranking_impact":"<Immediate|Short-term 1-4wks|Long-term 3mo+>"}],"metrics":[{"name":"<metric name>","value":"<value>","score":<0-100>,"status":"<pass|warn|fail>","benchmark":"<what good looks like>"}],"keywords":[{"title":"Target Keywords","value":"<kw1, kw2, kw3>","description":"From title+H1+meta","status":"info"},{"title":"Keyword in Title","value":"<Yes|No>","description":"Primary kw in title tag","status":"<pass|fail>"},{"title":"Keyword Density","value":"<X%>","description":"Ideal: 1-2%","status":"<pass|warn|fail>"},{"title":"LSI Keywords","value":"<terms>","description":"Add for topical authority","status":"info"},{"title":"Long-tail Opportunities","value":"<phrases>","description":"High-intent phrases","status":"info"},{"title":"Missing Keywords","value":"<terms>","description":"Absent but important","status":"warn"}],"schema_analysis":{"detected":[${JSON.stringify(pd.schema?.types||[])}],"missing":["<recommended schema>"],"priority_schema":"<most important to add>","implementation":"<exact CMS steps>"},"competitor_gaps":[{"opportunity":"<gap>","description":"<what top competitors have>","action":"<specific action>"}],"core_web_vitals":{"lcp_estimate":"<Good <2.5s|Needs Improvement 2.5-4s|Poor >4s>","fid_estimate":"<Good <100ms|Needs Improvement|Poor>","cls_estimate":"<Good <0.1|Needs Improvement|Poor>","ttfb_actual":${pd.ttfb||null},"recommendations":["<fix1>","<fix2>"]}}
@@ -371,7 +372,11 @@ Generate 8+ suggestions, 10+ metrics, 5+ competitor_gaps. Use real data. Return 
       );
     }
 
-    // ── ROBUST JSON EXTRACTION ────────────────────────────────
+    // ── ROBUST JSON EXTRACTION + SANITIZATION ─────────────────
+    // Root cause of "expected ',' or ']' at position 11761":
+    // The AI writes unescaped double-quotes, newlines, or backticks
+    // inside JSON string values (especially in "fix" and "description"
+    // fields that contain code snippets). We sanitize these before parsing.
     let text = rawText.trim()
       .replace(/^```(?:json)?\s*/i, '')
       .replace(/\s*```\s*$/i, '')
@@ -381,15 +386,56 @@ Generate 8+ suggestions, 10+ metrics, 5+ competitor_gaps. Use real data. Return 
     const end   = text.lastIndexOf('}');
     if (start === -1 || end === -1) throw new Error('No JSON object in AI response. Raw: ' + text.slice(0, 200));
 
+    let jsonStr = text.slice(start, end + 1);
+
     let parsed;
     try {
-      parsed = JSON.parse(text.slice(start, end + 1));
-    } catch {
-      // Try light fixes: trailing commas, unescaped newlines
-      const fixed = text.slice(start, end + 1)
-        .replace(/,\s*([}\]])/g, '$1')
-        .replace(/\r?\n/g, ' ');
-      parsed = JSON.parse(fixed); // throws if still broken → caught by outer catch
+      parsed = JSON.parse(jsonStr);
+    } catch (e1) {
+      // ── SANITIZATION PASS ──────────────────────────────────
+      // Fix the most common AI JSON corruption issues in order:
+      try {
+        let fixed = jsonStr
+          // 1. Remove actual newlines/tabs inside string values
+          //    (replace \r\n and \n that appear inside "..." with a space)
+          .replace(/("(?:[^"\\]|\\.)*")|(\r?\n|\t)/g, (match, str, nl) => str ? str : ' ')
+          // 2. Fix trailing commas before } or ]
+          .replace(/,(\s*[}\]])/g, '$1')
+          // 3. Fix unescaped backslashes (e.g. file paths like C:\Users)
+          .replace(/(?<!\\)\\(?!["\\/bfnrtu])/g, '\\\\');
+
+        parsed = JSON.parse(fixed);
+      } catch (e2) {
+        // ── AGGRESSIVE RECOVERY: line-by-line sanitizer ────────
+        // Walk through each character, tracking whether we're inside a
+        // JSON string, and escape any raw control chars we find.
+        try {
+          let out = '';
+          let inStr = false;
+          let escape = false;
+          for (let i = 0; i < jsonStr.length; i++) {
+            const ch = jsonStr[i];
+            if (escape) { out += ch; escape = false; continue; }
+            if (ch === '\\') { out += ch; escape = true; continue; }
+            if (ch === '"') { inStr = !inStr; out += ch; continue; }
+            if (inStr) {
+              // Inside a string: escape raw control characters
+              if (ch === '\n') { out += '\\n'; continue; }
+              if (ch === '\r') { out += '\\r'; continue; }
+              if (ch === '\t') { out += '\\t'; continue; }
+            } else {
+              // Outside a string: remove unexpected whitespace variants
+              if (ch === '\n' || ch === '\r' || ch === '\t') { out += ' '; continue; }
+            }
+            out += ch;
+          }
+          // Also fix trailing commas after sanitizing
+          out = out.replace(/,(\s*[}\]])/g, '$1');
+          parsed = JSON.parse(out);
+        } catch (e3) {
+          throw new Error(`JSON parse failed after sanitization. Original error: ${e1.message}. Position hint: ${e1.message}`);
+        }
+      }
     }
 
     return new Response(JSON.stringify(parsed), { headers: CORS });
