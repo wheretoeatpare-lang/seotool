@@ -784,7 +784,20 @@ footer .logo-f {
   <div id="main-results">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem">
       <button class="back-btn" onclick="resetAudit()" style="margin-bottom:0">← New Audit</button>
-      <button class="export-btn" onclick="exportReport()" style="float:none;margin-bottom:0">⬇ Export Report</button>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="export-btn" id="share-btn" onclick="shareReport()" style="float:none;margin-bottom:0;color:var(--accent2);border-color:rgba(124,111,247,0.35)">🔗 Share Report</button>
+        <button class="export-btn" onclick="exportReport()" style="float:none;margin-bottom:0">⬇ Export HTML</button>
+      </div>
+    </div>
+
+    <!-- Share URL Banner (shown after sharing) -->
+    <div id="share-banner" style="display:none;background:rgba(124,111,247,0.1);border:1px solid rgba(124,111,247,0.3);border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:1.25rem;display:none">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem">🔗 Shareable Link</div>
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap">
+        <input id="share-url-input" readonly style="flex:1;background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:0.45rem 0.75rem;border-radius:7px;font-family:monospace;font-size:0.78rem;outline:none;min-width:0">
+        <button onclick="copyShareUrl()" style="background:var(--accent);color:white;border:none;padding:0.45rem 1rem;border-radius:7px;font-size:0.78rem;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif">Copy Link</button>
+      </div>
+      <div style="font-size:0.73rem;color:var(--muted);margin-top:0.4rem">Your friend can open this link to view the full audit — no login needed.</div>
     </div>
 
     <!-- Site Preview Panel -->
@@ -1009,6 +1022,7 @@ footer .logo-f {
 // ─── STATE ────────────────────────────────────────────────────
 let currentAuditData = null;
 let currentCmsData   = null;
+let currentPageData  = null;
 let currentUrl       = '';
 let allSuggestions   = [];
 
@@ -1072,44 +1086,274 @@ function filterSuggestions(filter, el) {
 }
 
 // ─── EXPORT REPORT ────────────────────────────────────────────
+// ─── SHARE REPORT (URL hash-based) ───────────────────────────
+function shareReport() {
+  if (!currentAuditData) return;
+  try {
+    const payload = {
+      url: currentUrl,
+      audit: currentAuditData,
+      cms: currentCmsData,
+      page: currentPageData,
+      ts: Date.now(),
+    };
+    const json = JSON.stringify(payload);
+    const b64  = btoa(unescape(encodeURIComponent(json)));
+    const shareUrl = window.location.origin + window.location.pathname + '#audit=' + b64;
+
+    // Update browser URL without reload
+    history.replaceState(null, '', '#audit=' + b64);
+
+    const banner = document.getElementById('share-banner');
+    banner.style.display = 'block';
+    document.getElementById('share-url-input').value = shareUrl;
+    showToast('✅ Shareable link created! Copy it above.');
+  } catch (e) {
+    showToast('⚠ Report too large to encode in URL. Use Export HTML instead.', 'var(--amber)');
+  }
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('share-url-input');
+  navigator.clipboard.writeText(input.value).then(() => {
+    showToast('✅ Link copied to clipboard!');
+  }).catch(() => {
+    input.select();
+    document.execCommand('copy');
+    showToast('✅ Link copied!');
+  });
+}
+
+// ─── RESTORE FROM URL HASH ────────────────────────────────────
+function tryRestoreFromHash() {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#audit=')) return false;
+  try {
+    const b64  = hash.slice('#audit='.length);
+    const json = decodeURIComponent(escape(atob(b64)));
+    const payload = JSON.parse(json);
+    if (!payload.audit || !payload.url) return false;
+
+    currentUrl       = payload.url;
+    currentAuditData = payload.audit;
+    currentCmsData   = payload.cms || null;
+    currentPageData  = payload.page || null;
+    allSuggestions   = payload.audit.suggestions || [];
+
+    // Show a "Shared Report" banner at top
+    document.getElementById('hero').style.display = 'none';
+    document.getElementById('features').style.display = 'none';
+    document.querySelector('footer').style.display = 'none';
+    document.getElementById('loading-state').style.display = 'none';
+
+    renderResults(payload.url, payload.audit, payload.cms, payload.page);
+
+    // Pre-fill the share banner
+    const banner = document.getElementById('share-banner');
+    banner.style.display = 'block';
+    document.getElementById('share-url-input').value = window.location.href;
+
+    // Show "Viewing shared report" notice
+    showToast('👁 Viewing a shared SEO audit report', 'var(--blue)');
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// ─── EXPORT HTML REPORT ───────────────────────────────────────
 function exportReport() {
   if (!currentAuditData) return;
-  const d = currentAuditData;
-  const lines = [
-    `RankSight SEO Audit Report`,
-    `Generated: ${new Date().toLocaleString()}`,
-    `URL: ${currentUrl}`,
-    `CMS: ${currentCmsData?.cms || 'Unknown'}`,
-    ``,
-    `OVERALL SCORE: ${d.score}/100 (${d.grade})`,
-    ``,
-    `SUMMARY:`,
-    d.summary || '',
-    ``,
-    `CATEGORY SCORES:`,
-    ...Object.entries(d.categories || {}).map(([k,v]) => `  ${k}: ${v.score}/100 (${v.grade}) — ${v.note || ''}`),
-    ``,
-    `QUICK WINS:`,
-    ...(d.quick_wins || []).map((w, i) => `  ${i+1}. ${w}`),
-    ``,
-    `TOP SUGGESTIONS:`,
-    ...(d.suggestions || []).map((s, i) => [
-      ``,
-      `${i+1}. [${s.priority?.toUpperCase()}] ${s.title}`,
-      `   Category: ${s.category} | ${s.impact} | ${s.effort}`,
-      `   Issue: ${s.description}`,
-      `   Fix: ${s.fix}`,
-    ]).flat(),
-    ``,
-    `METRICS:`,
-    ...(d.metrics || []).map(m => `  ${m.name}: ${m.value} (Score: ${m.score}) [${m.status}]${m.benchmark ? ' — ' + m.benchmark : ''}`),
-  ];
-  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const d   = currentAuditData;
+  const cms = currentCmsData?.cms || 'Unknown';
+
+  const scoreColor = d.score >= 80 ? '#34d399' : d.score >= 60 ? '#fbbf24' : '#f87171';
+
+  const catRows = Object.entries(d.categories || {}).map(([k, v]) => {
+    const color = v.score >= 80 ? '#34d399' : v.score >= 60 ? '#fbbf24' : '#f87171';
+    const labels = { technical:'🔍 Technical', performance:'⚡ Performance', content:'✍️ Content', ux:'📱 UX', backlinks:'🔗 Backlinks', schema:'🧩 Schema', eeat:'🏆 E-E-A-T', social:'📣 Social' };
+    return `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e30">${labels[k]||k}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;font-weight:700;color:${color}">${v.score}/100</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30"><span style="background:${color}22;color:${color};padding:2px 8px;border-radius:4px;font-weight:700">${v.grade}</span></td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;color:#8480aa;font-size:13px">${v.note||''}</td></tr>`;
+  }).join('');
+
+  const suggRows = (d.suggestions || []).map((s, i) => {
+    const pc = s.priority === 'high' ? '#f87171' : s.priority === 'medium' ? '#fbbf24' : '#60a5fa';
+    return `<div style="border:1px solid #1e1e30;border-left:4px solid ${pc};border-radius:10px;padding:16px;margin-bottom:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+        <span style="font-weight:700;font-size:15px">${i+1}. ${s.title}</span>
+        <span style="background:${pc}22;color:${pc};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${(s.priority||'').toUpperCase()}</span>
+        <span style="background:#161624;color:#8480aa;padding:2px 8px;border-radius:4px;font-size:11px">${s.category||''}</span>
+        <span style="background:#161624;color:#22d3ee;padding:2px 8px;border-radius:4px;font-size:11px">${s.effort||''}</span>
+      </div>
+      <p style="color:#8480aa;font-size:13px;margin-bottom:10px;line-height:1.6">${s.description||''}</p>
+      ${s.fix ? `<div style="background:#07070d;border:1px solid #1e1e30;border-radius:7px;padding:12px"><div style="font-size:10px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">🔧 ${cms} Fix</div><div style="font-size:12px;color:#eeedf8;font-family:monospace;line-height:1.7">${s.fix}</div></div>` : ''}
+    </div>`;
+  }).join('');
+
+  const metricRows = (d.metrics || []).map(m => {
+    const c = m.status === 'pass' ? '#34d399' : m.status === 'warn' ? '#fbbf24' : '#f87171';
+    const pct = Math.min(100, m.score || 0);
+    return `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e30">${m.name}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;font-weight:600">${m.value}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;min-width:120px"><div style="background:#1e1e30;height:6px;border-radius:99px;overflow:hidden"><div style="background:${c};height:100%;width:${pct}%;border-radius:99px"></div></div></td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30"><span style="background:${c}22;color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${m.status?.toUpperCase()}</span></td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;color:#8480aa;font-size:12px">${m.benchmark||''}</td></tr>`;
+  }).join('');
+
+  const kwRows = (d.keywords || []).map(k => {
+    const c = k.status === 'pass' ? '#34d399' : k.status === 'warn' ? '#fbbf24' : k.status === 'fail' ? '#f87171' : '#60a5fa';
+    return `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e30">${k.title}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;font-weight:600">${k.value}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;color:#8480aa;font-size:13px">${k.description||''}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30"><span style="background:${c}22;color:${c};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${(k.status||'info').toUpperCase()}</span></td></tr>`;
+  }).join('');
+
+  const gapItems = (d.competitor_gaps || []).map((g, i) =>
+    `<div style="border:1px solid #1e1e30;border-radius:10px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:700;margin-bottom:5px">${i+1}. ${g.opportunity}</div>
+      <div style="color:#8480aa;font-size:13px;margin-bottom:8px">${g.description}</div>
+      <div style="color:#a78bfa;font-size:13px">→ ${g.action}</div>
+    </div>`
+  ).join('');
+
+  const cwv = d.core_web_vitals || {};
+  const cwvColor = (v) => !v ? '#8480aa' : v.toLowerCase().includes('good') ? '#34d399' : v.toLowerCase().includes('poor') ? '#f87171' : '#fbbf24';
+
+  const schemaA = d.schema_analysis || {};
+  const qwItems = (d.quick_wins || []).map((w, i) =>
+    `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #1e1e30">
+      <div style="width:22px;height:22px;border-radius:50%;background:rgba(52,211,153,0.15);color:#34d399;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${i+1}</div>
+      <div style="font-size:13px;color:#eeedf8;line-height:1.5">${w}</div>
+    </div>`
+  ).join('');
+
+  const shareUrl = window.location.href.includes('#audit=') ? window.location.href : '(Generate with Share Report button)';
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSight SEO Audit — ${currentUrl}</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:#07070d;color:#eeedf8;padding:0;line-height:1.6}
+  .page{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+  h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:14px;margin-top:32px}
+  table{width:100%;border-collapse:collapse;background:#0f0f1a;border:1px solid #1e1e30;border-radius:10px;overflow:hidden}
+  .section{background:#0f0f1a;border:1px solid #161624;border-radius:14px;padding:24px;margin-bottom:24px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div style="border-bottom:1px solid #161624;padding-bottom:24px;margin-bottom:32px">
+    <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#c4b5fd,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">RankSight SEO Audit Report</div>
+    <div style="color:#8480aa;font-size:13px">Generated: ${new Date().toLocaleString()} &nbsp;|&nbsp; CMS: ${cms}</div>
+    <div style="margin-top:10px;background:#161624;border:1px solid #1e1e30;border-radius:8px;padding:10px 14px;font-size:13px;color:#a78bfa;font-family:monospace;word-break:break-all">${currentUrl}</div>
+  </div>
+
+  <!-- SCORE -->
+  <div class="section" style="display:flex;gap:32px;align-items:center;flex-wrap:wrap">
+    <div style="text-align:center;flex-shrink:0">
+      <div style="font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;color:${scoreColor};line-height:1">${d.score}</div>
+      <div style="color:#8480aa;font-size:12px;font-weight:600;letter-spacing:0.06em">/ 100</div>
+      <div style="background:${scoreColor}22;color:${scoreColor};padding:4px 14px;border-radius:6px;font-size:13px;font-weight:700;display:inline-block;margin-top:8px">Grade ${d.grade}</div>
+    </div>
+    <div style="flex:1;min-width:200px">
+      <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:8px">${d.score >= 85 ? '🏆 Excellent SEO Health' : d.score >= 70 ? '✅ Good — Room to Improve' : d.score >= 50 ? '⚠ Needs Attention' : '🚨 Critical Issues Found'}</div>
+      <div style="color:#8480aa;font-size:14px;line-height:1.7">${d.summary || ''}</div>
+    </div>
+  </div>
+
+  <!-- SHARE LINK -->
+  <div class="section" style="background:rgba(124,111,247,0.07);border-color:rgba(124,111,247,0.2)">
+    <div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">🔗 Shareable Link</div>
+    <div style="font-family:monospace;font-size:12px;color:#eeedf8;word-break:break-all;background:#07070d;padding:10px;border-radius:7px">${shareUrl}</div>
+  </div>
+
+  <!-- QUICK WINS -->
+  ${qwItems ? `<div class="section" style="background:rgba(52,211,153,0.05);border-color:rgba(52,211,153,0.2)">
+    <div style="font-size:11px;font-weight:700;color:#34d399;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px">⚡ Quick Wins — Under 30 Minutes</div>
+    ${qwItems}
+  </div>` : ''}
+
+  <!-- E-E-A-T -->
+  ${d.eeat_summary ? `<div class="section" style="background:rgba(244,114,182,0.05);border-color:rgba(244,114,182,0.2)">
+    <div style="font-size:11px;font-weight:700;color:#f472b6;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">🏆 E-E-A-T Assessment</div>
+    <div style="font-size:14px;color:#eeedf8;line-height:1.7">${d.eeat_summary}</div>
+  </div>` : ''}
+
+  <!-- CATEGORY SCORES -->
+  <h2>📊 Category Scores</h2>
+  <table><thead><tr>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Category</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Score</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Grade</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Note</th>
+  </tr></thead><tbody>${catRows}</tbody></table>
+
+  <!-- SUGGESTIONS -->
+  <h2>💡 Suggestions (${(d.suggestions||[]).length})</h2>
+  ${suggRows}
+
+  <!-- METRICS -->
+  <h2>📈 Metrics</h2>
+  <table><thead><tr>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Metric</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Value</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Score</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Status</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Benchmark</th>
+  </tr></thead><tbody>${metricRows}</tbody></table>
+
+  <!-- KEYWORDS -->
+  <h2>🔑 Keywords</h2>
+  <table><thead><tr>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Check</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Value</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Description</th>
+    <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid #1e1e30">Status</th>
+  </tr></thead><tbody>${kwRows}</tbody></table>
+
+  <!-- SCHEMA -->
+  <h2>🧩 Schema Analysis</h2>
+  <div class="section">
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#34d399;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">✅ Detected</div>
+      <div>${(schemaA.detected||[]).length ? (schemaA.detected||[]).map(t=>`<span style="background:rgba(124,111,247,0.15);color:#a78bfa;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;margin:2px;display:inline-block">${t}</span>`).join('') : '<span style="color:#8480aa;font-size:13px">None detected</span>'}</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:#f87171;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">❌ Missing / Recommended</div>
+      <div>${(schemaA.missing||[]).length ? (schemaA.missing||[]).map(t=>`<span style="background:rgba(248,113,113,0.12);color:#f87171;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;margin:2px;display:inline-block">+ ${t}</span>`).join('') : '<span style="color:#8480aa;font-size:13px">No gaps</span>'}</div>
+    </div>
+    ${schemaA.priority_schema ? `<div><div style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px">🎯 Priority — Add Next: ${schemaA.priority_schema}</div><div style="background:#07070d;border:1px solid #1e1e30;border-radius:7px;padding:12px;font-size:12px;font-family:monospace;line-height:1.7">${schemaA.implementation||''}</div></div>` : ''}
+  </div>
+
+  <!-- CORE WEB VITALS -->
+  <h2>⚡ Core Web Vitals</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+    ${[['LCP',cwv.lcp_estimate],['FID/INP',cwv.fid_estimate],['CLS',cwv.cls_estimate]].map(([label,val])=>`
+    <div class="section" style="text-align:center;padding:16px">
+      <div style="font-size:11px;font-weight:700;color:#8480aa;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">${label}</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:${cwvColor(val)}">${val?val.split(' ')[0]:'—'}</div>
+      <div style="font-size:11px;color:#8480aa;margin-top:4px">${val||''}</div>
+    </div>`).join('')}
+  </div>
+  ${cwv.ttfb_actual ? `<div class="section"><div style="font-size:13px">Real TTFB: <strong style="color:${cwv.ttfb_actual < 800 ? '#34d399' : cwv.ttfb_actual < 1800 ? '#fbbf24' : '#f87171'}">${cwv.ttfb_actual}ms</strong> &nbsp; <span style="color:#8480aa">Good &lt; 800ms | Needs Improvement &lt; 1800ms | Poor ≥ 1800ms</span></div></div>` : ''}
+
+  <!-- COMPETITOR GAPS -->
+  ${gapItems ? `<h2>🏁 Competitor Gaps</h2>${gapItems}` : ''}
+
+  <!-- FOOTER -->
+  <div style="margin-top:48px;padding-top:24px;border-top:1px solid #161624;text-align:center;color:#8480aa;font-size:12px">
+    Generated by <strong style="color:#a78bfa">RankSight</strong> AI SEO Auditor &nbsp;·&nbsp; <a href="https://seotool.webmasterjamez.workers.dev" style="color:#a78bfa">${window.location.origin}</a>
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `ranksight-audit-${new URL(currentUrl).hostname}-${Date.now()}.txt`;
+  a.download = `ranksight-audit-${new URL(currentUrl).hostname}-${Date.now()}.html`;
   a.click();
-  showToast('✅ Report exported!');
+  showToast('✅ Full HTML report downloaded!');
 }
 
 // ─── MAIN AUDIT FLOW ─────────────────────────────────────────
@@ -1170,7 +1414,8 @@ async function startAudit() {
 
     // Mark steps 1-4 done, activate step 5
     advanceStep(1); advanceStep(2); advanceStep(3); advanceStep(4);
-    currentCmsData = cmsData;
+    currentCmsData   = cmsData;
+    currentPageData  = pageData;
 
     // Step 5 active: Core Web Vitals — now fire AI
     advanceStep(5); // step 6 active: E-E-A-T scoring
@@ -1719,6 +1964,11 @@ function renderTechStack(cmsData, url) {
     </div>
   `;
 }
+// ─── ON PAGE LOAD ─────────────────────────────────────────────
+// Restore from shared URL hash if present
+window.addEventListener('load', () => {
+  tryRestoreFromHash();
+});
 </script>
 </body>
 </html>

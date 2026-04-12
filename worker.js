@@ -295,6 +295,20 @@ async function handleClaude(request, env) {
     };
     const cmsGuide = cmsGuides[cms] || cmsGuides['Custom / Unknown'];
 
+    // ── SMART SUPPRESSION — avoid nonsense suggestions ─────────
+    // If site is already HTTPS, AI must NOT suggest "add HTTPS" or "configure HTTPS".
+    // If HSTS header IS present, AI must NOT suggest adding HSTS.
+    // These rules eliminate the #1 complaint from users: irrelevant quick wins.
+    const suppressionRules = [
+      pd.isHttps        ? 'RULE: Site IS already on HTTPS. Do NOT suggest enabling HTTPS or SSL. Do NOT suggest "Configure HTTPS". HTTPS is confirmed working.' : '',
+      pd.secHeaders?.hsts ? 'RULE: HSTS header IS already set. Do NOT suggest adding HSTS.' : '',
+      pd.hasViewport    ? 'RULE: Viewport meta tag IS present. Do NOT suggest adding viewport tag.' : '',
+      pd.hasFavicon     ? 'RULE: Favicon IS present. Do NOT suggest adding a favicon.' : '',
+      pd.canonical      ? 'RULE: Canonical URL IS set. Do NOT suggest adding canonical tags.' : '',
+      pd.lang           ? 'RULE: Lang attribute IS set. Do NOT suggest adding lang attribute.' : '',
+      pd.schema?.count > 0 ? `RULE: Site ALREADY HAS ${pd.schema.count} schema(s): ${pd.schema.types.join(', ')}. Focus on adding MISSING schema types, not the ones already there.` : '',
+    ].filter(Boolean).join('\n');
+
     // ── PROMPT (~1000 tokens total input) ─────────────────────
     const prompt = `SEO audit for: ${url}
 
@@ -302,6 +316,11 @@ PAGE DATA:
 ${sig}
 
 CMS FIX STYLE: ${cmsGuide}
+
+CRITICAL SUPPRESSION RULES (MUST FOLLOW — violations make the audit useless):
+${suppressionRules || 'No suppressions needed.'}
+RULE: Quick wins must only include issues that are ACTUALLY MISSING or broken on this site based on PAGE DATA above. Never suggest fixing something that is already working correctly.
+RULE: HSTS (HTTP Strict Transport Security) is a SECURITY HEADER that tells browsers to always use HTTPS even if the user types http://. It is SEPARATE from having HTTPS. Only suggest it if HSTS header is NOT set AND site is on HTTPS.
 
 Output ONLY valid JSON (no markdown, no code fences, no explanation):
 {"score":<0-100>,"grade":"<A-F>","summary":"<3 sentences based on real data>","eeat_summary":"<2 sentences on trust/authority signals>","quick_wins":["<win1>","<win2>","<win3>","<win4>","<win5>"],"categories":{"technical":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"performance":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"content":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"ux":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"backlinks":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"schema":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"eeat":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"social":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"}},"overview_cards":[{"title":"Page Title","value":"<title or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Meta Description","value":"<X chars or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"HTTPS","value":"<Secure|Not Secure>","description":"<detail>","status":"<pass|fail>"},{"title":"H1 Tags","value":"<count>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Schema Markup","value":"<X found>","description":"<types>","status":"<pass|warn|fail>"},{"title":"Open Graph","value":"<Complete|Partial|Missing>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Image Alt Text","value":"<X missing / Y total>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Page Speed","value":"<TTFB Xms>","description":"<assessment vs 800ms threshold>","status":"<pass|warn|fail>"},{"title":"Word Count","value":"<X words>","description":"<depth assessment>","status":"<pass|warn|fail>"},{"title":"Canonical URL","value":"<Set|Missing>","description":"<detail>","status":"<pass|warn|fail>"}],"suggestions":[{"title":"<issue title>","priority":"<high|medium|low>","impact":"<High|Medium|Low> Impact","category":"<Technical|Content|Performance|UX|Schema|E-E-A-T|Social|Backlinks>","description":"<why this hurts ranking>","fix":"<exact CMS-specific steps to fix>","effort":"<Quick <30min|Medium 1-2hr|Advanced half-day+>","ranking_impact":"<Immediate|Short-term 1-4wks|Long-term 3mo+>"}],"metrics":[{"name":"<metric name>","value":"<value>","score":<0-100>,"status":"<pass|warn|fail>","benchmark":"<what good looks like>"}],"keywords":[{"title":"Target Keywords","value":"<kw1, kw2, kw3>","description":"From title+H1+meta","status":"info"},{"title":"Keyword in Title","value":"<Yes|No>","description":"Primary kw in title tag","status":"<pass|fail>"},{"title":"Keyword Density","value":"<X%>","description":"Ideal: 1-2%","status":"<pass|warn|fail>"},{"title":"LSI Keywords","value":"<terms>","description":"Add for topical authority","status":"info"},{"title":"Long-tail Opportunities","value":"<phrases>","description":"High-intent phrases","status":"info"},{"title":"Missing Keywords","value":"<terms>","description":"Absent but important","status":"warn"}],"schema_analysis":{"detected":[${JSON.stringify(pd.schema?.types||[])}],"missing":["<recommended schema>"],"priority_schema":"<most important to add>","implementation":"<exact CMS steps>"},"competitor_gaps":[{"opportunity":"<gap>","description":"<what top competitors have>","action":"<specific action>"}],"core_web_vitals":{"lcp_estimate":"<Good <2.5s|Needs Improvement 2.5-4s|Poor >4s>","fid_estimate":"<Good <100ms|Needs Improvement|Poor>","cls_estimate":"<Good <0.1|Needs Improvement|Poor>","ttfb_actual":${pd.ttfb||null},"recommendations":["<fix1>","<fix2>"]}}
