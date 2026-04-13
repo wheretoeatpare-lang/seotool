@@ -461,14 +461,14 @@ h1 span {
   <div class="compare-box">
     <div class="compare-inputs">
       <div class="site-input-wrap">
-        <div class="site-label a">◆ Your Site (Site A)</div>
+        <div class="site-label a">◆ My Website</div>
         <input type="url" id="input-a" class="site-input a"
           placeholder="https://yoursite.com"
           onkeydown="if(event.key==='Enter')startCompare()" />
       </div>
       <div class="vs-badge">VS</div>
       <div class="site-input-wrap">
-        <div class="site-label b">◆ Competitor (Site B)</div>
+        <div class="site-label b">◆ Competitor Website</div>
         <input type="url" id="input-b" class="site-input b"
           placeholder="https://competitor.com"
           onkeydown="if(event.key==='Enter')startCompare()" />
@@ -488,8 +488,8 @@ h1 span {
     Fetching &amp; comparing <strong id="loading-label" style="color:var(--text)"></strong>
   </p>
   <ul class="loading-steps">
-    <li id="ls1"><span class="step-icon">○</span> Fetching Site A page data</li>
-    <li id="ls2"><span class="step-icon">○</span> Fetching Site B page data</li>
+    <li id="ls1"><span class="step-icon">○</span> Fetching My Website page data</li>
+    <li id="ls2"><span class="step-icon">○</span> Fetching Competitor Website page data</li>
     <li id="ls3"><span class="step-icon">○</span> Extracting keyword signals</li>
     <li id="ls4"><span class="step-icon">○</span> Scoring 40+ SEO factors</li>
     <li id="ls5"><span class="step-icon">○</span> Building comparison report</li>
@@ -887,7 +887,7 @@ function renderSiteCards(urlA, urlB, pdA, pdB, scA, scB) {
     const hostname = hn(url);
     const winner = side === 'a' ? scA._total > scB._total : scB._total > scA._total;
     return `
-      <div class="site-card-label ${side}">◆ Site ${side.toUpperCase()}</div>
+      <div class="site-card-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Competitor Website'}</div>
       <div class="site-card-title">${pd.title ? escHtml(pd.title.slice(0,55)) + (pd.title.length > 55 ? '…' : '') : hostname}</div>
       <div class="site-card-url">${hostname}</div>
       <div class="site-card-score ${side}">${sc._total}<small> / 100</small></div>
@@ -928,7 +928,7 @@ function renderCatGrid(scA, scB) {
           <div class="cat-bar-a" style="width:${(a/total*100).toFixed(1)}%"></div>
           <div class="cat-bar-b" style="width:${(b/total*100).toFixed(1)}%"></div>
         </div>
-        <div class="cat-winner">${winner ? `<span class="w">Site ${winner}</span> leads` : '<span style="color:var(--amber)">Tied</span>'}</div>
+        <div class="cat-winner">${winner ? `<span class="w">${winner === 'A' ? 'My Website' : 'Competitor'}</span> leads` : '<span style="color:var(--amber)">Tied</span>'}</div>
       </div>`;
   }).join('');
 }
@@ -950,8 +950,8 @@ function renderTable(id, rows, urlA, urlB) {
       <td class="val-a ${aWin ? 'win' : bWin ? 'lose' : 'tie'}">${r.valA}</td>
       <td class="val-b ${bWin ? 'win' : aWin ? 'lose' : 'tie'}">${r.valB}</td>
       <td class="verdict-col">
-        ${aWin ? `<span class="verdict-pill verdict-a">Site A</span>`
-               : bWin ? `<span class="verdict-pill verdict-b">Site B</span>`
+        ${aWin ? `<span class="verdict-pill verdict-a">My Website</span>`
+               : bWin ? `<span class="verdict-pill verdict-b">Competitor</span>`
                : `<span class="verdict-pill verdict-tie">Tie</span>`}
       </td>
     </tr>`;
@@ -1085,8 +1085,8 @@ function renderKwOverlap(kwA, kwB, urlA, urlB) {
     </div>
     <div style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">
       Keywords extracted from page title and meta description. Shared: <strong style="color:var(--green)">${shared.length}</strong> · 
-      Site A unique: <strong style="color:var(--siteA)">${onlyA.length}</strong> · 
-      Site B unique: <strong style="color:var(--siteB)">${onlyB.length}</strong>
+      My Website unique: <strong style="color:var(--siteA)">${onlyA.length}</strong> · 
+      Competitor unique: <strong style="color:var(--siteB)">${onlyB.length}</strong>
     </div>
   `;
 }
