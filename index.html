@@ -1613,7 +1613,10 @@ function renderSitePreview(url, pageData, cmsData) {
     <div class="preview-screenshot-label">Loading preview…</div>
   `;
 
-  const screenshotUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
+  // LinkDR: free, no API key, SEO-tool optimised. Falls back to thum.io on error.
+  const screenshotUrl = `https://linkdr.com/api/screenshot/${hostname}`;
+  const screenshotFallbackUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
+  let _triedFallback = false;
 
   screenshotEl.onload = () => {
     if (gen !== _previewGen) return;
@@ -1626,6 +1629,12 @@ function renderSitePreview(url, pageData, cmsData) {
   };
 
   screenshotEl.onerror = () => {
+    // First failure: silently retry with thum.io before giving up
+    if (!_triedFallback) {
+      _triedFallback = true;
+      screenshotEl.src = screenshotFallbackUrl;
+      return;
+    }
     if (gen !== _previewGen) return;
     const fe = document.getElementById('preview-fallback');
     const se = document.getElementById('preview-screenshot');
@@ -1680,6 +1689,7 @@ function renderSitePreview(url, pageData, cmsData) {
 
   screenshotEl.src = screenshotUrl;
 }
+
 
 // ─── RENDER ───────────────────────────────────────────────────
 function renderResults(url, data, cmsData, pageData) {
