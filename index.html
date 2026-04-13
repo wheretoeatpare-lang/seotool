@@ -1023,6 +1023,7 @@ let currentCmsData   = null;
 let currentPageData  = null;
 let currentUrl       = '';
 let allSuggestions   = [];
+let typewriteInterval = null;
 
 // ─── UTILS ───────────────────────────────────────────────────
 function showToast(msg, color = 'var(--green)') {
@@ -1061,10 +1062,32 @@ function getBarClass(s) {
 }
 
 function resetAudit() {
+  // Cancel any running typewrite animation
+  if (typewriteInterval) { clearInterval(typewriteInterval); typewriteInterval = null; }
+
+  // Hide results, restore landing page
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('hero').style.display = 'block';
   document.getElementById('features').style.display = 'block';
   document.querySelector('footer').style.display = 'block';
+
+  // Reset tab back to overview so next render starts clean
+  switchTab('overview');
+
+  // Reset panels that are conditionally shown
+  document.getElementById('quick-wins-bar').style.display = 'none';
+  document.getElementById('eeat-panel').style.display = 'none';
+  document.getElementById('share-banner').style.display = 'none';
+
+  // Clear AI summary text so typewriter doesn't see stale content
+  const summaryEl = document.getElementById('ai-summary-text');
+  if (summaryEl) summaryEl.textContent = '';
+
+  // Clear the URL hash if a shared report was loaded
+  if (window.location.hash.startsWith('#audit=')) {
+    history.replaceState(null, '', window.location.pathname);
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1618,9 +1641,10 @@ function renderResults(url, data, cmsData, pageData) {
     `<span class="grade-chip grade-${v.grade}">${catLabels[k] || k}: ${v.grade} (${v.score})</span>`
   ).join('');
 
-  // Quick wins
+  // Quick wins — always reset first
+  const qwBar = document.getElementById('quick-wins-bar');
+  qwBar.style.display = 'none';
   if (data.quick_wins && data.quick_wins.length) {
-    const qwBar = document.getElementById('quick-wins-bar');
     qwBar.style.display = 'block';
     document.getElementById('quick-wins-list').innerHTML = data.quick_wins.map((w, i) =>
       `<div class="qw-item"><div class="qw-bullet">${i+1}</div><span>${w}</span></div>`
@@ -1630,7 +1654,8 @@ function renderResults(url, data, cmsData, pageData) {
   // AI Summary (typewriter)
   typewrite('ai-summary-text', data.summary || '');
 
-  // E-E-A-T
+  // E-E-A-T — always reset first, then conditionally show
+  document.getElementById('eeat-panel').style.display = 'none';
   if (data.eeat_summary) {
     document.getElementById('eeat-panel').style.display = 'block';
     document.getElementById('eeat-text').textContent = data.eeat_summary;
@@ -1705,16 +1730,20 @@ function renderResults(url, data, cmsData, pageData) {
 
 function typewrite(elId, text) {
   const el = document.getElementById(elId);
+  if (!el) return;
+  // Cancel any previous typewrite on this element
+  if (typewriteInterval) { clearInterval(typewriteInterval); typewriteInterval = null; }
   const cursor = document.createElement('span');
   cursor.className = 'cursor';
   el.textContent = '';
   el.appendChild(cursor);
   let i = 0;
-  const iv = setInterval(() => {
+  typewriteInterval = setInterval(() => {
+    if (!document.getElementById(elId)) { clearInterval(typewriteInterval); typewriteInterval = null; return; }
     el.textContent = text.slice(0, i);
     el.appendChild(cursor);
     i++;
-    if (i > text.length) clearInterval(iv);
+    if (i > text.length) { clearInterval(typewriteInterval); typewriteInterval = null; }
   }, 16);
 }
 
