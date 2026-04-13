@@ -822,7 +822,7 @@ footer .logo-f {
             </div>
             <div class="preview-screenshot-label">Loading preview…</div>
           </div>
-          <img class="preview-screenshot-img" id="preview-screenshot" src="" alt="Website screenshot" style="display:none" onerror="this.style.display='none';document.getElementById('preview-fallback').style.display='flex'">
+          <img class="preview-screenshot-img" id="preview-screenshot" src="" alt="Website screenshot" style="display:none">
         </div>
         <div class="preview-info-panel">
           <div>
@@ -1064,6 +1064,17 @@ function getBarClass(s) {
 function resetAudit() {
   // Cancel any running typewrite animation
   if (typewriteInterval) { clearInterval(typewriteInterval); typewriteInterval = null; }
+
+  // Invalidate any in-flight screenshot image callbacks
+  _previewGen++;
+
+  // Neutralize screenshot img handlers so no stale onerror/onload fires
+  const screenshotEl = document.getElementById('preview-screenshot');
+  if (screenshotEl) {
+    screenshotEl.onload  = null;
+    screenshotEl.onerror = null;
+    screenshotEl.src = '';
+  }
 
   // Hide results, restore landing page
   document.getElementById('results-section').style.display = 'none';
@@ -1523,7 +1534,11 @@ async function runAIAudit(url, options, pageData, cmsData) {
 }
 
 // ─── SITE PREVIEW ─────────────────────────────────────────────
+let _previewGen = 0; // incremented each audit; stale callbacks check this
+
 function renderSitePreview(url, pageData, cmsData) {
+  const gen = ++_previewGen; // capture generation for this audit
+
   const panel = document.getElementById('site-preview-panel');
   panel.style.display = 'block';
 
@@ -1549,6 +1564,7 @@ function renderSitePreview(url, pageData, cmsData) {
     ttfbEl.style.color = ttfb < 800 ? 'var(--green)' : ttfb < 1800 ? 'var(--amber)' : 'var(--red)';
   } else {
     ttfbEl.textContent = '—';
+    ttfbEl.style.color = '';
   }
 
   document.getElementById('preview-words').textContent = pd.wordCount ? pd.wordCount.toLocaleString() : '—';
@@ -1575,32 +1591,59 @@ function renderSitePreview(url, pageData, cmsData) {
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
   iconEl.innerHTML = `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`;
 
-  // Screenshot — try multiple free screenshot services
-  // Primary: Google PageSpeed screenshot thumbnail (no API key needed)
-  // Fallback: show favicon + domain in a styled placeholder
+  // Screenshot — reset element state completely before setting new src
   const screenshotEl = document.getElementById('preview-screenshot');
   const fallbackEl   = document.getElementById('preview-fallback');
 
-  // Use Google's screenshot service (via pagespeed API thumbnail) — no API key
+  // Null-guard: if elements don't exist (shouldn't happen, but be safe)
+  if (!screenshotEl || !fallbackEl) return;
+
+  // Detach old handlers before changing src to prevent stale callbacks
+  screenshotEl.onload  = null;
+  screenshotEl.onerror = null;
+  screenshotEl.src = ''; // reset src to cancel any in-flight load
+
+  // Reset to loading state
+  screenshotEl.style.display = 'none';
+  screenshotEl.style.opacity = '0';
+  fallbackEl.style.display = 'flex';
+  fallbackEl.innerHTML = `
+    <div class="preview-site-icon" id="preview-icon-inner">
+      <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
+    </div>
+    <div class="preview-screenshot-label">Loading preview…</div>
+  `;
+
   const screenshotUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
 
-  screenshotEl.style.display = 'block';
-  fallbackEl.style.display   = 'none';
-  screenshotEl.style.opacity = '0';
-  screenshotEl.src = screenshotUrl;
-  screenshotEl.onload = () => { screenshotEl.style.opacity = '1'; };
+  screenshotEl.onload = () => {
+    if (gen !== _previewGen) return; // stale — a newer audit has started
+    const fe = document.getElementById('preview-fallback');
+    const se = document.getElementById('preview-screenshot');
+    if (!se || !fe) return;
+    fe.style.display = 'none';
+    se.style.display = 'block';
+    se.style.opacity = '1';
+  };
+
   screenshotEl.onerror = () => {
-    // Fallback: styled domain card
-    screenshotEl.style.display = 'none';
-    fallbackEl.innerHTML = `
+    if (gen !== _previewGen) return; // stale — a newer audit has started
+    const fe = document.getElementById('preview-fallback');
+    const se = document.getElementById('preview-screenshot');
+    if (!se || !fe) return;
+    se.style.display = 'none';
+    fe.innerHTML = `
       <div class="preview-site-icon">
         <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
       </div>
       <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.25rem">${hostname}</div>
       <div class="preview-screenshot-label">Screenshot unavailable<br><span style="font-size:0.72rem">Site may block external crawlers</span></div>
     `;
-    fallbackEl.style.display = 'flex';
+    fe.style.display = 'flex';
   };
+
+  // Set src last — after handlers are attached
+  screenshotEl.src = screenshotUrl;
 }
 
 // ─── RENDER ───────────────────────────────────────────────────
@@ -1777,6 +1820,7 @@ function renderSuggestions(suggestions, cms) {
 
 function renderSchema(schemaAnalysis, pageData) {
   const el = document.getElementById('schema-content');
+  if (!el) return;
   const detected = pageData?.schema?.types || schemaAnalysis?.detected || [];
   const missing = schemaAnalysis?.missing || [];
   const priority = schemaAnalysis?.priority_schema || '';
@@ -1817,7 +1861,9 @@ function renderSchema(schemaAnalysis, pageData) {
 }
 
 function renderCWV(cwv, pageData) {
-  if (!cwv) { document.getElementById('cwv-content').innerHTML = '<p style="color:var(--muted);padding:2rem">Core Web Vitals data unavailable.</p>'; return; }
+  const cwvEl = document.getElementById('cwv-content');
+  if (!cwvEl) return;
+  if (!cwv) { cwvEl.innerHTML = '<p style="color:var(--muted);padding:2rem">Core Web Vitals data unavailable.</p>'; return; }
 
   function cwvClass(label) {
     if (!label) return 'cwv-warn';
@@ -1829,7 +1875,7 @@ function renderCWV(cwv, pageData) {
     ? (ttfbMs < 800 ? 'cwv-good' : ttfbMs < 1800 ? 'cwv-warn' : 'cwv-poor')
     : 'cwv-warn';
 
-  document.getElementById('cwv-content').innerHTML = `
+  cwvEl.innerHTML = `
     <div class="cwv-grid">
       <div class="cwv-card">
         <div class="cwv-label">LCP</div>
@@ -1868,6 +1914,7 @@ function renderCWV(cwv, pageData) {
 
 function renderCompetitorGaps(gaps) {
   const el = document.getElementById('competitors-content');
+  if (!el) return;
   if (!gaps || !gaps.length) {
     el.innerHTML = '<p style="color:var(--muted);padding:2rem;text-align:center">No competitor gap data available.</p>';
     return;
@@ -1913,6 +1960,7 @@ const CAT_META = {
 
 function renderTechStack(cmsData, url) {
   const el = document.getElementById('techstack-content');
+  if (!el) return;
   if (!cmsData) { el.innerHTML = '<p style="color:var(--muted);padding:2rem">Tech stack detection unavailable.</p>'; return; }
 
   const icon       = CMS_ICONS[cmsData.cms] || '⚙️';
