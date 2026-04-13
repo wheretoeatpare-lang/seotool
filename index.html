@@ -1064,8 +1064,8 @@ function getBarClass(s) {
 
 function resetAudit() {
   // Cancel any running typewrite animation
-  if (typewriteInterval) { clearInterval(typewriteInterval); typewriteInterval = null; }
-  // Cancel any running score count-up animation
+  if (typewriteInterval)  { clearInterval(typewriteInterval);  typewriteInterval  = null; }
+  // Cancel any running score count-up
   if (scoreCountInterval) { clearInterval(scoreCountInterval); scoreCountInterval = null; }
 
   // Invalidate any in-flight screenshot image callbacks
@@ -1589,40 +1589,34 @@ function renderSitePreview(url, pageData, cmsData) {
     `<span class="preview-pill ${p.cls}">${p.label}</span>`
   ).join('');
 
-  // Screenshot — reset element state completely before setting new src
+  // Define faviconUrl early so it's available everywhere in this function
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
+
+  // Screenshot elements
   const screenshotEl = document.getElementById('preview-screenshot');
   const fallbackEl   = document.getElementById('preview-fallback');
-
-  // Null-guard: if elements don't exist (shouldn't happen, but be safe)
   if (!screenshotEl || !fallbackEl) return;
 
-  // Detach old handlers before changing src to prevent stale callbacks
+  // Detach old handlers + cancel any in-flight load before doing anything else
   screenshotEl.onload  = null;
   screenshotEl.onerror = null;
-  screenshotEl.src = ''; // reset src to cancel any in-flight load
+  screenshotEl.src = '';
 
-  // Reset fallback to loading state — IMPORTANT: keep id="preview-icon" so it's
-  // always findable by getElementById on subsequent audits
+  // Reset fallback HTML — always keep id="preview-icon" so getElementById finds it on every audit
   screenshotEl.style.display = 'none';
   screenshotEl.style.opacity = '0';
   fallbackEl.style.display = 'flex';
   fallbackEl.innerHTML = `
     <div class="preview-site-icon" id="preview-icon">
-      <span class="preview-site-icon-placeholder">🌐</span>
+      <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
     </div>
     <div class="preview-screenshot-label">Loading preview…</div>
   `;
 
-  // Favicon — NOW safe to get iconEl because fallbackEl.innerHTML was just set above
-  const iconEl = document.getElementById('preview-icon');
-  if (iconEl) {
-    iconEl.innerHTML = `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`;
-  }
-
   const screenshotUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
 
   screenshotEl.onload = () => {
-    if (gen !== _previewGen) return; // stale — a newer audit has started
+    if (gen !== _previewGen) return;
     const fe = document.getElementById('preview-fallback');
     const se = document.getElementById('preview-screenshot');
     if (!se || !fe) return;
@@ -1632,11 +1626,12 @@ function renderSitePreview(url, pageData, cmsData) {
   };
 
   screenshotEl.onerror = () => {
-    if (gen !== _previewGen) return; // stale — a newer audit has started
+    if (gen !== _previewGen) return;
     const fe = document.getElementById('preview-fallback');
     const se = document.getElementById('preview-screenshot');
     if (!se || !fe) return;
     se.style.display = 'none';
+    // Keep id="preview-icon" here too so the next audit can always find it
     fe.innerHTML = `
       <div class="preview-site-icon" id="preview-icon">
         <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
@@ -1647,7 +1642,6 @@ function renderSitePreview(url, pageData, cmsData) {
     fe.style.display = 'flex';
   };
 
-  // Set src last — after handlers are attached
   screenshotEl.src = screenshotUrl;
 }
 
