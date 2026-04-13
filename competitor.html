@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSight — SEO Competitor Analysis</title>
+<meta name="description" content="Free SEO competitor analysis tool. Compare two websites side-by-side across 40+ on-page SEO signals — content, keywords, technical, schema, social and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #07070d;
+  --bg2: #0f0f1a;
+  --bg3: #161624;
+  --bg4: #1e1e30;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.11);
+  --border3: rgba(255,255,255,0.18);
+  --text: #eeedf8;
+  --muted: #8480aa;
+  --muted2: #6b6890;
+  --accent: #7c6ff7;
+  --accent2: #a78bfa;
+  --accent3: #c4b5fd;
+  --glow: rgba(124,111,247,0.18);
+  --green: #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red: #f87171;
+  --red2: rgba(248,113,113,0.12);
+  --amber: #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
+  --blue: #60a5fa;
+  --blue2: rgba(96,165,250,0.12);
+  --cyan: #22d3ee;
+  --pink: #f472b6;
+  --siteA: #7c6ff7;
+  --siteA2: rgba(124,111,247,0.15);
+  --siteB: #22d3ee;
+  --siteB2: rgba(34,211,238,0.15);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 2.5rem;
+  background: rgba(7,7,13,0.9);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; letter-spacing: -0.02em;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 1.75rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.88rem;
+  font-weight: 500; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--accent2); }
+.nav-cta {
+  background: linear-gradient(135deg, var(--accent), #5a4fcc);
+  color: white !important; padding: 0.45rem 1.1rem;
+  border-radius: 8px; font-size: 0.83rem !important;
+}
+.nav-cta:hover { opacity: 0.88; }
+
+/* ── HERO ── */
+.hero {
+  padding: 9rem 2rem 4rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(124,111,247,0.13) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(124,111,247,0.1); border: 1px solid rgba(124,111,247,0.25);
+  color: var(--accent2); padding: 0.38rem 1rem; border-radius: 999px;
+  font-size: 0.78rem; font-weight: 600; margin-bottom: 2rem; letter-spacing: 0.02em;
+}
+.hero-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(124,111,247,0.5); }
+  50% { opacity: 0.7; box-shadow: 0 0 0 4px rgba(124,111,247,0); }
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  font-weight: 800; line-height: 1.05;
+  letter-spacing: -0.035em; margin-bottom: 1.25rem;
+}
+h1 span {
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero p {
+  color: var(--muted); font-size: 1.05rem; max-width: 540px;
+  margin: 0 auto 2.5rem; line-height: 1.75; font-weight: 400;
+}
+
+/* ── INPUT BOX ── */
+.compare-box {
+  max-width: 780px; margin: 0 auto;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 2rem; position: relative;
+}
+.compare-box::before {
+  content: ''; position: absolute; inset: -1px; border-radius: 21px;
+  background: linear-gradient(135deg, rgba(124,111,247,0.25), rgba(34,211,238,0.08), transparent 60%);
+  pointer-events: none; z-index: -1;
+}
+.compare-inputs {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem;
+  align-items: center; margin-bottom: 1.25rem;
+}
+.site-input-wrap { display: flex; flex-direction: column; gap: 0.4rem; }
+.site-label {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.site-label.a { color: var(--siteA); }
+.site-label.b { color: var(--siteB); }
+.site-input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.9rem 1.1rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.site-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+.site-input::placeholder { color: var(--muted2); }
+.site-input.a:focus { border-color: var(--siteA); box-shadow: 0 0 0 3px rgba(124,111,247,0.18); }
+.site-input.b:focus { border-color: var(--siteB); box-shadow: 0 0 0 3px rgba(34,211,238,0.15); }
+.vs-badge {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--bg4); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 800;
+  color: var(--muted); flex-shrink: 0; margin-top: 1.4rem;
+}
+#compare-btn {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), #5a4fcc);
+  color: white; border: none; padding: 0.9rem 2rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 1rem; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  box-shadow: 0 4px 20px rgba(124,111,247,0.35);
+}
+#compare-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+#compare-btn:active { transform: scale(0.98); }
+#compare-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+/* ── LOADING ── */
+#loading-state {
+  display: none; text-align: center; padding: 5rem 2rem;
+}
+.spinner-wrap { position: relative; width: 72px; height: 72px; margin: 0 auto 2rem; }
+.spinner-ring {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
+  animation: spin 0.9s linear infinite;
+}
+.spinner-inner {
+  position: absolute; inset: 10px; border-radius: 50%;
+  border: 2px solid transparent; border-top-color: var(--cyan);
+  animation: spin 1.3s linear infinite reverse;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-steps { list-style: none; text-align: left; display: inline-block; min-width: 260px; }
+.loading-steps li {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.4rem 0; font-size: 0.88rem; color: var(--muted);
+  transition: color 0.3s;
+}
+.loading-steps li.done { color: var(--green); }
+.loading-steps li.active { color: var(--text); }
+.step-icon { font-size: 0.85rem; width: 18px; text-align: center; }
+
+/* ── RESULTS ── */
+#results-section { display: none; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.back-btn {
+  background: var(--bg3); border: 1px solid var(--border2); color: var(--muted);
+  padding: 0.5rem 1.1rem; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  margin-bottom: 2rem;
+}
+.back-btn:hover { color: var(--text); border-color: var(--border3); }
+
+/* ── SITE HEADERS ── */
+.sites-header {
+  display: grid; grid-template-columns: 1fr 80px 1fr;
+  gap: 1rem; align-items: stretch; margin-bottom: 2rem;
+}
+.site-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.25rem 1.5rem;
+  display: flex; flex-direction: column; gap: 0.35rem;
+}
+.site-card.a { border-color: rgba(124,111,247,0.3); }
+.site-card.b { border-color: rgba(34,211,238,0.25); }
+.site-card-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
+  text-transform: uppercase; margin-bottom: 0.1rem;
+}
+.site-card-label.a { color: var(--siteA); }
+.site-card-label.b { color: var(--siteB); }
+.site-card-title {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.site-card-url { font-size: 0.78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site-card-score {
+  font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; margin-top: 0.4rem;
+}
+.site-card-score.a { color: var(--siteA); }
+.site-card-score.b { color: var(--siteB); }
+.site-card-score small { font-size: 0.9rem; color: var(--muted); font-weight: 400; }
+.winner-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3);
+  color: var(--green); padding: 0.25rem 0.65rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; margin-top: 0.25rem;
+  width: fit-content;
+}
+.vs-center {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
+  color: var(--muted2);
+}
+
+/* ── SCORE BAR ── */
+.score-bar-wrap { margin-bottom: 2rem; }
+.score-bar-label {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.6rem;
+}
+.score-bar-track {
+  display: grid; grid-template-columns: 1fr 60px 1fr;
+  gap: 0.5rem; align-items: center; margin-bottom: 0.35rem;
+}
+.bar-a, .bar-b { height: 8px; border-radius: 999px; background: var(--bg3); overflow: hidden; }
+.bar-a-fill { height: 100%; border-radius: 999px; background: var(--siteA); transition: width 0.7s ease; }
+.bar-b-fill { height: 100%; border-radius: 999px; background: var(--siteB); transition: width 0.7s ease; }
+.bar-label-center {
+  text-align: center; font-size: 0.7rem; font-weight: 700;
+  color: var(--muted); white-space: nowrap;
+}
+
+/* ── SECTION TABS ── */
+.tabs {
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+  border-bottom: 1px solid var(--border); padding-bottom: 0; margin-bottom: 1.5rem;
+}
+.tab-btn {
+  background: none; border: none; color: var(--muted); padding: 0.6rem 1rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent2); border-bottom-color: var(--accent); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── COMPARISON TABLE ── */
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th, .compare-table td {
+  padding: 0.75rem 1rem; text-align: left; font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.compare-table thead th {
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  background: var(--bg3); padding: 0.6rem 1rem;
+}
+.compare-table thead th.a { color: var(--siteA); }
+.compare-table thead th.b { color: var(--siteB); }
+.compare-table thead th.winner-col { color: var(--muted); text-align: center; }
+.compare-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.compare-table td.signal { color: var(--muted); font-size: 0.78rem; }
+.compare-table td.val-a, .compare-table td.val-b {
+  font-weight: 500; max-width: 260px; word-break: break-word;
+}
+.compare-table td.val-a.win { color: var(--green); }
+.compare-table td.val-b.win { color: var(--green); }
+.compare-table td.val-a.lose { color: var(--red); }
+.compare-table td.val-b.lose { color: var(--red); }
+.compare-table td.val-a.tie, .compare-table td.val-b.tie { color: var(--muted); }
+.compare-table td.verdict-col { text-align: center; }
+.verdict-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; white-space: nowrap;
+}
+.verdict-a { background: var(--siteA2); color: var(--siteA); }
+.verdict-b { background: var(--siteB2); color: var(--siteB); }
+.verdict-tie { background: var(--bg4); color: var(--muted); }
+
+/* ── CATEGORY SCORE CARDS ── */
+.cat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem; margin-bottom: 2rem;
+}
+.cat-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.1rem 1.25rem;
+}
+.cat-card-title {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.75rem;
+}
+.cat-scores {
+  display: flex; gap: 0.75rem; align-items: flex-end; margin-bottom: 0.6rem;
+}
+.cat-score-val {
+  font-family: 'Syne', sans-serif; font-size: 1.65rem; font-weight: 800;
+}
+.cat-score-val.a { color: var(--siteA); }
+.cat-score-val.b { color: var(--siteB); }
+.cat-score-sep { color: var(--muted2); font-size: 1rem; padding-bottom: 3px; }
+.cat-bar { height: 4px; border-radius: 999px; background: var(--bg3); overflow: hidden; display: flex; }
+.cat-bar-a { height: 100%; background: var(--siteA); transition: width 0.6s; }
+.cat-bar-b { height: 100%; background: var(--siteB); transition: width 0.6s; }
+.cat-winner { font-size: 0.72rem; color: var(--muted); margin-top: 0.35rem; }
+.cat-winner .w { color: var(--green); font-weight: 600; }
+
+/* ── KEYWORD TABLE ── */
+.kw-table { width: 100%; border-collapse: collapse; }
+.kw-table th, .kw-table td { padding: 0.7rem 1rem; font-size: 0.84rem; border-bottom: 1px solid var(--border); }
+.kw-table thead th {
+  background: var(--bg3); font-family: 'Syne', sans-serif;
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.kw-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.kw-chip {
+  display: inline-block; background: rgba(124,111,247,0.1);
+  border: 1px solid rgba(124,111,247,0.2); color: var(--accent2);
+  padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.75rem;
+  margin: 2px; font-weight: 500;
+}
+.kw-chip.shared { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.25); color: var(--green); }
+.kw-chip.b-only { background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.2); color: var(--cyan); }
+
+/* ── INSIGHTS CARDS ── */
+.insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.insight-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.25rem;
+}
+.insight-card.a { border-color: rgba(124,111,247,0.25); }
+.insight-card.b { border-color: rgba(34,211,238,0.2); }
+.insight-card-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+.insight-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.insight-dot.a { background: var(--siteA); }
+.insight-dot.b { background: var(--siteB); }
+.insight-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; }
+.insight-item {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  padding: 0.4rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem;
+}
+.insight-item:last-child { border-bottom: none; }
+.insight-icon { flex-shrink: 0; margin-top: 1px; }
+.insight-text { color: var(--muted); line-height: 1.5; }
+.insight-text strong { color: var(--text); font-weight: 600; }
+
+/* ── GAP TABLE ── */
+.gap-row-a { background: rgba(124,111,247,0.04); }
+.gap-row-b { background: rgba(34,211,238,0.03); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
+  padding: 0.7rem 1.4rem; border-radius: 999px; font-size: 0.85rem;
+  font-weight: 500; z-index: 999; opacity: 0; transition: opacity 0.25s;
+  pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* ── SECTION WRAP ── */
+.section-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.section-card-head {
+  padding: 0.85rem 1.25rem; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.section-card-body { padding: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  nav { padding: 0.9rem 1.25rem; }
+  .nav-links { display: none; }
+  .hero { padding: 7rem 1.25rem 3rem; }
+  .compare-inputs { grid-template-columns: 1fr; }
+  .vs-badge { display: none; }
+  .sites-header { grid-template-columns: 1fr; }
+  .vs-center { display: none; }
+  .insights-grid { grid-template-columns: 1fr; }
+  .cat-grid { grid-template-columns: repeat(2, 1fr); }
+  .compare-table th, .compare-table td { padding: 0.55rem 0.6rem; font-size: 0.8rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">RankSight</a>
+  <div class="nav-links">
+    <a href="/">SEO Audit</a>
+    <a href="/competitor.html" class="active">Competitor Analysis</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    40+ On-Page Signals · Keyword Overlap · Side-by-Side
+  </div>
+  <h1>SEO <span>Competitor</span> Analysis</h1>
+  <p>Enter two URLs and get a deep side-by-side comparison of their on-page SEO — keywords, content, technical signals, schema, and more.</p>
+
+  <div class="compare-box">
+    <div class="compare-inputs">
+      <div class="site-input-wrap">
+        <div class="site-label a">◆ Your Site (Site A)</div>
+        <input type="url" id="input-a" class="site-input a"
+          placeholder="https://yoursite.com"
+          onkeydown="if(event.key==='Enter')startCompare()" />
+      </div>
+      <div class="vs-badge">VS</div>
+      <div class="site-input-wrap">
+        <div class="site-label b">◆ Competitor (Site B)</div>
+        <input type="url" id="input-b" class="site-input b"
+          placeholder="https://competitor.com"
+          onkeydown="if(event.key==='Enter')startCompare()" />
+      </div>
+    </div>
+    <button id="compare-btn" onclick="startCompare()">Compare Sites →</button>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div id="loading-state">
+  <div class="spinner-wrap">
+    <div class="spinner-ring"></div>
+    <div class="spinner-inner"></div>
+  </div>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem">
+    Fetching &amp; comparing <strong id="loading-label" style="color:var(--text)"></strong>
+  </p>
+  <ul class="loading-steps">
+    <li id="ls1"><span class="step-icon">○</span> Fetching Site A page data</li>
+    <li id="ls2"><span class="step-icon">○</span> Fetching Site B page data</li>
+    <li id="ls3"><span class="step-icon">○</span> Extracting keyword signals</li>
+    <li id="ls4"><span class="step-icon">○</span> Scoring 40+ SEO factors</li>
+    <li id="ls5"><span class="step-icon">○</span> Building comparison report</li>
+  </ul>
+</div>
+
+<!-- RESULTS -->
+<div id="results-section">
+  <button class="back-btn" onclick="resetTool()">← New Comparison</button>
+
+  <!-- Site Header Cards -->
+  <div class="sites-header">
+    <div class="site-card a" id="card-a"></div>
+    <div class="vs-center" style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--muted2)">VS</div>
+    <div class="site-card b" id="card-b"></div>
+  </div>
+
+  <!-- Category Score Cards -->
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">📊 Overview</button>
+    <button class="tab-btn" onclick="switchTab('keywords')">🔑 Keywords</button>
+    <button class="tab-btn" onclick="switchTab('content')">✍️ Content</button>
+    <button class="tab-btn" onclick="switchTab('technical')">🔍 Technical</button>
+    <button class="tab-btn" onclick="switchTab('social')">📣 Social & Schema</button>
+    <button class="tab-btn" onclick="switchTab('gaps')">🏁 Gap Report</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-overview">
+    <div class="insights-grid" id="insights-grid"></div>
+    <div class="section-card">
+      <div class="section-card-head">Full Signal Comparison</div>
+      <div class="section-card-body">
+        <table class="compare-table" id="table-overview"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-keywords">
+    <div class="section-card" style="margin-bottom:1.25rem">
+      <div class="section-card-head">Keyword Signals</div>
+      <div class="section-card-body">
+        <table class="compare-table" id="table-keywords"></table>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-card-head">Keyword Overlap Analysis</div>
+      <div class="section-card-body" id="kw-overlap" style="padding:1.25rem"></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-content">
+    <div class="section-card">
+      <div class="section-card-head">Content Signals</div>
+      <div class="section-card-body">
+        <table class="compare-table" id="table-content"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-technical">
+    <div class="section-card">
+      <div class="section-card-head">Technical SEO Signals</div>
+      <div class="section-card-body">
+        <table class="compare-table" id="table-technical"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-social">
+    <div class="section-card">
+      <div class="section-card-head">Social, Open Graph & Schema</div>
+      <div class="section-card-body">
+        <table class="compare-table" id="table-social"></table>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-gaps">
+    <div id="gap-report"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── UTILITIES ────────────────────────────────────────────────
+function showToast(msg, color = 'var(--text)') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.color = color;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function stepDone(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('active'); el.classList.add('done');
+  el.querySelector('.step-icon').textContent = '✓';
+}
+function stepActive(id) {
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.querySelector('.step-icon').textContent = '●';
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const idx = ['overview','keywords','content','technical','social','gaps'].indexOf(name);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function resetTool() {
+  document.getElementById('hero').style.display = '';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('compare-btn').disabled = false;
+  document.getElementById('compare-btn').textContent = 'Compare Sites →';
+  ['ls1','ls2','ls3','ls4','ls5'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = '';
+    el.querySelector('.step-icon').textContent = '○';
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function hn(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+}
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+// ── FETCH PAGE DATA ──────────────────────────────────────────
+async function fetchPageData(url) {
+  const res = await fetch('/api/page-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch: ' + url);
+  const data = await res.json();
+  if (data.error) throw new Error(data.error);
+  return data;
+}
+
+// ── KEYWORD EXTRACTION ───────────────────────────────────────
+function extractKeywords(pd) {
+  const sources = [
+    pd.title || '',
+    pd.metaDesc || '',
+  ].join(' ').toLowerCase();
+
+  // Strip common stop words and extract meaningful terms
+  const stopWords = new Set([
+    'the','a','an','and','or','but','in','on','at','to','for','of','with',
+    'by','from','is','are','was','were','be','been','has','have','had',
+    'that','this','it','its','you','your','we','our','they','their','how',
+    'what','which','who','get','all','can','will','more','use','used','using',
+    'also','than','then','into','not','no','so','do','does','did','about',
+    'up','out','if','as','just','we','my','he','she','they','them','his','her'
+  ]);
+
+  const words = sources
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 3 && !stopWords.has(w) && !/^\d+$/.test(w));
+
+  // Count frequency
+  const freq = {};
+  words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+
+  // Also pull from h1/h2 via text extraction if available — approximate from title
+  return Object.entries(freq)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([word, count]) => ({ word, count }));
+}
+
+// ── SCORING ENGINE ───────────────────────────────────────────
+function scoreSite(pd) {
+  const scores = {};
+
+  // --- TITLE ---
+  const tl = pd.titleLen || 0;
+  scores.title = tl >= 50 && tl <= 60 ? 100 : tl >= 40 && tl <= 70 ? 70 : tl > 0 ? 40 : 0;
+
+  // --- META DESC ---
+  const dl = pd.descLen || 0;
+  scores.metaDesc = dl >= 120 && dl <= 155 ? 100 : dl >= 80 && dl <= 170 ? 70 : dl > 0 ? 40 : 0;
+
+  // --- CANONICAL ---
+  scores.canonical = pd.canonical ? 100 : 0;
+
+  // --- HTTPS ---
+  scores.https = pd.isHttps ? 100 : 0;
+
+  // --- VIEWPORT ---
+  scores.viewport = pd.hasViewport ? 100 : 0;
+
+  // --- H1 ---
+  const h1 = pd.headings?.h1 || 0;
+  scores.h1 = h1 === 1 ? 100 : h1 > 1 ? 50 : 0;
+
+  // --- H2s ---
+  const h2 = pd.headings?.h2 || 0;
+  scores.h2 = h2 >= 3 ? 100 : h2 >= 1 ? 60 : 0;
+
+  // --- IMAGES ALT ---
+  const total = pd.images?.total || 0;
+  const missing = pd.images?.missingAlt || 0;
+  scores.imgAlt = total === 0 ? 80 : Math.round((1 - missing / total) * 100);
+
+  // --- OG TAGS ---
+  const og = pd.openGraph || {};
+  let ogScore = 0;
+  if (og.title) ogScore += 35;
+  if (og.description) ogScore += 35;
+  if (og.image) ogScore += 30;
+  scores.ogTags = ogScore;
+
+  // --- TWITTER CARD ---
+  scores.twitterCard = og.twitterCard ? 100 : 0;
+
+  // --- SCHEMA ---
+  const schCount = pd.schema?.count || 0;
+  scores.schema = schCount >= 3 ? 100 : schCount === 2 ? 80 : schCount === 1 ? 50 : 0;
+
+  // --- WORD COUNT ---
+  const wc = pd.wordCount || 0;
+  scores.wordCount = wc >= 1000 ? 100 : wc >= 500 ? 70 : wc >= 300 ? 50 : wc > 0 ? 30 : 0;
+
+  // --- TTFB ---
+  const ttfb = pd.ttfb || 9999;
+  scores.ttfb = ttfb < 800 ? 100 : ttfb < 1800 ? 60 : 20;
+
+  // --- PAGE SIZE ---
+  const sz = pd.pageSizeKb || 0;
+  scores.pageSize = sz < 100 ? 100 : sz < 300 ? 75 : sz < 600 ? 50 : 25;
+
+  // --- INTERNAL LINKS ---
+  const il = pd.links?.internal || 0;
+  scores.internalLinks = il >= 5 ? 100 : il >= 2 ? 70 : il >= 1 ? 40 : 0;
+
+  // --- EXTERNAL LINKS ---
+  const el = pd.links?.external || 0;
+  scores.externalLinks = el >= 3 ? 100 : el >= 1 ? 60 : 0;
+
+  // --- SECURITY HEADERS ---
+  const sh = pd.secHeaders || {};
+  let secScore = 0;
+  if (sh.hsts) secScore += 25;
+  if (sh.xContentType) secScore += 25;
+  if (sh.xFrame) secScore += 25;
+  if (sh.csp) secScore += 25;
+  scores.secHeaders = secScore;
+
+  // --- FAVICON ---
+  scores.favicon = pd.hasFavicon ? 100 : 0;
+
+  // --- CHARSET ---
+  scores.charset = pd.hasCharset ? 100 : 0;
+
+  // --- LANG ATTR ---
+  scores.lang = pd.lang ? 100 : 0;
+
+  // --- NOINDEX (penalty) ---
+  scores.noindex = pd.isNoindex ? 0 : 100;
+
+  // --- REDIRECT (penalty if unexpected) ---
+  scores.redirect = pd.wasRedirected ? 60 : 100;
+
+  // --- INLINE SCRIPTS ---
+  const is = pd.inlineScripts || 0;
+  scores.inlineScripts = is === 0 ? 100 : is <= 3 ? 80 : is <= 7 ? 50 : 20;
+
+  // --- CACHE CONTROL ---
+  scores.cacheControl = pd.cacheControl ? 100 : 0;
+
+  // --- CATEGORY ROLLUPS ---
+  const cat = (keys) => Math.round(keys.reduce((s, k) => s + (scores[k] || 0), 0) / keys.length);
+
+  scores._cat = {
+    content:   cat(['title','metaDesc','wordCount','h1','h2','imgAlt']),
+    technical: cat(['https','canonical','viewport','noindex','charset','lang','redirect']),
+    performance: cat(['ttfb','pageSize','inlineScripts','cacheControl']),
+    social:    cat(['ogTags','twitterCard']),
+    schema:    cat(['schema']),
+    links:     cat(['internalLinks','externalLinks']),
+    security:  cat(['secHeaders','favicon']),
+  };
+
+  const catWeights = { content:25, technical:20, performance:15, social:10, schema:15, links:10, security:5 };
+  scores._total = Math.round(
+    Object.entries(catWeights).reduce((s, [k, w]) => s + (scores._cat[k] || 0) * w, 0) / 100
+  );
+
+  return scores;
+}
+
+// ── MAIN COMPARE FLOW ────────────────────────────────────────
+async function startCompare() {
+  let urlA = document.getElementById('input-a').value.trim();
+  let urlB = document.getElementById('input-b').value.trim();
+
+  if (!urlA.startsWith('http')) urlA = 'https://' + urlA;
+  if (!urlB.startsWith('http')) urlB = 'https://' + urlB;
+
+  try { new URL(urlA); new URL(urlB); } catch {
+    showToast('⚠ Please enter valid URLs', 'var(--red)'); return;
+  }
+  if (hn(urlA) === hn(urlB)) {
+    showToast('⚠ Please enter two different sites', 'var(--amber)'); return;
+  }
+
+  const btn = document.getElementById('compare-btn');
+  btn.disabled = true; btn.textContent = 'Comparing…';
+
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('loading-state').style.display = 'block';
+  document.getElementById('loading-label').textContent = hn(urlA) + ' vs ' + hn(urlB);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  let pdA, pdB;
+  try {
+    stepActive('ls1');
+    pdA = await fetchPageData(urlA);
+    stepDone('ls1'); stepActive('ls2');
+    pdB = await fetchPageData(urlB);
+    stepDone('ls2'); stepActive('ls3');
+    await sleep(300);
+    stepDone('ls3'); stepActive('ls4');
+    await sleep(300);
+    stepDone('ls4'); stepActive('ls5');
+    await sleep(300);
+    stepDone('ls5');
+  } catch (err) {
+    showToast('⚠ ' + err.message, 'var(--red)');
+    resetTool();
+    return;
+  }
+
+  renderResults(urlA, urlB, pdA, pdB);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── RENDER ───────────────────────────────────────────────────
+function renderResults(urlA, urlB, pdA, pdB) {
+  const scA = scoreSite(pdA);
+  const scB = scoreSite(pdB);
+  const kwA = extractKeywords(pdA);
+  const kwB = extractKeywords(pdB);
+
+  // Site header cards
+  renderSiteCards(urlA, urlB, pdA, pdB, scA, scB);
+
+  // Category grid
+  renderCatGrid(scA, scB);
+
+  // Tab: Overview
+  renderInsights(urlA, urlB, pdA, pdB, scA, scB);
+  renderTable('table-overview', buildOverviewRows(urlA, urlB, pdA, pdB, scA, scB), urlA, urlB);
+
+  // Tab: Keywords
+  renderTable('table-keywords', buildKeywordRows(urlA, urlB, pdA, pdB), urlA, urlB);
+  renderKwOverlap(kwA, kwB, urlA, urlB);
+
+  // Tab: Content
+  renderTable('table-content', buildContentRows(urlA, urlB, pdA, pdB, scA, scB), urlA, urlB);
+
+  // Tab: Technical
+  renderTable('table-technical', buildTechnicalRows(urlA, urlB, pdA, pdB, scA, scB), urlA, urlB);
+
+  // Tab: Social + Schema
+  renderTable('table-social', buildSocialRows(urlA, urlB, pdA, pdB, scA, scB), urlA, urlB);
+
+  // Tab: Gaps
+  renderGapReport(urlA, urlB, pdA, pdB, scA, scB);
+
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('results-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SITE CARDS ───────────────────────────────────────────────
+function renderSiteCards(urlA, urlB, pdA, pdB, scA, scB) {
+  const winnerA = scA._total >= scB._total;
+  const tie = scA._total === scB._total;
+
+  function cardHtml(pd, sc, url, side) {
+    const hostname = hn(url);
+    const winner = side === 'a' ? scA._total > scB._total : scB._total > scA._total;
+    return `
+      <div class="site-card-label ${side}">◆ Site ${side.toUpperCase()}</div>
+      <div class="site-card-title">${pd.title ? escHtml(pd.title.slice(0,55)) + (pd.title.length > 55 ? '…' : '') : hostname}</div>
+      <div class="site-card-url">${hostname}</div>
+      <div class="site-card-score ${side}">${sc._total}<small> / 100</small></div>
+      ${winner && !tie ? '<div class="winner-badge">🏆 Leading</div>' : tie ? '<div class="winner-badge" style="background:var(--amber2);border-color:rgba(251,191,36,0.3);color:var(--amber)">⚖ Tied</div>' : ''}
+    `;
+  }
+
+  document.getElementById('card-a').innerHTML = cardHtml(pdA, scA, urlA, 'a');
+  document.getElementById('card-b').innerHTML = cardHtml(pdB, scB, urlB, 'b');
+}
+
+// ── CATEGORY GRID ─────────────────────────────────────────────
+function renderCatGrid(scA, scB) {
+  const cats = [
+    { key: 'content',     label: '✍️ Content'     },
+    { key: 'technical',   label: '🔍 Technical'   },
+    { key: 'performance', label: '⚡ Performance' },
+    { key: 'schema',      label: '🧩 Schema'      },
+    { key: 'social',      label: '📣 Social / OG' },
+    { key: 'links',       label: '🔗 Links'       },
+    { key: 'security',    label: '🔒 Security'    },
+  ];
+
+  document.getElementById('cat-grid').innerHTML = cats.map(c => {
+    const a = scA._cat[c.key] || 0;
+    const b = scB._cat[c.key] || 0;
+    const winner = a > b ? 'A' : b > a ? 'B' : null;
+    const total = a + b || 1;
+    return `
+      <div class="cat-card">
+        <div class="cat-card-title">${c.label}</div>
+        <div class="cat-scores">
+          <span class="cat-score-val a">${a}</span>
+          <span class="cat-score-sep">vs</span>
+          <span class="cat-score-val b">${b}</span>
+        </div>
+        <div class="cat-bar">
+          <div class="cat-bar-a" style="width:${(a/total*100).toFixed(1)}%"></div>
+          <div class="cat-bar-b" style="width:${(b/total*100).toFixed(1)}%"></div>
+        </div>
+        <div class="cat-winner">${winner ? `<span class="w">Site ${winner}</span> leads` : '<span style="color:var(--amber)">Tied</span>'}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── TABLE BUILDER ────────────────────────────────────────────
+function renderTable(id, rows, urlA, urlB) {
+  const hA = hn(urlA); const hB = hn(urlB);
+  const thead = `<thead><tr>
+    <th>Signal</th>
+    <th class="a">${escHtml(hA)}</th>
+    <th class="b">${escHtml(hB)}</th>
+    <th class="winner-col">Winner</th>
+  </tr></thead>`;
+
+  const tbody = '<tbody>' + rows.map(r => {
+    const aWin = r.winner === 'a', bWin = r.winner === 'b', tie = r.winner === 'tie';
+    return `<tr>
+      <td class="signal">${r.label}</td>
+      <td class="val-a ${aWin ? 'win' : bWin ? 'lose' : 'tie'}">${r.valA}</td>
+      <td class="val-b ${bWin ? 'win' : aWin ? 'lose' : 'tie'}">${r.valB}</td>
+      <td class="verdict-col">
+        ${aWin ? `<span class="verdict-pill verdict-a">Site A</span>`
+               : bWin ? `<span class="verdict-pill verdict-b">Site B</span>`
+               : `<span class="verdict-pill verdict-tie">Tie</span>`}
+      </td>
+    </tr>`;
+  }).join('') + '</tbody>';
+
+  document.getElementById(id).innerHTML = thead + tbody;
+}
+
+// ── ROW BUILDERS ─────────────────────────────────────────────
+function winner(a, b) {
+  if (a > b) return 'a'; if (b > a) return 'b'; return 'tie';
+}
+function tf(val) { return val ? '✅ Yes' : '❌ No'; }
+function na(val) { return val || '—'; }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildOverviewRows(urlA, urlB, pdA, pdB, scA, scB) {
+  return [
+    { label: 'Overall SEO Score',    valA: scA._total + ' / 100', valB: scB._total + ' / 100', winner: winner(scA._total, scB._total) },
+    { label: 'Page Title',           valA: na(escHtml((pdA.title || '').slice(0,55))), valB: na(escHtml((pdB.title || '').slice(0,55))), winner: winner(scA.title, scB.title) },
+    { label: 'Title Length (chars)', valA: pdA.titleLen || 0, valB: pdB.titleLen || 0, winner: winner(scA.title, scB.title) },
+    { label: 'Meta Description',     valA: pdA.descLen ? pdA.descLen + ' chars' : '❌ Missing', valB: pdB.descLen ? pdB.descLen + ' chars' : '❌ Missing', winner: winner(scA.metaDesc, scB.metaDesc) },
+    { label: 'Word Count',           valA: (pdA.wordCount || 0).toLocaleString() + ' words', valB: (pdB.wordCount || 0).toLocaleString() + ' words', winner: winner(pdA.wordCount || 0, pdB.wordCount || 0) },
+    { label: 'TTFB',                 valA: pdA.ttfb ? pdA.ttfb + 'ms' : '—', valB: pdB.ttfb ? pdB.ttfb + 'ms' : '—', winner: winner(scA.ttfb, scB.ttfb) },
+    { label: 'Schema Markup',        valA: (pdA.schema?.count || 0) + ' type(s)', valB: (pdB.schema?.count || 0) + ' type(s)', winner: winner(pdA.schema?.count || 0, pdB.schema?.count || 0) },
+    { label: 'HTTPS',                valA: tf(pdA.isHttps), valB: tf(pdB.isHttps), winner: winner(+pdA.isHttps, +pdB.isHttps) },
+    { label: 'Has Canonical',        valA: tf(pdA.canonical), valB: tf(pdB.canonical), winner: winner(+!!pdA.canonical, +!!pdB.canonical) },
+    { label: 'OG Image',             valA: tf(pdA.openGraph?.image), valB: tf(pdB.openGraph?.image), winner: winner(+!!pdA.openGraph?.image, +!!pdB.openGraph?.image) },
+  ];
+}
+
+function buildKeywordRows(urlA, urlB, pdA, pdB) {
+  return [
+    { label: 'Page Title Keywords',       valA: escHtml((pdA.title || '—').slice(0,60)), valB: escHtml((pdB.title || '—').slice(0,60)), winner: 'tie' },
+    { label: 'Title Length',              valA: (pdA.titleLen || 0) + ' chars', valB: (pdB.titleLen || 0) + ' chars', winner: winner(
+        pdA.titleLen >= 50 && pdA.titleLen <= 60 ? 1 : 0,
+        pdB.titleLen >= 50 && pdB.titleLen <= 60 ? 1 : 0) },
+    { label: 'Meta Description',          valA: escHtml((pdA.metaDesc || '—').slice(0,80)), valB: escHtml((pdB.metaDesc || '—').slice(0,80)), winner: 'tie' },
+    { label: 'Meta Desc Length',          valA: (pdA.descLen || 0) + ' chars', valB: (pdB.descLen || 0) + ' chars', winner: winner(
+        pdA.descLen >= 120 && pdA.descLen <= 155 ? 1 : 0,
+        pdB.descLen >= 120 && pdB.descLen <= 155 ? 1 : 0) },
+    { label: 'H1 Count',                  valA: pdA.headings?.h1 || 0, valB: pdB.headings?.h1 || 0, winner: winner(
+        (pdA.headings?.h1 || 0) === 1 ? 1 : 0,
+        (pdB.headings?.h1 || 0) === 1 ? 1 : 0) },
+    { label: 'H2 Count',                  valA: pdA.headings?.h2 || 0, valB: pdB.headings?.h2 || 0, winner: winner(pdA.headings?.h2 || 0, pdB.headings?.h2 || 0) },
+    { label: 'H3 Count',                  valA: pdA.headings?.h3 || 0, valB: pdB.headings?.h3 || 0, winner: winner(pdA.headings?.h3 || 0, pdB.headings?.h3 || 0) },
+    { label: 'Word Count',                valA: (pdA.wordCount || 0).toLocaleString(), valB: (pdB.wordCount || 0).toLocaleString(), winner: winner(pdA.wordCount || 0, pdB.wordCount || 0) },
+    { label: 'Language Attribute',        valA: pdA.lang || '❌ Missing', valB: pdB.lang || '❌ Missing', winner: winner(+!!pdA.lang, +!!pdB.lang) },
+  ];
+}
+
+function buildContentRows(urlA, urlB, pdA, pdB, scA, scB) {
+  return [
+    { label: 'Title',              valA: na(escHtml((pdA.title || '').slice(0,55))), valB: na(escHtml((pdB.title || '').slice(0,55))), winner: winner(scA.title, scB.title) },
+    { label: 'Title Length',       valA: (pdA.titleLen || 0) + ' chars (ideal: 50–60)', valB: (pdB.titleLen || 0) + ' chars (ideal: 50–60)', winner: winner(scA.title, scB.title) },
+    { label: 'Meta Description',   valA: (pdA.descLen || 0) + ' chars (ideal: 120–155)', valB: (pdB.descLen || 0) + ' chars (ideal: 120–155)', winner: winner(scA.metaDesc, scB.metaDesc) },
+    { label: 'H1 Tags',            valA: pdA.headings?.h1 || 0, valB: pdB.headings?.h1 || 0, winner: winner(scA.h1, scB.h1) },
+    { label: 'H2 Tags',            valA: pdA.headings?.h2 || 0, valB: pdB.headings?.h2 || 0, winner: winner(scA.h2, scB.h2) },
+    { label: 'H3 Tags',            valA: pdA.headings?.h3 || 0, valB: pdB.headings?.h3 || 0, winner: winner(pdA.headings?.h3 || 0, pdB.headings?.h3 || 0) },
+    { label: 'Word Count',         valA: (pdA.wordCount || 0).toLocaleString() + ' words', valB: (pdB.wordCount || 0).toLocaleString() + ' words', winner: winner(pdA.wordCount || 0, pdB.wordCount || 0) },
+    { label: 'Total Images',       valA: pdA.images?.total || 0, valB: pdB.images?.total || 0, winner: winner(pdA.images?.total || 0, pdB.images?.total || 0) },
+    { label: 'Images Missing Alt', valA: pdA.images?.missingAlt || 0, valB: pdB.images?.missingAlt || 0, winner: winner(scA.imgAlt, scB.imgAlt) },
+    { label: 'Internal Links',     valA: pdA.links?.internal || 0, valB: pdB.links?.internal || 0, winner: winner(pdA.links?.internal || 0, pdB.links?.internal || 0) },
+    { label: 'External Links',     valA: pdA.links?.external || 0, valB: pdB.links?.external || 0, winner: winner(pdA.links?.external || 0, pdB.links?.external || 0) },
+    { label: 'Page Size',          valA: (pdA.pageSizeKb || 0) + ' KB', valB: (pdB.pageSizeKb || 0) + ' KB', winner: winner(scA.pageSize, scB.pageSize) },
+    { label: 'Inline Scripts',     valA: pdA.inlineScripts || 0, valB: pdB.inlineScripts || 0, winner: winner(scA.inlineScripts, scB.inlineScripts) },
+  ];
+}
+
+function buildTechnicalRows(urlA, urlB, pdA, pdB, scA, scB) {
+  return [
+    { label: 'HTTPS',               valA: tf(pdA.isHttps), valB: tf(pdB.isHttps), winner: winner(+pdA.isHttps, +pdB.isHttps) },
+    { label: 'Canonical Tag',       valA: pdA.canonical ? '✅ ' + escHtml(pdA.canonical.slice(0,50)) : '❌ Missing', valB: pdB.canonical ? '✅ ' + escHtml(pdB.canonical.slice(0,50)) : '❌ Missing', winner: winner(+!!pdA.canonical, +!!pdB.canonical) },
+    { label: 'Viewport Meta',       valA: tf(pdA.hasViewport), valB: tf(pdB.hasViewport), winner: winner(+pdA.hasViewport, +pdB.hasViewport) },
+    { label: 'Charset Declared',    valA: tf(pdA.hasCharset), valB: tf(pdB.hasCharset), winner: winner(+pdA.hasCharset, +pdB.hasCharset) },
+    { label: 'HTML Lang',           valA: pdA.lang || '❌ Missing', valB: pdB.lang || '❌ Missing', winner: winner(+!!pdA.lang, +!!pdB.lang) },
+    { label: 'Robots / Noindex',    valA: pdA.isNoindex ? '🚫 Noindex!' : '✅ Indexable', valB: pdB.isNoindex ? '🚫 Noindex!' : '✅ Indexable', winner: winner(+!pdA.isNoindex, +!pdB.isNoindex) },
+    { label: 'Redirected',          valA: pdA.wasRedirected ? '⚠ Yes' : '✅ No', valB: pdB.wasRedirected ? '⚠ Yes' : '✅ No', winner: winner(+!pdA.wasRedirected, +!pdB.wasRedirected) },
+    { label: 'TTFB',                valA: pdA.ttfb ? pdA.ttfb + 'ms' : '—', valB: pdB.ttfb ? pdB.ttfb + 'ms' : '—', winner: winner(scA.ttfb, scB.ttfb) },
+    { label: 'Cache-Control',       valA: pdA.cacheControl || '❌ Not set', valB: pdB.cacheControl || '❌ Not set', winner: winner(+!!pdA.cacheControl, +!!pdB.cacheControl) },
+    { label: 'Favicon',             valA: tf(pdA.hasFavicon), valB: tf(pdB.hasFavicon), winner: winner(+pdA.hasFavicon, +pdB.hasFavicon) },
+    { label: 'Server',              valA: pdA.server || '—', valB: pdB.server || '—', winner: 'tie' },
+    { label: 'HSTS Header',         valA: tf(pdA.secHeaders?.hsts), valB: tf(pdB.secHeaders?.hsts), winner: winner(+!!pdA.secHeaders?.hsts, +!!pdB.secHeaders?.hsts) },
+    { label: 'X-Content-Type',      valA: tf(pdA.secHeaders?.xContentType), valB: tf(pdB.secHeaders?.xContentType), winner: winner(+!!pdA.secHeaders?.xContentType, +!!pdB.secHeaders?.xContentType) },
+    { label: 'X-Frame-Options',     valA: tf(pdA.secHeaders?.xFrame), valB: tf(pdB.secHeaders?.xFrame), winner: winner(+!!pdA.secHeaders?.xFrame, +!!pdB.secHeaders?.xFrame) },
+    { label: 'Content-Security-Policy', valA: tf(pdA.secHeaders?.csp), valB: tf(pdB.secHeaders?.csp), winner: winner(+!!pdA.secHeaders?.csp, +!!pdB.secHeaders?.csp) },
+    { label: 'Page Size',           valA: (pdA.pageSizeKb || 0) + ' KB', valB: (pdB.pageSizeKb || 0) + ' KB', winner: winner(scA.pageSize, scB.pageSize) },
+    { label: 'Inline Scripts',      valA: pdA.inlineScripts || 0, valB: pdB.inlineScripts || 0, winner: winner(scA.inlineScripts, scB.inlineScripts) },
+  ];
+}
+
+function buildSocialRows(urlA, urlB, pdA, pdB, scA, scB) {
+  const ogA = pdA.openGraph || {}, ogB = pdB.openGraph || {};
+  const schA = pdA.schema || {}, schB = pdB.schema || {};
+  return [
+    { label: 'OG Title',          valA: ogA.title ? '✅ ' + escHtml(ogA.title.slice(0,50)) : '❌ Missing', valB: ogB.title ? '✅ ' + escHtml(ogB.title.slice(0,50)) : '❌ Missing', winner: winner(+!!ogA.title, +!!ogB.title) },
+    { label: 'OG Description',    valA: tf(ogA.description), valB: tf(ogB.description), winner: winner(+!!ogA.description, +!!ogB.description) },
+    { label: 'OG Image',          valA: tf(ogA.image), valB: tf(ogB.image), winner: winner(+!!ogA.image, +!!ogB.image) },
+    { label: 'Twitter Card',      valA: ogA.twitterCard ? '✅ ' + ogA.twitterCard : '❌ Missing', valB: ogB.twitterCard ? '✅ ' + ogB.twitterCard : '❌ Missing', winner: winner(+!!ogA.twitterCard, +!!ogB.twitterCard) },
+    { label: 'Schema Count',      valA: (schA.count || 0) + ' block(s)', valB: (schB.count || 0) + ' block(s)', winner: winner(schA.count || 0, schB.count || 0) },
+    { label: 'Schema Types',      valA: (schA.types || []).join(', ') || '—', valB: (schB.types || []).join(', ') || '—', winner: winner(schA.count || 0, schB.count || 0) },
+    { label: 'OG Score',          valA: scA.ogTags + ' / 100', valB: scB.ogTags + ' / 100', winner: winner(scA.ogTags, scB.ogTags) },
+    { label: 'Social Score',      valA: scA._cat.social + ' / 100', valB: scB._cat.social + ' / 100', winner: winner(scA._cat.social, scB._cat.social) },
+  ];
+}
+
+// ── KEYWORD OVERLAP ──────────────────────────────────────────
+function renderKwOverlap(kwA, kwB, urlA, urlB) {
+  const setA = new Set(kwA.map(k => k.word));
+  const setB = new Set(kwB.map(k => k.word));
+  const shared = kwA.filter(k => setB.has(k.word));
+  const onlyA  = kwA.filter(k => !setB.has(k.word)).slice(0, 10);
+  const onlyB  = kwB.filter(k => !setA.has(k.word)).slice(0, 10);
+
+  const hA = hn(urlA), hB = hn(urlB);
+
+  document.getElementById('kw-overlap').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem">
+      <div>
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--siteA);margin-bottom:0.6rem">◆ Only in ${escHtml(hA)}</div>
+        <div>${onlyA.length ? onlyA.map(k => `<span class="kw-chip">${escHtml(k.word)}</span>`).join('') : '<span style="color:var(--muted);font-size:0.82rem">—</span>'}</div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--green);margin-bottom:0.6rem">✦ Shared Keywords</div>
+        <div>${shared.length ? shared.map(k => `<span class="kw-chip shared">${escHtml(k.word)}</span>`).join('') : '<span style="color:var(--muted);font-size:0.82rem">No overlap found</span>'}</div>
+      </div>
+      <div>
+        <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--siteB);margin-bottom:0.6rem">◆ Only in ${escHtml(hB)}</div>
+        <div>${onlyB.length ? onlyB.map(k => `<span class="kw-chip b-only">${escHtml(k.word)}</span>`).join('') : '<span style="color:var(--muted);font-size:0.82rem">—</span>'}</div>
+      </div>
+    </div>
+    <div style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">
+      Keywords extracted from page title and meta description. Shared: <strong style="color:var(--green)">${shared.length}</strong> · 
+      Site A unique: <strong style="color:var(--siteA)">${onlyA.length}</strong> · 
+      Site B unique: <strong style="color:var(--siteB)">${onlyB.length}</strong>
+    </div>
+  `;
+}
+
+// ── INSIGHTS ─────────────────────────────────────────────────
+function renderInsights(urlA, urlB, pdA, pdB, scA, scB) {
+  function buildInsights(pd, sc, side) {
+    const items = [];
+    if (sc._total >= 80) items.push({ icon: '🏆', text: `<strong>Strong overall SEO</strong> — score of ${sc._total}/100` });
+    else if (sc._total >= 60) items.push({ icon: '✅', text: `<strong>Decent SEO foundation</strong> — score ${sc._total}/100 with room to grow` });
+    else items.push({ icon: '⚠', text: `<strong>SEO needs attention</strong> — score only ${sc._total}/100` });
+
+    if (pd.wordCount >= 1000) items.push({ icon: '✅', text: `<strong>Strong content depth</strong> — ${pd.wordCount.toLocaleString()} words` });
+    else if (pd.wordCount < 300) items.push({ icon: '❌', text: `<strong>Thin content</strong> — only ${pd.wordCount || 0} words on page` });
+
+    if (pd.schema?.count >= 2) items.push({ icon: '✅', text: `<strong>Good schema coverage</strong> — ${pd.schema.count} schema type(s)` });
+    else if (!pd.schema?.count) items.push({ icon: '❌', text: `<strong>No schema markup</strong> — missing rich result opportunities` });
+
+    if (!pd.openGraph?.image) items.push({ icon: '❌', text: `<strong>No OG image</strong> — poor social sharing appearance` });
+    else items.push({ icon: '✅', text: `<strong>OG image set</strong> — good social preview` });
+
+    if (pd.ttfb && pd.ttfb < 800) items.push({ icon: '✅', text: `<strong>Fast TTFB</strong> — ${pd.ttfb}ms (good)` });
+    else if (pd.ttfb && pd.ttfb >= 1800) items.push({ icon: '❌', text: `<strong>Slow TTFB</strong> — ${pd.ttfb}ms (poor)` });
+
+    if (pd.headings?.h2 >= 3) items.push({ icon: '✅', text: `<strong>${pd.headings.h2} H2 headings</strong> — well structured content` });
+    else items.push({ icon: '⚠', text: `<strong>Few H2 headings</strong> — add more subheadings for structure` });
+
+    return items.slice(0, 5);
+  }
+
+  const insightsA = buildInsights(pdA, scA, 'a');
+  const insightsB = buildInsights(pdB, scB, 'b');
+
+  function cardHtml(items, side, url) {
+    return `
+      <div class="insight-card ${side}">
+        <div class="insight-card-header">
+          <div class="insight-dot ${side}"></div>
+          <div class="insight-card-title">${escHtml(hn(url))} — Key Findings</div>
+        </div>
+        ${items.map(i => `
+          <div class="insight-item">
+            <span class="insight-icon">${i.icon}</span>
+            <span class="insight-text">${i.text}</span>
+          </div>`).join('')}
+      </div>`;
+  }
+
+  document.getElementById('insights-grid').innerHTML =
+    cardHtml(insightsA, 'a', urlA) + cardHtml(insightsB, 'b', urlB);
+}
+
+// ── GAP REPORT ───────────────────────────────────────────────
+function renderGapReport(urlA, urlB, pdA, pdB, scA, scB) {
+  const hA = hn(urlA), hB = hn(urlB);
+
+  // Build actionable gaps where A is losing to B
+  const gaps = [];
+
+  function checkGap(label, scoreA, scoreB, advice) {
+    if (scoreA < scoreB) {
+      gaps.push({ label, scoreA, scoreB, advice, side: 'b' });
+    } else if (scoreB < scoreA) {
+      gaps.push({ label, scoreA, scoreB, advice, side: 'a' });
+    }
+  }
+
+  checkGap('Page Title Optimisation', scA.title, scB.title,
+    `Ensure your title is 50–60 characters and leads with your primary keyword.`);
+  checkGap('Meta Description', scA.metaDesc, scB.metaDesc,
+    `Write a 120–155 character description with a clear call-to-action.`);
+  checkGap('Word Count / Content Depth', pdA.wordCount || 0, pdB.wordCount || 0,
+    `Expand content to at least 1,000 words covering the topic comprehensively.`);
+  checkGap('H2 Subheadings', pdA.headings?.h2 || 0, pdB.headings?.h2 || 0,
+    `Add 3–6 H2 subheadings to structure content and target keyword variants.`);
+  checkGap('Schema Markup', pdA.schema?.count || 0, pdB.schema?.count || 0,
+    `Add JSON-LD schema (WebPage, Organization, FAQPage) to earn rich results.`);
+  checkGap('OG / Social Tags', scA.ogTags, scB.ogTags,
+    `Add og:title, og:description, og:image for better social sharing previews.`);
+  checkGap('Twitter Card', scA.twitterCard, scB.twitterCard,
+    `Add twitter:card and twitter:image meta tags for X/Twitter link previews.`);
+  checkGap('Internal Links', pdA.links?.internal || 0, pdB.links?.internal || 0,
+    `Add more internal links to distribute page authority and improve crawlability.`);
+  checkGap('External Links', pdA.links?.external || 0, pdB.links?.external || 0,
+    `Link out to 3–5 authoritative sources to signal research depth to Google.`);
+  checkGap('Security Headers', scA.secHeaders, scB.secHeaders,
+    `Implement HSTS, X-Content-Type-Options, X-Frame-Options, and CSP headers.`);
+  checkGap('Page Speed (TTFB)', scA.ttfb, scB.ttfb,
+    `Optimise server response time — use a CDN, caching, and asset compression.`);
+  checkGap('Image Alt Text', scA.imgAlt, scB.imgAlt,
+    `Add descriptive alt text to all images for accessibility and image SEO.`);
+  checkGap('Cache-Control', +!!pdA.cacheControl, +!!pdB.cacheControl,
+    `Set Cache-Control headers on all static assets to improve repeat visit speed.`);
+
+  if (!gaps.length) {
+    document.getElementById('gap-report').innerHTML = `
+      <div style="text-align:center;padding:4rem 2rem;color:var(--muted);font-size:0.9rem">
+        🏆 No significant gaps detected — both sites are evenly matched across all signals.
+      </div>`;
+    return;
+  }
+
+  // Split: where A needs to catch up vs where A leads
+  const aNeedsWork = gaps.filter(g => g.side === 'b');
+  const aLeads     = gaps.filter(g => g.side === 'a');
+
+  function gapTable(items, title, loserLabel, winnerLabel, loserColor, winnerColor) {
+    if (!items.length) return '';
+    return `
+      <div class="section-card" style="margin-bottom:1.25rem">
+        <div class="section-card-head">${title}</div>
+        <div class="section-card-body">
+          <table class="compare-table">
+            <thead><tr>
+              <th>Signal</th>
+              <th style="color:${loserColor}">${escHtml(loserLabel)}</th>
+              <th style="color:${winnerColor}">${escHtml(winnerLabel)}</th>
+              <th>Action Required</th>
+            </tr></thead>
+            <tbody>
+              ${items.map(g => `
+                <tr>
+                  <td class="signal">${g.label}</td>
+                  <td class="val-a lose">${g.side === 'b' ? g.scoreA : g.scoreB}</td>
+                  <td class="val-b win">${g.side === 'b' ? g.scoreB : g.scoreA}</td>
+                  <td style="font-size:0.8rem;color:var(--muted);max-width:280px">${g.advice}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('gap-report').innerHTML =
+    (aNeedsWork.length ? `
+      <div style="margin-bottom:1rem;padding:0.85rem 1.25rem;background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);border-radius:12px;font-size:0.85rem;color:var(--red)">
+        ⚠ <strong>${aNeedsWork.length} area(s)</strong> where <strong>${escHtml(hA)}</strong> falls behind <strong>${escHtml(hB)}</strong>
+      </div>` : '') +
+    gapTable(aNeedsWork, `🔴 ${escHtml(hA)} Gaps — Fix These to Catch Up`, hA, hB, 'var(--red)', 'var(--green)') +
+    (aLeads.length ? `
+      <div style="margin-bottom:1rem;padding:0.85rem 1.25rem;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);border-radius:12px;font-size:0.85rem;color:var(--green)">
+        ✅ <strong>${aLeads.length} area(s)</strong> where <strong>${escHtml(hA)}</strong> already leads <strong>${escHtml(hB)}</strong>
+      </div>` : '') +
+    gapTable(aLeads, `✅ ${escHtml(hA)} Advantages — Maintain These`, hB, hA, 'var(--red)', 'var(--green)');
+}
+</script>
+</body>
+</html>
