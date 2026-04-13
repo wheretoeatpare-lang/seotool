@@ -1631,15 +1631,51 @@ function renderSitePreview(url, pageData, cmsData) {
     const se = document.getElementById('preview-screenshot');
     if (!se || !fe) return;
     se.style.display = 'none';
-    // Keep id="preview-icon" here too so the next audit can always find it
-    fe.innerHTML = `
-      <div class="preview-site-icon" id="preview-icon">
-        <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
-      </div>
-      <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.25rem">${hostname}</div>
-      <div class="preview-screenshot-label">Screenshot unavailable<br><span style="font-size:0.72rem">Site may block external crawlers</span></div>
-    `;
-    fe.style.display = 'flex';
+
+    const ogImg = pageData?.openGraph?.image;
+    if (ogImg) {
+      // Use the site's own OG image as a branded preview
+      fe.style.display = 'block';
+      fe.style.padding = '0';
+      fe.style.background = 'none';
+      fe.innerHTML = `
+        <div style="position:relative;width:100%;border-radius:10px;overflow:hidden">
+          <img src="${ogImg}" alt="Site preview"
+            style="width:100%;display:block;border-radius:10px;object-fit:cover;max-height:220px"
+            onerror="
+              this.parentElement.parentElement.style.padding='';
+              this.parentElement.parentElement.style.background='';
+              this.parentElement.outerHTML=\`
+                <div class='preview-site-icon' id='preview-icon'>
+                  <img src='${faviconUrl}' alt='favicon' onerror='this.parentElement.innerHTML=\\'<span class=preview-site-icon-placeholder>🌐</span>\\''>
+                </div>
+                <div style='font-family:Syne,sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.25rem'>${hostname}</div>
+                <div class='preview-screenshot-label'>Screenshot unavailable<br><span style='font-size:0.72rem'>Site may block external crawlers</span></div>
+              \`;
+            ">
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:0.5rem 0.75rem;
+            background:linear-gradient(transparent,rgba(7,7,13,0.85));
+            display:flex;align-items:center;gap:0.5rem">
+            <img src="${faviconUrl}" alt="favicon" style="width:16px;height:16px;border-radius:3px"
+              onerror="this.style.display='none'">
+            <span style="font-size:0.75rem;font-weight:600;color:var(--text);font-family:'Syne',sans-serif">${hostname}</span>
+            <span style="font-size:0.68rem;color:var(--muted);margin-left:auto">via og:image</span>
+          </div>
+        </div>
+      `;
+    } else {
+      // Final fallback — favicon + hostname
+      fe.style.padding = '';
+      fe.style.background = '';
+      fe.style.display = 'flex';
+      fe.innerHTML = `
+        <div class="preview-site-icon" id="preview-icon">
+          <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.25rem">${hostname}</div>
+        <div class="preview-screenshot-label">Screenshot unavailable<br><span style="font-size:0.72rem">Site may block external crawlers</span></div>
+      `;
+    }
   };
 
   screenshotEl.src = screenshotUrl;
