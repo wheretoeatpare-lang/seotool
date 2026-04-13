@@ -1024,6 +1024,7 @@ let currentPageData  = null;
 let currentUrl       = '';
 let allSuggestions   = [];
 let typewriteInterval = null;
+let scoreCountInterval = null;
 
 // ─── UTILS ───────────────────────────────────────────────────
 function showToast(msg, color = 'var(--green)') {
@@ -1064,6 +1065,8 @@ function getBarClass(s) {
 function resetAudit() {
   // Cancel any running typewrite animation
   if (typewriteInterval) { clearInterval(typewriteInterval); typewriteInterval = null; }
+  // Cancel any running score count-up animation
+  if (scoreCountInterval) { clearInterval(scoreCountInterval); scoreCountInterval = null; }
 
   // Invalidate any in-flight screenshot image callbacks
   _previewGen++;
@@ -1586,11 +1589,6 @@ function renderSitePreview(url, pageData, cmsData) {
     `<span class="preview-pill ${p.cls}">${p.label}</span>`
   ).join('');
 
-  // Favicon
-  const iconEl = document.getElementById('preview-icon');
-  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=64`;
-  iconEl.innerHTML = `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`;
-
   // Screenshot — reset element state completely before setting new src
   const screenshotEl = document.getElementById('preview-screenshot');
   const fallbackEl   = document.getElementById('preview-fallback');
@@ -1603,16 +1601,23 @@ function renderSitePreview(url, pageData, cmsData) {
   screenshotEl.onerror = null;
   screenshotEl.src = ''; // reset src to cancel any in-flight load
 
-  // Reset to loading state
+  // Reset fallback to loading state — IMPORTANT: keep id="preview-icon" so it's
+  // always findable by getElementById on subsequent audits
   screenshotEl.style.display = 'none';
   screenshotEl.style.opacity = '0';
   fallbackEl.style.display = 'flex';
   fallbackEl.innerHTML = `
-    <div class="preview-site-icon" id="preview-icon-inner">
-      <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
+    <div class="preview-site-icon" id="preview-icon">
+      <span class="preview-site-icon-placeholder">🌐</span>
     </div>
     <div class="preview-screenshot-label">Loading preview…</div>
   `;
+
+  // Favicon — NOW safe to get iconEl because fallbackEl.innerHTML was just set above
+  const iconEl = document.getElementById('preview-icon');
+  if (iconEl) {
+    iconEl.innerHTML = `<img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">`;
+  }
 
   const screenshotUrl = `https://image.thum.io/get/width/640/crop/400/noanimate/${encodeURIComponent(url)}`;
 
@@ -1633,7 +1638,7 @@ function renderSitePreview(url, pageData, cmsData) {
     if (!se || !fe) return;
     se.style.display = 'none';
     fe.innerHTML = `
-      <div class="preview-site-icon">
+      <div class="preview-site-icon" id="preview-icon">
         <img src="${faviconUrl}" alt="favicon" onerror="this.parentElement.innerHTML='<span class=preview-site-icon-placeholder>🌐</span>'">
       </div>
       <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-top:0.25rem">${hostname}</div>
@@ -1660,10 +1665,11 @@ function renderResults(url, data, cmsData, pageData) {
   const numEl = document.getElementById('score-num');
   numEl.style.color = getScoreColor(data.score);
   let count = 0;
-  const iv = setInterval(() => {
+  if (scoreCountInterval) { clearInterval(scoreCountInterval); scoreCountInterval = null; }
+  scoreCountInterval = setInterval(() => {
     count = Math.min(count + 2, data.score);
     numEl.textContent = count;
-    if (count >= data.score) clearInterval(iv);
+    if (count >= data.score) { clearInterval(scoreCountInterval); scoreCountInterval = null; }
   }, 18);
 
   // URL & title
