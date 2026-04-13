@@ -694,12 +694,85 @@ footer .logo-f {
 .preview-pill-blue  { background: var(--blue2);  color: var(--blue);  }
 
 /* ── RESPONSIVE ── */
+/* ── HAMBURGER ── */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: background 0.2s;
+  z-index: 300;
+}
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.3s, opacity 0.3s;
+  transform-origin: center;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE MENU OVERLAY ── */
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  top: 57px; left: 0; right: 0;
+  background: rgba(7,7,13,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  padding: 1.5rem 1.5rem 2rem;
+  z-index: 190;
+  flex-direction: column;
+  gap: 0.25rem;
+  transform: translateY(-8px);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+}
+.nav-mobile-menu.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+.nav-mobile-menu a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.8rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a:last-child { border-bottom: none; }
+.nav-mobile-cta {
+  margin-top: 1rem !important;
+  background: linear-gradient(135deg, var(--accent), #5a4fcc) !important;
+  color: white !important;
+  text-align: center;
+  padding: 0.8rem 1rem !important;
+  border-radius: 10px !important;
+  border-bottom: none !important;
+  font-weight: 600 !important;
+}
+
 @media (max-width: 680px) {
   .preview-content { grid-template-columns: 1fr; }
   .preview-info-panel { border-left: none; border-top: 1px solid var(--border); }
   .preview-meta-grid { grid-template-columns: repeat(3, 1fr); }
   nav { padding: 0.9rem 1.25rem; }
   .nav-links { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
   .hero { padding: 7rem 1.25rem 3.5rem; }
   .audit-container { padding: 1.25rem; border-radius: 14px; }
   .url-row { flex-direction: column; }
@@ -723,7 +796,16 @@ footer .logo-f {
     <a href="/competitor.html">Competitor Analysis</a>
     <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   </div>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="#features" onclick="closeMobileNav()">Features</a>
+  <a href="#" onclick="scrollToAudit(); closeMobileNav(); return false;">Audit Now</a>
+  <a href="/competitor.html" onclick="closeMobileNav()">Competitor Analysis</a>
+  <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Free Audit →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero" id="hero">
@@ -2135,6 +2217,27 @@ function renderTechStack(cmsData, url) {
     </div>
   `;
 }
+// ─── MOBILE NAV ───────────────────────────────────────────────
+function toggleMobileNav() {
+  const btn = document.getElementById('nav-hamburger');
+  const menu = document.getElementById('nav-mobile-menu');
+  const isOpen = btn.classList.toggle('open');
+  menu.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+function closeMobileNav() {
+  document.getElementById('nav-hamburger').classList.remove('open');
+  document.getElementById('nav-mobile-menu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+    closeMobileNav();
+  }
+});
+
 // ─── ON PAGE LOAD ─────────────────────────────────────────────
 // Restore from shared URL hash if present
 window.addEventListener('load', () => {
