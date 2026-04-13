@@ -2,7 +2,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/detect-cms') return handleCMSDetect(request);
-    if (url.pathname === '/api/claude')     return handleClaude(request, env);
+    if (url.pathname === '/api/claude')     return handleAudit(request, env);
     if (url.pathname === '/api/page-data')  return handlePageData(request);
     return env.ASSETS.fetch(request);
   },
@@ -126,7 +126,7 @@ function detectCMS(html, headers, finalUrl) {
     { cms: 'Shopify',     pattern: /Shopify\.theme/i,           signal: 'Shopify.theme JS' },
     { cms: 'Shopify',     pattern: /myshopify\.com/i,           signal: 'myshopify.com ref' },
     { cms: 'Wix',         pattern: /static\.wixstatic\.com/i,   signal: 'Wix static CDN' },
-    { cms: 'Squarespace', pattern: /squarespace\.com/i,          signal: 'Squarespace ref' },
+    { cms: 'Squarespace', pattern: /squarespace\.com/i,         signal: 'Squarespace ref' },
     { cms: 'Squarespace', pattern: /Static\.SQUARESPACE_CONTEXT/i, signal: 'Squarespace JS' },
     { cms: 'Webflow',     pattern: /data-wf-page/i,             signal: 'Webflow attr' },
     { cms: 'Webflow',     pattern: /webflow\.com/i,             signal: 'Webflow ref' },
@@ -233,214 +233,747 @@ function detectHostingInfo(url) {
   } catch { return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown' }; }
 }
 
-// ─────────────────────────────────────────────────────────────
-// AI AUDIT — ROOT CAUSE & FIX
-//
-// WHY "AI returned empty response":
-//   The previous prompt was ~3,500+ tokens input. Cloudflare Workers AI
-//   free tier has a ~4096 total token context window shared between input
-//   AND output. A 3500-token prompt left only ~600 tokens for the response,
-//   causing the model to either truncate or return null entirely.
-//
-// FIX:
-//   1. Compact prompt: signals compressed to ~800 input tokens.
-//   2. Model waterfall: 8b (reliable) → 11b → mistral-7b (fallbacks).
-//   3. max_tokens: 3000 (enough for full JSON output).
-//   4. Robust extraction handles all known CF AI response shapes.
-// ─────────────────────────────────────────────────────────────
-async function handleClaude(request, env) {
+// ─────────────────────────────────────────────────────────────────────────────
+// DETERMINISTIC RULE-BASED SEO AUDIT ENGINE
+// Replaces the Workers AI endpoint entirely — zero AI calls, zero rate limits.
+// Returns the exact same JSON shape the frontend already expects.
+// ─────────────────────────────────────────────────────────────────────────────
+async function handleAudit(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
 
   try {
     const body = await request.json();
-    const { url, options, pageData, cmsData } = body;
+    const { url, pageData: pd = {}, cmsData = {} } = body;
+    const cms = cmsData?.cms || 'Custom / Unknown';
+    const { hosting } = detectHostingInfo(url);
 
-    if (!env.AI) throw new Error('Workers AI binding missing. Check wrangler.toml [ai] section and redeploy.');
-
-    const { server, hosting, cdn } = detectHostingInfo(url);
-    const cms = cmsData?.cms || 'Unknown';
-    const pd  = pageData  || {};
-
-    // ── COMPACT SIGNALS (~800 tokens) ─────────────────────────
-    const sig = [
-      `URL:${url}`,
-      `CMS:${cms}|Host:${hosting}|CDN:${cdn}|Server:${server}`,
-      `HTTPS:${pd.isHttps?'Yes':'NO-CRITICAL'}|Status:${pd.statusCode||'?'}|TTFB:${pd.ttfb||'?'}ms`,
-      `Title:"${pd.title||'MISSING'}"(${pd.titleLen||0}chars,ideal50-60)`,
-      `MetaDesc:"${pd.metaDesc?(pd.metaDesc.slice(0,60)+'...'):'MISSING'}"(${pd.descLen||0}chars,ideal120-155)`,
-      `H1:${pd.headings?.h1||0}(ideal:1) H2:${pd.headings?.h2||0} H3:${pd.headings?.h3||0}`,
-      `Images:${pd.images?.total||0}total,${pd.images?.missingAlt||0}missingAlt`,
-      `Schema:${pd.schema?.count||0}found(${pd.schema?.types?.join(',')||'none'})`,
-      `OG:title=${pd.openGraph?.title?'Yes':'No'},desc=${pd.openGraph?.description?'Yes':'No'},img=${pd.openGraph?.image?'Yes':'No'}`,
-      `Twitter:${pd.openGraph?.twitterCard||'Missing'}`,
-      `Canonical:${pd.canonical||'Missing'}|Noindex:${pd.isNoindex?'YES-BLOCKED':'No'}`,
-      `Words:~${pd.wordCount||'?'}|Size:${pd.pageSizeKb||'?'}KB|IntLinks:${pd.links?.internal||0}|ExtLinks:${pd.links?.external||0}`,
-      `Viewport:${pd.hasViewport?'Yes':'MISSING'}|Favicon:${pd.hasFavicon?'Yes':'No'}|Lang:${pd.lang||'Missing'}`,
-      `HSTS:${pd.secHeaders?.hsts?'Yes':'No'}|XFrame:${pd.secHeaders?.xFrame?'Yes':'No'}|CSP:${pd.secHeaders?.csp?'Yes':'No'}`,
-      `Cache:${pd.cacheControl||'Not set'}|InlineScripts:${pd.inlineScripts||0}`,
-    ].join('\n');
-
-    // ── CMS-SPECIFIC FIX GUIDE ─────────────────────────────────
-    const cmsGuides = {
-      'WordPress':      'Use Yoast SEO / RankMath plugin. Reference WordPress admin panel paths. Mention WP Rocket for speed, Smush for images.',
-      'Shopify':        'Reference Shopify admin (Online Store > Preferences), theme liquid files, Shopify App Store (TinyIMG, SEO Manager, JSON-LD for SEO).',
-      'Webflow':        'Reference Webflow Designer Page Settings > SEO tab, Site Settings > SEO, CMS Collections settings.',
-      'Wix':            'Reference Wix SEO Wiz, Page Settings > SEO, Wix App Market for SEO tools.',
-      'Squarespace':    'Reference Pages > Page Settings > SEO, Marketing > SEO settings, Connected Accounts.',
-      'Next.js':        'Use next/head or Next.js 13+ metadata API, generateMetadata(), next-sitemap, next/image.',
-      'Nuxt':           'Use useHead(), useSeoMeta(), nuxt-simple-sitemap, nuxt.config.ts app.head.',
-      'Gatsby':         'Use gatsby-plugin-react-helmet, gatsby-plugin-sitemap, gatsby-image.',
-      'Custom / Unknown': 'Provide HTML code snippets the developer can paste directly.',
+    // ── CMS-SPECIFIC FIX INSTRUCTIONS ────────────────────────────────────────
+    const CMS_FIX = {
+      'WordPress':        (issue) => cmsfix_wp(issue),
+      'Shopify':          (issue) => cmsfix_shopify(issue),
+      'Webflow':          (issue) => cmsfix_webflow(issue),
+      'Wix':              (issue) => cmsfix_wix(issue),
+      'Squarespace':      (issue) => cmsfix_squarespace(issue),
+      'Next.js':          (issue) => cmsfix_nextjs(issue),
+      'Nuxt':             (issue) => cmsfix_nuxt(issue),
+      'Gatsby':           (issue) => cmsfix_gatsby(issue),
     };
-    const cmsGuide = cmsGuides[cms] || cmsGuides['Custom / Unknown'];
+    const getFix = (issue) => (CMS_FIX[cms] || cmsfix_generic)(issue);
 
-    // ── SMART SUPPRESSION — avoid nonsense suggestions ─────────
-    // If site is already HTTPS, AI must NOT suggest "add HTTPS" or "configure HTTPS".
-    // If HSTS header IS present, AI must NOT suggest adding HSTS.
-    // These rules eliminate the #1 complaint from users: irrelevant quick wins.
-    const suppressionRules = [
-      pd.isHttps        ? 'RULE: Site IS already on HTTPS. Do NOT suggest enabling HTTPS or SSL. Do NOT suggest "Configure HTTPS". HTTPS is confirmed working.' : '',
-      pd.secHeaders?.hsts ? 'RULE: HSTS header IS already set. Do NOT suggest adding HSTS.' : '',
-      pd.hasViewport    ? 'RULE: Viewport meta tag IS present. Do NOT suggest adding viewport tag.' : '',
-      pd.hasFavicon     ? 'RULE: Favicon IS present. Do NOT suggest adding a favicon.' : '',
-      pd.canonical      ? 'RULE: Canonical URL IS set. Do NOT suggest adding canonical tags.' : '',
-      pd.lang           ? 'RULE: Lang attribute IS set. Do NOT suggest adding lang attribute.' : '',
-      pd.schema?.count > 0 ? `RULE: Site ALREADY HAS ${pd.schema.count} schema(s): ${pd.schema.types.join(', ')}. Focus on adding MISSING schema types, not the ones already there.` : '',
-    ].filter(Boolean).join('\n');
+    // ── SCORING CATEGORIES ────────────────────────────────────────────────────
+    // Each rule: { id, category, weight, pass, score, title, description, fix, priority, impact, effort, ranking_impact }
+    const rules = buildRules(pd, cms, getFix);
 
-    // ── PROMPT (~1000 tokens total input) ─────────────────────
-    const prompt = `SEO audit for: ${url}
+    // Group by category
+    const cats = {};
+    for (const r of rules) {
+      if (!cats[r.category]) cats[r.category] = [];
+      cats[r.category].push(r);
+    }
 
-PAGE DATA:
-${sig}
+    // Weighted category scores
+    const catScore = (name) => {
+      const rs = cats[name] || [];
+      if (!rs.length) return 80; // neutral default if no rules
+      const total = rs.reduce((a, r) => a + r.weight, 0);
+      const earned = rs.reduce((a, r) => a + r.weight * (r.pass ? 1 : r.partialScore ?? 0), 0);
+      return Math.round((earned / total) * 100);
+    };
 
-CMS FIX STYLE: ${cmsGuide}
+    const techScore   = catScore('technical');
+    const perfScore   = catScore('performance');
+    const contScore   = catScore('content');
+    const uxScore     = catScore('ux');
+    const schemaScore = catScore('schema');
+    const eeatScore   = catScore('eeat');
+    const socialScore = catScore('social');
+    const backScore   = catScore('backlinks');
 
-CRITICAL SUPPRESSION RULES (MUST FOLLOW — violations make the audit useless):
-${suppressionRules || 'No suppressions needed.'}
-RULE: Quick wins must only include issues that are ACTUALLY MISSING or broken on this site based on PAGE DATA above. Never suggest fixing something that is already working correctly.
-RULE: HSTS (HTTP Strict Transport Security) is a SECURITY HEADER that tells browsers to always use HTTPS even if the user types http://. It is SEPARATE from having HTTPS. Only suggest it if HSTS header is NOT set AND site is on HTTPS.
-RULE: All string values in the JSON must NOT contain raw double-quotes, raw newlines, or raw tab characters. Use single quotes or rephrase instead. Keep "fix" and "description" values on a single line.
+    // Overall weighted score
+    const overall = Math.round(
+      techScore   * 0.22 +
+      contScore   * 0.20 +
+      perfScore   * 0.18 +
+      uxScore     * 0.12 +
+      schemaScore * 0.10 +
+      eeatScore   * 0.08 +
+      socialScore * 0.05 +
+      backScore   * 0.05
+    );
 
-Output ONLY valid JSON (no markdown, no code fences, no explanation):
-{"score":<0-100>,"grade":"<A-F>","summary":"<3 sentences based on real data>","eeat_summary":"<2 sentences on trust/authority signals>","quick_wins":["<win1>","<win2>","<win3>","<win4>","<win5>"],"categories":{"technical":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"performance":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"content":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"ux":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"backlinks":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"schema":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"eeat":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"},"social":{"score":<0-100>,"grade":"<A-F>","note":"<brief>"}},"overview_cards":[{"title":"Page Title","value":"<title or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Meta Description","value":"<X chars or Missing>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"HTTPS","value":"<Secure|Not Secure>","description":"<detail>","status":"<pass|fail>"},{"title":"H1 Tags","value":"<count>","description":"<assessment>","status":"<pass|warn|fail>"},{"title":"Schema Markup","value":"<X found>","description":"<types>","status":"<pass|warn|fail>"},{"title":"Open Graph","value":"<Complete|Partial|Missing>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Image Alt Text","value":"<X missing / Y total>","description":"<detail>","status":"<pass|warn|fail>"},{"title":"Page Speed","value":"<TTFB Xms>","description":"<assessment vs 800ms threshold>","status":"<pass|warn|fail>"},{"title":"Word Count","value":"<X words>","description":"<depth assessment>","status":"<pass|warn|fail>"},{"title":"Canonical URL","value":"<Set|Missing>","description":"<detail>","status":"<pass|warn|fail>"}],"suggestions":[{"title":"<issue title>","priority":"<high|medium|low>","impact":"<High|Medium|Low> Impact","category":"<Technical|Content|Performance|UX|Schema|E-E-A-T|Social|Backlinks>","description":"<why this hurts ranking>","fix":"<exact CMS-specific steps to fix>","effort":"<Quick <30min|Medium 1-2hr|Advanced half-day+>","ranking_impact":"<Immediate|Short-term 1-4wks|Long-term 3mo+>"}],"metrics":[{"name":"<metric name>","value":"<value>","score":<0-100>,"status":"<pass|warn|fail>","benchmark":"<what good looks like>"}],"keywords":[{"title":"Target Keywords","value":"<kw1, kw2, kw3>","description":"From title+H1+meta","status":"info"},{"title":"Keyword in Title","value":"<Yes|No>","description":"Primary kw in title tag","status":"<pass|fail>"},{"title":"Keyword Density","value":"<X%>","description":"Ideal: 1-2%","status":"<pass|warn|fail>"},{"title":"LSI Keywords","value":"<terms>","description":"Add for topical authority","status":"info"},{"title":"Long-tail Opportunities","value":"<phrases>","description":"High-intent phrases","status":"info"},{"title":"Missing Keywords","value":"<terms>","description":"Absent but important","status":"warn"}],"schema_analysis":{"detected":[${JSON.stringify(pd.schema?.types||[])}],"missing":["<recommended schema>"],"priority_schema":"<most important to add>","implementation":"<exact CMS steps>"},"competitor_gaps":[{"opportunity":"<gap>","description":"<what top competitors have>","action":"<specific action>"}],"core_web_vitals":{"lcp_estimate":"<Good <2.5s|Needs Improvement 2.5-4s|Poor >4s>","fid_estimate":"<Good <100ms|Needs Improvement|Poor>","cls_estimate":"<Good <0.1|Needs Improvement|Poor>","ttfb_actual":${pd.ttfb||null},"recommendations":["<fix1>","<fix2>"]}}
+    const grade = (s) => s >= 90 ? 'A' : s >= 80 ? 'B' : s >= 65 ? 'C' : s >= 50 ? 'D' : 'F';
+    const note  = (s) => s >= 90 ? 'Excellent' : s >= 80 ? 'Good' : s >= 65 ? 'Needs work' : s >= 50 ? 'Poor' : 'Critical';
 
-Generate 8+ suggestions, 10+ metrics, 5+ competitor_gaps. Use real data. Return ONLY the JSON.`;
+    // ── SUGGESTIONS: failed rules → actionable items ──────────────────────────
+    const suggestions = rules
+      .filter(r => !r.pass)
+      .sort((a, b) => {
+        const pri = { high: 0, medium: 1, low: 2 };
+        return (pri[a.priority] ?? 1) - (pri[b.priority] ?? 1) || b.weight - a.weight;
+      })
+      .map(r => ({
+        title: r.title,
+        priority: r.priority,
+        impact: capitalize(r.priority) + ' Impact',
+        category: capitalize(r.category),
+        description: r.description,
+        fix: r.fix,
+        effort: r.effort || 'Quick <30min',
+        ranking_impact: r.ranking_impact || 'Short-term 1-4wks',
+      }));
 
-    // ── MODEL WATERFALL ────────────────────────────────────────
-    // 8b is most reliable on CF Workers AI free tier.
-    // 70b often hits rate limits & has larger context requirements.
-    const MODELS = [
-      '@cf/meta/llama-3.1-8b-instruct',
-      '@cf/meta/llama-3.2-11b-vision-instruct',
-      '@cf/mistral/mistral-7b-instruct-v0.1',
+    // ── QUICK WINS: top 5 high/medium priority suggestions ────────────────────
+    const quick_wins = suggestions
+      .filter(s => s.priority === 'high' || s.priority === 'medium')
+      .slice(0, 5)
+      .map(s => s.title);
+
+    // ── OVERVIEW CARDS ────────────────────────────────────────────────────────
+    const titleStatus = !pd.title ? 'fail' : pd.titleLen < 10 ? 'fail' : pd.titleLen < 50 || pd.titleLen > 60 ? 'warn' : 'pass';
+    const descStatus  = !pd.metaDesc ? 'fail' : pd.descLen < 50 ? 'fail' : pd.descLen < 120 || pd.descLen > 155 ? 'warn' : 'pass';
+    const ogStatus    = pd.openGraph?.title && pd.openGraph?.description && pd.openGraph?.image ? 'pass' : pd.openGraph?.title ? 'warn' : 'fail';
+    const altStatus   = pd.images?.total === 0 ? 'pass' : pd.images?.missingAlt === 0 ? 'pass' : pd.images?.missingAlt <= 2 ? 'warn' : 'fail';
+    const ttfbStatus  = !pd.ttfb ? 'warn' : pd.ttfb < 800 ? 'pass' : pd.ttfb < 1800 ? 'warn' : 'fail';
+    const wordsStatus = !pd.wordCount ? 'warn' : pd.wordCount >= 300 ? 'pass' : pd.wordCount >= 150 ? 'warn' : 'fail';
+
+    const overview_cards = [
+      { title: 'Page Title', value: pd.title || 'Missing', description: !pd.title ? 'No title tag found — critical SEO issue.' : `${pd.titleLen} chars — ${titleStatus === 'pass' ? 'ideal length (50-60)' : titleStatus === 'warn' ? 'adjust to 50-60 chars' : 'too short'}`, status: titleStatus },
+      { title: 'Meta Description', value: pd.metaDesc ? `${pd.descLen} chars` : 'Missing', description: !pd.metaDesc ? 'Missing meta description — add one to improve CTR.' : `${pd.descLen} chars — ${descStatus === 'pass' ? 'ideal (120-155)' : 'adjust to 120-155 chars'}`, status: descStatus },
+      { title: 'HTTPS', value: pd.isHttps ? 'Secure' : 'Not Secure', description: pd.isHttps ? 'Site is served over HTTPS — good.' : 'HTTPS is not enabled. This is a critical ranking signal.', status: pd.isHttps ? 'pass' : 'fail' },
+      { title: 'H1 Tags', value: String(pd.headings?.h1 ?? 0), description: pd.headings?.h1 === 1 ? 'One H1 found — ideal.' : pd.headings?.h1 > 1 ? `${pd.headings.h1} H1 tags found — use exactly one.` : 'No H1 tag found — add one with your primary keyword.', status: pd.headings?.h1 === 1 ? 'pass' : 'fail' },
+      { title: 'Schema Markup', value: `${pd.schema?.count ?? 0} found`, description: pd.schema?.count ? `Types: ${pd.schema.types.join(', ')}` : 'No structured data found — add schema markup.', status: pd.schema?.count ? 'pass' : 'fail' },
+      { title: 'Open Graph', value: ogStatus === 'pass' ? 'Complete' : ogStatus === 'warn' ? 'Partial' : 'Missing', description: ogStatus === 'pass' ? 'OG tags complete — good for social sharing.' : 'OG tags incomplete — add title, description, and image.', status: ogStatus },
+      { title: 'Image Alt Text', value: `${pd.images?.missingAlt ?? 0} missing / ${pd.images?.total ?? 0} total`, description: altStatus === 'pass' ? 'All images have alt text — excellent.' : `${pd.images?.missingAlt} image(s) missing alt text.`, status: altStatus },
+      { title: 'Page Speed', value: pd.ttfb ? `TTFB ${pd.ttfb}ms` : 'Unknown', description: ttfbStatus === 'pass' ? 'Fast TTFB — good for Core Web Vitals.' : ttfbStatus === 'warn' ? 'TTFB needs improvement (target <800ms).' : 'Slow TTFB — critical performance issue.', status: ttfbStatus },
+      { title: 'Word Count', value: `${pd.wordCount ?? 0} words`, description: wordsStatus === 'pass' ? 'Good content depth.' : pd.wordCount < 150 ? 'Very thin content — expand significantly.' : 'Content below recommended 300+ words.', status: wordsStatus },
+      { title: 'Canonical URL', value: pd.canonical ? 'Set' : 'Missing', description: pd.canonical ? `Canonical: ${pd.canonical.slice(0,50)}` : 'No canonical tag — add one to prevent duplicate content issues.', status: pd.canonical ? 'pass' : 'warn' },
     ];
 
-    let rawText = '';
-    let lastErr = 'No models tried';
+    // ── METRICS ───────────────────────────────────────────────────────────────
+    const metrics = [
+      { name: 'Title Tag Length', value: pd.titleLen ? `${pd.titleLen} chars` : 'Missing', score: !pd.title ? 0 : pd.titleLen >= 50 && pd.titleLen <= 60 ? 100 : pd.titleLen >= 40 && pd.titleLen <= 70 ? 70 : 40, status: !pd.title ? 'fail' : pd.titleLen >= 50 && pd.titleLen <= 60 ? 'pass' : 'warn', benchmark: '50-60 characters ideal' },
+      { name: 'Meta Description Length', value: pd.descLen ? `${pd.descLen} chars` : 'Missing', score: !pd.metaDesc ? 0 : pd.descLen >= 120 && pd.descLen <= 155 ? 100 : pd.descLen >= 80 ? 70 : 30, status: !pd.metaDesc ? 'fail' : pd.descLen >= 120 && pd.descLen <= 155 ? 'pass' : 'warn', benchmark: '120-155 characters ideal' },
+      { name: 'TTFB', value: pd.ttfb ? `${pd.ttfb}ms` : 'N/A', score: !pd.ttfb ? 50 : pd.ttfb < 800 ? 100 : pd.ttfb < 1800 ? 60 : 20, status: ttfbStatus, benchmark: 'Under 800ms (Google threshold)' },
+      { name: 'H1 Count', value: String(pd.headings?.h1 ?? 0), score: pd.headings?.h1 === 1 ? 100 : pd.headings?.h1 > 1 ? 50 : 0, status: pd.headings?.h1 === 1 ? 'pass' : 'fail', benchmark: 'Exactly 1 H1 per page' },
+      { name: 'H2 Count', value: String(pd.headings?.h2 ?? 0), score: pd.headings?.h2 >= 2 ? 100 : pd.headings?.h2 === 1 ? 70 : 40, status: pd.headings?.h2 >= 2 ? 'pass' : 'warn', benchmark: '2+ H2 headings recommended' },
+      { name: 'Images Missing Alt', value: `${pd.images?.missingAlt ?? 0} / ${pd.images?.total ?? 0}`, score: pd.images?.total === 0 ? 100 : pd.images?.missingAlt === 0 ? 100 : Math.max(0, 100 - (pd.images.missingAlt / pd.images.total) * 100), status: altStatus, benchmark: '0 images missing alt text' },
+      { name: 'Schema Markup', value: `${pd.schema?.count ?? 0} blocks`, score: pd.schema?.count >= 3 ? 100 : pd.schema?.count >= 1 ? 65 : 0, status: pd.schema?.count ? 'pass' : 'fail', benchmark: '2+ schema blocks recommended' },
+      { name: 'Page Size', value: pd.pageSizeKb ? `${pd.pageSizeKb}KB` : 'N/A', score: !pd.pageSizeKb ? 70 : pd.pageSizeKb < 200 ? 100 : pd.pageSizeKb < 500 ? 75 : pd.pageSizeKb < 1000 ? 50 : 25, status: !pd.pageSizeKb ? 'warn' : pd.pageSizeKb < 500 ? 'pass' : 'warn', benchmark: 'Under 500KB recommended' },
+      { name: 'Word Count', value: `${pd.wordCount ?? 0} words`, score: pd.wordCount >= 1000 ? 100 : pd.wordCount >= 500 ? 80 : pd.wordCount >= 300 ? 60 : pd.wordCount >= 150 ? 30 : 0, status: wordsStatus, benchmark: '300+ words minimum, 1000+ preferred' },
+      { name: 'Internal Links', value: String(pd.links?.internal ?? 0), score: pd.links?.internal >= 5 ? 100 : pd.links?.internal >= 2 ? 70 : pd.links?.internal >= 1 ? 40 : 0, status: pd.links?.internal >= 3 ? 'pass' : 'warn', benchmark: '3+ internal links recommended' },
+      { name: 'External Links', value: String(pd.links?.external ?? 0), score: pd.links?.external >= 1 ? 100 : 50, status: pd.links?.external >= 1 ? 'pass' : 'warn', benchmark: '1+ external authority links' },
+      { name: 'HTTPS', value: pd.isHttps ? 'Enabled' : 'Disabled', score: pd.isHttps ? 100 : 0, status: pd.isHttps ? 'pass' : 'fail', benchmark: 'HTTPS required' },
+      { name: 'HSTS Header', value: pd.secHeaders?.hsts ? 'Present' : 'Missing', score: pd.secHeaders?.hsts ? 100 : 0, status: pd.secHeaders?.hsts ? 'pass' : 'warn', benchmark: 'Strict-Transport-Security header' },
+      { name: 'Canonical Tag', value: pd.canonical ? 'Set' : 'Missing', score: pd.canonical ? 100 : 0, status: pd.canonical ? 'pass' : 'warn', benchmark: 'Canonical tag required' },
+      { name: 'Open Graph Tags', value: ogStatus === 'pass' ? 'Complete' : ogStatus === 'warn' ? 'Partial' : 'Missing', score: ogStatus === 'pass' ? 100 : ogStatus === 'warn' ? 50 : 0, status: ogStatus, benchmark: 'og:title, og:description, og:image required' },
+      { name: 'Twitter Card', value: pd.openGraph?.twitterCard || 'Missing', score: pd.openGraph?.twitterCard ? 100 : 0, status: pd.openGraph?.twitterCard ? 'pass' : 'warn', benchmark: 'twitter:card meta tag' },
+      { name: 'Viewport Meta', value: pd.hasViewport ? 'Present' : 'Missing', score: pd.hasViewport ? 100 : 0, status: pd.hasViewport ? 'pass' : 'fail', benchmark: 'Required for mobile-friendliness' },
+      { name: 'Lang Attribute', value: pd.lang || 'Missing', score: pd.lang ? 100 : 0, status: pd.lang ? 'pass' : 'warn', benchmark: 'html[lang] attribute required' },
+      { name: 'Favicon', value: pd.hasFavicon ? 'Present' : 'Missing', score: pd.hasFavicon ? 100 : 0, status: pd.hasFavicon ? 'pass' : 'warn', benchmark: 'Favicon improves brand recognition' },
+      { name: 'Inline Scripts', value: String(pd.inlineScripts ?? 0), score: pd.inlineScripts === 0 ? 100 : pd.inlineScripts <= 3 ? 75 : pd.inlineScripts <= 8 ? 50 : 25, status: pd.inlineScripts <= 3 ? 'pass' : 'warn', benchmark: 'Minimize inline scripts for CSP and speed' },
+    ];
 
-    for (const model of MODELS) {
-      try {
-        const res = await env.AI.run(model, {
-          messages: [
-            { role: 'system', content: 'You are an SEO expert. Output ONLY valid JSON. No markdown. No explanation. No code fences.' },
-            { role: 'user',   content: prompt },
-          ],
-          max_tokens: 3000,
-        });
+    // ── KEYWORDS (extracted from title + meta) ────────────────────────────────
+    const allText = [(pd.title || ''), (pd.metaDesc || '')].join(' ').toLowerCase();
+    const stopWords = new Set(['the','and','for','are','but','not','you','all','this','that','with','from','have','they','will','your','been','has','more','also','than','when','can','was','its','our','what']);
+    const kwCandidates = allText.match(/\b[a-z]{4,}\b/g) || [];
+    const kwFreq = {};
+    for (const w of kwCandidates) { if (!stopWords.has(w)) kwFreq[w] = (kwFreq[w]||0)+1; }
+    const topKw = Object.entries(kwFreq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k])=>k);
 
-        // Handle all known Cloudflare AI response shapes
-        const candidate =
-          (typeof res === 'string' && res) ||
-          (res?.response  && typeof res.response  === 'string' && res.response)  ||
-          (res?.choices?.[0]?.message?.content)                                  ||
-          (res?.result?.response && typeof res.result.response === 'string' && res.result.response) ||
-          '';
+    const keywords = [
+      { title: 'Target Keywords', value: topKw.length ? topKw.join(', ') : 'Unable to detect', description: 'Inferred from title and meta description', status: 'info' },
+      { title: 'Keyword in Title', value: pd.title ? 'Detected' : 'N/A', description: 'Primary keyword should appear in title tag', status: pd.title ? 'pass' : 'fail' },
+      { title: 'Keyword Density', value: pd.wordCount ? `~${Math.min(5, Math.round((topKw.length / Math.max(pd.wordCount, 1)) * 200))}%` : 'N/A', description: 'Ideal: 1-2% — avoid keyword stuffing', status: 'info' },
+      { title: 'LSI Keywords', value: 'Add semantic variations', description: 'Use related terms and synonyms for topical authority', status: 'info' },
+      { title: 'Long-tail Opportunities', value: 'Phrase-based queries', description: 'Target question-based and location-specific phrases', status: 'info' },
+      { title: 'Missing Keywords', value: pd.headings?.h1 === 0 ? 'H1 missing keyword' : 'Check H2-H3 coverage', description: 'Ensure keyword appears in H1 and at least 2 H2s', status: 'warn' },
+    ];
 
-        if (candidate.trim()) { rawText = candidate; break; }
-        lastErr = `${model}: empty/unexpected response shape (${JSON.stringify(res).slice(0,80)})`;
-      } catch (e) {
-        lastErr = `${model}: ${e.message}`;
-      }
-    }
+    // ── SCHEMA ANALYSIS ───────────────────────────────────────────────────────
+    const existing = pd.schema?.types || [];
+    const allSchema = ['WebPage','Organization','LocalBusiness','Article','BlogPosting','FAQPage','BreadcrumbList','Product','Review','HowTo','Event','VideoObject','ImageObject','SiteNavigationElement','Person'];
+    const missing_schema = allSchema.filter(s => !existing.includes(s)).slice(0, 5);
+    const priority_schema = existing.length === 0 ? 'WebPage + Organization' : missing_schema[0] || 'FAQPage';
 
-    if (!rawText.trim()) {
-      throw new Error(
-        `All AI models returned empty responses. ${lastErr}. ` +
-        `This usually means Workers AI is temporarily overloaded — please wait 30 seconds and try again.`
-      );
-    }
+    const schema_analysis = {
+      detected: existing,
+      missing: missing_schema,
+      priority_schema,
+      implementation: getFix('add_schema'),
+    };
 
-    // ── ROBUST JSON EXTRACTION + SANITIZATION ─────────────────
-    // Root cause of "expected ',' or ']' at position 11761":
-    // The AI writes unescaped double-quotes, newlines, or backticks
-    // inside JSON string values (especially in "fix" and "description"
-    // fields that contain code snippets). We sanitize these before parsing.
-    let text = rawText.trim()
-      .replace(/^```(?:json)?\s*/i, '')
-      .replace(/\s*```\s*$/i, '')
-      .trim();
+    // ── CORE WEB VITALS (TTFB-based estimation) ───────────────────────────────
+    const ttfb = pd.ttfb || 0;
+    const lcpEst = ttfb < 500 ? 'Good <2.5s' : ttfb < 1000 ? 'Needs Improvement 2.5-4s' : 'Poor >4s';
+    const fidEst = pd.inlineScripts > 10 ? 'Needs Improvement' : 'Good <100ms';
+    const clsEst = pd.hasViewport ? 'Good <0.1' : 'Needs Improvement';
 
-    const start = text.indexOf('{');
-    const end   = text.lastIndexOf('}');
-    if (start === -1 || end === -1) throw new Error('No JSON object in AI response. Raw: ' + text.slice(0, 200));
+    const cwvRecs = [];
+    if (ttfb > 800)  cwvRecs.push('Reduce server response time — enable caching and use a CDN.');
+    if (pd.pageSizeKb > 500) cwvRecs.push(`Page is ${pd.pageSizeKb}KB — compress images and minify CSS/JS.`);
+    if (pd.inlineScripts > 5) cwvRecs.push('Move inline scripts to external files to reduce render-blocking.');
+    if (!pd.cacheControl) cwvRecs.push('Add Cache-Control headers to enable browser caching.');
+    if (!pd.hasViewport) cwvRecs.push('Add viewport meta tag to prevent layout shift on mobile.');
+    if (cwvRecs.length === 0) cwvRecs.push('TTFB looks good — focus on image optimization for best LCP.');
 
-    let jsonStr = text.slice(start, end + 1);
+    const core_web_vitals = {
+      lcp_estimate: lcpEst,
+      fid_estimate: fidEst,
+      cls_estimate: clsEst,
+      ttfb_actual: ttfb || null,
+      recommendations: cwvRecs,
+    };
 
-    let parsed;
-    try {
-      parsed = JSON.parse(jsonStr);
-    } catch (e1) {
-      // ── SANITIZATION PASS ──────────────────────────────────
-      // Fix the most common AI JSON corruption issues in order:
-      try {
-        let fixed = jsonStr
-          // 1. Remove actual newlines/tabs inside string values
-          //    (replace \r\n and \n that appear inside "..." with a space)
-          .replace(/("(?:[^"\\]|\\.)*")|(\r?\n|\t)/g, (match, str, nl) => str ? str : ' ')
-          // 2. Fix trailing commas before } or ]
-          .replace(/,(\s*[}\]])/g, '$1')
-          // 3. Fix unescaped backslashes (e.g. file paths like C:\Users)
-          .replace(/(?<!\\)\\(?!["\\/bfnrtu])/g, '\\\\');
+    // ── COMPETITOR GAPS ───────────────────────────────────────────────────────
+    const competitor_gaps = buildCompetitorGaps(pd, cms);
 
-        parsed = JSON.parse(fixed);
-      } catch (e2) {
-        // ── AGGRESSIVE RECOVERY: line-by-line sanitizer ────────
-        // Walk through each character, tracking whether we're inside a
-        // JSON string, and escape any raw control chars we find.
-        try {
-          let out = '';
-          let inStr = false;
-          let escape = false;
-          for (let i = 0; i < jsonStr.length; i++) {
-            const ch = jsonStr[i];
-            if (escape) { out += ch; escape = false; continue; }
-            if (ch === '\\') { out += ch; escape = true; continue; }
-            if (ch === '"') { inStr = !inStr; out += ch; continue; }
-            if (inStr) {
-              // Inside a string: escape raw control characters
-              if (ch === '\n') { out += '\\n'; continue; }
-              if (ch === '\r') { out += '\\r'; continue; }
-              if (ch === '\t') { out += '\\t'; continue; }
-            } else {
-              // Outside a string: remove unexpected whitespace variants
-              if (ch === '\n' || ch === '\r' || ch === '\t') { out += ' '; continue; }
-            }
-            out += ch;
-          }
-          // Also fix trailing commas after sanitizing
-          out = out.replace(/,(\s*[}\]])/g, '$1');
-          parsed = JSON.parse(out);
-        } catch (e3) {
-          throw new Error(`JSON parse failed after sanitization. Original error: ${e1.message}. Position hint: ${e1.message}`);
-        }
-      }
-    }
+    // ── SUMMARY ───────────────────────────────────────────────────────────────
+    const criticalCount = suggestions.filter(s => s.priority === 'high').length;
+    const summary = `This page scored ${overall}/100 with ${criticalCount} critical issue${criticalCount !== 1 ? 's' : ''} to resolve. ${
+      pd.isHttps ? 'HTTPS is correctly configured.' : 'HTTPS is not enabled — fix immediately.'
+    } ${pd.schema?.count ? `${pd.schema.count} schema block(s) detected; consider adding more types for richer results.` : 'No schema markup found — this is a significant missed opportunity for rich snippets.'}`;
 
-    return new Response(JSON.stringify(parsed), { headers: CORS });
+    const eeat_summary = `${pd.schema?.count ? 'Structured data helps establish entity authority with Google.' : 'Adding Organization and Author schema would strengthen E-E-A-T signals.'} ${pd.links?.external >= 2 ? 'External links to authoritative sources support trust signals.' : 'Adding links to authoritative external sources improves E-E-A-T.'}`;
+
+    // ── ASSEMBLE RESPONSE ─────────────────────────────────────────────────────
+    const result = {
+      score: overall,
+      grade: grade(overall),
+      summary,
+      eeat_summary,
+      quick_wins,
+      categories: {
+        technical:   { score: techScore,   grade: grade(techScore),   note: note(techScore) },
+        performance: { score: perfScore,   grade: grade(perfScore),   note: note(perfScore) },
+        content:     { score: contScore,   grade: grade(contScore),   note: note(contScore) },
+        ux:          { score: uxScore,     grade: grade(uxScore),     note: note(uxScore) },
+        backlinks:   { score: backScore,   grade: grade(backScore),   note: note(backScore) },
+        schema:      { score: schemaScore, grade: grade(schemaScore), note: note(schemaScore) },
+        eeat:        { score: eeatScore,   grade: grade(eeatScore),   note: note(eeatScore) },
+        social:      { score: socialScore, grade: grade(socialScore), note: note(socialScore) },
+      },
+      overview_cards,
+      suggestions,
+      metrics,
+      keywords,
+      schema_analysis,
+      competitor_gaps,
+      core_web_vitals,
+    };
+
+    return new Response(JSON.stringify(result), { headers: CORS });
 
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
   }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RULE BUILDER — 50+ deterministic checks
+// Each rule: { category, weight, pass, partialScore, title, description, fix, priority, effort, ranking_impact }
+// ─────────────────────────────────────────────────────────────────────────────
+function buildRules(pd, cms, getFix) {
+  const rules = [];
+  const add = (r) => rules.push(r);
+
+  // ── TECHNICAL ──────────────────────────────────────────────────────────────
+  add({
+    category: 'technical', weight: 15, priority: 'high',
+    pass: pd.isHttps,
+    title: 'Enable HTTPS / SSL',
+    description: 'HTTPS is a confirmed Google ranking signal. Non-HTTPS sites are marked "Not Secure" by Chrome, causing user distrust and ranking penalties.',
+    fix: getFix('https'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'technical', weight: 12, priority: 'high',
+    pass: !!pd.canonical,
+    title: 'Add Canonical Tag',
+    description: 'Missing canonical tag risks duplicate content penalties and splits ranking signals across URLs.',
+    fix: getFix('canonical'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 10, priority: 'high',
+    pass: !pd.isNoindex,
+    title: 'Page is Blocked from Indexing',
+    description: 'A noindex directive is preventing search engines from indexing this page. Remove it to allow ranking.',
+    fix: getFix('noindex'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'technical', weight: 8, priority: 'medium',
+    pass: !!pd.lang,
+    title: 'Add Language Attribute',
+    description: 'The html[lang] attribute is missing. It helps search engines and screen readers understand the page language.',
+    fix: getFix('lang'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 7, priority: 'medium',
+    pass: !!pd.hasCharset,
+    title: 'Declare Character Encoding',
+    description: 'Missing charset declaration can cause rendering issues and confuse crawlers.',
+    fix: getFix('charset'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 6, priority: 'medium',
+    pass: pd.secHeaders?.hsts,
+    title: 'Add HSTS Security Header',
+    description: 'HTTP Strict Transport Security (HSTS) forces browsers to always use HTTPS, preventing downgrade attacks.',
+    fix: getFix('hsts'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 5, priority: 'low',
+    pass: pd.secHeaders?.xContentType,
+    title: 'Add X-Content-Type-Options Header',
+    description: 'Missing X-Content-Type-Options header. Add "nosniff" to prevent MIME-type sniffing attacks.',
+    fix: getFix('xcontent'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 5, priority: 'low',
+    pass: pd.secHeaders?.xFrame,
+    title: 'Add X-Frame-Options Header',
+    description: 'Missing X-Frame-Options header. Add "SAMEORIGIN" to prevent clickjacking attacks.',
+    fix: getFix('xframe'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 4, priority: 'low',
+    pass: !pd.wasRedirected,
+    title: 'Audit Redirect Chain',
+    description: 'The page URL was redirected. Ensure redirects are minimal and use 301 (permanent) redirects only.',
+    fix: 'Audit redirects using a crawler like Screaming Frog. Eliminate chains longer than 1 hop. Update all internal links to point to the final URL.',
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+
+  // ── CONTENT ────────────────────────────────────────────────────────────────
+  add({
+    category: 'content', weight: 15, priority: 'high',
+    pass: !!pd.title && pd.titleLen >= 10,
+    title: 'Add Page Title Tag',
+    description: 'The title tag is missing or empty. It is the most important on-page SEO element and controls what appears in SERPs.',
+    fix: getFix('title'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'content', weight: 8, priority: 'medium',
+    pass: pd.titleLen >= 50 && pd.titleLen <= 60,
+    partialScore: pd.titleLen > 0 ? 0.5 : 0,
+    title: 'Optimize Title Tag Length',
+    description: `Title is ${pd.titleLen} chars. Ideal is 50-60 chars to maximize SERP display without truncation.`,
+    fix: getFix('title_length'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 12, priority: 'high',
+    pass: !!pd.metaDesc && pd.descLen >= 50,
+    title: 'Add Meta Description',
+    description: 'Meta description is missing or too short. It appears in SERPs and directly affects click-through rate.',
+    fix: getFix('meta_desc'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 7, priority: 'medium',
+    pass: pd.descLen >= 120 && pd.descLen <= 155,
+    partialScore: pd.descLen > 50 ? 0.5 : 0,
+    title: 'Optimize Meta Description Length',
+    description: `Meta description is ${pd.descLen} chars. Ideal is 120-155 chars for full display in SERPs.`,
+    fix: getFix('meta_desc_length'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 12, priority: 'high',
+    pass: pd.headings?.h1 === 1,
+    partialScore: pd.headings?.h1 > 1 ? 0.4 : 0,
+    title: pd.headings?.h1 === 0 ? 'Add H1 Heading Tag' : 'Fix Multiple H1 Tags',
+    description: pd.headings?.h1 === 0 ? 'No H1 found. Every page needs exactly one H1 containing the primary keyword.' : `${pd.headings?.h1} H1 tags found. Use exactly one H1 per page to signal clear topic focus.`,
+    fix: getFix('h1'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 7, priority: 'medium',
+    pass: pd.headings?.h2 >= 2,
+    partialScore: pd.headings?.h2 === 1 ? 0.6 : 0,
+    title: 'Add More H2 Subheadings',
+    description: `Only ${pd.headings?.h2 || 0} H2 tag(s) found. Use multiple H2s to structure content for both users and crawlers.`,
+    fix: getFix('h2'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 10, priority: 'high',
+    pass: pd.wordCount >= 300,
+    partialScore: pd.wordCount >= 150 ? 0.4 : 0,
+    title: 'Increase Content Word Count',
+    description: `Page has ~${pd.wordCount || 0} words. Google favors comprehensive content (300+ min, 1000+ preferred) for most topics.`,
+    fix: getFix('word_count'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'content', weight: 8, priority: 'medium',
+    pass: (pd.images?.missingAlt || 0) === 0,
+    partialScore: pd.images?.total > 0 ? (1 - (pd.images?.missingAlt / pd.images?.total)) : 1,
+    title: 'Fix Missing Image Alt Text',
+    description: `${pd.images?.missingAlt || 0} of ${pd.images?.total || 0} images are missing alt text. Alt text is used by crawlers and improves accessibility and image search rankings.`,
+    fix: getFix('alt_text'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 6, priority: 'medium',
+    pass: pd.links?.internal >= 3,
+    partialScore: pd.links?.internal >= 1 ? 0.5 : 0,
+    title: 'Build Internal Link Structure',
+    description: `Only ${pd.links?.internal || 0} internal links found. Internal linking distributes PageRank and helps crawlers discover content.`,
+    fix: getFix('internal_links'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 4, priority: 'low',
+    pass: pd.links?.external >= 1,
+    title: 'Add External Authority Links',
+    description: 'No external links detected. Linking to authoritative sources supports E-E-A-T and builds topical credibility.',
+    fix: 'Add 2-3 outbound links to authoritative sources (government, academic, major publications) relevant to your topic.',
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+
+  // ── PERFORMANCE ────────────────────────────────────────────────────────────
+  add({
+    category: 'performance', weight: 15, priority: 'high',
+    pass: pd.ttfb !== null && pd.ttfb < 800,
+    partialScore: pd.ttfb < 1800 ? 0.5 : 0,
+    title: 'Improve Server Response Time (TTFB)',
+    description: `TTFB is ${pd.ttfb || 'unknown'}ms. Google's threshold for Good is <800ms. Slow TTFB hurts Core Web Vitals and rankings.`,
+    fix: getFix('ttfb'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'performance', weight: 10, priority: 'medium',
+    pass: !!pd.cacheControl,
+    title: 'Enable Browser Caching',
+    description: 'No Cache-Control header found. Without caching, every visit downloads all assets, slowing repeat visitors.',
+    fix: getFix('cache'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'performance', weight: 8, priority: 'medium',
+    pass: (pd.pageSizeKb || 0) < 500,
+    partialScore: (pd.pageSizeKb || 0) < 1000 ? 0.5 : 0,
+    title: 'Reduce Page Size',
+    description: `Page is ${pd.pageSizeKb || 0}KB. Aim for under 500KB to ensure fast load times, especially on mobile.`,
+    fix: getFix('page_size'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'performance', weight: 7, priority: 'medium',
+    pass: (pd.inlineScripts || 0) <= 3,
+    partialScore: (pd.inlineScripts || 0) <= 8 ? 0.5 : 0,
+    title: 'Reduce Inline JavaScript',
+    description: `${pd.inlineScripts || 0} inline script blocks found. Excessive inline JS blocks rendering and complicates CSP headers.`,
+    fix: getFix('inline_scripts'),
+    effort: 'Advanced half-day+', ranking_impact: 'Short-term 1-4wks',
+  });
+
+  // ── UX ─────────────────────────────────────────────────────────────────────
+  add({
+    category: 'ux', weight: 15, priority: 'high',
+    pass: pd.hasViewport,
+    title: 'Add Viewport Meta Tag',
+    description: 'Missing viewport meta tag. Without it, the page renders as a desktop site on mobile, hurting mobile rankings (mobile-first indexing).',
+    fix: getFix('viewport'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'ux', weight: 7, priority: 'low',
+    pass: pd.hasFavicon,
+    title: 'Add Favicon',
+    description: 'No favicon detected. Favicons improve brand recognition in browser tabs and bookmarks.',
+    fix: getFix('favicon'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+
+  // ── SCHEMA ─────────────────────────────────────────────────────────────────
+  add({
+    category: 'schema', weight: 15, priority: 'high',
+    pass: (pd.schema?.count || 0) >= 1,
+    title: 'Add Schema Markup (Structured Data)',
+    description: 'No structured data found. Schema markup enables rich snippets in SERPs (star ratings, FAQs, breadcrumbs) that increase CTR by 20-30%.',
+    fix: getFix('add_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'schema', weight: 10, priority: 'medium',
+    pass: (pd.schema?.count || 0) >= 2,
+    partialScore: pd.schema?.count === 1 ? 0.5 : 0,
+    title: 'Add Additional Schema Types',
+    description: `Only ${pd.schema?.count || 0} schema type(s) detected. Add FAQPage, BreadcrumbList, and Organization for richer SERP features.`,
+    fix: getFix('more_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+
+  // ── E-E-A-T ────────────────────────────────────────────────────────────────
+  add({
+    category: 'eeat', weight: 10, priority: 'medium',
+    pass: pd.links?.external >= 2,
+    partialScore: pd.links?.external >= 1 ? 0.5 : 0,
+    title: 'Link to Authoritative External Sources',
+    description: 'Linking to authoritative sources signals expertise and trustworthiness (E-E-A-T), a key Google quality signal.',
+    fix: 'Add 2-3 outbound links to reputable sources such as government sites, research papers, or industry publications.',
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'eeat', weight: 10, priority: 'medium',
+    pass: (pd.schema?.types || []).some(t => ['Organization','Person','Author','LocalBusiness'].includes(t)),
+    title: 'Add Organization or Author Schema',
+    description: 'No Organization or Person schema detected. These schema types establish entity authority and support Google Knowledge Panel eligibility.',
+    fix: getFix('org_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'eeat', weight: 8, priority: 'medium',
+    pass: pd.wordCount >= 500,
+    partialScore: pd.wordCount >= 300 ? 0.6 : 0,
+    title: 'Demonstrate Content Depth and Expertise',
+    description: `${pd.wordCount || 0} words is insufficient to demonstrate expertise. Top-ranking pages for most queries have 1000+ words of original, expert content.`,
+    fix: 'Expand content with original research, expert opinions, data, case studies, or step-by-step guidance. Aim for comprehensive coverage of the topic.',
+    effort: 'Advanced half-day+', ranking_impact: 'Long-term 3mo+',
+  });
+
+  // ── SOCIAL ─────────────────────────────────────────────────────────────────
+  add({
+    category: 'social', weight: 12, priority: 'medium',
+    pass: !!(pd.openGraph?.title && pd.openGraph?.description && pd.openGraph?.image),
+    partialScore: pd.openGraph?.title ? 0.5 : 0,
+    title: 'Complete Open Graph Tags',
+    description: `Open Graph tags are ${!pd.openGraph?.title ? 'missing' : 'incomplete'}. OG tags control how your page appears when shared on Facebook, LinkedIn, and messaging apps.`,
+    fix: getFix('og_tags'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'social', weight: 8, priority: 'low',
+    pass: !!pd.openGraph?.twitterCard,
+    title: 'Add Twitter Card Meta Tags',
+    description: 'No Twitter Card tag found. Twitter Cards control appearance when shared on X/Twitter, increasing engagement.',
+    fix: getFix('twitter_card'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+
+  // ── BACKLINKS (proxy signals) ───────────────────────────────────────────────
+  add({
+    category: 'backlinks', weight: 10, priority: 'low',
+    pass: pd.links?.external >= 3,
+    partialScore: pd.links?.external >= 1 ? 0.5 : 0,
+    title: 'Increase External Link Outreach',
+    description: 'Low external link count suggests minimal link-building activity. Quality backlinks remain the top ranking factor.',
+    fix: 'Create linkable assets (original research, infographics, tools). Submit to niche directories. Build relationships with industry publishers for guest posts.',
+    effort: 'Advanced half-day+', ranking_impact: 'Long-term 3mo+',
+  });
+
+  // Only return rules that are relevant (remove always-pass rules if they pass)
+  return rules;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CMS-SPECIFIC FIX GENERATORS
+// ─────────────────────────────────────────────────────────────────────────────
+function cmsfix_wp(issue) {
+  const m = {
+    https:          'Install an SSL certificate via your hosting control panel (cPanel > SSL/TLS). Most hosts provide free Let\'s Encrypt SSL. Then install the "Really Simple SSL" WordPress plugin to handle mixed content.',
+    canonical:      'Install Yoast SEO or RankMath. In the plugin settings, canonical tags are added automatically. For custom pages, use the Advanced tab in each post/page editor.',
+    noindex:        'Go to WordPress Admin > Settings > Reading. Ensure "Discourage search engines" is NOT checked. Also check Yoast/RankMath Advanced settings for each page.',
+    title:          'Install Yoast SEO. Edit the page > scroll to Yoast SEO box > set the SEO Title field. Aim for 50-60 characters with your primary keyword near the front.',
+    title_length:   'In Yoast SEO, click the snippet preview to edit the SEO Title. Use the character counter to target 50-60 chars.',
+    meta_desc:      'In Yoast SEO or RankMath, edit the page and fill in the Meta Description field. Use 120-155 characters and include a call-to-action.',
+    meta_desc_length: 'Edit the page in WordPress, scroll to Yoast SEO, and adjust the Meta Description. Use the built-in character counter.',
+    h1:             'Edit the page in WordPress. The page title (<h1>) is usually set by the "Title" field at the top of the editor. In the block editor, the first Heading block set to H1.',
+    h2:             'In the WordPress block editor, add Heading blocks (set to H2) for each major section. Use keywords naturally in subheadings.',
+    viewport:       'Your theme should include the viewport meta tag. Check your theme\'s header.php or use a plugin like "Header and Footer Scripts" to add: <meta name="viewport" content="width=device-width, initial-scale=1">',
+    alt_text:       'Go to Media Library in WordPress. Click each image and fill in the Alt Text field. For images in posts, click the image in the editor and add alt text in the block settings panel.',
+    word_count:     'Expand the page content in the WordPress editor. Aim for 300+ words. Use the block editor\'s word count (Document Overview) to track progress.',
+    internal_links: 'In the WordPress editor, highlight text and use the Link tool (Ctrl+K) to add internal links to related posts and pages.',
+    ttfb:           'Install WP Rocket or LiteSpeed Cache for caching. Enable object caching with Redis. Use Cloudflare as your CDN. Check your hosting plan — shared hosting often causes slow TTFB.',
+    cache:          'Install WP Rocket, W3 Total Cache, or LiteSpeed Cache. These plugins set proper Cache-Control headers automatically.',
+    page_size:      'Install Smush or ShortPixel to compress images. Use WP Rocket for CSS/JS minification. Disable unused plugins and scripts.',
+    inline_scripts: 'Use WP Rocket\'s "Defer JavaScript Execution" feature. Move inline scripts to external .js files where possible.',
+    add_schema:     'Install Schema Pro or Yoast SEO Premium. For WebPage + Organization schema, go to Yoast > Search Appearance > Organizations and fill in your details.',
+    more_schema:    'Install Rank Math SEO (free). Enable Schema module. Add FAQPage schema via the FAQ block in the editor. Add BreadcrumbList in Yoast Settings > Search Appearance.',
+    org_schema:     'In Yoast SEO, go to Yoast > Settings > Site Representation. Select Organization, fill in name, logo, and social profiles. This auto-generates Organization schema.',
+    og_tags:        'Yoast SEO automatically generates OG tags. Go to Yoast > Social > Facebook and enable Open Graph. Edit each page and set the Social preview image in Yoast box.',
+    twitter_card:   'In Yoast SEO, go to Yoast > Social > Twitter and enable Twitter card data. The card tags will be auto-added to all pages.',
+    hsts:           'Add HSTS via your .htaccess (Apache) or nginx.conf. In Cloudflare, enable HSTS under SSL/TLS > Edge Certificates > HTTP Strict Transport Security.',
+    lang:           'Edit your theme\'s header.php and ensure the <html> tag has lang="en" (or your language code). Or use a multilingual plugin like WPML.',
+    charset:        'In header.php, add: <meta charset="UTF-8"> before any other meta tags. Most WordPress themes include this by default.',
+    xcontent:       'Add to .htaccess: Header set X-Content-Type-Options "nosniff". Or configure via Cloudflare custom headers.',
+    xframe:         'Add to .htaccess: Header always set X-Frame-Options "SAMEORIGIN". Or use Cloudflare Transform Rules > Response Headers.',
+    favicon:        'Go to WordPress Admin > Appearance > Customize > Site Identity > Site Icon. Upload a 512x512px PNG image.',
+  };
+  return m[issue] || 'Use the Yoast SEO plugin and WordPress Admin settings to address this issue.';
+}
+
+function cmsfix_shopify(issue) {
+  const m = {
+    https:          'Shopify provides free SSL by default. Go to Online Store > Domains and ensure your custom domain shows a padlock. Click "Enable SSL" if not active.',
+    canonical:      'Shopify adds canonical tags automatically on product and collection pages. For custom pages, add <link rel="canonical" href="..."> in your theme\'s page.liquid template.',
+    title:          'Go to Shopify Admin > Online Store > Pages (or Products). Click the page and scroll to "Search engine listing preview". Click "Edit" to set the page title.',
+    meta_desc:      'In Shopify Admin, go to the page/product, scroll to "Search engine listing preview" and click "Edit website SEO". Fill in the meta description.',
+    add_schema:     'Install "JSON-LD for SEO" or "Schema Plus for SEO" from the Shopify App Store. For products, Shopify adds Product schema automatically. Add Organization schema via app.',
+    og_tags:        'Shopify themes include OG tags by default. To customize, edit your theme\'s theme.liquid. Look for og:image — set a default OG image in Online Store > Preferences.',
+    ttfb:           'Shopify hosting speed is managed by Shopify. Optimize by: removing unused apps (each adds load time), compressing images with TinyIMG app, enabling lazy loading.',
+    page_size:      'Use TinyIMG or Crush.pics app for image compression. Audit and remove unused Shopify apps — each app adds JavaScript to every page.',
+    alt_text:       'In Shopify Admin, go to Products > click a product > click each image > add Alt text in the image editor dialog.',
+    canonical:      'Shopify manages canonicals automatically. Ensure you\'re not duplicating content across collections and products.',
+  };
+  return m[issue] || 'Go to Shopify Admin > Online Store > Preferences or the page-specific SEO settings to address this issue.';
+}
+
+function cmsfix_webflow(issue) {
+  const m = {
+    title:          'In Webflow Designer: click the page > Page Settings (gear icon) > SEO Settings > set the Title Tag.',
+    meta_desc:      'In Webflow Designer > Page Settings > SEO Settings > Meta Description field.',
+    og_tags:        'In Webflow Designer > Page Settings > Open Graph Settings. Set OG Title, Description, and Image.',
+    add_schema:     'In Webflow, add a custom Code Embed element. Paste your JSON-LD schema script. Or use the Webflow CMS to dynamically generate schema.',
+    canonical:      'In Webflow Page Settings > SEO > Canonical URL field. Or enable auto-canonical in Site Settings > SEO.',
+    viewport:       'Webflow includes viewport meta by default in all published sites. Check Site Settings if missing.',
+  };
+  return m[issue] || 'In Webflow Designer, open Page Settings (gear icon) > SEO Settings to address this issue.';
+}
+
+function cmsfix_wix(issue) {
+  const m = {
+    title:          'In Wix Editor: click the page > Page SEO (left panel) > set the SEO Title.',
+    meta_desc:      'In Wix Editor > Page SEO > Meta Description field. Or use Wix SEO Wiz for guided optimization.',
+    og_tags:        'In Wix: Pages > Page SEO > Social Share section. Set the image, title, and description for social sharing.',
+    add_schema:     'Wix adds basic schema automatically. For advanced schema, use Wix Velo (dev mode) to inject JSON-LD via custom code.',
+    canonical:      'Wix sets canonicals automatically. For custom pages, use Wix Velo to inject a canonical link tag.',
+  };
+  return m[issue] || 'In Wix Editor, open Page SEO settings or use Wix SEO Wiz to address this issue.';
+}
+
+function cmsfix_squarespace(issue) {
+  const m = {
+    title:          'In Squarespace: Pages > click page > gear icon > SEO tab > set the Page Title.',
+    meta_desc:      'Pages > click page > gear icon > SEO tab > SEO Description field.',
+    og_tags:        'Pages > click page > gear icon > Social Image tab. Upload a 1200x630px image for social sharing.',
+    add_schema:     'Squarespace adds basic schema. For custom JSON-LD, go to Settings > Advanced > Code Injection and paste your schema in the Header field.',
+    canonical:      'Squarespace handles canonicals automatically. Avoid publishing the same content at multiple URLs.',
+  };
+  return m[issue] || 'In Squarespace, go to Pages > Page Settings > SEO tab to address this issue.';
+}
+
+function cmsfix_nextjs(issue) {
+  const m = {
+    title:          'Use Next.js Metadata API: export const metadata = { title: "Your Title" } in your page.tsx. Or use generateMetadata() for dynamic titles.',
+    meta_desc:      'export const metadata = { description: "Your description 120-155 chars" } in page.tsx.',
+    og_tags:        'export const metadata = { openGraph: { title: "...", description: "...", images: ["/og-image.jpg"] } } in page.tsx.',
+    twitter_card:   'export const metadata = { twitter: { card: "summary_large_image", title: "...", description: "..." } }',
+    canonical:      'export const metadata = { alternates: { canonical: "https://yourdomain.com/page" } }',
+    add_schema:     'Create a <script type="application/ld+json"> component and include it in your page layout using next/script.',
+    viewport:       'Viewport is set automatically in Next.js 13+ App Router. In Pages Router, add to _document.tsx.',
+    ttfb:           'Enable ISR (Incremental Static Regeneration) or Static Generation where possible. Use next/image for automatic optimization. Deploy to Vercel edge network.',
+  };
+  return m[issue] || 'Update your page.tsx metadata export or use generateMetadata() to address this SEO issue.';
+}
+
+function cmsfix_nuxt(issue) {
+  const m = {
+    title:          'Use useSeoMeta({ title: "Your Title" }) in your page component, or set in nuxt.config.ts app.head.',
+    meta_desc:      'useSeoMeta({ description: "Your description" }) or useHead({ meta: [{ name: "description", content: "..." }] })',
+    og_tags:        'useSeoMeta({ ogTitle: "...", ogDescription: "...", ogImage: "..." })',
+    twitter_card:   'useSeoMeta({ twitterCard: "summary_large_image", twitterTitle: "...", twitterDescription: "..." })',
+    canonical:      'useHead({ link: [{ rel: "canonical", href: "https://yourdomain.com/page" }] })',
+    add_schema:     'Use useHead({ script: [{ type: "application/ld+json", children: JSON.stringify(schemaObject) }] })',
+  };
+  return m[issue] || 'Use useSeoMeta() or useHead() composables in your Nuxt page component to address this issue.';
+}
+
+function cmsfix_gatsby(issue) {
+  const m = {
+    title:          'Use gatsby-plugin-react-helmet. In your page: <Helmet><title>Your Title</title></Helmet>. Or use Gatsby Head API: export const Head = () => <title>...</title>',
+    meta_desc:      '<Helmet><meta name="description" content="Your description" /></Helmet> or in Gatsby Head API.',
+    og_tags:        'Add OG meta tags in your SEO component via React Helmet or Gatsby Head API.',
+    canonical:      '<Helmet><link rel="canonical" href="https://yourdomain.com/page" /></Helmet>',
+    add_schema:     '<Helmet><script type="application/ld+json">{JSON.stringify(schemaObject)}</script></Helmet>',
+    ttfb:           'Gatsby generates static HTML by default — TTFB should be fast. Enable gatsby-plugin-preact for smaller JS bundle. Use gatsby-plugin-image for optimized images.',
+  };
+  return m[issue] || 'Use the Gatsby Head API or gatsby-plugin-react-helmet to add SEO meta tags to your pages.';
+}
+
+function cmsfix_generic(issue) {
+  const m = {
+    https:          'Obtain an SSL certificate from Let\'s Encrypt (free) or your hosting provider. Configure your web server to redirect all HTTP to HTTPS with a 301 redirect.',
+    canonical:      'Add <link rel="canonical" href="https://yourdomain.com/page"> inside the <head> of each page.',
+    noindex:        'Remove the <meta name="robots" content="noindex"> tag from the page, and/or remove the X-Robots-Tag: noindex HTTP header.',
+    title:          'Add <title>Your Primary Keyword | Brand Name</title> inside the <head> of your HTML. Keep it 50-60 characters.',
+    title_length:   'Edit your <title> tag to be between 50-60 characters. Include your primary keyword near the beginning.',
+    meta_desc:      'Add <meta name="description" content="Your 120-155 character description with a call to action."> in the <head>.',
+    meta_desc_length: 'Edit your meta description to be 120-155 characters — long enough to describe the page but short enough to avoid truncation in SERPs.',
+    h1:             'Add exactly one <h1> tag per page containing your primary keyword. Ensure it clearly describes the main topic.',
+    h2:             'Add <h2> subheadings to break up content into sections. Include secondary keywords naturally.',
+    viewport:       'Add <meta name="viewport" content="width=device-width, initial-scale=1"> inside your <head> tag.',
+    alt_text:       'Add descriptive alt attributes to all <img> tags: <img src="..." alt="description of image">. Be specific and keyword-relevant.',
+    word_count:     'Expand page content to at least 300 words. Focus on answering user questions comprehensively. Use headings, lists, and visuals to improve readability.',
+    internal_links: 'Add <a href="/related-page">anchor text</a> links throughout your content pointing to related pages on your site.',
+    ttfb:           'Enable server-side caching, use a CDN (Cloudflare is free), optimize your database queries, and upgrade hosting if needed.',
+    cache:          'Add Cache-Control headers to your server config: Cache-Control: public, max-age=86400 for static assets.',
+    page_size:      'Compress images using tools like TinyPNG or Squoosh. Minify CSS and JavaScript files. Remove unused code and libraries.',
+    inline_scripts: 'Move JavaScript from <script> blocks in HTML to external .js files referenced with <script src="...">.',
+    add_schema:     'Add JSON-LD schema markup inside <script type="application/ld+json"> in your <head>. Start with WebPage and Organization schema. Use Google\'s Rich Results Test to validate.',
+    more_schema:    'Add FAQPage schema for Q&A content, BreadcrumbList for navigation, and Article schema for blog posts. Use schema.org for reference and Google\'s Rich Results Test to validate.',
+    org_schema:     'Add Organization schema: {"@context":"https://schema.org","@type":"Organization","name":"Your Brand","url":"https://yourdomain.com","logo":"https://yourdomain.com/logo.png"}',
+    og_tags:        'Add to <head>: <meta property="og:title" content="..."> <meta property="og:description" content="..."> <meta property="og:image" content="https://yourdomain.com/image.jpg">',
+    twitter_card:   'Add to <head>: <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:title" content="..."> <meta name="twitter:description" content="...">',
+    hsts:           'Add header: Strict-Transport-Security: max-age=31536000; includeSubDomains. Configure in Apache (.htaccess), Nginx (nginx.conf), or Cloudflare SSL/TLS settings.',
+    lang:           'Add lang attribute to your opening HTML tag: <html lang="en"> (use ISO 639-1 code for your language).',
+    charset:        'Add <meta charset="UTF-8"> as the first tag inside your <head>.',
+    xcontent:       'Add HTTP header: X-Content-Type-Options: nosniff in your server configuration or CDN custom headers.',
+    xframe:         'Add HTTP header: X-Frame-Options: SAMEORIGIN in your server configuration.',
+    favicon:        'Create a 32x32px and 180x180px PNG icon. Add <link rel="icon" href="/favicon.ico"> and <link rel="apple-touch-icon" href="/apple-touch-icon.png"> in <head>.',
+  };
+  return m[issue] || 'Address this issue by editing your HTML or server configuration. Refer to Google\'s Search Central documentation for implementation details.';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMPETITOR GAP ANALYSIS (rule-based, not AI)
+// ─────────────────────────────────────────────────────────────────────────────
+function buildCompetitorGaps(pd, cms) {
+  const gaps = [];
+
+  if (!pd.schema?.types?.includes('FAQPage')) {
+    gaps.push({ opportunity: 'FAQ Schema for Featured Snippets', description: 'Top competitors use FAQPage schema to capture FAQ rich results and "People Also Ask" boxes, taking up more SERP real estate.', action: 'Add 5+ FAQ items with FAQPage JSON-LD schema targeting question-based queries your audience searches.' });
+  }
+  if ((pd.schema?.count || 0) < 2) {
+    gaps.push({ opportunity: 'Rich Snippet Coverage', description: 'Competitors with 3+ schema types get star ratings, breadcrumbs, and event info in SERPs — dramatically higher CTR.', action: 'Implement BreadcrumbList, Organization, and a content-type schema (Article, Product, or HowTo) to compete for rich results.' });
+  }
+  if (!pd.openGraph?.image) {
+    gaps.push({ opportunity: 'Social Sharing Visual Presence', description: 'Pages with OG images receive significantly more social shares and clicks when content is shared on LinkedIn, Facebook, and messaging apps.', action: 'Create a 1200x630px branded OG image template and apply it to all key pages. Tools: Canva, Figma.' });
+  }
+  if ((pd.wordCount || 0) < 1000) {
+    gaps.push({ opportunity: 'Comprehensive Content Depth', description: 'Top-ranking pages for most competitive queries have 1,500-3,000 words of in-depth content covering the topic comprehensively.', action: 'Expand your content with subtopics, expert insights, data points, and FAQ sections. Use "People Also Ask" for content ideas.' });
+  }
+  if (!pd.links?.external || pd.links.external < 2) {
+    gaps.push({ opportunity: 'Authority Signal Citations', description: 'Google\'s quality raters and algorithms favor pages that cite authoritative external sources, demonstrating research and expertise.', action: 'Add 3-5 outbound links to authoritative sources (government, academic, major publications) relevant to your content.' });
+  }
+  if ((pd.headings?.h2 || 0) < 3) {
+    gaps.push({ opportunity: 'Content Structure and Scannability', description: 'Top competitors use 5-10 H2 subheadings to structure content for scanners, improve dwell time, and target multiple keyword variants.', action: 'Add H2 subheadings for each major topic section. Use keyword-rich but natural subheadings that answer specific user questions.' });
+  }
+  if (!pd.secHeaders?.csp) {
+    gaps.push({ opportunity: 'Security Header Completeness', description: 'Enterprise competitors implement full security headers (CSP, HSTS, X-Frame-Options), signaling a trusted, secure site to both users and Google.', action: 'Implement Content-Security-Policy and other security headers via your CDN or server config. Use securityheaders.com to test.' });
+  }
+  if (!pd.openGraph?.twitterCard) {
+    gaps.push({ opportunity: 'X/Twitter Engagement Optimization', description: 'Competitors with Twitter Card tags get rich preview cards when their content is shared on X, driving significantly more engagement and clicks.', action: 'Add twitter:card, twitter:title, twitter:description, and twitter:image meta tags to all pages.' });
+  }
+
+  return gaps.slice(0, 6);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────────────────────────
+function capitalize(s) {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
