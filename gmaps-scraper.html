@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MapLeads — Google Maps Business Extractor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Epilogue:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #0a0a0a;
+  --bg2:      #111111;
+  --bg3:      #181818;
+  --bg4:      #202020;
+  --line:     rgba(255,255,255,0.07);
+  --line2:    rgba(255,255,255,0.13);
+  --text:     #f0ede8;
+  --muted:    #666;
+  --muted2:   #444;
+  --lime:     #c8f135;
+  --lime2:    rgba(200,241,53,0.12);
+  --lime3:    rgba(200,241,53,0.06);
+  --orange:   #ff6b35;
+  --blue:     #4fa3e8;
+  --green:    #3dd68c;
+  --red:      #ff4d4d;
+  --amber:    #f5a623;
+  --mono:     'JetBrains Mono', monospace;
+  --head:     'Epilogue', sans-serif;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line2);
+}
+.logo {
+  font-family: var(--head);
+  font-weight: 900;
+  font-size: 1.15rem;
+  letter-spacing: -0.04em;
+  color: var(--lime);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+}
+.logo .bracket { color: var(--muted); font-weight: 300; }
+.nav-badge {
+  font-size: 0.68rem;
+  background: var(--lime2);
+  color: var(--lime);
+  border: 1px solid rgba(200,241,53,0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative; z-index: 1;
+  padding: 8rem 2rem 3rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.72rem;
+  color: var(--lime);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--lime);
+}
+h1 {
+  font-family: var(--head);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.25rem;
+  color: var(--text);
+}
+h1 em {
+  font-style: normal;
+  color: var(--lime);
+  display: block;
+}
+.hero-desc {
+  font-family: var(--head);
+  font-size: 1rem;
+  color: var(--muted);
+  font-weight: 300;
+  max-width: 540px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+
+/* ─── SEARCH WRAP ─── */
+.scraper-wrap {
+  position: relative; z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem 6rem;
+}
+
+.main-panel {
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: 12px;
+  padding: 1.75rem;
+}
+
+.panel-title {
+  font-size: 0.7rem;
+  color: var(--lime);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line2);
+}
+
+/* ─── SEARCH FORM GRID ─── */
+.search-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+@media (max-width: 700px) {
+  .search-grid { grid-template-columns: 1fr; }
+}
+
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.field-label {
+  font-size: 0.67rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+}
+.field-label .req { color: var(--red); }
+
+.field-input, .field-select {
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.8rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field-input:focus, .field-select:focus {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 3px rgba(200,241,53,0.08);
+}
+.field-input::placeholder { color: var(--muted2); }
+.field-select option { background: var(--bg3); color: var(--text); }
+
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 1rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+/* Cities textarea row */
+.cities-row {
+  margin-bottom: 1.25rem;
+}
+.cities-row textarea {
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.8rem 1rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
+}
+.cities-row textarea:focus {
+  border-color: var(--lime);
+  box-shadow: 0 0 0 3px rgba(200,241,53,0.08);
+}
+.cities-row textarea::placeholder { color: var(--muted2); }
+.field-hint {
+  font-size: 0.67rem;
+  color: var(--muted2);
+  margin-top: 0.3rem;
+}
+
+/* Options row */
+.opts-row {
+  display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;
+  padding: 0.85rem 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
+.adv-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+.adv-select {
+  background: var(--bg4);
+  border: 1px solid var(--line2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.adv-select:focus { border-color: var(--lime); }
+.adv-divider { width: 1px; height: 20px; background: var(--line2); flex-shrink: 0; }
+.adv-toggle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.75rem; color: var(--muted); cursor: pointer;
+  user-select: none;
+}
+.adv-toggle input { display: none; }
+.adv-switch {
+  width: 30px; height: 16px;
+  background: var(--bg4);
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  position: relative;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.adv-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--muted2);
+  transition: all 0.2s;
+}
+.adv-toggle input:checked + .adv-switch { background: var(--lime2); border-color: rgba(200,241,53,0.4); }
+.adv-toggle input:checked + .adv-switch::after { left: calc(100% - 12px); background: var(--lime); }
+
+/* Extract chips */
+.chips-row {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.opt-chip {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+.opt-chip:hover { border-color: var(--line2); color: var(--text); }
+.opt-chip.active {
+  border-color: rgba(200,241,53,0.35);
+  color: var(--lime);
+  background: var(--lime3);
+}
+.opt-chip input { display: none; }
+.opt-chip .chip-icon { font-size: 0.9rem; }
+
+/* Run button */
+.run-row { display: flex; gap: 0.6rem; align-items: center; }
+#run-btn {
+  flex: 1;
+  background: var(--lime);
+  color: var(--bg);
+  border: none;
+  padding: 0.9rem 1.75rem;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+#run-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+#run-btn:active { transform: scale(0.97); }
+#run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+#clear-btn {
+  background: var(--bg3);
+  color: var(--muted);
+  border: 1px solid var(--line2);
+  padding: 0.9rem 1.25rem;
+  border-radius: 8px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+#clear-btn:hover { color: var(--text); border-color: var(--line2); }
+
+/* ─── STATUS / LOADER ─── */
+#status-area {
+  display: none;
+  padding: 2.5rem 0;
+  text-align: center;
+}
+.loader-track {
+  width: 260px;
+  height: 2px;
+  background: var(--bg4);
+  border-radius: 999px;
+  margin: 0 auto 1.5rem;
+  overflow: hidden;
+  position: relative;
+}
+.loader-track::after {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, transparent, var(--lime), transparent);
+  animation: sweep 1.2s ease-in-out infinite;
+  border-radius: 999px;
+}
+@keyframes sweep {
+  0% { left: -60%; }
+  100% { left: 100%; }
+}
+.status-steps {
+  display: flex; justify-content: center; gap: 2rem;
+  font-size: 0.72rem;
+  flex-wrap: wrap;
+}
+.status-step {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  color: var(--muted2);
+  transition: color 0.3s;
+}
+.status-step.active { color: var(--lime); }
+.status-step.done { color: var(--green); }
+.step-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1px solid currentColor;
+  transition: background 0.3s;
+}
+.status-step.active .step-dot, .status-step.done .step-dot { background: currentColor; }
+#status-msg {
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 1rem;
+}
+
+/* ─── ERROR ─── */
+.error-box {
+  display: flex; gap: 0.85rem; align-items: flex-start;
+  background: rgba(255,77,77,0.06);
+  border: 1px solid rgba(255,77,77,0.2);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  font-size: 0.82rem;
+  color: var(--red);
+  margin-top: 1.5rem;
+}
+.error-icon { flex-shrink: 0; font-size: 1rem; }
+
+/* ─── RESULTS ─── */
+#results { display: none; margin-top: 2.5rem; }
+
+.result-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg3);
+  border: 1px solid var(--line2);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+}
+.result-query-info {
+  font-size: 0.77rem; color: var(--muted);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.result-query-info .qbadge {
+  background: var(--lime2);
+  color: var(--lime);
+  border: 1px solid rgba(200,241,53,0.3);
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+.result-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.btn-sm {
+  background: var(--bg4);
+  border: 1px solid var(--line2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+.btn-sm:hover { background: var(--bg3); }
+.btn-sm.primary {
+  background: var(--lime2);
+  border-color: rgba(200,241,53,0.3);
+  color: var(--lime);
+}
+.btn-sm.primary:hover { background: rgba(200,241,53,0.2); }
+
+/* Summary badges */
+.summary-row {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+.sum-badge {
+  font-size: 0.72rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  background: var(--bg3);
+  color: var(--muted);
+}
+.sum-badge.found {
+  border-color: rgba(61,214,140,0.3);
+  background: rgba(61,214,140,0.06);
+  color: var(--green);
+}
+
+/* Result tabs */
+.result-tabs {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--line2);
+  margin-bottom: 1.5rem;
+}
+.rtab {
+  background: none; border: none; cursor: pointer;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  padding: 0.65rem 1.1rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+  margin-bottom: -1px;
+}
+.rtab:hover { color: var(--text); }
+.rtab.active { color: var(--lime); border-bottom-color: var(--lime); }
+.rpanel { display: none; }
+.rpanel.active { display: block; }
+
+/* Business card grid */
+.biz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 500px) { .biz-grid { grid-template-columns: 1fr; } }
+
+.biz-card {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+.biz-card:hover { border-color: var(--line2); }
+
+.biz-card-header {
+  padding: 0.95rem 1.1rem 0.7rem;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.biz-name {
+  font-family: var(--head);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+}
+.biz-category {
+  font-size: 0.67rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: var(--lime3);
+  color: var(--lime);
+  border: 1px solid rgba(200,241,53,0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.biz-card-body { padding: 0.75rem 1.1rem; }
+.biz-row {
+  display: flex; align-items: flex-start; gap: 0.6rem;
+  font-size: 0.76rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: var(--text);
+}
+.biz-row:last-child { border-bottom: none; }
+.biz-row-icon { flex-shrink: 0; font-size: 0.85rem; margin-top: 1px; }
+.biz-row-label {
+  color: var(--muted);
+  min-width: 62px;
+  flex-shrink: 0;
+  font-size: 0.67rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: 1px;
+}
+.biz-row-val { flex: 1; word-break: break-word; line-height: 1.5; }
+.biz-row-val a { color: var(--blue); text-decoration: none; }
+.biz-row-val a:hover { text-decoration: underline; }
+.biz-card-footer {
+  display: flex; gap: 0.4rem; padding: 0.65rem 1.1rem;
+  background: rgba(0,0,0,0.15);
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.tag-pill {
+  font-size: 0.63rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid var(--line2);
+  color: var(--muted);
+}
+.tag-pill.has { border-color: rgba(61,214,140,0.25); color: var(--green); background: rgba(61,214,140,0.05); }
+.copy-btn {
+  background: var(--bg4);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+  margin-left: auto;
+}
+.copy-btn:hover { color: var(--text); border-color: var(--line2); }
+.copy-btn.copied { color: var(--green); border-color: rgba(61,214,140,0.3); }
+
+/* empty */
+.no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.no-results .nr-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+
+/* JSON / CSV panels */
+#json-output {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.25rem;
+  font-size: 0.78rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text);
+  max-height: 600px;
+  overflow-y: auto;
+}
+.json-key   { color: #7dd3fc; }
+.json-str   { color: #86efac; }
+.json-num   { color: #fca5a5; }
+.json-bool  { color: var(--lime); }
+.json-null  { color: var(--muted); }
+
+/* ─── QUERY PILL ─── */
+.active-query-bar {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+  padding: 0.7rem 1rem;
+  background: var(--lime3);
+  border: 1px solid rgba(200,241,53,0.2);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+  font-size: 0.73rem;
+  color: var(--lime);
+}
+.aq-label { color: var(--muted); font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.aq-sep { color: var(--muted2); }
+
+/* ─── FEATURES ─── */
+.features {
+  position: relative; z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  border-top: 1px solid var(--line);
+}
+.feat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.feat-card {
+  background: var(--bg2);
+  padding: 1.5rem;
+  transition: background 0.15s;
+}
+.feat-card:hover { background: var(--bg3); }
+.feat-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.feat-title {
+  font-family: var(--head);
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+}
+.feat-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted2); }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-5px); }
+  60% { transform: translateX(5px); }
+  80% { transform: translateX(-3px); }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">
+    <span class="bracket">{</span> MapLeads <span class="bracket">}</span>
+  </a>
+  <span class="nav-badge">Google Maps Extractor</span>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Google Maps Business Scraper</div>
+  <h1>Find any business<em>by category &amp; location.</em></h1>
+  <p class="hero-desc">Extract phone numbers, emails, addresses, websites, and social profiles from Google Maps listings — filtered by business type, country, and cities.</p>
+</section>
+
+<!-- SCRAPER -->
+<div class="scraper-wrap">
+  <div class="main-panel">
+
+    <!-- Search Inputs -->
+    <div class="panel-title">🔍 Search Parameters</div>
+
+    <div class="search-grid">
+      <!-- Business Category -->
+      <div class="field-group">
+        <label class="field-label" for="biz-type">Business Category <span class="req">*</span></label>
+        <div class="select-wrap">
+          <select class="field-select" id="biz-type">
+            <option value="">— Select category —</option>
+            <optgroup label="Food &amp; Dining">
+              <option value="restaurant">Restaurant</option>
+              <option value="cafe">Cafe / Coffee Shop</option>
+              <option value="bar">Bar &amp; Nightlife</option>
+              <option value="bakery">Bakery</option>
+              <option value="fast food">Fast Food</option>
+              <option value="pizza">Pizza Place</option>
+              <option value="sushi restaurant">Sushi Restaurant</option>
+              <option value="seafood restaurant">Seafood Restaurant</option>
+              <option value="food delivery">Food Delivery</option>
+              <option value="catering service">Catering Service</option>
+            </optgroup>
+            <optgroup label="Health &amp; Wellness">
+              <option value="hospital">Hospital</option>
+              <option value="clinic">Clinic / Medical Center</option>
+              <option value="dentist">Dentist</option>
+              <option value="pharmacy">Pharmacy / Drugstore</option>
+              <option value="gym">Gym / Fitness Center</option>
+              <option value="spa">Spa &amp; Massage</option>
+              <option value="optometrist">Optometrist / Eye Clinic</option>
+              <option value="veterinarian">Veterinarian</option>
+              <option value="mental health clinic">Mental Health Clinic</option>
+              <option value="physical therapy">Physical Therapy</option>
+            </optgroup>
+            <optgroup label="Professional Services">
+              <option value="law firm">Law Firm / Attorney</option>
+              <option value="accounting firm">Accounting Firm / CPA</option>
+              <option value="real estate agency">Real Estate Agency</option>
+              <option value="insurance agency">Insurance Agency</option>
+              <option value="marketing agency">Marketing Agency</option>
+              <option value="web design agency">Web Design Agency</option>
+              <option value="IT company">IT Company</option>
+              <option value="consulting firm">Consulting Firm</option>
+              <option value="financial advisor">Financial Advisor</option>
+              <option value="HR agency">HR / Recruitment Agency</option>
+            </optgroup>
+            <optgroup label="Retail &amp; Shopping">
+              <option value="supermarket">Supermarket / Grocery</option>
+              <option value="clothing store">Clothing Store</option>
+              <option value="electronics store">Electronics Store</option>
+              <option value="furniture store">Furniture Store</option>
+              <option value="hardware store">Hardware Store</option>
+              <option value="bookstore">Bookstore</option>
+              <option value="jewelry store">Jewelry Store</option>
+              <option value="toy store">Toy Store</option>
+              <option value="pet store">Pet Store</option>
+              <option value="florist">Florist / Flower Shop</option>
+            </optgroup>
+            <optgroup label="Automotive">
+              <option value="car dealership">Car Dealership</option>
+              <option value="auto repair shop">Auto Repair Shop</option>
+              <option value="car wash">Car Wash</option>
+              <option value="auto parts store">Auto Parts Store</option>
+              <option value="driving school">Driving School</option>
+              <option value="motorcycle dealer">Motorcycle Dealer</option>
+            </optgroup>
+            <optgroup label="Education">
+              <option value="school">School</option>
+              <option value="university">University / College</option>
+              <option value="tutorial center">Tutorial / Review Center</option>
+              <option value="language school">Language School</option>
+              <option value="driving school">Driving School</option>
+              <option value="music school">Music School</option>
+            </optgroup>
+            <optgroup label="Home &amp; Construction">
+              <option value="construction company">Construction Company</option>
+              <option value="interior design">Interior Design</option>
+              <option value="electrician">Electrician</option>
+              <option value="plumber">Plumber</option>
+              <option value="cleaning service">Cleaning Service</option>
+              <option value="moving company">Moving Company</option>
+              <option value="landscaping company">Landscaping</option>
+            </optgroup>
+            <optgroup label="Hospitality &amp; Travel">
+              <option value="hotel">Hotel</option>
+              <option value="resort">Resort</option>
+              <option value="hostel">Hostel / Guesthouse</option>
+              <option value="travel agency">Travel Agency</option>
+              <option value="tour operator">Tour Operator</option>
+              <option value="car rental">Car Rental</option>
+            </optgroup>
+            <optgroup label="Beauty &amp; Personal Care">
+              <option value="hair salon">Hair Salon / Barbershop</option>
+              <option value="nail salon">Nail Salon</option>
+              <option value="beauty salon">Beauty Salon</option>
+              <option value="tattoo shop">Tattoo Shop</option>
+              <option value="cosmetics store">Cosmetics Store</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="church">Church / Place of Worship</option>
+              <option value="bank">Bank / Financial Institution</option>
+              <option value="coworking space">Coworking Space</option>
+              <option value="event venue">Event Venue</option>
+              <option value="photography studio">Photography Studio</option>
+              <option value="printing shop">Printing Shop</option>
+              <option value="laundry service">Laundry Service</option>
+              <option value="logistics company">Logistics / Courier</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- Country -->
+      <div class="field-group">
+        <label class="field-label" for="country">Country <span class="req">*</span></label>
+        <div class="select-wrap">
+          <select class="field-select" id="country">
+            <option value="">— Select country —</option>
+            <option value="Philippines">Philippines</option>
+            <option value="United States">United States</option>
+            <option value="United Kingdom">United Kingdom</option>
+            <option value="Australia">Australia</option>
+            <option value="Canada">Canada</option>
+            <option value="Singapore">Singapore</option>
+            <option value="Malaysia">Malaysia</option>
+            <option value="Indonesia">Indonesia</option>
+            <option value="Thailand">Thailand</option>
+            <option value="Vietnam">Vietnam</option>
+            <option value="Japan">Japan</option>
+            <option value="South Korea">South Korea</option>
+            <option value="China">China</option>
+            <option value="India">India</option>
+            <option value="UAE">UAE (Dubai)</option>
+            <option value="Saudi Arabia">Saudi Arabia</option>
+            <option value="Germany">Germany</option>
+            <option value="France">France</option>
+            <option value="Spain">Spain</option>
+            <option value="Italy">Italy</option>
+            <option value="Netherlands">Netherlands</option>
+            <option value="Brazil">Brazil</option>
+            <option value="Mexico">Mexico</option>
+            <option value="South Africa">South Africa</option>
+            <option value="Nigeria">Nigeria</option>
+            <option value="New Zealand">New Zealand</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Max Results -->
+      <div class="field-group">
+        <label class="field-label" for="max-results">Max Results per City</label>
+        <div class="select-wrap">
+          <select class="field-select" id="max-results">
+            <option value="10">10 listings</option>
+            <option value="20" selected>20 listings</option>
+            <option value="40">40 listings</option>
+            <option value="60">60 listings</option>
+            <option value="100">100 listings</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cities -->
+    <div class="cities-row">
+      <div class="field-label" style="margin-bottom:0.4rem;">Cities / Areas <span class="req">*</span></div>
+      <textarea id="cities-input" placeholder="Enter one city per line, e.g.&#10;Makati&#10;Quezon City&#10;Cebu City&#10;Davao"></textarea>
+      <div class="field-hint">💡 Enter one city or area per line. You can also enter neighborhoods or districts (e.g. "BGC Taguig").</div>
+    </div>
+
+    <!-- What to Extract -->
+    <div class="panel-title" style="margin-top:0.25rem;">📋 Data to Extract</div>
+    <div class="chips-row">
+      <label class="opt-chip active"><input type="checkbox" data-field="name" checked><span class="chip-icon">🏢</span><span>Business Name</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="phones" checked><span class="chip-icon">📞</span><span>Phone Numbers</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="emails" checked><span class="chip-icon">✉️</span><span>Emails</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="address" checked><span class="chip-icon">📍</span><span>Address</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="website" checked><span class="chip-icon">🌐</span><span>Website</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="social" checked><span class="chip-icon">🔗</span><span>Social Media</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="rating" checked><span class="chip-icon">⭐</span><span>Rating</span></label>
+      <label class="opt-chip"><input type="checkbox" data-field="hours"><span class="chip-icon">🕐</span><span>Hours</span></label>
+      <label class="opt-chip"><input type="checkbox" data-field="messaging"><span class="chip-icon">💬</span><span>WhatsApp / Messaging</span></label>
+    </div>
+
+    <!-- Options -->
+    <div class="opts-row">
+      <span class="adv-label">Options</span>
+      <select class="adv-select" id="opt-lang">
+        <option value="en">Language: English</option>
+        <option value="tl">Language: Filipino</option>
+        <option value="id">Language: Indonesian</option>
+        <option value="th">Language: Thai</option>
+        <option value="ja">Language: Japanese</option>
+        <option value="zh">Language: Chinese</option>
+        <option value="ko">Language: Korean</option>
+        <option value="de">Language: German</option>
+        <option value="fr">Language: French</option>
+        <option value="es">Language: Spanish</option>
+      </select>
+      <div class="adv-divider"></div>
+      <label class="adv-toggle">
+        <input type="checkbox" id="opt-pretty" checked>
+        <div class="adv-switch"></div>
+        pretty JSON
+      </label>
+      <div class="adv-divider"></div>
+      <label class="adv-toggle">
+        <input type="checkbox" id="opt-dedup" checked>
+        <div class="adv-switch"></div>
+        deduplicate
+      </label>
+    </div>
+
+    <!-- Run -->
+    <div class="run-row">
+      <button id="run-btn" onclick="runSearch()">🗺 SEARCH GOOGLE MAPS</button>
+      <button id="clear-btn" onclick="clearAll()">✕ CLEAR</button>
+    </div>
+
+    <!-- Status -->
+    <div id="status-area">
+      <div class="loader-track"></div>
+      <div class="status-steps">
+        <div class="status-step" id="step-1"><div class="step-dot"></div>Building queries</div>
+        <div class="status-step" id="step-2"><div class="step-dot"></div>Searching Maps</div>
+        <div class="status-step" id="step-3"><div class="step-dot"></div>Extracting data</div>
+        <div class="status-step" id="step-4"><div class="step-dot"></div>Done</div>
+      </div>
+      <div id="status-msg"></div>
+    </div>
+
+    <!-- Error -->
+    <div id="error-area"></div>
+
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="result-header">
+      <div class="result-query-info">
+        <span>🎯</span>
+        <span id="rq-category" class="qbadge"></span>
+        <span id="rq-country" class="qbadge"></span>
+        <span id="rq-cities"></span>
+        <span id="rq-count" style="color:var(--green)"></span>
+      </div>
+      <div class="result-actions">
+        <button class="btn-sm" onclick="copyAllJSON()">Copy JSON</button>
+        <button class="btn-sm primary" onclick="exportCSV()">↓ CSV</button>
+        <button class="btn-sm" onclick="exportJSON()">↓ JSON</button>
+      </div>
+    </div>
+
+    <div class="summary-row" id="summary-badges"></div>
+
+    <div class="result-tabs">
+      <button class="rtab active" onclick="switchRTab('cards',this)">Business Cards</button>
+      <button class="rtab" onclick="switchRTab('json',this)">JSON Output</button>
+    </div>
+
+    <div class="rpanel active" id="rpanel-cards">
+      <div class="biz-grid" id="biz-grid"></div>
+    </div>
+
+    <div class="rpanel" id="rpanel-json">
+      <pre id="json-output"></pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">📍</div>
+      <div class="feat-title">Location-Targeted</div>
+      <div class="feat-desc">Search by specific cities, districts, or neighborhoods — not just broad regions.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🏷</div>
+      <div class="feat-title">Category Filtering</div>
+      <div class="feat-desc">50+ business categories to choose from — restaurants, clinics, agencies, retailers and more.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📞</div>
+      <div class="feat-title">Contact Extraction</div>
+      <div class="feat-desc">Pulls phones, emails, WhatsApp, social links, and addresses from each listing.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌍</div>
+      <div class="feat-title">Multi-City Batch</div>
+      <div class="feat-desc">Enter multiple cities at once — results are compiled and deduplicated automatically.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">📦</div>
+      <div class="feat-title">CSV &amp; JSON Export</div>
+      <div class="feat-desc">Download all results as CSV for spreadsheets or JSON for developers.</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">Cloudflare Workers</div>
+      <div class="feat-desc">Runs on global edge infrastructure via your worker backend — fast, scalable, no cold starts.</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let allResults = [];
+let lastQuery  = {};
+const WORKER_BASE = '/api';
+
+// ─── CHIP TOGGLES ─────────────────────────────────────────────────────────
+document.querySelectorAll('.opt-chip').forEach(chip => {
+  chip.addEventListener('click', () => chip.classList.toggle('active'));
+});
+
+// ─── RESULT TAB SWITCH ────────────────────────────────────────────────────
+function switchRTab(id, btn) {
+  document.querySelectorAll('.rtab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.rpanel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rpanel-' + id).classList.add('active');
+}
+
+// ─── ACTIVE FIELDS ────────────────────────────────────────────────────────
+function getActiveFields() {
+  return [...document.querySelectorAll('.opt-chip.active input[data-field]')]
+    .map(i => i.dataset.field);
+}
+
+// ─── STEP ANIMATION ──────────────────────────────────────────────────────
+let stepTimer;
+function animateSteps() {
+  let i = 1;
+  clearInterval(stepTimer);
+  for (let n = 1; n <= 4; n++) document.getElementById('step-'+n).className = 'status-step';
+  document.getElementById('step-1').className = 'status-step active';
+  stepTimer = setInterval(() => {
+    if (i > 3) return;
+    document.getElementById('step-'+i).className = 'status-step done';
+    i++;
+    const next = document.getElementById('step-'+i);
+    if (next) next.className = 'status-step active';
+  }, 900);
+}
+function finishSteps() {
+  clearInterval(stepTimer);
+  for (let n = 1; n <= 4; n++) document.getElementById('step-'+n).className = 'status-step done';
+}
+function setStatusMsg(msg) {
+  document.getElementById('status-msg').textContent = msg;
+}
+
+// ─── SHAKE HELPER ────────────────────────────────────────────────────────
+function shake(el) {
+  el.style.animation = 'shake 0.4s ease';
+  setTimeout(() => { el.style.animation = ''; }, 400);
+  el.focus();
+}
+
+// ─── CLEAR ────────────────────────────────────────────────────────────────
+function clearAll() {
+  document.getElementById('biz-type').value = '';
+  document.getElementById('country').value = '';
+  document.getElementById('cities-input').value = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('error-area').innerHTML = '';
+  allResults = [];
+}
+
+// ─── MAIN SEARCH ─────────────────────────────────────────────────────────
+async function runSearch() {
+  const bizType  = document.getElementById('biz-type').value.trim();
+  const country  = document.getElementById('country').value.trim();
+  const citiesRaw = document.getElementById('cities-input').value.trim();
+
+  // Validation
+  if (!bizType) { shake(document.getElementById('biz-type')); return; }
+  if (!country)  { shake(document.getElementById('country'));  return; }
+  if (!citiesRaw) { shake(document.getElementById('cities-input')); return; }
+
+  const cities = citiesRaw.split('\n').map(c => c.trim()).filter(Boolean);
+  if (!cities.length) { shake(document.getElementById('cities-input')); return; }
+
+  const maxResults = parseInt(document.getElementById('max-results').value);
+  const fields     = getActiveFields();
+  const dedup      = document.getElementById('opt-dedup').checked;
+  const lang       = document.getElementById('opt-lang').value;
+
+  lastQuery = { bizType, country, cities, maxResults, fields, lang };
+
+  // Reset UI
+  document.getElementById('error-area').innerHTML = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('status-area').style.display = 'block';
+  document.getElementById('run-btn').disabled = true;
+  document.getElementById('run-btn').textContent = '⏳ SEARCHING…';
+  animateSteps();
+  allResults = [];
+
+  try {
+    for (let ci = 0; ci < cities.length; ci++) {
+      const city = cities[ci];
+      setStatusMsg(`Searching "${bizType}" in ${city}, ${country} (${ci+1}/${cities.length})…`);
+
+      const res = await fetch(WORKER_BASE + '/maps-scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessType: bizType,
+          country,
+          city,
+          maxResults,
+          fields,
+          lang,
+        }),
+      });
+
+      if (!res.ok) throw new Error(`Server error ${res.status}: ${res.statusText}`);
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
+      const listings = data.listings || [];
+      allResults.push(...listings);
+    }
+
+    // Dedup by name+address
+    if (dedup) {
+      const seen = new Set();
+      allResults = allResults.filter(b => {
+        const key = (b.name + '|' + (b.address || '')).toLowerCase().replace(/\s+/g, '');
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    finishSteps();
+    setStatusMsg('');
+    setTimeout(() => {
+      document.getElementById('status-area').style.display = 'none';
+      renderResults(allResults, bizType, country, cities);
+    }, 400);
+
+  } catch (err) {
+    clearInterval(stepTimer);
+    document.getElementById('status-area').style.display = 'none';
+    document.getElementById('error-area').innerHTML = `
+      <div class="error-box">
+        <span class="error-icon">⚠</span>
+        <div>
+          <strong>Search failed</strong><br>
+          <span style="font-size:0.78rem;opacity:0.8">${escHtml(err.message)}</span>
+          <br><span style="font-size:0.72rem;color:var(--muted);margin-top:4px;display:block">
+            Make sure your worker has the <code style="color:var(--lime)">/api/maps-scrape</code> endpoint.
+            Check the worker.js tab for implementation details.
+          </span>
+        </div>
+      </div>`;
+  } finally {
+    document.getElementById('run-btn').disabled = false;
+    document.getElementById('run-btn').textContent = '🗺 SEARCH GOOGLE MAPS';
+  }
+}
+
+// ─── RENDER RESULTS ──────────────────────────────────────────────────────
+function renderResults(results, bizType, country, cities) {
+  // Update header
+  document.getElementById('rq-category').textContent = bizType;
+  document.getElementById('rq-country').textContent  = country;
+  document.getElementById('rq-cities').textContent   = cities.join(', ');
+  document.getElementById('rq-count').textContent    = `${results.length} listings found`;
+
+  // Summary badges
+  const badges = document.getElementById('summary-badges');
+  const withPhone   = results.filter(b => b.phones?.length).length;
+  const withEmail   = results.filter(b => b.emails?.length).length;
+  const withWebsite = results.filter(b => b.website).length;
+  const withSocial  = results.filter(b => b.social?.length).length;
+  const withAddress = results.filter(b => b.address).length;
+  badges.innerHTML = [
+    { label: '📦 Total',    val: results.length,   always: true },
+    { label: '📞 With Phone',  val: withPhone },
+    { label: '✉️ With Email',  val: withEmail },
+    { label: '🌐 With Website', val: withWebsite },
+    { label: '🔗 With Social', val: withSocial },
+    { label: '📍 With Address', val: withAddress },
+  ].map(b => `<span class="sum-badge ${b.val > 0 || b.always ? 'found' : ''}">${b.label}: ${b.val}</span>`).join('');
+
+  // Cards
+  const grid = document.getElementById('biz-grid');
+  if (!results.length) {
+    grid.innerHTML = `<div class="no-results" style="grid-column:1/-1">
+      <div class="nr-icon">🗺</div>
+      <div>No listings found for these search parameters.</div>
+      <div style="font-size:0.72rem;margin-top:0.5rem;color:var(--muted2)">Try a different business category or city.</div>
+    </div>`;
+  } else {
+    grid.innerHTML = results.map((b, i) => buildCard(b, i)).join('');
+  }
+
+  // JSON
+  const pretty = document.getElementById('opt-pretty').checked;
+  const payload = {
+    query: { businessType: bizType, country, cities },
+    total: results.length,
+    listings: results,
+    scraped_at: new Date().toISOString(),
+  };
+  document.getElementById('json-output').innerHTML = syntaxHighlight(
+    pretty ? JSON.stringify(payload, null, 2) : JSON.stringify(payload)
+  );
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── BUILD CARD ──────────────────────────────────────────────────────────
+function buildCard(b, i) {
+  const rows = [];
+
+  if (b.address) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">📍</span>
+      <span class="biz-row-label">Address</span>
+      <span class="biz-row-val">${escHtml(b.address)}</span>
+    </div>`);
+
+  if (b.phones?.length) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">📞</span>
+      <span class="biz-row-label">Phone</span>
+      <span class="biz-row-val">${b.phones.map(p => `<a href="tel:${p.replace(/\s/g,'')}">${escHtml(p)}</a>`).join(' · ')}</span>
+      <button class="copy-btn" onclick="copyVal(this,'${escAttr(b.phones.join(', '))}')">COPY</button>
+    </div>`);
+
+  if (b.emails?.length) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">✉️</span>
+      <span class="biz-row-label">Email</span>
+      <span class="biz-row-val">${b.emails.map(e => `<a href="mailto:${e}">${escHtml(e)}</a>`).join(' · ')}</span>
+      <button class="copy-btn" onclick="copyVal(this,'${escAttr(b.emails.join(', '))}')">COPY</button>
+    </div>`);
+
+  if (b.website) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">🌐</span>
+      <span class="biz-row-label">Website</span>
+      <span class="biz-row-val"><a href="${escHtml(b.website)}" target="_blank" rel="noopener">${escHtml(b.website)}</a></span>
+    </div>`);
+
+  if (b.rating) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">⭐</span>
+      <span class="biz-row-label">Rating</span>
+      <span class="biz-row-val">${escHtml(String(b.rating))}${b.reviewCount ? ` <span style="color:var(--muted);font-size:0.7rem">(${b.reviewCount} reviews)</span>` : ''}</span>
+    </div>`);
+
+  if (b.hours) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">🕐</span>
+      <span class="biz-row-label">Hours</span>
+      <span class="biz-row-val">${escHtml(b.hours)}</span>
+    </div>`);
+
+  if (b.social?.length) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">🔗</span>
+      <span class="biz-row-label">Social</span>
+      <span class="biz-row-val">${b.social.map(s => `<a href="${escHtml(s.url)}" target="_blank">${escHtml(s.platform)}</a>`).join(' · ')}</span>
+    </div>`);
+
+  if (b.messaging?.length) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">💬</span>
+      <span class="biz-row-label">Messaging</span>
+      <span class="biz-row-val">${b.messaging.map(m => `<a href="${escHtml(m.link)}" target="_blank">${escHtml(m.type)}: ${escHtml(m.value)}</a>`).join(' · ')}</span>
+    </div>`);
+
+  if (b.mapsUrl) rows.push(`
+    <div class="biz-row">
+      <span class="biz-row-icon">🗺</span>
+      <span class="biz-row-label">Maps</span>
+      <span class="biz-row-val"><a href="${escHtml(b.mapsUrl)}" target="_blank" rel="noopener">View on Google Maps ↗</a></span>
+    </div>`);
+
+  const tags = [
+    b.phones?.length   && `<span class="tag-pill has">📞 Phone</span>`,
+    b.emails?.length   && `<span class="tag-pill has">✉️ Email</span>`,
+    b.website          && `<span class="tag-pill has">🌐 Web</span>`,
+    b.social?.length   && `<span class="tag-pill has">🔗 Social</span>`,
+    b.messaging?.length && `<span class="tag-pill has">💬 Chat</span>`,
+  ].filter(Boolean).join('') || `<span class="tag-pill">No contact info</span>`;
+
+  const cityBadge = b.city ? `<span style="font-size:0.65rem;color:var(--muted);padding:0.12rem 0.45rem;border:1px solid var(--line2);border-radius:3px;">${escHtml(b.city)}</span>` : '';
+
+  return `<div class="biz-card">
+    <div class="biz-card-header">
+      <div>
+        <div class="biz-name">${escHtml(b.name || 'Unknown Business')}</div>
+        ${b.category ? `<div style="font-size:0.68rem;color:var(--muted);margin-top:3px">${escHtml(b.category)}</div>` : ''}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        ${b.bizType ? `<span class="biz-category">${escHtml(b.bizType)}</span>` : ''}
+        ${cityBadge}
+      </div>
+    </div>
+    <div class="biz-card-body">${rows.join('') || '<div style="font-size:0.75rem;color:var(--muted2);padding:0.5rem 0;text-align:center">No data extracted</div>'}</div>
+    <div class="biz-card-footer">${tags}</div>
+  </div>`;
+}
+
+// ─── COPY ────────────────────────────────────────────────────────────────
+function copyVal(btn, val) {
+  navigator.clipboard.writeText(val).then(() => {
+    btn.textContent = '✓';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'COPY'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+function copyAllJSON() {
+  if (!allResults.length) return;
+  const payload = { query: lastQuery, total: allResults.length, listings: allResults };
+  navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
+    .then(() => alert('JSON copied to clipboard.'));
+}
+
+// ─── EXPORT CSV ──────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!allResults.length) return;
+  const headers = ['Name','Category','City','Country','Phone','Email','Website','Address','Rating','Reviews','Social','WhatsApp','Maps URL'];
+  const rows = [headers];
+  for (const b of allResults) {
+    rows.push([
+      b.name || '',
+      b.category || b.bizType || '',
+      b.city || '',
+      b.country || lastQuery.country || '',
+      (b.phones || []).join(' | '),
+      (b.emails || []).join(' | '),
+      b.website || '',
+      b.address || '',
+      b.rating || '',
+      b.reviewCount || '',
+      (b.social || []).map(s => s.url).join(' | '),
+      (b.messaging || []).filter(m => /whatsapp/i.test(m.type)).map(m => m.link).join(' | '),
+      b.mapsUrl || '',
+    ]);
+  }
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = `mapleads-${(lastQuery.bizType||'results').replace(/\s+/g,'-')}-${Date.now()}.csv`;
+  a.click();
+}
+
+function exportJSON() {
+  if (!allResults.length) return;
+  const payload = { query: lastQuery, total: allResults.length, listings: allResults, exported_at: new Date().toISOString() };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+  a.download = `mapleads-${(lastQuery.bizType||'results').replace(/\s+/g,'-')}-${Date.now()}.json`;
+  a.click();
+}
+
+// ─── HELPERS ────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) {
+  return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+}
+
+function syntaxHighlight(json) {
+  return json.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    match => {
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) return `<span class="json-key">${escHtml(match)}</span>`;
+        return `<span class="json-str">${escHtml(match)}</span>`;
+      }
+      if (/true|false/.test(match)) return `<span class="json-bool">${match}</span>`;
+      if (/null/.test(match)) return `<span class="json-null">${match}</span>`;
+      return `<span class="json-num">${match}</span>`;
+    }
+  );
+}
+
+// ─── KEYBOARD SHORTCUT ──────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runSearch();
+});
+</script>
+</body>
+</html>
