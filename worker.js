@@ -4,6 +4,7 @@ export default {
     if (url.pathname === '/api/detect-cms') return handleCMSDetect(request);
     if (url.pathname === '/api/claude')     return handleAudit(request, env);
     if (url.pathname === '/api/page-data')  return handlePageData(request);
+    if (url.pathname === '/api/scrape')     return handleScrape(request);
     return env.ASSETS.fetch(request);
   },
 };
@@ -976,4 +977,340 @@ function buildCompetitorGaps(pd, cms) {
 function capitalize(s) {
   if (!s) return '';
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WEB SCRAPER — Business Contact Extractor
+// ─────────────────────────────────────────────────────────────────────────────
+async function handleScrape(request) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
+  try {
+    const { url } = await request.json();
+    if (!url) return new Response(JSON.stringify({ error: 'URL is required' }), { headers: CORS });
+
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      redirect: 'follow',
+    });
+
+    if (!res.ok && res.status !== 200) {
+      return new Response(JSON.stringify({ error: `Site returned HTTP ${res.status}` }), { headers: CORS });
+    }
+
+    const html = await res.text();
+    const data = extractBusinessContacts(html, res.url || url);
+    return new Response(JSON.stringify(data), { headers: CORS });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message || 'Failed to fetch page' }), { headers: CORS });
+  }
+}
+
+function extractBusinessContacts(html, pageUrl) {
+  // Strip scripts and style tags for cleaner text extraction
+  const cleanHtml = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ');
+  const text = cleanHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+  // ── Business Name ──────────────────────────────────────────
+  const businessName = extractBusinessName(html, text, pageUrl);
+
+  // ── Description ───────────────────────────────────────────
+  const description = extractDescription(html);
+
+  // ── Category / Industry ───────────────────────────────────
+  const category = extractCategory(html, text);
+
+  // ── Business Hours ─────────────────────────────────────────
+  const hours = extractHours(html, text);
+
+  // ── Phone Numbers ──────────────────────────────────────────
+  const phones = extractPhones(html, text);
+
+  // ── Emails ────────────────────────────────────────────────
+  const emails = extractEmails(html, text);
+
+  // ── Addresses ─────────────────────────────────────────────
+  const { addresses, mapLink } = extractAddresses(html, text);
+
+  // ── Social Media ──────────────────────────────────────────
+  const social = extractSocial(html);
+
+  // ── Messaging / WhatsApp ──────────────────────────────────
+  const messaging = extractMessaging(html, text, phones);
+
+  // ── Website ───────────────────────────────────────────────
+  let website = pageUrl;
+  try { website = new URL(pageUrl).origin; } catch {}
+
+  return {
+    businessName,
+    description,
+    category,
+    hours,
+    website,
+    phones,
+    emails,
+    addresses,
+    mapLink,
+    social,
+    messaging,
+  };
+}
+
+// ── EXTRACTORS ────────────────────────────────────────────────
+
+function extractBusinessName(html, text, url) {
+  // 1. JSON-LD schema
+  const schemaMatch = html.match(/"@type"\s*:\s*"(?:LocalBusiness|Organization|Store|Restaurant|Hotel|MedicalBusiness|HealthAndBeautyBusiness|AutoDealer|RealEstateAgent|LegalService|AccountingService|FinancialService|InsuranceAgency|TravelAgency|FoodEstablishment|Corporation|NGO|GovernmentOrganization)"[\s\S]*?"name"\s*:\s*"([^"]{2,80})"/i)
+    || html.match(/"name"\s*:\s*"([^"]{2,80})"[\s\S]{0,300}"@type"\s*:\s*"(?:LocalBusiness|Organization)/i);
+  if (schemaMatch) return schemaMatch[1];
+
+  // 2. OG site_name
+  const og = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']{2,80})["']/i)
+           || html.match(/<meta[^>]+content=["']([^"']{2,80})["'][^>]+property=["']og:site_name["']/i);
+  if (og) return og[1];
+
+  // 3. Title tag (strip common suffixes)
+  const titleMatch = html.match(/<title[^>]*>([^<]{2,120})<\/title>/i);
+  if (titleMatch) {
+    return titleMatch[1]
+      .replace(/\s*[\|\-–—]\s*.+$/, '')   // strip "| tagline"
+      .replace(/\s*[-–]\s*Home\s*$/i, '')
+      .replace(/\s*[-–]\s*Welcome\s*$/i, '')
+      .trim()
+      .slice(0, 80) || null;
+  }
+
+  // 4. Hostname as fallback
+  try {
+    return new URL(url).hostname.replace(/^www\./, '').split('.')[0]
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase());
+  } catch { return null; }
+}
+
+function extractDescription(html) {
+  const m = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{10,300})["']/i)
+         || html.match(/<meta[^>]+content=["']([^"']{10,300})["'][^>]+name=["']description["']/i)
+         || html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']{10,300})["']/i);
+  return m ? m[1].trim() : null;
+}
+
+function extractCategory(html, text) {
+  // JSON-LD @type
+  const schemaType = html.match(/"@type"\s*:\s*"([A-Za-z]{5,50})"/);
+  const skipTypes = new Set(['WebPage','WebSite','Article','BlogPosting','BreadcrumbList','ListItem','SearchAction','ReadAction','SiteLinksSearchBox']);
+  if (schemaType && !skipTypes.has(schemaType[1])) {
+    return schemaType[1].replace(/([A-Z])/g, ' $1').trim();
+  }
+  return null;
+}
+
+function extractHours(html, text) {
+  // JSON-LD openingHours
+  const schemaHours = html.match(/"openingHours"\s*:\s*\[([^\]]+)\]/i);
+  if (schemaHours) {
+    return schemaHours[1].replace(/["]/g, '').replace(/,/g, ', ').trim();
+  }
+  const schemaHours2 = html.match(/"openingHours"\s*:\s*"([^"]+)"/i);
+  if (schemaHours2) return schemaHours2[1];
+
+  // Common text patterns
+  const patterns = [
+    /(?:mon(?:day)?|open)\s*[-–:]\s*(?:fri(?:day)?|sun(?:day)?)[^\n<]{5,60}/i,
+    /(?:hours?|schedule)\s*:?\s*[^\n<]{10,80}/i,
+  ];
+  for (const p of patterns) {
+    const m = text.match(p);
+    if (m) return m[0].trim().slice(0, 120);
+  }
+  return null;
+}
+
+function extractPhones(html, text) {
+  const found = new Set();
+
+  // tel: links (most reliable)
+  const telLinks = [...html.matchAll(/href=["']tel:([+0-9()\s\-\.]{7,20})["']/gi)];
+  telLinks.forEach(m => {
+    const clean = m[1].replace(/\s+/g, ' ').trim();
+    if (clean.replace(/\D/g,'').length >= 7) found.add(clean);
+  });
+
+  // JSON-LD telephone
+  const jsonTels = [...html.matchAll(/"telephone"\s*:\s*"([^"]{7,25})"/gi)];
+  jsonTels.forEach(m => found.add(m[1].trim()));
+
+  // Text patterns (various international/PH formats)
+  const phoneRegexes = [
+    /(?:\+63|0)[\s\-]?9\d{2}[\s\-]?\d{3}[\s\-]?\d{4}/g,           // PH mobile
+    /(?:\+63|0)[\s\-]?\(?\d{2,3}\)?[\s\-]?\d{3,4}[\s\-]?\d{4}/g,  // PH landline
+    /\+?1[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{4}/g,             // US/CA
+    /\+[\d][\d\s\-\(\)]{8,18}\d/g,                                   // International
+    /\(?\d{3}\)?[\s\-\.]\d{3}[\s\-\.]\d{4}/g,                       // Generic 10-digit
+    /\d{4}[\s\-]\d{4}/g,                                              // 8-digit
+  ];
+
+  for (const re of phoneRegexes) {
+    const matches = text.match(re) || [];
+    matches.forEach(m => {
+      const digits = m.replace(/\D/g,'');
+      if (digits.length >= 7 && digits.length <= 15) found.add(m.trim());
+    });
+  }
+
+  return [...found].slice(0, 10);
+}
+
+function extractEmails(html, text) {
+  const found = new Set();
+
+  // mailto: links
+  const mailtoRe = /href=["']mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10})["']/gi;
+  let m;
+  while ((m = mailtoRe.exec(html)) !== null) found.add(m[1].toLowerCase());
+
+  // Plain text emails (more permissive)
+  const emailRe = /[a-zA-Z0-9._%+\-]{1,64}@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10}/g;
+  const textMatches = text.match(emailRe) || [];
+  textMatches.forEach(e => {
+    // Filter out common false positives
+    if (!/@(?:sentry|example|test|domain|email|site|yoursite|yourdomain)\./.test(e)) {
+      found.add(e.toLowerCase());
+    }
+  });
+
+  return [...found].slice(0, 10);
+}
+
+function extractAddresses(html, text) {
+  const addresses = [];
+  let mapLink = null;
+
+  // JSON-LD address
+  const schemaAddr = html.match(/"streetAddress"\s*:\s*"([^"]+)"/i);
+  if (schemaAddr) {
+    const street = schemaAddr[1];
+    const locality = (html.match(/"addressLocality"\s*:\s*"([^"]+)"/i) || [])[1] || '';
+    const region   = (html.match(/"addressRegion"\s*:\s*"([^"]+)"/i) || [])[1] || '';
+    const postal   = (html.match(/"postalCode"\s*:\s*"([^"]+)"/i) || [])[1] || '';
+    const country  = (html.match(/"addressCountry"\s*:\s*"([^"]+)"/i) || [])[1] || '';
+    const full = [street, locality, region, postal, country].filter(Boolean).join(', ');
+    if (full) addresses.push(full);
+  }
+
+  // Google Maps embeds / links
+  const mapsRe = /https:\/\/(?:www\.)?(?:maps\.google\.com|google\.com\/maps)[^\s"'<>]{10,200}/gi;
+  const mapsMatch = html.match(mapsRe);
+  if (mapsMatch) mapLink = mapsMatch[0].replace(/&amp;/g, '&').split('"')[0];
+
+  // Google Maps iframe src
+  const iframeSrc = html.match(/src=["'](https:\/\/www\.google\.com\/maps\/embed[^"']+)["']/i);
+  if (iframeSrc && !mapLink) mapLink = iframeSrc[1].replace(/&amp;/g, '&');
+
+  // Common address patterns in text
+  if (addresses.length === 0) {
+    const addrPatterns = [
+      /\d+\s+[A-Z][a-zA-Z\s]{2,30}(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Place|Pl|Court|Ct)[,.]?\s*[A-Z][a-zA-Z\s]{2,30}/g,
+      /(?:Address|Location|Our\s+(?:office|store|branch))\s*:?\s*([^\n<]{15,120})/gi,
+    ];
+    for (const re of addrPatterns) {
+      const matches = text.match(re) || [];
+      matches.forEach(a => addresses.push(a.trim().slice(0, 150)));
+      if (addresses.length) break;
+    }
+  }
+
+  return { addresses: [...new Set(addresses)].slice(0, 5), mapLink };
+}
+
+function extractSocial(html) {
+  const social = [];
+  const seen = new Set();
+
+  const platforms = [
+    { name: 'Facebook',  re: /https?:\/\/(?:www\.)?facebook\.com\/(?!sharer|share|dialog|plugins|login|tr\?)([A-Za-z0-9._\-]{3,80})\/?(?!\?)/gi },
+    { name: 'Instagram', re: /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{2,60})\/?(?!\?)/gi },
+    { name: 'X',         re: /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/(?!share|intent|home|search|hashtag|login)([A-Za-z0-9_]{1,50})\/?(?!\?)/gi },
+    { name: 'LinkedIn',  re: /https?:\/\/(?:www\.)?linkedin\.com\/(?:company|in|school)\/([A-Za-z0-9._\-]{2,100})\/?/gi },
+    { name: 'YouTube',   re: /https?:\/\/(?:www\.)?youtube\.com\/(?:channel|c|user|@)\/([A-Za-z0-9._\-@]{2,100})\/?/gi },
+    { name: 'TikTok',    re: /https?:\/\/(?:www\.)?tiktok\.com\/@([A-Za-z0-9._]{2,60})\/?/gi },
+    { name: 'Pinterest', re: /https?:\/\/(?:www\.)?pinterest\.com\/([A-Za-z0-9._]{2,60})\/?/gi },
+    { name: 'Snapchat',  re: /https?:\/\/(?:www\.)?snapchat\.com\/add\/([A-Za-z0-9._\-]{2,60})\/?/gi },
+    { name: 'WhatsApp',  re: /https?:\/\/(?:wa\.me|api\.whatsapp\.com\/send)[^\s"'<>]{1,80}/gi },
+    { name: 'Telegram',  re: /https?:\/\/(?:t\.me|telegram\.me)\/([A-Za-z0-9._]{3,60})\/?/gi },
+    { name: 'Viber',     re: /https?:\/\/(?:www\.)?viber\.com\/[^\s"'<>]{3,60}/gi },
+  ];
+
+  for (const { name, re } of platforms) {
+    let m;
+    while ((m = re.exec(html)) !== null) {
+      const url = m[0].split('"')[0].split("'")[0].split('>')[0].replace(/&amp;/g, '&');
+      // Skip common false positives
+      if (/\/(share|sharer|dialog|plugins|login|logout|tr\?|embed|feed|ads|business|policies|about|help|legal|terms|privacy|developers)/i.test(url)) continue;
+      if (!seen.has(url)) {
+        seen.add(url);
+        social.push({ platform: name, url });
+      }
+    }
+  }
+
+  return social;
+}
+
+function extractMessaging(html, text, phones) {
+  const messaging = [];
+  const seen = new Set();
+
+  // WhatsApp click-to-chat links
+  const waRe = /https?:\/\/(?:wa\.me|api\.whatsapp\.com\/send[?][^\s"'<>]*)([^\s"'<>]*)/gi;
+  let m;
+  while ((m = waRe.exec(html)) !== null) {
+    const url = m[0].split('"')[0].split("'")[0].replace(/&amp;/g, '&');
+    const numMatch = url.match(/(?:wa\.me\/|phone=)(\d{7,15})/);
+    const num = numMatch ? '+' + numMatch[1] : url;
+    if (!seen.has(url)) {
+      seen.add(url);
+      messaging.push({ type: 'WhatsApp', value: num, link: url });
+    }
+  }
+
+  // Telegram links
+  const tgRe = /https?:\/\/(?:t\.me|telegram\.me)\/([A-Za-z0-9._]{3,60})/gi;
+  while ((m = tgRe.exec(html)) !== null) {
+    const url = m[0];
+    if (!seen.has(url)) {
+      seen.add(url);
+      messaging.push({ type: 'Telegram', value: '@' + m[1], link: url });
+    }
+  }
+
+  // Viber links
+  const viberRe = /viber:\/\/chat\?number=([%0-9+]+)/gi;
+  while ((m = viberRe.exec(html)) !== null) {
+    const num = decodeURIComponent(m[1]);
+    if (!seen.has(num)) {
+      seen.add(num);
+      messaging.push({ type: 'Viber', value: num, link: m[0] });
+    }
+  }
+
+  // WhatsApp from phone number detection in text
+  const waTextRe = /(?:whatsapp|viber|message\s+us\s+on)[^\d+]{0,20}([+0-9()\s\-]{7,20})/gi;
+  while ((m = waTextRe.exec(text)) !== null) {
+    const num = m[1].trim();
+    if (!seen.has(num) && num.replace(/\D/g,'').length >= 7) {
+      seen.add(num);
+      const wa = 'https://wa.me/' + num.replace(/[^\d+]/g,'');
+      messaging.push({ type: 'WhatsApp', value: num, link: wa });
+    }
+  }
+
+  return messaging;
 }
