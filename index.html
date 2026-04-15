@@ -784,6 +784,65 @@ footer .logo-f {
   .cms-hero-card { flex-direction: column; text-align: center; }
   .stats-bar { gap: 1.5rem; }
 }
+/* ── DOMAIN AUTHORITY CARD ── */
+.da-card {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.4rem 1.8rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.da-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  background: linear-gradient(180deg, var(--accent), var(--cyan));
+}
+.da-gauge-wrap { position: relative; flex-shrink: 0; }
+.da-gauge-wrap svg { display: block; }
+.da-gauge-label {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.da-gauge-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem; font-weight: 800; line-height: 1;
+}
+.da-gauge-sub {
+  font-size: 0.6rem; color: var(--muted);
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.da-info { flex: 1; }
+.da-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.25rem;
+}
+.da-tier { font-size: 1.05rem; font-weight: 700; color: var(--text); margin-bottom: 0.4rem; }
+.da-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+.da-scale { display: flex; gap: 4px; margin-top: 0.8rem; }
+.da-scale-seg { height: 5px; border-radius: 99px; flex: 1; }
+.da-scale-labels {
+  display: flex; justify-content: space-between;
+  font-size: 0.67rem; color: var(--muted2); margin-top: 3px;
+}
+.da-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.72rem; font-weight: 600; padding: 0.22rem 0.7rem;
+  border-radius: 999px; margin-bottom: 0.4rem;
+}
+@media(max-width:600px){
+  .da-card { flex-direction: column; gap: 1rem; }
+  .da-card::before { top: 0; left: 0; right: 0; bottom: auto; width: auto; height: 4px; border-radius: 4px 4px 0 0; }
+}
 </style>
 </head>
 <body>
@@ -978,6 +1037,39 @@ footer .logo-f {
     <div class="eeat-summary" id="eeat-panel" style="display:none">
       <div class="eeat-label">🏆 E-E-A-T Assessment</div>
       <p id="eeat-text" style="font-size:0.87rem;color:var(--text);line-height:1.7"></p>
+    </div>
+
+    <!-- Domain Authority -->
+    <div class="da-card" id="da-card" style="display:none">
+      <div class="da-gauge-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+          <circle id="da-arc" cx="50" cy="50" r="40" fill="none"
+            stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="251" stroke-dashoffset="251"
+            transform="rotate(-90 50 50)"
+            style="transition: stroke-dashoffset 1.4s ease, stroke 0.5s;"/>
+        </svg>
+        <div class="da-gauge-label">
+          <div class="da-gauge-num" id="da-num">—</div>
+          <div class="da-gauge-sub">/ 100</div>
+        </div>
+      </div>
+      <div class="da-info">
+        <div class="da-title">Domain Authority (DA)</div>
+        <div class="da-tier" id="da-tier">—</div>
+        <div class="da-desc" id="da-desc"></div>
+        <div class="da-scale" id="da-scale">
+          <div class="da-scale-seg" style="background:#f87171"></div>
+          <div class="da-scale-seg" style="background:#fb923c"></div>
+          <div class="da-scale-seg" style="background:#fbbf24"></div>
+          <div class="da-scale-seg" style="background:#34d399"></div>
+          <div class="da-scale-seg" style="background:#60a5fa"></div>
+        </div>
+        <div class="da-scale-labels">
+          <span>1</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span>
+        </div>
+      </div>
     </div>
 
     <!-- Tabs -->
@@ -1941,12 +2033,57 @@ function renderResults(url, data, cmsData, pageData) {
   // Competitor gaps
   renderCompetitorGaps(data.competitor_gaps || []);
 
+  // Domain Authority
+  renderDA(data.domain_authority);
+
   // Tech Stack
   renderTechStack(cmsData, url);
 
   // Show results
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderDA(da) {
+  const card = document.getElementById('da-card');
+  if (!da || !da.score) { card.style.display = 'none'; return; }
+  card.style.display = 'flex';
+
+  const score = da.score;
+
+  // Arc animation
+  const arc = document.getElementById('da-arc');
+  const circumference = 251;
+  const color =
+    score >= 70 ? '#60a5fa' :
+    score >= 50 ? '#34d399' :
+    score >= 35 ? '#fbbf24' :
+    score >= 20 ? '#fb923c' : '#f87171';
+  arc.style.stroke = color;
+  setTimeout(() => {
+    arc.style.strokeDashoffset = circumference - (score / 100) * circumference;
+  }, 50);
+
+  // Count-up number
+  const numEl = document.getElementById('da-num');
+  numEl.style.color = color;
+  let count = 0;
+  const iv = setInterval(() => {
+    count = Math.min(count + 2, score);
+    numEl.textContent = count;
+    if (count >= score) clearInterval(iv);
+  }, 18);
+
+  document.getElementById('da-tier').textContent = da.tier;
+  document.getElementById('da-tier').style.color = color;
+  document.getElementById('da-desc').textContent = da.description;
+
+  // Scale indicator — highlight the active segment
+  const segs = document.querySelectorAll('.da-scale-seg');
+  const ranges = [20, 35, 50, 70, 100];
+  segs.forEach((seg, i) => {
+    seg.style.opacity = score > (ranges[i - 1] || 0) ? '1' : '0.25';
+  });
 }
 
 function typewrite(elId, text) {

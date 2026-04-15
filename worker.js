@@ -426,6 +426,9 @@ async function handleAudit(request, env) {
       recommendations: cwvRecs,
     };
 
+    // ── DOMAIN AUTHORITY ─────────────────────────────────────────────────────
+    const domain_authority = computeDomainAuthority(pd, url);
+
     // ── COMPETITOR GAPS ───────────────────────────────────────────────────────
     const competitor_gaps = buildCompetitorGaps(pd, cms);
 
@@ -461,6 +464,7 @@ async function handleAudit(request, env) {
       schema_analysis,
       competitor_gaps,
       core_web_vitals,
+      domain_authority,
     };
 
     return new Response(JSON.stringify(result), { headers: CORS });
@@ -968,6 +972,87 @@ function buildCompetitorGaps(pd, cms) {
   }
 
   return gaps.slice(0, 6);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DOMAIN AUTHORITY ESTIMATOR (1–100)
+// Computed from on-page signals since we have no external link-graph data.
+// Weighted to mirror how Moz/Ahrefs reward: HTTPS, content depth, security,
+// structured data, linking patterns, technical hygiene, and performance.
+// ─────────────────────────────────────────────────────────────────────────────
+function computeDomainAuthority(pd, url) {
+  let score = 0;
+
+  // — HTTPS & Security (max 20) —
+  if (pd.isHttps)                 score += 10;
+  if (pd.secHeaders?.hsts)        score += 4;
+  if (pd.secHeaders?.xContentType)score += 2;
+  if (pd.secHeaders?.xFrame)      score += 2;
+  if (pd.secHeaders?.csp)         score += 2;
+
+  // — Technical hygiene (max 18) —
+  if (pd.canonical)               score += 5;
+  if (!pd.isNoindex)              score += 4;
+  if (pd.lang)                    score += 2;
+  if (pd.hasCharset)              score += 2;
+  if (pd.hasFavicon)              score += 2;
+  if (!pd.wasRedirected)          score += 3;
+
+  // — Content depth (max 18) —
+  const wc = pd.wordCount || 0;
+  if (wc >= 2000)      score += 18;
+  else if (wc >= 1000) score += 14;
+  else if (wc >= 500)  score += 9;
+  else if (wc >= 300)  score += 5;
+  else if (wc >= 150)  score += 2;
+
+  // — Structured data (max 12) —
+  const sc = pd.schema?.count || 0;
+  if (sc >= 4)      score += 12;
+  else if (sc >= 2) score += 8;
+  else if (sc >= 1) score += 4;
+
+  // — Linking profile (max 12) —
+  const ext = pd.links?.external || 0;
+  const int = pd.links?.internal || 0;
+  if (ext >= 5)       score += 6;
+  else if (ext >= 2)  score += 4;
+  else if (ext >= 1)  score += 2;
+  if (int >= 10)      score += 6;
+  else if (int >= 5)  score += 4;
+  else if (int >= 2)  score += 2;
+
+  // — Performance (max 10) —
+  const ttfb = pd.ttfb || 0;
+  if (ttfb > 0 && ttfb < 800)    score += 10;
+  else if (ttfb < 1800)          score += 5;
+
+  // — UX signals (max 6) —
+  if (pd.hasViewport)             score += 3;
+  if (pd.openGraph?.image)        score += 2;
+  if (pd.openGraph?.twitterCard)  score += 1;
+
+  // — On-page SEO completeness (max 4) —
+  if (pd.title && pd.titleLen >= 50 && pd.titleLen <= 60) score += 2;
+  if (pd.metaDesc && pd.descLen >= 120 && pd.descLen <= 155) score += 2;
+
+  // Clamp to 1–100
+  score = Math.max(1, Math.min(100, score));
+
+  const tier =
+    score >= 70 ? 'Strong Authority'      :
+    score >= 50 ? 'Established Authority' :
+    score >= 35 ? 'Developing Authority'  :
+    score >= 20 ? 'New / Low Authority'   : 'Very Low Authority';
+
+  const description =
+    score >= 70 ? 'This page demonstrates strong technical signals, content depth, and trust indicators that correlate with high domain authority.'       :
+    score >= 50 ? 'Solid foundation in place. Improving content depth, schema coverage, and security headers will push authority higher.'                 :
+    score >= 35 ? 'Authority is building. Focus on HTTPS, canonical tags, structured data, and word count to grow DA significantly.'                      :
+    score >= 20 ? 'Low authority signals detected. Address critical technical issues first — HTTPS, canonical, and content depth are the top priorities.' :
+                  'Very limited authority signals. This domain/page needs foundational SEO work before meaningful rankings are achievable.';
+
+  return { score, tier, description };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
