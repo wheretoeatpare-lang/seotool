@@ -859,88 +859,17 @@ async function runCheck() {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── CLAUDE API CALL ───────────────────────────────────────────
+// ── AI VISIBILITY API CALL ───────────────────────────────────
 async function fetchAIVisibility(brand, engines) {
-  const prompt = `You are an AI search visibility analyst. Analyse the brand "${brand}" and simulate how it would appear in AI engines: ${engines.join(', ')}.
 
-Return ONLY valid JSON — no markdown, no explanation — matching EXACTLY this schema:
-
-{
-  "visibility_score": <0-100 integer>,
-  "total_mentions": <integer>,
-  "positive_mentions": <integer>,
-  "negative_mentions": <integer>,
-  "engines_present": <integer, how many engines mention this brand>,
-  "summary": "<2-3 sentence paragraph about the brand's AI search presence, specific and insightful>",
-  "engine_breakdown": [
-    {
-      "engine": "<name>",
-      "visibility": <0-100>,
-      "mentions": <integer>,
-      "sentiment": "positive" | "neutral" | "negative",
-      "coverage": "high" | "medium" | "low" | "none"
-    }
-  ],
-  "mentions": [
-    {
-      "engine": "<engine name>",
-      "prompt": "<realistic user query that would surface this brand>",
-      "excerpt": "<2-3 sentence realistic AI response snippet mentioning the brand, use [[BRAND]] as placeholder for the brand name>",
-      "sentiment": "positive" | "neutral" | "negative",
-      "context": "<category e.g. product recommendation / comparison / review / how-to>",
-      "ranking_position": <1-10 integer, position in the AI's list if applicable>
-    }
-  ],
-  "opportunities": [
-    {
-      "title": "<opportunity title>",
-      "description": "<what the opportunity is>",
-      "action": "<specific action to take>",
-      "priority": "high" | "medium" | "low",
-      "icon": "<single emoji>"
-    }
-  ],
-  "risks": [
-    {
-      "title": "<risk title>",
-      "description": "<what the risk is>",
-      "fix": "<how to address it>",
-      "severity": "high" | "medium" | "low"
-    }
-  ],
-  "competitors": [
-    {
-      "name": "<competitor brand>",
-      "visibility": <0-100>,
-      "engines": ["ChatGPT","Gemini"]
-    }
-  ]
-}
-
-Rules:
-- Generate 3-5 mention objects, one per engine (use only the selected engines: ${engines.join(', ')})
-- Generate 3-5 opportunities
-- Generate 2-4 risks (or empty array if no real risks)
-- Generate 3-5 relevant competitors
-- Use [[BRAND]] as placeholder in excerpt text where the brand name appears
-- Be specific and realistic about the actual brand "${brand}" — use real facts if you know them
-- Score the visibility_score accurately based on how well-known the brand actually is in AI training data`;
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
+  const response = await fetch('/api/ai-visibility', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }]
-    })
+    body: JSON.stringify({ brand, engines }),
   });
 
   if (!response.ok) throw new Error(`API error ${response.status}`);
-  const data = await response.json();
-  const raw = data.content.map(c => c.text || '').join('');
-  const clean = raw.replace(/```json|```/g, '').trim();
-  return JSON.parse(clean);
+  return await response.json();
 }
 
 // ── RENDER ────────────────────────────────────────────────────
