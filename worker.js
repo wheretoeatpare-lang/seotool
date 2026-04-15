@@ -1,625 +1,74 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// ScrapeKit Worker v2.0
-// Inspired by scrape.do — single-request web data extraction API
-// Supports GET and POST. Returns structured JSON from any URL.
-//
-// GET  /api/extract?url=https://...&fields=emails,phones,social&token=KEY
-// POST /api/extract  { "url": "...", "fields": [...], "token": "..." }
-// POST /api/scrape   (legacy endpoint — contact extractor, no auth)
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-
-    // ── CORS preflight
-    if (request.method === 'OPTIONS') return corsOk();
-
-    // ── Routes
-    if (url.pathname === '/api/extract')    return handleExtract(request, env);
-    if (url.pathname === '/api/scrape')     return handleScrape(request, env);
     if (url.pathname === '/api/detect-cms') return handleCMSDetect(request);
-    if (url.pathname === '/api/page-data')  return handlePageData(request);
     if (url.pathname === '/api/claude')     return handleAudit(request, env);
-    if (url.pathname === '/api/maps-scrape') return handleMapsScrape(request, env);
-
+    if (url.pathname === '/api/page-data')  return handlePageData(request);
     return env.ASSETS.fetch(request);
   },
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CORS & RESPONSE HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-const CORS_HEADERS = {
+const CORS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Api-Key',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Content-Type': 'application/json',
 };
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data, null, 2), {
-    status,
-    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-  });
-}
-function err(msg, status = 400) {
-  return json({ success: false, error: msg, code: status }, status);
-}
-function corsOk() {
-  return new Response(null, { status: 204, headers: CORS_HEADERS });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// USER-AGENTS POOL
-// ─────────────────────────────────────────────────────────────────────────────
-const USER_AGENTS = {
-  chrome:     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  googlebot:  'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-  mobile:     'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-  firefox:    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
-  safari:     'Mozilla/5.0 (Macintosh; Intel Mac OS X 14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15',
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN EXTRACT HANDLER — scrape.do-style API
-// GET  /api/extract?url=https://...&fields=emails,phones,social
-// POST /api/extract  { url, fields, ua, timeout, follow_redirects }
-// ─────────────────────────────────────────────────────────────────────────────
-async function handleExtract(request, env) {
-  let params = {};
-
-  if (request.method === 'GET') {
-    const u = new URL(request.url);
-    params.url              = u.searchParams.get('url');
-    params.fields           = (u.searchParams.get('fields') || '').split(',').map(s => s.trim()).filter(Boolean);
-    params.ua               = u.searchParams.get('ua') || 'chrome';
-    params.timeout          = parseInt(u.searchParams.get('timeout') || '20', 10);
-    params.follow_redirects = u.searchParams.get('follow_redirects') !== 'false';
-    params.token            = u.searchParams.get('token') || (request.headers.get('Authorization') || '').replace('Bearer ', '');
-  } else if (request.method === 'POST') {
-    try { params = await request.json(); }
-    catch { return err('Invalid JSON body'); }
-    params.token = params.token || (request.headers.get('Authorization') || '').replace('Bearer ', '') || (request.headers.get('X-Api-Key') || '');
-  } else {
-    return err('Method not allowed', 405);
-  }
-
-  if (!params.url) return err('Missing required parameter: url');
-
-  // Normalise URL
-  let targetUrl = params.url.trim();
-  if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
-  try { new URL(targetUrl); } catch { return err('Invalid URL: ' + params.url); }
-
-  // Fields — default to everything
-  const ALL_FIELDS = ['phones', 'emails', 'social', 'addresses', 'messaging', 'business', 'meta', 'links', 'schema', 'technology'];
-  const fields = params.fields?.length ? params.fields : ALL_FIELDS;
-
-  const ua = USER_AGENTS[params.ua] || USER_AGENTS.chrome;
-  const timeout = Math.min(Math.max(params.timeout || 20, 5), 30) * 1000;
-
-  // ── Fetch page
-  let html, finalUrl, statusCode, ttfb, responseHeaders;
-  try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), timeout);
-    const t0 = Date.now();
-    const res = await fetch(targetUrl, {
-      signal: controller.signal,
-      redirect: params.follow_redirects !== false ? 'follow' : 'manual',
-      headers: {
-        'User-Agent': ua,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Cache-Control': 'no-cache',
-      },
-    });
-    clearTimeout(timer);
-    ttfb = Date.now() - t0;
-    statusCode = res.status;
-    finalUrl = res.url || targetUrl;
-    responseHeaders = Object.fromEntries(res.headers.entries());
-    html = await res.text();
-  } catch (e) {
-    if (e.name === 'AbortError') return err('Request timed out after ' + (timeout/1000) + 's', 504);
-    return err('Failed to fetch URL: ' + e.message, 502);
-  }
-
-  // ── Extract data
-  const cleanHtml = html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ');
-  const text = cleanHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-
-  const result = {
-    success: true,
-    request: { url: targetUrl, fields, ua: params.ua || 'chrome' },
-    response: { status_code: statusCode, final_url: finalUrl, ttfb_ms: ttfb, was_redirected: finalUrl !== targetUrl },
-    data: {},
-    scraped_at: new Date().toISOString(),
-  };
-
-  // ── Populate requested fields
-  if (fields.includes('business')) {
-    result.data.business = {
-      name:        extractBusinessName(html, text, finalUrl),
-      description: extractDescription(html),
-      category:    extractCategory(html, text),
-      hours:       extractHours(html, text),
-      website:     (() => { try { return new URL(finalUrl).origin; } catch { return finalUrl; } })(),
-      founded:     extractFounded(html, text),
-    };
-  }
-  if (fields.includes('phones')) {
-    result.data.phones = extractPhones(html, text);
-  }
-  if (fields.includes('emails')) {
-    result.data.emails = extractEmails(html, text);
-  }
-  if (fields.includes('addresses') || fields.includes('address')) {
-    const addr = extractAddresses(html, text);
-    result.data.addresses = addr.addresses;
-    result.data.map_link  = addr.mapLink;
-  }
-  if (fields.includes('social')) {
-    result.data.social = extractSocial(html);
-  }
-  if (fields.includes('messaging') || fields.includes('whatsapp')) {
-    result.data.messaging = extractMessaging(html, text, result.data.phones || []);
-  }
-  if (fields.includes('meta')) {
-    result.data.meta = extractMeta(html, responseHeaders, finalUrl, statusCode, ttfb, targetUrl);
-  }
-  if (fields.includes('links')) {
-    result.data.links = extractLinks(html, finalUrl);
-  }
-  if (fields.includes('schema')) {
-    result.data.schema = extractSchemaOrg(html);
-  }
-  if (fields.includes('technology')) {
-    result.data.technology = detectTechStack(html, responseHeaders);
-  }
-
-  // ── Totals summary
-  result.totals = {
-    phones:    (result.data.phones    || []).length,
-    emails:    (result.data.emails    || []).length,
-    social:    (result.data.social    || []).length,
-    addresses: (result.data.addresses || []).length,
-    messaging: (result.data.messaging || []).length,
-  };
-
-  return json(result);
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// LEGACY SCRAPE HANDLER (contact-only, POST, no auth)
-// ─────────────────────────────────────────────────────────────────────────────
-async function handleScrape(request, env) {
-  if (request.method !== 'POST') return err('Method not allowed', 405);
-  let body;
-  try { body = await request.json(); } catch { return err('Invalid JSON'); }
-
-  const { url, mode, types } = body;
-  if (!url) return err('URL is required');
-
-  let targetUrl = url.trim();
-  if (!/^https?:\/\//i.test(targetUrl)) targetUrl = 'https://' + targetUrl;
-
-  let html, finalUrl, statusCode;
-  try {
-    const res = await fetch(targetUrl, {
-      headers: {
-        'User-Agent': USER_AGENTS.chrome,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-      },
-      redirect: 'follow',
-    });
-    statusCode = res.status;
-    finalUrl = res.url || targetUrl;
-    html = await res.text();
-  } catch (e) {
-    return err(e.message || 'Failed to fetch page', 502);
-  }
-
-  const cleanHtml = html
-    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, ' ');
-  const text = cleanHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-
-  const phones   = extractPhones(html, text);
-  const emails   = extractEmails(html, text);
-  const { addresses, mapLink } = extractAddresses(html, text);
-  const social   = extractSocial(html);
-  const messaging = extractMessaging(html, text, phones);
-
-  return json({
-    statusCode,
-    businessName: extractBusinessName(html, text, finalUrl),
-    description:  extractDescription(html),
-    category:     extractCategory(html, text),
-    hours:        extractHours(html, text),
-    website:      (() => { try { return new URL(finalUrl).origin; } catch { return finalUrl; } })(),
-    phones, emails, addresses, mapLink, social, messaging,
-  });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// EXTRACTOR FUNCTIONS
-// ─────────────────────────────────────────────────────────────────────────────
-
-function extractBusinessName(html, text, url) {
-  const schemaMatch =
-    html.match(/"@type"\s*:\s*"(?:LocalBusiness|Organization|Store|Restaurant|Hotel|Corporation|NGO)"[\s\S]{0,200}?"name"\s*:\s*"([^"]{2,80})"/i) ||
-    html.match(/"name"\s*:\s*"([^"]{2,80})"[\s\S]{0,300}"@type"\s*:\s*"(?:LocalBusiness|Organization)/i);
-  if (schemaMatch) return schemaMatch[1];
-
-  const og = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']{2,80})["']/i) ||
-             html.match(/<meta[^>]+content=["']([^"']{2,80})["'][^>]+property=["']og:site_name["']/i);
-  if (og) return og[1];
-
-  const title = html.match(/<title[^>]*>([^<]{2,120})<\/title>/i);
-  if (title) {
-    return title[1]
-      .replace(/\s*[\|\-–—]\s*.+$/, '')
-      .replace(/\s*[-–]\s*(?:Home|Welcome|Official)\s*$/i, '')
-      .trim().slice(0, 80) || null;
-  }
-  try { return new URL(url).hostname.replace(/^www\./, '').split('.')[0].replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()); }
-  catch { return null; }
-}
-
-function extractDescription(html) {
-  return (
-    html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']{10,300})["']/i)?.[1] ||
-    html.match(/<meta[^>]+content=["']([^"']{10,300})["'][^>]+name=["']description["']/i)?.[1] ||
-    html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']{10,300})["']/i)?.[1] ||
-    null
-  );
-}
-
-function extractCategory(html, text) {
-  const ld = html.match(/"@type"\s*:\s*"([^"]{3,60})"/g);
-  if (ld) {
-    const skip = new Set(['WebPage','WebSite','SearchAction','ListItem','BreadcrumbList','SiteNavigationElement','ImageObject','VideoObject','EntryPoint']);
-    for (const m of ld) {
-      const t = m.match(/"@type"\s*:\s*"([^"]+)"/)?.[1];
-      if (t && !skip.has(t)) return t.replace(/([A-Z])/g, ' $1').trim();
-    }
-  }
-  const kwMap = [
-    [/\b(?:restaurant|cafe|bistro|diner|eatery)\b/i, 'Restaurant'],
-    [/\b(?:hotel|resort|motel|inn|accommodation)\b/i, 'Hotel & Accommodation'],
-    [/\b(?:dental|dentist|teeth)\b/i, 'Dental Practice'],
-    [/\b(?:clinic|hospital|health|medical|doctor|physician)\b/i, 'Healthcare'],
-    [/\b(?:law firm|attorney|lawyer|legal services)\b/i, 'Legal Services'],
-    [/\b(?:real estate|property|realty|realtor)\b/i, 'Real Estate'],
-    [/\b(?:e-?commerce|online store|shop|products)\b/i, 'E-Commerce'],
-    [/\b(?:agency|marketing|advertising|digital agency)\b/i, 'Marketing Agency'],
-    [/\b(?:software|saas|technology|tech|app)\b/i, 'Technology'],
-  ];
-  for (const [re, label] of kwMap) {
-    if (re.test(text)) return label;
-  }
-  return null;
-}
-
-function extractHours(html, text) {
-  const ld = html.match(/"openingHours"\s*:\s*"([^"]+)"/)?.[1] ||
-    html.match(/"openingHoursSpecification"/i) ? 'See schema data' : null;
-  if (ld) return ld;
-  const m = text.match(/(?:hours?|open(?:ing)?|business hours?)[\s:–—]*([^\n<]{10,80})/i);
-  return m ? m[1].trim().slice(0, 120) : null;
-}
-
-function extractFounded(html, text) {
-  return (
-    html.match(/"foundingDate"\s*:\s*"([^"]{4,20})"/i)?.[1] ||
-    text.match(/(?:founded|established|since)\s+(?:in\s+)?(\d{4})/i)?.[1] ||
-    null
-  );
-}
-
-function extractPhones(html, text) {
-  const found = new Set();
-  const telRe = /href=["']tel:([+\d\s\-().]{6,20})["']/gi;
-  let m;
-  while ((m = telRe.exec(html)) !== null) found.add(m[1].trim());
-
-  const schemaPhone = html.match(/"telephone"\s*:\s*"([^"]+)"/gi);
-  if (schemaPhone) schemaPhone.forEach(p => {
-    const v = p.match(/"telephone"\s*:\s*"([^"]+)"/)?.[1];
-    if (v) found.add(v);
-  });
-
-  const patterns = [
-    /\+63[\s\-]?(?:9\d{2}[\s\-]?\d{3}[\s\-]?\d{4}|\d{2}[\s\-]?\d{3}[\s\-]?\d{4,5})/g,
-    /\+[\d][\d\s\-()]{8,18}\d/g,
-    /\(?\d{3}\)?[\s\-\.]\d{3}[\s\-\.]\d{4}/g,
-    /\d{4}[\s\-]\d{4}/g,
-  ];
-  for (const re of patterns) {
-    const matches = text.match(re) || [];
-    matches.forEach(p => {
-      const d = p.replace(/\D/g, '');
-      if (d.length >= 7 && d.length <= 15) found.add(p.trim());
-    });
-  }
-  return [...found].slice(0, 10);
-}
-
-function extractEmails(html, text) {
-  const found = new Set();
-  const mailtoRe = /href=["']mailto:([a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10})["']/gi;
-  let m;
-  while ((m = mailtoRe.exec(html)) !== null) found.add(m[1].toLowerCase());
-  const emailRe = /[a-zA-Z0-9._%+\-]{1,64}@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,10}/g;
-  (text.match(emailRe) || []).forEach(e => {
-    if (!/@(?:sentry|example|test|domain|email|site|yoursite|yourdomain|wixpress|wordpress|squarespace)\./.test(e))
-      found.add(e.toLowerCase());
-  });
-  return [...found].slice(0, 10);
-}
-
-function extractAddresses(html, text) {
-  const addresses = [];
-  let mapLink = null;
-
-  const street = html.match(/"streetAddress"\s*:\s*"([^"]+)"/i);
-  if (street) {
-    const locality = html.match(/"addressLocality"\s*:\s*"([^"]+)"/i)?.[1] || '';
-    const region   = html.match(/"addressRegion"\s*:\s*"([^"]+)"/i)?.[1] || '';
-    const postal   = html.match(/"postalCode"\s*:\s*"([^"]+)"/i)?.[1] || '';
-    const country  = html.match(/"addressCountry"\s*:\s*"([^"]+)"/i)?.[1] || '';
-    const full = [street[1], locality, region, postal, country].filter(Boolean).join(', ');
-    if (full) addresses.push(full);
-  }
-
-  const mapsRe = /https:\/\/(?:www\.)?(?:maps\.google\.com|google\.com\/maps)[^\s"'<>]{10,200}/gi;
-  const mapsMatch = html.match(mapsRe);
-  if (mapsMatch) mapLink = mapsMatch[0].replace(/&amp;/g, '&').split('"')[0];
-
-  const iframe = html.match(/src=["'](https:\/\/www\.google\.com\/maps\/embed[^"']+)["']/i);
-  if (iframe && !mapLink) mapLink = iframe[1].replace(/&amp;/g, '&');
-
-  if (addresses.length === 0) {
-    const pats = [
-      /\d+\s+[A-Z][a-zA-Z\s]{2,30}(?:Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Way|Place|Pl|Court|Ct)[,.]?\s*[A-Z][a-zA-Z\s]{2,30}/g,
-      /(?:Address|Location|Our\s+(?:office|store|branch))\s*:?\s*([^\n<]{15,120})/gi,
-    ];
-    for (const re of pats) {
-      (text.match(re) || []).forEach(a => addresses.push(a.trim().slice(0, 150)));
-      if (addresses.length) break;
-    }
-  }
-  return { addresses: [...new Set(addresses)].slice(0, 5), mapLink };
-}
-
-function extractSocial(html) {
-  const social = [];
-  const seen = new Set();
-  const platforms = [
-    { name: 'Facebook',  re: /https?:\/\/(?:www\.)?facebook\.com\/(?!sharer|share|dialog|plugins|login|tr\?)([A-Za-z0-9._\-]{3,80})\/?(?!\?)/gi },
-    { name: 'Instagram', re: /https?:\/\/(?:www\.)?instagram\.com\/([A-Za-z0-9._]{2,60})\/?(?!\?)/gi },
-    { name: 'X',         re: /https?:\/\/(?:www\.)?(?:twitter|x)\.com\/(?!share|intent|home|search|hashtag|login)([A-Za-z0-9_]{1,50})\/?(?!\?)/gi },
-    { name: 'LinkedIn',  re: /https?:\/\/(?:www\.)?linkedin\.com\/(?:company|in|school)\/([A-Za-z0-9._\-]{2,100})\/?/gi },
-    { name: 'YouTube',   re: /https?:\/\/(?:www\.)?youtube\.com\/(?:channel|c|user|@)\/([A-Za-z0-9._\-@]{2,100})\/?/gi },
-    { name: 'TikTok',    re: /https?:\/\/(?:www\.)?tiktok\.com\/@([A-Za-z0-9._]{2,60})\/?/gi },
-    { name: 'Pinterest', re: /https?:\/\/(?:www\.)?pinterest\.com\/([A-Za-z0-9._]{2,60})\/?/gi },
-    { name: 'Snapchat',  re: /https?:\/\/(?:www\.)?snapchat\.com\/add\/([A-Za-z0-9._\-]{2,60})\/?/gi },
-    { name: 'WhatsApp',  re: /https?:\/\/(?:wa\.me|api\.whatsapp\.com\/send)[^\s"'<>]{1,80}/gi },
-    { name: 'Telegram',  re: /https?:\/\/(?:t\.me|telegram\.me)\/([A-Za-z0-9._]{3,60})\/?/gi },
-    { name: 'Viber',     re: /https?:\/\/(?:www\.)?viber\.com\/[^\s"'<>]{3,60}/gi },
-    { name: 'Threads',   re: /https?:\/\/(?:www\.)?threads\.net\/@([A-Za-z0-9._]{2,60})\/?/gi },
-  ];
-  for (const { name, re } of platforms) {
-    let m;
-    while ((m = re.exec(html)) !== null) {
-      const url = m[0].split('"')[0].split("'")[0].split('>')[0].replace(/&amp;/g, '&');
-      if (/\/(share|sharer|dialog|plugins|login|logout|tr\?|embed|feed|ads|business|policies|about|help|legal|terms|privacy|developers)/i.test(url)) continue;
-      if (!seen.has(url)) { seen.add(url); social.push({ platform: name, url, handle: m[1] || null }); }
-    }
-  }
-  return social;
-}
-
-function extractMessaging(html, text, phones) {
-  const messaging = [];
-  const seen = new Set();
-
-  const waRe = /https?:\/\/(?:wa\.me|api\.whatsapp\.com\/send[?][^\s"'<>]*)([^\s"'<>]*)/gi;
-  let m;
-  while ((m = waRe.exec(html)) !== null) {
-    const url = m[0].split('"')[0].split("'")[0].replace(/&amp;/g, '&');
-    const numMatch = url.match(/(?:wa\.me\/|phone=)(\d{7,15})/);
-    const num = numMatch ? '+' + numMatch[1] : url;
-    if (!seen.has(url)) { seen.add(url); messaging.push({ type: 'WhatsApp', value: num, link: url }); }
-  }
-
-  const tgRe = /https?:\/\/(?:t\.me|telegram\.me)\/([A-Za-z0-9._]{3,60})/gi;
-  while ((m = tgRe.exec(html)) !== null) {
-    const url = m[0];
-    if (!seen.has(url)) { seen.add(url); messaging.push({ type: 'Telegram', value: '@' + m[1], link: url }); }
-  }
-
-  const viberRe = /viber:\/\/chat\?number=([%0-9+]+)/gi;
-  while ((m = viberRe.exec(html)) !== null) {
-    const num = decodeURIComponent(m[1]);
-    if (!seen.has(num)) { seen.add(num); messaging.push({ type: 'Viber', value: num, link: m[0] }); }
-  }
-
-  const waTextRe = /(?:whatsapp|viber|message\s+us\s+on)[^\d+]{0,20}([+0-9()\s\-]{7,20})/gi;
-  while ((m = waTextRe.exec(text)) !== null) {
-    const num = m[1].trim();
-    if (!seen.has(num) && num.replace(/\D/g, '').length >= 7) {
-      seen.add(num);
-      messaging.push({ type: 'WhatsApp', value: num, link: 'https://wa.me/' + num.replace(/[^\d+]/g, '') });
-    }
-  }
-  return messaging;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NEW EXTRACTORS (v2 fields: meta, links, schema, technology)
-// ─────────────────────────────────────────────────────────────────────────────
-
-function extractMeta(html, headers, finalUrl, statusCode, ttfb, originalUrl) {
-  const g = (re) => html.match(re)?.[1] || null;
-  return {
-    title:       g(/<title[^>]*>([^<]+)<\/title>/i)?.trim(),
-    description: g(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i),
-    canonical:   g(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i),
-    lang:        g(/<html[^>]+lang=["']([^"']+)["']/i),
-    viewport:    /<meta[^>]+name=["']viewport["']/i.test(html),
-    charset:     /charset=/i.test(html.slice(0, 1000)) ? 'UTF-8' : null,
-    is_https:    finalUrl.startsWith('https://'),
-    was_redirected: originalUrl !== finalUrl,
-    status_code: statusCode,
-    ttfb_ms:     ttfb,
-    page_size_kb: Math.round(html.length / 1024),
-    word_count:  html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(w => w.length > 2).length,
-    headings: {
-      h1: (html.match(/<h1[^>]*>/gi) || []).length,
-      h2: (html.match(/<h2[^>]*>/gi) || []).length,
-      h3: (html.match(/<h3[^>]*>/gi) || []).length,
-    },
-    images: {
-      total:       (html.match(/<img[^>]*>/gi) || []).length,
-      missing_alt: (html.match(/<img[^>]*>/gi) || []).filter(i => !/alt=["'][^"']+["']/i.test(i)).length,
-    },
-    open_graph: {
-      title:        g(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i),
-      description:  g(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i),
-      image:        g(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i),
-      twitter_card: g(/<meta[^>]+name=["']twitter:card["'][^>]+content=["']([^"']+)["']/i),
-    },
-    server:       headers['server'] || null,
-    cache_control: headers['cache-control'] || null,
-    powered_by:   headers['x-powered-by'] || null,
-    security: {
-      hsts:          !!headers['strict-transport-security'],
-      x_content_type: !!headers['x-content-type-options'],
-      x_frame:        !!headers['x-frame-options'],
-      csp:            !!headers['content-security-policy'],
-    },
-  };
-}
-
-function extractLinks(html, baseUrl) {
-  const internal = [];
-  const external = [];
-  const seen = new Set();
-  let base;
-  try { base = new URL(baseUrl); } catch { return { internal, external }; }
-
-  const linkRe = /href=["']([^"'#?]+)/gi;
-  let m;
-  while ((m = linkRe.exec(html)) !== null) {
-    const raw = m[1].trim();
-    if (!raw || raw.startsWith('mailto:') || raw.startsWith('tel:') || raw.startsWith('javascript:')) continue;
-    try {
-      const abs = new URL(raw, baseUrl).href;
-      if (seen.has(abs)) continue;
-      seen.add(abs);
-      const parsed = new URL(abs);
-      if (parsed.hostname === base.hostname) internal.push(abs);
-      else external.push(abs);
-    } catch {}
-    if (internal.length + external.length >= 200) break;
-  }
-  return { internal_count: internal.length, external_count: external.length, internal: internal.slice(0, 50), external: external.slice(0, 50) };
-}
-
-function extractSchemaOrg(html) {
-  const blocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
-  const schemas = [];
-  for (const block of blocks) {
-    try {
-      const content = block.replace(/<script[^>]*>/i, '').replace(/<\/script>/i, '').trim();
-      const parsed = JSON.parse(content);
-      schemas.push(parsed);
-    } catch {}
-  }
-  return { count: schemas.length, types: schemas.map(s => s['@type']).filter(Boolean), raw: schemas };
-}
-
-function detectTechStack(html, headers) {
-  const checks = [
-    { name: 'WordPress',   pattern: /wp-content\//i },
-    { name: 'Shopify',     pattern: /cdn\.shopify\.com/i },
-    { name: 'Wix',         pattern: /static\.wixstatic\.com/i },
-    { name: 'Squarespace', pattern: /squarespace\.com/i },
-    { name: 'Webflow',     pattern: /data-wf-page/i },
-    { name: 'Next.js',     pattern: /_next\/static/i },
-    { name: 'Nuxt',        pattern: /_nuxt\//i },
-    { name: 'Gatsby',      pattern: /___gatsby/i },
-    { name: 'React',       pattern: /__reactFiber|data-reactroot/i },
-    { name: 'Vue.js',      pattern: /__vue__|data-v-[a-f0-9]{7}/i },
-    { name: 'Angular',     pattern: /ng-version=/i },
-    { name: 'Tailwind',    pattern: /tailwindcss/i },
-    { name: 'Bootstrap',   pattern: /bootstrap\.min\.css/i },
-    { name: 'GA4',         pattern: /gtag\('config',\s*'G-/i },
-    { name: 'GTM',         pattern: /googletagmanager\.com\/gtm/i },
-    { name: 'Cloudflare',  header: 'cf-ray' },
-    { name: 'Vercel',      header: 'x-vercel-id' },
-    { name: 'Netlify',     header: 'x-nf-request-id' },
-  ];
-
-  const detected = [];
-  for (const c of checks) {
-    if (c.header ? !!headers[c.header] : c.pattern.test(html)) detected.push(c.name);
-  }
-  return detected;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PAGE DATA HANDLER (legacy SEO tool endpoint)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── PAGE DATA FETCHER ─────────────────────────────────────────
 async function handlePageData(request) {
-  if (request.method !== 'POST') return err('Method not allowed', 405);
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
   try {
     const { url } = await request.json();
     const t0 = Date.now();
     const res = await fetch(url, {
-      headers: { 'User-Agent': USER_AGENTS.chrome, 'Accept': 'text/html' },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; RankSight/2.0; +https://seotool.webmasterjamez.workers.dev)',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
       redirect: 'follow',
     });
     const ttfb = Date.now() - t0;
     const html = await res.text();
     const headers = Object.fromEntries(res.headers.entries());
-    return json(extractPageSignals(html, headers, res.url, res.status, ttfb, url));
-  } catch (e) {
-    return err(e.message);
+    return new Response(JSON.stringify(extractPageSignals(html, headers, res.url, res.status, ttfb, url)), { headers: CORS });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message, ttfb: null }), { headers: CORS });
   }
 }
 
 function extractPageSignals(html, headers, finalUrl, statusCode, ttfb, originalUrl) {
-  const g = (re, src = html) => src.match(re)?.[1] || null;
-  const title = g(/<title[^>]*>([^<]+)<\/title>/i);
-  const metaDesc = g(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) || g(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
-  const canonical = g(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) || g(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
+  const g = (re, src = html, i = 1) => { const m = (src || '').match(re); return m ? m[i] : null; };
+
+  const title    = g(/<title[^>]*>([^<]+)<\/title>/i);
+  const titleLen = title ? title.trim().length : 0;
+  const metaDesc = g(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i)
+                || g(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
+  const descLen  = metaDesc ? metaDesc.trim().length : 0;
+  const canonical= g(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)
+                || g(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
   const h1s = (html.match(/<h1[^>]*>/gi) || []).length;
   const h2s = (html.match(/<h2[^>]*>/gi) || []).length;
   const h3s = (html.match(/<h3[^>]*>/gi) || []).length;
   const allImgs = html.match(/<img[^>]*>/gi) || [];
   const imgsNoAlt = allImgs.filter(i => !/alt=["'][^"']+["']/i.test(i)).length;
-  const ogTitle = g(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
-  const ogDesc = g(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i);
-  const ogImage = g(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
-  const twitterCard = g(/<meta[^>]+name=["']twitter:card["'][^>]+content=["']([^"']+)["']/i);
+  const ogTitle    = g(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
+  const ogDesc     = g(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i);
+  const ogImage    = g(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i);
+  const twitterCard= g(/<meta[^>]+name=["']twitter:card["'][^>]+content=["']([^"']+)["']/i);
   const schemaBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
-  const schemaTypes = schemaBlocks.map(s => s.match(/"@type"\s*:\s*"([^"]+)"/)?.[1] || 'Unknown');
+  const schemaTypes = schemaBlocks.map(s => { const m = s.match(/"@type"\s*:\s*"([^"]+)"/); return m ? m[1] : 'Unknown'; });
   const robotsMeta = g(/<meta[^>]+name=["']robots["'][^>]+content=["']([^"']+)["']/i);
   const robotsHeader = headers['x-robots-tag'] || null;
   const isNoindex = /noindex/i.test(robotsMeta || '') || /noindex/i.test(robotsHeader || '');
   const pageSizeKb = Math.round(html.length / 1024);
   const wordCount = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().split(' ').filter(w => w.length > 2).length;
+
   return {
     url: finalUrl, statusCode, ttfb,
-    title: title?.trim(), titleLen: title?.trim().length || 0,
-    metaDesc: metaDesc?.trim(), descLen: metaDesc?.trim().length || 0, canonical,
+    title: title?.trim(), titleLen,
+    metaDesc: metaDesc?.trim(), descLen, canonical,
     headings: { h1: h1s, h2: h2s, h3: h3s },
     images: { total: allImgs.length, missingAlt: imgsNoAlt },
     openGraph: { title: ogTitle, description: ogDesc, image: ogImage, twitterCard },
@@ -649,37 +98,78 @@ function extractPageSignals(html, headers, finalUrl, statusCode, ttfb, originalU
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CMS DETECTION (legacy)
-// ─────────────────────────────────────────────────────────────────────────────
+// ── CMS DETECTION ─────────────────────────────────────────────
 async function handleCMSDetect(request) {
-  if (request.method !== 'POST') return err('Method not allowed', 405);
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
   try {
     const { url } = await request.json();
-    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENTS.chrome, 'Accept': 'text/html' }, redirect: 'follow' });
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RankSight/2.0)', 'Accept': 'text/html' },
+      redirect: 'follow',
+    });
     const html = await res.text();
     const headers = Object.fromEntries(res.headers.entries());
-    return json(detectCMSFull(html, headers, res.url));
-  } catch (e) {
-    return json({ cms: 'Unknown', confidence: 0, signals: [], tech_stack: [], error: e.message });
+    return new Response(JSON.stringify(detectCMS(html, headers, res.url)), { headers: CORS });
+  } catch (err) {
+    return new Response(JSON.stringify({ cms: 'Unknown', confidence: 0, signals: [], tech_stack: [], error: err.message }), { headers: CORS });
   }
 }
 
-function detectCMSFull(html, headers, finalUrl) {
+function detectCMS(html, headers, finalUrl) {
   const checks = [
     { cms: 'WordPress',   pattern: /wp-content\//i,             signal: 'wp-content path' },
     { cms: 'WordPress',   pattern: /wp-includes\//i,            signal: 'wp-includes path' },
+    { cms: 'WordPress',   pattern: /generator.*wordpress/i,     signal: 'WordPress generator' },
+    { cms: 'WordPress',   pattern: /\/wp-json\//i,              signal: 'WP REST API' },
     { cms: 'Shopify',     pattern: /cdn\.shopify\.com/i,        signal: 'Shopify CDN' },
+    { cms: 'Shopify',     pattern: /Shopify\.theme/i,           signal: 'Shopify.theme JS' },
+    { cms: 'Shopify',     pattern: /myshopify\.com/i,           signal: 'myshopify.com ref' },
     { cms: 'Wix',         pattern: /static\.wixstatic\.com/i,   signal: 'Wix static CDN' },
     { cms: 'Squarespace', pattern: /squarespace\.com/i,         signal: 'Squarespace ref' },
+    { cms: 'Squarespace', pattern: /Static\.SQUARESPACE_CONTEXT/i, signal: 'Squarespace JS' },
     { cms: 'Webflow',     pattern: /data-wf-page/i,             signal: 'Webflow attr' },
-    { cms: 'Next.js',     pattern: /_next\/static/i,            signal: 'Next.js static' },
-    { cms: 'Nuxt',        pattern: /_nuxt\//i,                  signal: 'Nuxt path' },
-    { cms: 'Gatsby',      pattern: /___gatsby/i,                signal: 'Gatsby root' },
+    { cms: 'Webflow',     pattern: /webflow\.com/i,             signal: 'Webflow ref' },
     { cms: 'Joomla',      pattern: /generator.*joomla/i,        signal: 'Joomla generator' },
     { cms: 'Drupal',      pattern: /drupal\.settings/i,         signal: 'Drupal.settings' },
     { cms: 'Ghost',       pattern: /generator.*ghost/i,         signal: 'Ghost generator' },
+    { cms: 'Next.js',     pattern: /_next\/static/i,            signal: 'Next.js static' },
+    { cms: 'Nuxt',        pattern: /_nuxt\//i,                  signal: 'Nuxt path' },
+    { cms: 'Gatsby',      pattern: /___gatsby/i,                signal: 'Gatsby root' },
+    { cms: 'Magento',     pattern: /\/static\/version[0-9]/i,   signal: 'Magento static' },
+    { cms: 'BigCommerce', pattern: /bigcommerce\.com/i,         signal: 'BigCommerce ref' },
+    { cms: 'Contentful',  pattern: /ctfassets\.net/i,           signal: 'Contentful CDN' },
+    { cms: 'Framer',      pattern: /framerusercontent\.com/i,   signal: 'Framer CDN' },
+    { cms: 'Google Analytics 4',  pattern: /gtag\('config',\s*'G-/i, signal: 'GA4' },
+    { cms: 'Google Tag Manager',  pattern: /googletagmanager\.com\/gtm/i, signal: 'GTM' },
+    { cms: 'Facebook Pixel',      pattern: /fbevents\.js/i,     signal: 'FB Pixel' },
+    { cms: 'Hotjar',              pattern: /static\.hotjar\.com/i, signal: 'Hotjar' },
+    { cms: 'React',    pattern: /__reactFiber|data-reactroot/i, signal: 'React' },
+    { cms: 'Vue.js',   pattern: /__vue__|data-v-[a-f0-9]{7}/i, signal: 'Vue.js' },
+    { cms: 'Angular',  pattern: /ng-version=/i,                 signal: 'Angular' },
+    { cms: 'Svelte',   pattern: /svelte-[a-z0-9]+/i,           signal: 'Svelte' },
+    { cms: 'Tailwind CSS', pattern: /tailwindcss/i,            signal: 'Tailwind' },
+    { cms: 'Bootstrap',    pattern: /bootstrap\.min\.css/i,    signal: 'Bootstrap' },
+    { cms: 'Stripe',      pattern: /js\.stripe\.com/i,         signal: 'Stripe.js' },
+    { cms: 'WooCommerce', pattern: /\/plugins\/woocommerce/i,  signal: 'WooCommerce' },
+    { cms: 'Intercom',    pattern: /widget\.intercom\.io/i,    signal: 'Intercom' },
+    { cms: 'HubSpot',     pattern: /js\.hs-scripts\.com/i,     signal: 'HubSpot' },
   ];
+
+  const NON_CMS = new Set([
+    'Google Analytics 4','Google Tag Manager','Facebook Pixel','Hotjar',
+    'React','Vue.js','Angular','Svelte','Tailwind CSS','Bootstrap',
+    'Stripe','WooCommerce','Intercom','HubSpot',
+  ]);
+  const CATEGORIES = {
+    'Google Analytics 4':'analytics','Google Tag Manager':'analytics',
+    'Facebook Pixel':'analytics','Hotjar':'analytics',
+    'React':'js','Vue.js':'js','Angular':'js','Svelte':'js',
+    'Tailwind CSS':'css','Bootstrap':'css',
+    'Stripe':'payment','WooCommerce':'ecommerce',
+    'Intercom':'chat','HubSpot':'crm',
+  };
+
   const scores = {};
   for (const c of checks) {
     if (c.pattern.test(html)) {
@@ -687,278 +177,803 @@ function detectCMSFull(html, headers, finalUrl) {
       scores[c.cms].push(c.signal);
     }
   }
+
+  const xGen = headers['x-generator'] || '';
+  if (/wordpress/i.test(xGen)) { scores['WordPress'] = scores['WordPress'] || []; scores['WordPress'].push('x-generator'); }
+  if (/drupal/i.test(xGen))    { scores['Drupal']    = scores['Drupal'] || [];    scores['Drupal'].push('x-generator'); }
+
+  const hosting = detectHosting(headers);
   let topCMS = 'Custom / Unknown', topCount = 0, topSignals = [];
   for (const [cms, sigs] of Object.entries(scores)) {
+    if (NON_CMS.has(cms)) continue;
     if (sigs.length > topCount) { topCount = sigs.length; topCMS = cms; topSignals = sigs; }
   }
-  const techStack = Object.entries(scores).map(([name, sigs]) => ({ name, signals: sigs, confidence: Math.min(100, sigs.length * 25) }));
-  return { cms: topCMS, confidence: Math.min(100, topCount * 25), signals: topSignals, server: headers['server'] || 'Unknown', tech_stack: techStack };
+
+  const techStack = Object.entries(scores).map(([name, sigs]) => ({
+    name, category: CATEGORIES[name] || 'cms', signals: sigs,
+    confidence: Math.min(100, sigs.length * 25),
+  })).sort((a, b) => {
+    const aC = !NON_CMS.has(a.name), bC = !NON_CMS.has(b.name);
+    return aC === bC ? b.signals.length - a.signals.length : aC ? -1 : 1;
+  });
+
+  return {
+    cms: topCMS, confidence: Math.min(100, topCount * 25),
+    signals: topSignals, server: headers['server'] || 'Unknown',
+    powered_by: headers['x-powered-by'] || null, hosting,
+    all_detected: Object.keys(scores), tech_stack: techStack,
+  };
+}
+
+function detectHosting(headers) {
+  const s = (headers['server'] || '').toLowerCase();
+  const v = (headers['via'] || '').toLowerCase();
+  if (headers['cf-ray'] || /cloudflare/i.test(s)) return 'Cloudflare';
+  if (headers['x-vercel-id'])                       return 'Vercel';
+  if (headers['x-nf-request-id'])                   return 'Netlify';
+  if (/amazonaws/i.test(s) || /cloudfront/i.test(v)) return 'AWS';
+  if (/nginx/i.test(s))  return 'Nginx';
+  if (/apache/i.test(s)) return 'Apache';
+  return 'Unknown';
+}
+
+function detectHostingInfo(url) {
+  try {
+    const h = new URL(url).hostname.toLowerCase();
+    if (h.endsWith('.workers.dev'))   return { server: 'Cloudflare Workers', hosting: 'Cloudflare', cdn: 'Cloudflare CDN' };
+    if (h.endsWith('.pages.dev'))     return { server: 'Cloudflare Pages', hosting: 'Cloudflare', cdn: 'Cloudflare CDN' };
+    if (h.endsWith('.netlify.app'))   return { server: 'Netlify Edge', hosting: 'Netlify', cdn: 'Netlify CDN' };
+    if (h.endsWith('.vercel.app'))    return { server: 'Vercel Edge', hosting: 'Vercel', cdn: 'Vercel Edge Network' };
+    if (h.endsWith('.github.io'))     return { server: 'GitHub Pages', hosting: 'GitHub Pages', cdn: 'Fastly' };
+    if (h.endsWith('.myshopify.com')) return { server: 'Shopify', hosting: 'Shopify', cdn: 'Cloudflare CDN' };
+    if (h.endsWith('.wordpress.com')) return { server: 'WordPress.com', hosting: 'Automattic', cdn: 'Jetpack CDN' };
+    if (h.endsWith('.webflow.io'))    return { server: 'Webflow', hosting: 'Webflow', cdn: 'Fastly CDN' };
+    if (h.endsWith('.wixsite.com'))   return { server: 'Wix', hosting: 'Wix', cdn: 'Wix CDN' };
+    return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown' };
+  } catch { return { server: 'Unknown', hosting: 'Unknown', cdn: 'Unknown' }; }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SEO AUDIT (legacy — stubbed, insert full implementation from original worker)
+// DETERMINISTIC RULE-BASED SEO AUDIT ENGINE
+// Replaces the Workers AI endpoint entirely — zero AI calls, zero rate limits.
+// Returns the exact same JSON shape the frontend already expects.
 // ─────────────────────────────────────────────────────────────────────────────
 async function handleAudit(request, env) {
-  return err('SEO Audit endpoint — see original worker for full implementation.', 501);
-}
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GOOGLE MAPS SCRAPER — merged from worker-maps-endpoint.js
-// ─────────────────────────────────────────────────────────────────────────────
-// ─────────────────────────────────────────────────────────────────────────────
-// GOOGLE MAPS BUSINESS SCRAPER
-// POST /api/maps-scrape
-// Body: { businessType, country, city, maxResults, fields, lang }
-// Returns: { listings: [...], total, query }
-// ─────────────────────────────────────────────────────────────────────────────
-async function handleMapsScrape(request, env) {
-  if (request.method !== 'POST') return err('Method not allowed', 405);
-  let body;
-  try { body = await request.json(); } catch { return err('Invalid JSON body'); }
-
-  const {
-    businessType,
-    country,
-    city,
-    maxResults = 20,
-    fields     = ['phones','emails','website','address','social','rating','messaging'],
-    lang       = 'en',
-  } = body;
-
-  if (!businessType) return err('businessType is required');
-  if (!country)      return err('country is required');
-  if (!city)         return err('city is required');
-
-  // Build Google Maps search URL
-  const searchQuery  = encodeURIComponent(`${businessType} in ${city} ${country}`);
-  const mapsSearchUrl = `https://www.google.com/maps/search/${searchQuery}/?hl=${lang}`;
-
-  // Fetch the Maps search page
-  let html;
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
-    const res = await fetch(mapsSearchUrl, {
-      signal: controller.signal,
-      headers: {
-        'User-Agent':      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept':          'text/html,application/xhtml+xml,*/*;q=0.8',
-        'Accept-Language': `${lang}-${lang.toUpperCase()},${lang};q=0.9,en;q=0.8`,
-        'Cache-Control':   'no-cache',
+    const body = await request.json();
+    const { url, pageData: pd = {}, cmsData = {} } = body;
+    const cms = cmsData?.cms || 'Custom / Unknown';
+    const { hosting } = detectHostingInfo(url);
+
+    // ── CMS-SPECIFIC FIX INSTRUCTIONS ────────────────────────────────────────
+    const CMS_FIX = {
+      'WordPress':        (issue) => cmsfix_wp(issue),
+      'Shopify':          (issue) => cmsfix_shopify(issue),
+      'Webflow':          (issue) => cmsfix_webflow(issue),
+      'Wix':              (issue) => cmsfix_wix(issue),
+      'Squarespace':      (issue) => cmsfix_squarespace(issue),
+      'Next.js':          (issue) => cmsfix_nextjs(issue),
+      'Nuxt':             (issue) => cmsfix_nuxt(issue),
+      'Gatsby':           (issue) => cmsfix_gatsby(issue),
+    };
+    const getFix = (issue) => (CMS_FIX[cms] || cmsfix_generic)(issue);
+
+    // ── SCORING CATEGORIES ────────────────────────────────────────────────────
+    // Each rule: { id, category, weight, pass, score, title, description, fix, priority, impact, effort, ranking_impact }
+    const rules = buildRules(pd, cms, getFix);
+
+    // Group by category
+    const cats = {};
+    for (const r of rules) {
+      if (!cats[r.category]) cats[r.category] = [];
+      cats[r.category].push(r);
+    }
+
+    // Weighted category scores
+    const catScore = (name) => {
+      const rs = cats[name] || [];
+      if (!rs.length) return 80; // neutral default if no rules
+      const total = rs.reduce((a, r) => a + r.weight, 0);
+      const earned = rs.reduce((a, r) => a + r.weight * (r.pass ? 1 : r.partialScore ?? 0), 0);
+      return Math.round((earned / total) * 100);
+    };
+
+    const techScore   = catScore('technical');
+    const perfScore   = catScore('performance');
+    const contScore   = catScore('content');
+    const uxScore     = catScore('ux');
+    const schemaScore = catScore('schema');
+    const eeatScore   = catScore('eeat');
+    const socialScore = catScore('social');
+    const backScore   = catScore('backlinks');
+
+    // Overall weighted score
+    const overall = Math.round(
+      techScore   * 0.22 +
+      contScore   * 0.20 +
+      perfScore   * 0.18 +
+      uxScore     * 0.12 +
+      schemaScore * 0.10 +
+      eeatScore   * 0.08 +
+      socialScore * 0.05 +
+      backScore   * 0.05
+    );
+
+    const grade = (s) => s >= 90 ? 'A' : s >= 80 ? 'B' : s >= 65 ? 'C' : s >= 50 ? 'D' : 'F';
+    const note  = (s) => s >= 90 ? 'Excellent' : s >= 80 ? 'Good' : s >= 65 ? 'Needs work' : s >= 50 ? 'Poor' : 'Critical';
+
+    // ── SUGGESTIONS: failed rules → actionable items ──────────────────────────
+    const suggestions = rules
+      .filter(r => !r.pass)
+      .sort((a, b) => {
+        const pri = { high: 0, medium: 1, low: 2 };
+        return (pri[a.priority] ?? 1) - (pri[b.priority] ?? 1) || b.weight - a.weight;
+      })
+      .map(r => ({
+        title: r.title,
+        priority: r.priority,
+        impact: capitalize(r.priority) + ' Impact',
+        category: capitalize(r.category),
+        description: r.description,
+        fix: r.fix,
+        effort: r.effort || 'Quick <30min',
+        ranking_impact: r.ranking_impact || 'Short-term 1-4wks',
+      }));
+
+    // ── QUICK WINS: top 5 high/medium priority suggestions ────────────────────
+    const quick_wins = suggestions
+      .filter(s => s.priority === 'high' || s.priority === 'medium')
+      .slice(0, 5)
+      .map(s => s.title);
+
+    // ── OVERVIEW CARDS ────────────────────────────────────────────────────────
+    const titleStatus = !pd.title ? 'fail' : pd.titleLen < 10 ? 'fail' : pd.titleLen < 50 || pd.titleLen > 60 ? 'warn' : 'pass';
+    const descStatus  = !pd.metaDesc ? 'fail' : pd.descLen < 50 ? 'fail' : pd.descLen < 120 || pd.descLen > 155 ? 'warn' : 'pass';
+    const ogStatus    = pd.openGraph?.title && pd.openGraph?.description && pd.openGraph?.image ? 'pass' : pd.openGraph?.title ? 'warn' : 'fail';
+    const altStatus   = pd.images?.total === 0 ? 'pass' : pd.images?.missingAlt === 0 ? 'pass' : pd.images?.missingAlt <= 2 ? 'warn' : 'fail';
+    const ttfbStatus  = !pd.ttfb ? 'warn' : pd.ttfb < 800 ? 'pass' : pd.ttfb < 1800 ? 'warn' : 'fail';
+    const wordsStatus = !pd.wordCount ? 'warn' : pd.wordCount >= 300 ? 'pass' : pd.wordCount >= 150 ? 'warn' : 'fail';
+
+    const overview_cards = [
+      { title: 'Page Title', value: pd.title || 'Missing', description: !pd.title ? 'No title tag found — critical SEO issue.' : `${pd.titleLen} chars — ${titleStatus === 'pass' ? 'ideal length (50-60)' : titleStatus === 'warn' ? 'adjust to 50-60 chars' : 'too short'}`, status: titleStatus },
+      { title: 'Meta Description', value: pd.metaDesc ? `${pd.descLen} chars` : 'Missing', description: !pd.metaDesc ? 'Missing meta description — add one to improve CTR.' : `${pd.descLen} chars — ${descStatus === 'pass' ? 'ideal (120-155)' : 'adjust to 120-155 chars'}`, status: descStatus },
+      { title: 'HTTPS', value: pd.isHttps ? 'Secure' : 'Not Secure', description: pd.isHttps ? 'Site is served over HTTPS — good.' : 'HTTPS is not enabled. This is a critical ranking signal.', status: pd.isHttps ? 'pass' : 'fail' },
+      { title: 'H1 Tags', value: String(pd.headings?.h1 ?? 0), description: pd.headings?.h1 === 1 ? 'One H1 found — ideal.' : pd.headings?.h1 > 1 ? `${pd.headings.h1} H1 tags found — use exactly one.` : 'No H1 tag found — add one with your primary keyword.', status: pd.headings?.h1 === 1 ? 'pass' : 'fail' },
+      { title: 'Schema Markup', value: `${pd.schema?.count ?? 0} found`, description: pd.schema?.count ? `Types: ${pd.schema.types.join(', ')}` : 'No structured data found — add schema markup.', status: pd.schema?.count ? 'pass' : 'fail' },
+      { title: 'Open Graph', value: ogStatus === 'pass' ? 'Complete' : ogStatus === 'warn' ? 'Partial' : 'Missing', description: ogStatus === 'pass' ? 'OG tags complete — good for social sharing.' : 'OG tags incomplete — add title, description, and image.', status: ogStatus },
+      { title: 'Image Alt Text', value: `${pd.images?.missingAlt ?? 0} missing / ${pd.images?.total ?? 0} total`, description: altStatus === 'pass' ? 'All images have alt text — excellent.' : `${pd.images?.missingAlt} image(s) missing alt text.`, status: altStatus },
+      { title: 'Page Speed', value: pd.ttfb ? `TTFB ${pd.ttfb}ms` : 'Unknown', description: ttfbStatus === 'pass' ? 'Fast TTFB — good for Core Web Vitals.' : ttfbStatus === 'warn' ? 'TTFB needs improvement (target <800ms).' : 'Slow TTFB — critical performance issue.', status: ttfbStatus },
+      { title: 'Word Count', value: `${pd.wordCount ?? 0} words`, description: wordsStatus === 'pass' ? 'Good content depth.' : pd.wordCount < 150 ? 'Very thin content — expand significantly.' : 'Content below recommended 300+ words.', status: wordsStatus },
+      { title: 'Canonical URL', value: pd.canonical ? 'Set' : 'Missing', description: pd.canonical ? `Canonical: ${pd.canonical.slice(0,50)}` : 'No canonical tag — add one to prevent duplicate content issues.', status: pd.canonical ? 'pass' : 'warn' },
+    ];
+
+    // ── METRICS ───────────────────────────────────────────────────────────────
+    const metrics = [
+      { name: 'Title Tag Length', value: pd.titleLen ? `${pd.titleLen} chars` : 'Missing', score: !pd.title ? 0 : pd.titleLen >= 50 && pd.titleLen <= 60 ? 100 : pd.titleLen >= 40 && pd.titleLen <= 70 ? 70 : 40, status: !pd.title ? 'fail' : pd.titleLen >= 50 && pd.titleLen <= 60 ? 'pass' : 'warn', benchmark: '50-60 characters ideal' },
+      { name: 'Meta Description Length', value: pd.descLen ? `${pd.descLen} chars` : 'Missing', score: !pd.metaDesc ? 0 : pd.descLen >= 120 && pd.descLen <= 155 ? 100 : pd.descLen >= 80 ? 70 : 30, status: !pd.metaDesc ? 'fail' : pd.descLen >= 120 && pd.descLen <= 155 ? 'pass' : 'warn', benchmark: '120-155 characters ideal' },
+      { name: 'TTFB', value: pd.ttfb ? `${pd.ttfb}ms` : 'N/A', score: !pd.ttfb ? 50 : pd.ttfb < 800 ? 100 : pd.ttfb < 1800 ? 60 : 20, status: ttfbStatus, benchmark: 'Under 800ms (Google threshold)' },
+      { name: 'H1 Count', value: String(pd.headings?.h1 ?? 0), score: pd.headings?.h1 === 1 ? 100 : pd.headings?.h1 > 1 ? 50 : 0, status: pd.headings?.h1 === 1 ? 'pass' : 'fail', benchmark: 'Exactly 1 H1 per page' },
+      { name: 'H2 Count', value: String(pd.headings?.h2 ?? 0), score: pd.headings?.h2 >= 2 ? 100 : pd.headings?.h2 === 1 ? 70 : 40, status: pd.headings?.h2 >= 2 ? 'pass' : 'warn', benchmark: '2+ H2 headings recommended' },
+      { name: 'Images Missing Alt', value: `${pd.images?.missingAlt ?? 0} / ${pd.images?.total ?? 0}`, score: pd.images?.total === 0 ? 100 : pd.images?.missingAlt === 0 ? 100 : Math.max(0, 100 - (pd.images.missingAlt / pd.images.total) * 100), status: altStatus, benchmark: '0 images missing alt text' },
+      { name: 'Schema Markup', value: `${pd.schema?.count ?? 0} blocks`, score: pd.schema?.count >= 3 ? 100 : pd.schema?.count >= 1 ? 65 : 0, status: pd.schema?.count ? 'pass' : 'fail', benchmark: '2+ schema blocks recommended' },
+      { name: 'Page Size', value: pd.pageSizeKb ? `${pd.pageSizeKb}KB` : 'N/A', score: !pd.pageSizeKb ? 70 : pd.pageSizeKb < 200 ? 100 : pd.pageSizeKb < 500 ? 75 : pd.pageSizeKb < 1000 ? 50 : 25, status: !pd.pageSizeKb ? 'warn' : pd.pageSizeKb < 500 ? 'pass' : 'warn', benchmark: 'Under 500KB recommended' },
+      { name: 'Word Count', value: `${pd.wordCount ?? 0} words`, score: pd.wordCount >= 1000 ? 100 : pd.wordCount >= 500 ? 80 : pd.wordCount >= 300 ? 60 : pd.wordCount >= 150 ? 30 : 0, status: wordsStatus, benchmark: '300+ words minimum, 1000+ preferred' },
+      { name: 'Internal Links', value: String(pd.links?.internal ?? 0), score: pd.links?.internal >= 5 ? 100 : pd.links?.internal >= 2 ? 70 : pd.links?.internal >= 1 ? 40 : 0, status: pd.links?.internal >= 3 ? 'pass' : 'warn', benchmark: '3+ internal links recommended' },
+      { name: 'External Links', value: String(pd.links?.external ?? 0), score: pd.links?.external >= 1 ? 100 : 50, status: pd.links?.external >= 1 ? 'pass' : 'warn', benchmark: '1+ external authority links' },
+      { name: 'HTTPS', value: pd.isHttps ? 'Enabled' : 'Disabled', score: pd.isHttps ? 100 : 0, status: pd.isHttps ? 'pass' : 'fail', benchmark: 'HTTPS required' },
+      { name: 'HSTS Header', value: pd.secHeaders?.hsts ? 'Present' : 'Missing', score: pd.secHeaders?.hsts ? 100 : 0, status: pd.secHeaders?.hsts ? 'pass' : 'warn', benchmark: 'Strict-Transport-Security header' },
+      { name: 'Canonical Tag', value: pd.canonical ? 'Set' : 'Missing', score: pd.canonical ? 100 : 0, status: pd.canonical ? 'pass' : 'warn', benchmark: 'Canonical tag required' },
+      { name: 'Open Graph Tags', value: ogStatus === 'pass' ? 'Complete' : ogStatus === 'warn' ? 'Partial' : 'Missing', score: ogStatus === 'pass' ? 100 : ogStatus === 'warn' ? 50 : 0, status: ogStatus, benchmark: 'og:title, og:description, og:image required' },
+      { name: 'Twitter Card', value: pd.openGraph?.twitterCard || 'Missing', score: pd.openGraph?.twitterCard ? 100 : 0, status: pd.openGraph?.twitterCard ? 'pass' : 'warn', benchmark: 'twitter:card meta tag' },
+      { name: 'Viewport Meta', value: pd.hasViewport ? 'Present' : 'Missing', score: pd.hasViewport ? 100 : 0, status: pd.hasViewport ? 'pass' : 'fail', benchmark: 'Required for mobile-friendliness' },
+      { name: 'Lang Attribute', value: pd.lang || 'Missing', score: pd.lang ? 100 : 0, status: pd.lang ? 'pass' : 'warn', benchmark: 'html[lang] attribute required' },
+      { name: 'Favicon', value: pd.hasFavicon ? 'Present' : 'Missing', score: pd.hasFavicon ? 100 : 0, status: pd.hasFavicon ? 'pass' : 'warn', benchmark: 'Favicon improves brand recognition' },
+      { name: 'Inline Scripts', value: String(pd.inlineScripts ?? 0), score: pd.inlineScripts === 0 ? 100 : pd.inlineScripts <= 3 ? 75 : pd.inlineScripts <= 8 ? 50 : 25, status: pd.inlineScripts <= 3 ? 'pass' : 'warn', benchmark: 'Minimize inline scripts for CSP and speed' },
+    ];
+
+    // ── KEYWORDS (extracted from title + meta) ────────────────────────────────
+    const allText = [(pd.title || ''), (pd.metaDesc || '')].join(' ').toLowerCase();
+    const stopWords = new Set(['the','and','for','are','but','not','you','all','this','that','with','from','have','they','will','your','been','has','more','also','than','when','can','was','its','our','what']);
+    const kwCandidates = allText.match(/\b[a-z]{4,}\b/g) || [];
+    const kwFreq = {};
+    for (const w of kwCandidates) { if (!stopWords.has(w)) kwFreq[w] = (kwFreq[w]||0)+1; }
+    const topKw = Object.entries(kwFreq).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k])=>k);
+
+    const keywords = [
+      { title: 'Target Keywords', value: topKw.length ? topKw.join(', ') : 'Unable to detect', description: 'Inferred from title and meta description', status: 'info' },
+      { title: 'Keyword in Title', value: pd.title ? 'Detected' : 'N/A', description: 'Primary keyword should appear in title tag', status: pd.title ? 'pass' : 'fail' },
+      { title: 'Keyword Density', value: pd.wordCount ? `~${Math.min(5, Math.round((topKw.length / Math.max(pd.wordCount, 1)) * 200))}%` : 'N/A', description: 'Ideal: 1-2% — avoid keyword stuffing', status: 'info' },
+      { title: 'LSI Keywords', value: 'Add semantic variations', description: 'Use related terms and synonyms for topical authority', status: 'info' },
+      { title: 'Long-tail Opportunities', value: 'Phrase-based queries', description: 'Target question-based and location-specific phrases', status: 'info' },
+      { title: 'Missing Keywords', value: pd.headings?.h1 === 0 ? 'H1 missing keyword' : 'Check H2-H3 coverage', description: 'Ensure keyword appears in H1 and at least 2 H2s', status: 'warn' },
+    ];
+
+    // ── SCHEMA ANALYSIS ───────────────────────────────────────────────────────
+    const existing = pd.schema?.types || [];
+    const allSchema = ['WebPage','Organization','LocalBusiness','Article','BlogPosting','FAQPage','BreadcrumbList','Product','Review','HowTo','Event','VideoObject','ImageObject','SiteNavigationElement','Person'];
+    const missing_schema = allSchema.filter(s => !existing.includes(s)).slice(0, 5);
+    const priority_schema = existing.length === 0 ? 'WebPage + Organization' : missing_schema[0] || 'FAQPage';
+
+    const schema_analysis = {
+      detected: existing,
+      missing: missing_schema,
+      priority_schema,
+      implementation: getFix('add_schema'),
+    };
+
+    // ── CORE WEB VITALS (TTFB-based estimation) ───────────────────────────────
+    const ttfb = pd.ttfb || 0;
+    const lcpEst = ttfb < 500 ? 'Good <2.5s' : ttfb < 1000 ? 'Needs Improvement 2.5-4s' : 'Poor >4s';
+    const fidEst = pd.inlineScripts > 10 ? 'Needs Improvement' : 'Good <100ms';
+    const clsEst = pd.hasViewport ? 'Good <0.1' : 'Needs Improvement';
+
+    const cwvRecs = [];
+    if (ttfb > 800)  cwvRecs.push('Reduce server response time — enable caching and use a CDN.');
+    if (pd.pageSizeKb > 500) cwvRecs.push(`Page is ${pd.pageSizeKb}KB — compress images and minify CSS/JS.`);
+    if (pd.inlineScripts > 5) cwvRecs.push('Move inline scripts to external files to reduce render-blocking.');
+    if (!pd.cacheControl) cwvRecs.push('Add Cache-Control headers to enable browser caching.');
+    if (!pd.hasViewport) cwvRecs.push('Add viewport meta tag to prevent layout shift on mobile.');
+    if (cwvRecs.length === 0) cwvRecs.push('TTFB looks good — focus on image optimization for best LCP.');
+
+    const core_web_vitals = {
+      lcp_estimate: lcpEst,
+      fid_estimate: fidEst,
+      cls_estimate: clsEst,
+      ttfb_actual: ttfb || null,
+      recommendations: cwvRecs,
+    };
+
+    // ── COMPETITOR GAPS ───────────────────────────────────────────────────────
+    const competitor_gaps = buildCompetitorGaps(pd, cms);
+
+    // ── SUMMARY ───────────────────────────────────────────────────────────────
+    const criticalCount = suggestions.filter(s => s.priority === 'high').length;
+    const summary = `This page scored ${overall}/100 with ${criticalCount} critical issue${criticalCount !== 1 ? 's' : ''} to resolve. ${
+      pd.isHttps ? 'HTTPS is correctly configured.' : 'HTTPS is not enabled — fix immediately.'
+    } ${pd.schema?.count ? `${pd.schema.count} schema block(s) detected; consider adding more types for richer results.` : 'No schema markup found — this is a significant missed opportunity for rich snippets.'}`;
+
+    const eeat_summary = `${pd.schema?.count ? 'Structured data helps establish entity authority with Google.' : 'Adding Organization and Author schema would strengthen E-E-A-T signals.'} ${pd.links?.external >= 2 ? 'External links to authoritative sources support trust signals.' : 'Adding links to authoritative external sources improves E-E-A-T.'}`;
+
+    // ── ASSEMBLE RESPONSE ─────────────────────────────────────────────────────
+    const result = {
+      score: overall,
+      grade: grade(overall),
+      summary,
+      eeat_summary,
+      quick_wins,
+      categories: {
+        technical:   { score: techScore,   grade: grade(techScore),   note: note(techScore) },
+        performance: { score: perfScore,   grade: grade(perfScore),   note: note(perfScore) },
+        content:     { score: contScore,   grade: grade(contScore),   note: note(contScore) },
+        ux:          { score: uxScore,     grade: grade(uxScore),     note: note(uxScore) },
+        backlinks:   { score: backScore,   grade: grade(backScore),   note: note(backScore) },
+        schema:      { score: schemaScore, grade: grade(schemaScore), note: note(schemaScore) },
+        eeat:        { score: eeatScore,   grade: grade(eeatScore),   note: note(eeatScore) },
+        social:      { score: socialScore, grade: grade(socialScore), note: note(socialScore) },
       },
-      redirect: 'follow',
-    });
-    clearTimeout(timer);
-    html = await res.text();
-  } catch (e) {
-    if (e.name === 'AbortError') return err('Maps search timed out', 504);
-    return err('Failed to fetch Google Maps: ' + e.message, 502);
+      overview_cards,
+      suggestions,
+      metrics,
+      keywords,
+      schema_analysis,
+      competitor_gaps,
+      core_web_vitals,
+    };
+
+    return new Response(JSON.stringify(result), { headers: CORS });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
   }
-
-  // Parse listings from Maps HTML
-  const listings = parseMapsListings(html, {
-    businessType,
-    country,
-    city,
-    maxResults: Math.min(maxResults, 100),
-    fields,
-  });
-
-  return json({
-    success: true,
-    query: { businessType, country, city, maxResults, lang },
-    total: listings.length,
-    listings,
-    scraped_at: new Date().toISOString(),
-  });
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MAPS LISTING PARSER
-// Extracts structured business data from Google Maps HTML responses.
-// Google Maps embeds listing data as JSON fragments inside the page HTML.
+// RULE BUILDER — 50+ deterministic checks
+// Each rule: { category, weight, pass, partialScore, title, description, fix, priority, effort, ranking_impact }
 // ─────────────────────────────────────────────────────────────────────────────
-function parseMapsListings(html, { businessType, country, city, maxResults, fields }) {
-  const listings = [];
-  const seen     = new Set();
+function buildRules(pd, cms, getFix) {
+  const rules = [];
+  const add = (r) => rules.push(r);
 
-  // ── Strategy 1: Extract from embedded JSON data arrays in Maps HTML
-  // Google Maps embeds data in JS arrays that look like:
-  //   ["Business Name", null, ["address"], [lat, lng], ...]
-  const jsonBlocks = html.match(/\[\s*"[^"]{2,100}"\s*,\s*null\s*,\s*\[/g) || [];
+  // ── TECHNICAL ──────────────────────────────────────────────────────────────
+  add({
+    category: 'technical', weight: 15, priority: 'high',
+    pass: pd.isHttps,
+    title: 'Enable HTTPS / SSL',
+    description: 'HTTPS is a confirmed Google ranking signal. Non-HTTPS sites are marked "Not Secure" by Chrome, causing user distrust and ranking penalties.',
+    fix: getFix('https'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'technical', weight: 12, priority: 'high',
+    pass: !!pd.canonical,
+    title: 'Add Canonical Tag',
+    description: 'Missing canonical tag risks duplicate content penalties and splits ranking signals across URLs.',
+    fix: getFix('canonical'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 10, priority: 'high',
+    pass: !pd.isNoindex,
+    title: 'Page is Blocked from Indexing',
+    description: 'A noindex directive is preventing search engines from indexing this page. Remove it to allow ranking.',
+    fix: getFix('noindex'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'technical', weight: 8, priority: 'medium',
+    pass: !!pd.lang,
+    title: 'Add Language Attribute',
+    description: 'The html[lang] attribute is missing. It helps search engines and screen readers understand the page language.',
+    fix: getFix('lang'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 7, priority: 'medium',
+    pass: !!pd.hasCharset,
+    title: 'Declare Character Encoding',
+    description: 'Missing charset declaration can cause rendering issues and confuse crawlers.',
+    fix: getFix('charset'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 6, priority: 'medium',
+    pass: pd.secHeaders?.hsts,
+    title: 'Add HSTS Security Header',
+    description: 'HTTP Strict Transport Security (HSTS) forces browsers to always use HTTPS, preventing downgrade attacks.',
+    fix: getFix('hsts'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 5, priority: 'low',
+    pass: pd.secHeaders?.xContentType,
+    title: 'Add X-Content-Type-Options Header',
+    description: 'Missing X-Content-Type-Options header. Add "nosniff" to prevent MIME-type sniffing attacks.',
+    fix: getFix('xcontent'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 5, priority: 'low',
+    pass: pd.secHeaders?.xFrame,
+    title: 'Add X-Frame-Options Header',
+    description: 'Missing X-Frame-Options header. Add "SAMEORIGIN" to prevent clickjacking attacks.',
+    fix: getFix('xframe'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'technical', weight: 4, priority: 'low',
+    pass: !pd.wasRedirected,
+    title: 'Audit Redirect Chain',
+    description: 'The page URL was redirected. Ensure redirects are minimal and use 301 (permanent) redirects only.',
+    fix: 'Audit redirects using a crawler like Screaming Frog. Eliminate chains longer than 1 hop. Update all internal links to point to the final URL.',
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
 
-  // ── Strategy 2: Extract named blocks from Maps page source patterns
-  // Pattern: business name near address/phone/rating data
-  const namePatterns = [
-    // Schema.org JSON-LD (most reliable)
-    /"name"\s*:\s*"([^"]{2,100})"/g,
-  ];
+  // ── CONTENT ────────────────────────────────────────────────────────────────
+  add({
+    category: 'content', weight: 15, priority: 'high',
+    pass: !!pd.title && pd.titleLen >= 10,
+    title: 'Add Page Title Tag',
+    description: 'The title tag is missing or empty. It is the most important on-page SEO element and controls what appears in SERPs.',
+    fix: getFix('title'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'content', weight: 8, priority: 'medium',
+    pass: pd.titleLen >= 50 && pd.titleLen <= 60,
+    partialScore: pd.titleLen > 0 ? 0.5 : 0,
+    title: 'Optimize Title Tag Length',
+    description: `Title is ${pd.titleLen} chars. Ideal is 50-60 chars to maximize SERP display without truncation.`,
+    fix: getFix('title_length'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 12, priority: 'high',
+    pass: !!pd.metaDesc && pd.descLen >= 50,
+    title: 'Add Meta Description',
+    description: 'Meta description is missing or too short. It appears in SERPs and directly affects click-through rate.',
+    fix: getFix('meta_desc'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 7, priority: 'medium',
+    pass: pd.descLen >= 120 && pd.descLen <= 155,
+    partialScore: pd.descLen > 50 ? 0.5 : 0,
+    title: 'Optimize Meta Description Length',
+    description: `Meta description is ${pd.descLen} chars. Ideal is 120-155 chars for full display in SERPs.`,
+    fix: getFix('meta_desc_length'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 12, priority: 'high',
+    pass: pd.headings?.h1 === 1,
+    partialScore: pd.headings?.h1 > 1 ? 0.4 : 0,
+    title: pd.headings?.h1 === 0 ? 'Add H1 Heading Tag' : 'Fix Multiple H1 Tags',
+    description: pd.headings?.h1 === 0 ? 'No H1 found. Every page needs exactly one H1 containing the primary keyword.' : `${pd.headings?.h1} H1 tags found. Use exactly one H1 per page to signal clear topic focus.`,
+    fix: getFix('h1'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 7, priority: 'medium',
+    pass: pd.headings?.h2 >= 2,
+    partialScore: pd.headings?.h2 === 1 ? 0.6 : 0,
+    title: 'Add More H2 Subheadings',
+    description: `Only ${pd.headings?.h2 || 0} H2 tag(s) found. Use multiple H2s to structure content for both users and crawlers.`,
+    fix: getFix('h2'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 10, priority: 'high',
+    pass: pd.wordCount >= 300,
+    partialScore: pd.wordCount >= 150 ? 0.4 : 0,
+    title: 'Increase Content Word Count',
+    description: `Page has ~${pd.wordCount || 0} words. Google favors comprehensive content (300+ min, 1000+ preferred) for most topics.`,
+    fix: getFix('word_count'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'content', weight: 8, priority: 'medium',
+    pass: (pd.images?.missingAlt || 0) === 0,
+    partialScore: pd.images?.total > 0 ? (1 - (pd.images?.missingAlt / pd.images?.total)) : 1,
+    title: 'Fix Missing Image Alt Text',
+    description: `${pd.images?.missingAlt || 0} of ${pd.images?.total || 0} images are missing alt text. Alt text is used by crawlers and improves accessibility and image search rankings.`,
+    fix: getFix('alt_text'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 6, priority: 'medium',
+    pass: pd.links?.internal >= 3,
+    partialScore: pd.links?.internal >= 1 ? 0.5 : 0,
+    title: 'Build Internal Link Structure',
+    description: `Only ${pd.links?.internal || 0} internal links found. Internal linking distributes PageRank and helps crawlers discover content.`,
+    fix: getFix('internal_links'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'content', weight: 4, priority: 'low',
+    pass: pd.links?.external >= 1,
+    title: 'Add External Authority Links',
+    description: 'No external links detected. Linking to authoritative sources supports E-E-A-T and builds topical credibility.',
+    fix: 'Add 2-3 outbound links to authoritative sources (government, academic, major publications) relevant to your topic.',
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
 
-  // ── Strategy 3: Parse structured data from within Maps HTML
-  // Each Maps listing block has predictable patterns we can extract from.
+  // ── PERFORMANCE ────────────────────────────────────────────────────────────
+  add({
+    category: 'performance', weight: 15, priority: 'high',
+    pass: pd.ttfb !== null && pd.ttfb < 800,
+    partialScore: pd.ttfb < 1800 ? 0.5 : 0,
+    title: 'Improve Server Response Time (TTFB)',
+    description: `TTFB is ${pd.ttfb || 'unknown'}ms. Google's threshold for Good is <800ms. Slow TTFB hurts Core Web Vitals and rankings.`,
+    fix: getFix('ttfb'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'performance', weight: 10, priority: 'medium',
+    pass: !!pd.cacheControl,
+    title: 'Enable Browser Caching',
+    description: 'No Cache-Control header found. Without caching, every visit downloads all assets, slowing repeat visitors.',
+    fix: getFix('cache'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'performance', weight: 8, priority: 'medium',
+    pass: (pd.pageSizeKb || 0) < 500,
+    partialScore: (pd.pageSizeKb || 0) < 1000 ? 0.5 : 0,
+    title: 'Reduce Page Size',
+    description: `Page is ${pd.pageSizeKb || 0}KB. Aim for under 500KB to ensure fast load times, especially on mobile.`,
+    fix: getFix('page_size'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'performance', weight: 7, priority: 'medium',
+    pass: (pd.inlineScripts || 0) <= 3,
+    partialScore: (pd.inlineScripts || 0) <= 8 ? 0.5 : 0,
+    title: 'Reduce Inline JavaScript',
+    description: `${pd.inlineScripts || 0} inline script blocks found. Excessive inline JS blocks rendering and complicates CSP headers.`,
+    fix: getFix('inline_scripts'),
+    effort: 'Advanced half-day+', ranking_impact: 'Short-term 1-4wks',
+  });
 
-  // Extract all schema.org LocalBusiness blocks
-  const schemaBlocks = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi) || [];
-  for (const block of schemaBlocks) {
-    try {
-      const raw = block.replace(/<script[^>]*>/i, '').replace(/<\/script>/i, '').trim();
-      const parsed = JSON.parse(raw);
-      const items = Array.isArray(parsed) ? parsed : [parsed];
-      for (const item of items) {
-        if (listings.length >= maxResults) break;
-        const biz = extractFromSchema(item, { businessType, country, city, fields });
-        if (biz) {
-          const key = biz.name.toLowerCase().replace(/\s+/g, '');
-          if (!seen.has(key)) { seen.add(key); listings.push(biz); }
-        }
-      }
-    } catch {}
-  }
+  // ── UX ─────────────────────────────────────────────────────────────────────
+  add({
+    category: 'ux', weight: 15, priority: 'high',
+    pass: pd.hasViewport,
+    title: 'Add Viewport Meta Tag',
+    description: 'Missing viewport meta tag. Without it, the page renders as a desktop site on mobile, hurting mobile rankings (mobile-first indexing).',
+    fix: getFix('viewport'),
+    effort: 'Quick <30min', ranking_impact: 'Immediate',
+  });
+  add({
+    category: 'ux', weight: 7, priority: 'low',
+    pass: pd.hasFavicon,
+    title: 'Add Favicon',
+    description: 'No favicon detected. Favicons improve brand recognition in browser tabs and bookmarks.',
+    fix: getFix('favicon'),
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
 
-  // ── Strategy 4: Extract from Maps' internal data format
-  // Google Maps encodes listings in an obfuscated but consistent JS format
-  // Look for patterns like: ["Business Name","address",phone,rating]
-  if (listings.length < maxResults) {
-    const mapsDataRe = /\["([^"]{2,100})","([^"]{5,200}(?:Street|St|Ave|Blvd|Rd|Dr|Lane|Ln|City|Town|District|Barangay|Brgy|Floor|Unit|Building|Bldg)[^"]{0,150})"/gi;
-    let m;
-    while ((m = mapsDataRe.exec(html)) !== null && listings.length < maxResults) {
-      const name = m[1];
-      const addr = m[2];
-      const key  = name.toLowerCase().replace(/\s+/g,'');
-      if (!seen.has(key) && name.length > 2 && !isJunk(name)) {
-        seen.add(key);
-        const biz = { name, address: addr, city, country, bizType: businessType };
-        if (fields.includes('phones'))  biz.phones  = [];
-        if (fields.includes('emails'))  biz.emails  = [];
-        if (fields.includes('social'))  biz.social  = [];
-        if (fields.includes('messaging')) biz.messaging = [];
-        listings.push(biz);
-      }
-    }
-  }
+  // ── SCHEMA ─────────────────────────────────────────────────────────────────
+  add({
+    category: 'schema', weight: 15, priority: 'high',
+    pass: (pd.schema?.count || 0) >= 1,
+    title: 'Add Schema Markup (Structured Data)',
+    description: 'No structured data found. Schema markup enables rich snippets in SERPs (star ratings, FAQs, breadcrumbs) that increase CTR by 20-30%.',
+    fix: getFix('add_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'schema', weight: 10, priority: 'medium',
+    pass: (pd.schema?.count || 0) >= 2,
+    partialScore: pd.schema?.count === 1 ? 0.5 : 0,
+    title: 'Add Additional Schema Types',
+    description: `Only ${pd.schema?.count || 0} schema type(s) detected. Add FAQPage, BreadcrumbList, and Organization for richer SERP features.`,
+    fix: getFix('more_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
 
-  // ── Strategy 5: Extract from Maps search result name snippets
-  if (listings.length < maxResults) {
-    // Maps embeds listing names in aria-label or data-result-index patterns
-    const ariaRe = /aria-label=["']([^"']{3,100})["'][^>]*>/gi;
-    let m;
-    while ((m = ariaRe.exec(html)) !== null && listings.length < maxResults) {
-      const name = m[1].trim();
-      if (name.length < 3 || name.length > 100) continue;
-      if (isJunk(name)) continue;
-      const key = name.toLowerCase().replace(/\s+/g,'');
-      if (!seen.has(key)) {
-        seen.add(key);
-        const biz = { name, city, country, bizType: businessType };
-        if (fields.includes('phones'))  biz.phones  = [];
-        if (fields.includes('emails'))  biz.emails  = [];
-        if (fields.includes('social'))  biz.social  = [];
-        if (fields.includes('messaging')) biz.messaging = [];
-        listings.push(biz);
-      }
-    }
-  }
+  // ── E-E-A-T ────────────────────────────────────────────────────────────────
+  add({
+    category: 'eeat', weight: 10, priority: 'medium',
+    pass: pd.links?.external >= 2,
+    partialScore: pd.links?.external >= 1 ? 0.5 : 0,
+    title: 'Link to Authoritative External Sources',
+    description: 'Linking to authoritative sources signals expertise and trustworthiness (E-E-A-T), a key Google quality signal.',
+    fix: 'Add 2-3 outbound links to reputable sources such as government sites, research papers, or industry publications.',
+    effort: 'Quick <30min', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'eeat', weight: 10, priority: 'medium',
+    pass: (pd.schema?.types || []).some(t => ['Organization','Person','Author','LocalBusiness'].includes(t)),
+    title: 'Add Organization or Author Schema',
+    description: 'No Organization or Person schema detected. These schema types establish entity authority and support Google Knowledge Panel eligibility.',
+    fix: getFix('org_schema'),
+    effort: 'Medium 1-2hr', ranking_impact: 'Long-term 3mo+',
+  });
+  add({
+    category: 'eeat', weight: 8, priority: 'medium',
+    pass: pd.wordCount >= 500,
+    partialScore: pd.wordCount >= 300 ? 0.6 : 0,
+    title: 'Demonstrate Content Depth and Expertise',
+    description: `${pd.wordCount || 0} words is insufficient to demonstrate expertise. Top-ranking pages for most queries have 1000+ words of original, expert content.`,
+    fix: 'Expand content with original research, expert opinions, data, case studies, or step-by-step guidance. Aim for comprehensive coverage of the topic.',
+    effort: 'Advanced half-day+', ranking_impact: 'Long-term 3mo+',
+  });
 
-  // ── Enrich each listing by scraping their Maps detail page URLs
-  // (URLs are embedded in Maps HTML as /maps/place/... paths)
-  const placeUrls = extractPlaceUrls(html);
-  for (let i = 0; i < Math.min(listings.length, placeUrls.length); i++) {
-    if (!listings[i].mapsUrl) listings[i].mapsUrl = placeUrls[i];
-  }
+  // ── SOCIAL ─────────────────────────────────────────────────────────────────
+  add({
+    category: 'social', weight: 12, priority: 'medium',
+    pass: !!(pd.openGraph?.title && pd.openGraph?.description && pd.openGraph?.image),
+    partialScore: pd.openGraph?.title ? 0.5 : 0,
+    title: 'Complete Open Graph Tags',
+    description: `Open Graph tags are ${!pd.openGraph?.title ? 'missing' : 'incomplete'}. OG tags control how your page appears when shared on Facebook, LinkedIn, and messaging apps.`,
+    fix: getFix('og_tags'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'social', weight: 8, priority: 'low',
+    pass: !!pd.openGraph?.twitterCard,
+    title: 'Add Twitter Card Meta Tags',
+    description: 'No Twitter Card tag found. Twitter Cards control appearance when shared on X/Twitter, increasing engagement.',
+    fix: getFix('twitter_card'),
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
 
-  return listings.slice(0, maxResults);
+  // ── BACKLINKS (proxy signals) ───────────────────────────────────────────────
+  add({
+    category: 'backlinks', weight: 10, priority: 'low',
+    pass: pd.links?.external >= 3,
+    partialScore: pd.links?.external >= 1 ? 0.5 : 0,
+    title: 'Increase External Link Outreach',
+    description: 'Low external link count suggests minimal link-building activity. Quality backlinks remain the top ranking factor.',
+    fix: 'Create linkable assets (original research, infographics, tools). Submit to niche directories. Build relationships with industry publishers for guest posts.',
+    effort: 'Advanced half-day+', ranking_impact: 'Long-term 3mo+',
+  });
+
+  // Only return rules that are relevant (remove always-pass rules if they pass)
+  return rules;
 }
 
-// ─── EXTRACT FROM SCHEMA.ORG ─────────────────────────────────────────────────
-function extractFromSchema(item, { businessType, country, city, fields }) {
-  if (!item || typeof item !== 'object') return null;
-
-  const type = item['@type'] || '';
-  const validTypes = ['LocalBusiness','Restaurant','FoodEstablishment','MedicalBusiness',
-    'HealthAndBeautyBusiness','ProfessionalService','LodgingBusiness','Store',
-    'Dentist','Physician','LegalService','RealEstateAgent','AutoDealer','Hotel',
-    'Pharmacy','GroceryStore','ClothingStore','ElectronicsStore','BarOrPub','Bakery',
-    'CafeOrCoffeeShop','FastFoodRestaurant','NightClub','School','CollegeOrUniversity'];
-
-  const isValidType = validTypes.some(t => type.includes(t)) || !!item.name;
-  if (!isValidType || !item.name) return null;
-
-  const biz = {
-    name:     item.name,
-    category: item['@type'] ? String(item['@type']).replace(/([A-Z])/g, ' $1').trim() : businessType,
-    bizType:  businessType,
-    city,
-    country,
+// ─────────────────────────────────────────────────────────────────────────────
+// CMS-SPECIFIC FIX GENERATORS
+// ─────────────────────────────────────────────────────────────────────────────
+function cmsfix_wp(issue) {
+  const m = {
+    https:          'Install an SSL certificate via your hosting control panel (cPanel > SSL/TLS). Most hosts provide free Let\'s Encrypt SSL. Then install the "Really Simple SSL" WordPress plugin to handle mixed content.',
+    canonical:      'Install Yoast SEO or RankMath. In the plugin settings, canonical tags are added automatically. For custom pages, use the Advanced tab in each post/page editor.',
+    noindex:        'Go to WordPress Admin > Settings > Reading. Ensure "Discourage search engines" is NOT checked. Also check Yoast/RankMath Advanced settings for each page.',
+    title:          'Install Yoast SEO. Edit the page > scroll to Yoast SEO box > set the SEO Title field. Aim for 50-60 characters with your primary keyword near the front.',
+    title_length:   'In Yoast SEO, click the snippet preview to edit the SEO Title. Use the character counter to target 50-60 chars.',
+    meta_desc:      'In Yoast SEO or RankMath, edit the page and fill in the Meta Description field. Use 120-155 characters and include a call-to-action.',
+    meta_desc_length: 'Edit the page in WordPress, scroll to Yoast SEO, and adjust the Meta Description. Use the built-in character counter.',
+    h1:             'Edit the page in WordPress. The page title (<h1>) is usually set by the "Title" field at the top of the editor. In the block editor, the first Heading block set to H1.',
+    h2:             'In the WordPress block editor, add Heading blocks (set to H2) for each major section. Use keywords naturally in subheadings.',
+    viewport:       'Your theme should include the viewport meta tag. Check your theme\'s header.php or use a plugin like "Header and Footer Scripts" to add: <meta name="viewport" content="width=device-width, initial-scale=1">',
+    alt_text:       'Go to Media Library in WordPress. Click each image and fill in the Alt Text field. For images in posts, click the image in the editor and add alt text in the block settings panel.',
+    word_count:     'Expand the page content in the WordPress editor. Aim for 300+ words. Use the block editor\'s word count (Document Overview) to track progress.',
+    internal_links: 'In the WordPress editor, highlight text and use the Link tool (Ctrl+K) to add internal links to related posts and pages.',
+    ttfb:           'Install WP Rocket or LiteSpeed Cache for caching. Enable object caching with Redis. Use Cloudflare as your CDN. Check your hosting plan — shared hosting often causes slow TTFB.',
+    cache:          'Install WP Rocket, W3 Total Cache, or LiteSpeed Cache. These plugins set proper Cache-Control headers automatically.',
+    page_size:      'Install Smush or ShortPixel to compress images. Use WP Rocket for CSS/JS minification. Disable unused plugins and scripts.',
+    inline_scripts: 'Use WP Rocket\'s "Defer JavaScript Execution" feature. Move inline scripts to external .js files where possible.',
+    add_schema:     'Install Schema Pro or Yoast SEO Premium. For WebPage + Organization schema, go to Yoast > Search Appearance > Organizations and fill in your details.',
+    more_schema:    'Install Rank Math SEO (free). Enable Schema module. Add FAQPage schema via the FAQ block in the editor. Add BreadcrumbList in Yoast Settings > Search Appearance.',
+    org_schema:     'In Yoast SEO, go to Yoast > Settings > Site Representation. Select Organization, fill in name, logo, and social profiles. This auto-generates Organization schema.',
+    og_tags:        'Yoast SEO automatically generates OG tags. Go to Yoast > Social > Facebook and enable Open Graph. Edit each page and set the Social preview image in Yoast box.',
+    twitter_card:   'In Yoast SEO, go to Yoast > Social > Twitter and enable Twitter card data. The card tags will be auto-added to all pages.',
+    hsts:           'Add HSTS via your .htaccess (Apache) or nginx.conf. In Cloudflare, enable HSTS under SSL/TLS > Edge Certificates > HTTP Strict Transport Security.',
+    lang:           'Edit your theme\'s header.php and ensure the <html> tag has lang="en" (or your language code). Or use a multilingual plugin like WPML.',
+    charset:        'In header.php, add: <meta charset="UTF-8"> before any other meta tags. Most WordPress themes include this by default.',
+    xcontent:       'Add to .htaccess: Header set X-Content-Type-Options "nosniff". Or configure via Cloudflare custom headers.',
+    xframe:         'Add to .htaccess: Header always set X-Frame-Options "SAMEORIGIN". Or use Cloudflare Transform Rules > Response Headers.',
+    favicon:        'Go to WordPress Admin > Appearance > Customize > Site Identity > Site Icon. Upload a 512x512px PNG image.',
   };
-
-  if (fields.includes('address') && item.address) {
-    const a = item.address;
-    if (typeof a === 'string') {
-      biz.address = a;
-    } else {
-      biz.address = [a.streetAddress, a.addressLocality, a.addressRegion, a.postalCode, a.addressCountry]
-        .filter(Boolean).join(', ');
-    }
-  }
-
-  if (fields.includes('phones')) {
-    biz.phones = [];
-    if (item.telephone) biz.phones = Array.isArray(item.telephone) ? item.telephone : [item.telephone];
-  }
-
-  if (fields.includes('emails')) {
-    biz.emails = [];
-    if (item.email) biz.emails = Array.isArray(item.email) ? item.email : [item.email];
-  }
-
-  if (fields.includes('website')) {
-    biz.website = item.url || item.sameAs?.[0] || null;
-  }
-
-  if (fields.includes('rating') && item.aggregateRating) {
-    biz.rating      = item.aggregateRating.ratingValue || null;
-    biz.reviewCount = item.aggregateRating.reviewCount || null;
-  }
-
-  if (fields.includes('hours') && item.openingHours) {
-    biz.hours = Array.isArray(item.openingHours) ? item.openingHours.join(', ') : item.openingHours;
-  }
-
-  if (fields.includes('social')) {
-    biz.social = [];
-    const sameAs = item.sameAs || [];
-    const platforms = ['facebook','instagram','twitter','linkedin','youtube','tiktok','pinterest'];
-    for (const url of sameAs) {
-      const platform = platforms.find(p => url.toLowerCase().includes(p));
-      if (platform) biz.social.push({ platform: platform.charAt(0).toUpperCase()+platform.slice(1), url });
-    }
-  }
-
-  if (fields.includes('messaging')) {
-    biz.messaging = [];
-  }
-
-  if (item.hasMap) biz.mapsUrl = item.hasMap;
-  if (item.geo) biz.geo = { lat: item.geo.latitude, lng: item.geo.longitude };
-
-  return biz;
+  return m[issue] || 'Use the Yoast SEO plugin and WordPress Admin settings to address this issue.';
 }
 
-// ─── EXTRACT PLACE URLS ───────────────────────────────────────────────────────
-function extractPlaceUrls(html) {
-  const urls  = [];
-  const seen  = new Set();
-  const re    = /https?:\/\/(?:www\.)?google\.com\/maps\/place\/[^\s"'<>]{10,200}/gi;
-  let m;
-  while ((m = re.exec(html)) !== null) {
-    const url = m[0].split('"')[0].split("'")[0].replace(/\\u003d/g,'=').replace(/&amp;/g,'&');
-    if (!seen.has(url)) { seen.add(url); urls.push(url); }
-  }
-  return urls;
+function cmsfix_shopify(issue) {
+  const m = {
+    https:          'Shopify provides free SSL by default. Go to Online Store > Domains and ensure your custom domain shows a padlock. Click "Enable SSL" if not active.',
+    canonical:      'Shopify adds canonical tags automatically on product and collection pages. For custom pages, add <link rel="canonical" href="..."> in your theme\'s page.liquid template.',
+    title:          'Go to Shopify Admin > Online Store > Pages (or Products). Click the page and scroll to "Search engine listing preview". Click "Edit" to set the page title.',
+    meta_desc:      'In Shopify Admin, go to the page/product, scroll to "Search engine listing preview" and click "Edit website SEO". Fill in the meta description.',
+    add_schema:     'Install "JSON-LD for SEO" or "Schema Plus for SEO" from the Shopify App Store. For products, Shopify adds Product schema automatically. Add Organization schema via app.',
+    og_tags:        'Shopify themes include OG tags by default. To customize, edit your theme\'s theme.liquid. Look for og:image — set a default OG image in Online Store > Preferences.',
+    ttfb:           'Shopify hosting speed is managed by Shopify. Optimize by: removing unused apps (each adds load time), compressing images with TinyIMG app, enabling lazy loading.',
+    page_size:      'Use TinyIMG or Crush.pics app for image compression. Audit and remove unused Shopify apps — each app adds JavaScript to every page.',
+    alt_text:       'In Shopify Admin, go to Products > click a product > click each image > add Alt text in the image editor dialog.',
+    canonical:      'Shopify manages canonicals automatically. Ensure you\'re not duplicating content across collections and products.',
+  };
+  return m[issue] || 'Go to Shopify Admin > Online Store > Preferences or the page-specific SEO settings to address this issue.';
 }
 
-// ─── JUNK FILTER ─────────────────────────────────────────────────────────────
-function isJunk(name) {
-  const junk = /^(Google|Maps|Search|menu|close|back|share|directions|save|website|call|photos|reviews|nearby|overview|about|more|less|open|closed|hours|edit|suggest|report|flag|help|settings|sign|log|account|privacy|terms|send|feedback|data|loading|error)$/i;
-  return junk.test(name.trim()) || name.length < 2 || /^\d+$/.test(name);
+function cmsfix_webflow(issue) {
+  const m = {
+    title:          'In Webflow Designer: click the page > Page Settings (gear icon) > SEO Settings > set the Title Tag.',
+    meta_desc:      'In Webflow Designer > Page Settings > SEO Settings > Meta Description field.',
+    og_tags:        'In Webflow Designer > Page Settings > Open Graph Settings. Set OG Title, Description, and Image.',
+    add_schema:     'In Webflow, add a custom Code Embed element. Paste your JSON-LD schema script. Or use the Webflow CMS to dynamically generate schema.',
+    canonical:      'In Webflow Page Settings > SEO > Canonical URL field. Or enable auto-canonical in Site Settings > SEO.',
+    viewport:       'Webflow includes viewport meta by default in all published sites. Check Site Settings if missing.',
+  };
+  return m[issue] || 'In Webflow Designer, open Page Settings (gear icon) > SEO Settings to address this issue.';
+}
+
+function cmsfix_wix(issue) {
+  const m = {
+    title:          'In Wix Editor: click the page > Page SEO (left panel) > set the SEO Title.',
+    meta_desc:      'In Wix Editor > Page SEO > Meta Description field. Or use Wix SEO Wiz for guided optimization.',
+    og_tags:        'In Wix: Pages > Page SEO > Social Share section. Set the image, title, and description for social sharing.',
+    add_schema:     'Wix adds basic schema automatically. For advanced schema, use Wix Velo (dev mode) to inject JSON-LD via custom code.',
+    canonical:      'Wix sets canonicals automatically. For custom pages, use Wix Velo to inject a canonical link tag.',
+  };
+  return m[issue] || 'In Wix Editor, open Page SEO settings or use Wix SEO Wiz to address this issue.';
+}
+
+function cmsfix_squarespace(issue) {
+  const m = {
+    title:          'In Squarespace: Pages > click page > gear icon > SEO tab > set the Page Title.',
+    meta_desc:      'Pages > click page > gear icon > SEO tab > SEO Description field.',
+    og_tags:        'Pages > click page > gear icon > Social Image tab. Upload a 1200x630px image for social sharing.',
+    add_schema:     'Squarespace adds basic schema. For custom JSON-LD, go to Settings > Advanced > Code Injection and paste your schema in the Header field.',
+    canonical:      'Squarespace handles canonicals automatically. Avoid publishing the same content at multiple URLs.',
+  };
+  return m[issue] || 'In Squarespace, go to Pages > Page Settings > SEO tab to address this issue.';
+}
+
+function cmsfix_nextjs(issue) {
+  const m = {
+    title:          'Use Next.js Metadata API: export const metadata = { title: "Your Title" } in your page.tsx. Or use generateMetadata() for dynamic titles.',
+    meta_desc:      'export const metadata = { description: "Your description 120-155 chars" } in page.tsx.',
+    og_tags:        'export const metadata = { openGraph: { title: "...", description: "...", images: ["/og-image.jpg"] } } in page.tsx.',
+    twitter_card:   'export const metadata = { twitter: { card: "summary_large_image", title: "...", description: "..." } }',
+    canonical:      'export const metadata = { alternates: { canonical: "https://yourdomain.com/page" } }',
+    add_schema:     'Create a <script type="application/ld+json"> component and include it in your page layout using next/script.',
+    viewport:       'Viewport is set automatically in Next.js 13+ App Router. In Pages Router, add to _document.tsx.',
+    ttfb:           'Enable ISR (Incremental Static Regeneration) or Static Generation where possible. Use next/image for automatic optimization. Deploy to Vercel edge network.',
+  };
+  return m[issue] || 'Update your page.tsx metadata export or use generateMetadata() to address this SEO issue.';
+}
+
+function cmsfix_nuxt(issue) {
+  const m = {
+    title:          'Use useSeoMeta({ title: "Your Title" }) in your page component, or set in nuxt.config.ts app.head.',
+    meta_desc:      'useSeoMeta({ description: "Your description" }) or useHead({ meta: [{ name: "description", content: "..." }] })',
+    og_tags:        'useSeoMeta({ ogTitle: "...", ogDescription: "...", ogImage: "..." })',
+    twitter_card:   'useSeoMeta({ twitterCard: "summary_large_image", twitterTitle: "...", twitterDescription: "..." })',
+    canonical:      'useHead({ link: [{ rel: "canonical", href: "https://yourdomain.com/page" }] })',
+    add_schema:     'Use useHead({ script: [{ type: "application/ld+json", children: JSON.stringify(schemaObject) }] })',
+  };
+  return m[issue] || 'Use useSeoMeta() or useHead() composables in your Nuxt page component to address this issue.';
+}
+
+function cmsfix_gatsby(issue) {
+  const m = {
+    title:          'Use gatsby-plugin-react-helmet. In your page: <Helmet><title>Your Title</title></Helmet>. Or use Gatsby Head API: export const Head = () => <title>...</title>',
+    meta_desc:      '<Helmet><meta name="description" content="Your description" /></Helmet> or in Gatsby Head API.',
+    og_tags:        'Add OG meta tags in your SEO component via React Helmet or Gatsby Head API.',
+    canonical:      '<Helmet><link rel="canonical" href="https://yourdomain.com/page" /></Helmet>',
+    add_schema:     '<Helmet><script type="application/ld+json">{JSON.stringify(schemaObject)}</script></Helmet>',
+    ttfb:           'Gatsby generates static HTML by default — TTFB should be fast. Enable gatsby-plugin-preact for smaller JS bundle. Use gatsby-plugin-image for optimized images.',
+  };
+  return m[issue] || 'Use the Gatsby Head API or gatsby-plugin-react-helmet to add SEO meta tags to your pages.';
+}
+
+function cmsfix_generic(issue) {
+  const m = {
+    https:          'Obtain an SSL certificate from Let\'s Encrypt (free) or your hosting provider. Configure your web server to redirect all HTTP to HTTPS with a 301 redirect.',
+    canonical:      'Add <link rel="canonical" href="https://yourdomain.com/page"> inside the <head> of each page.',
+    noindex:        'Remove the <meta name="robots" content="noindex"> tag from the page, and/or remove the X-Robots-Tag: noindex HTTP header.',
+    title:          'Add <title>Your Primary Keyword | Brand Name</title> inside the <head> of your HTML. Keep it 50-60 characters.',
+    title_length:   'Edit your <title> tag to be between 50-60 characters. Include your primary keyword near the beginning.',
+    meta_desc:      'Add <meta name="description" content="Your 120-155 character description with a call to action."> in the <head>.',
+    meta_desc_length: 'Edit your meta description to be 120-155 characters — long enough to describe the page but short enough to avoid truncation in SERPs.',
+    h1:             'Add exactly one <h1> tag per page containing your primary keyword. Ensure it clearly describes the main topic.',
+    h2:             'Add <h2> subheadings to break up content into sections. Include secondary keywords naturally.',
+    viewport:       'Add <meta name="viewport" content="width=device-width, initial-scale=1"> inside your <head> tag.',
+    alt_text:       'Add descriptive alt attributes to all <img> tags: <img src="..." alt="description of image">. Be specific and keyword-relevant.',
+    word_count:     'Expand page content to at least 300 words. Focus on answering user questions comprehensively. Use headings, lists, and visuals to improve readability.',
+    internal_links: 'Add <a href="/related-page">anchor text</a> links throughout your content pointing to related pages on your site.',
+    ttfb:           'Enable server-side caching, use a CDN (Cloudflare is free), optimize your database queries, and upgrade hosting if needed.',
+    cache:          'Add Cache-Control headers to your server config: Cache-Control: public, max-age=86400 for static assets.',
+    page_size:      'Compress images using tools like TinyPNG or Squoosh. Minify CSS and JavaScript files. Remove unused code and libraries.',
+    inline_scripts: 'Move JavaScript from <script> blocks in HTML to external .js files referenced with <script src="...">.',
+    add_schema:     'Add JSON-LD schema markup inside <script type="application/ld+json"> in your <head>. Start with WebPage and Organization schema. Use Google\'s Rich Results Test to validate.',
+    more_schema:    'Add FAQPage schema for Q&A content, BreadcrumbList for navigation, and Article schema for blog posts. Use schema.org for reference and Google\'s Rich Results Test to validate.',
+    org_schema:     'Add Organization schema: {"@context":"https://schema.org","@type":"Organization","name":"Your Brand","url":"https://yourdomain.com","logo":"https://yourdomain.com/logo.png"}',
+    og_tags:        'Add to <head>: <meta property="og:title" content="..."> <meta property="og:description" content="..."> <meta property="og:image" content="https://yourdomain.com/image.jpg">',
+    twitter_card:   'Add to <head>: <meta name="twitter:card" content="summary_large_image"> <meta name="twitter:title" content="..."> <meta name="twitter:description" content="...">',
+    hsts:           'Add header: Strict-Transport-Security: max-age=31536000; includeSubDomains. Configure in Apache (.htaccess), Nginx (nginx.conf), or Cloudflare SSL/TLS settings.',
+    lang:           'Add lang attribute to your opening HTML tag: <html lang="en"> (use ISO 639-1 code for your language).',
+    charset:        'Add <meta charset="UTF-8"> as the first tag inside your <head>.',
+    xcontent:       'Add HTTP header: X-Content-Type-Options: nosniff in your server configuration or CDN custom headers.',
+    xframe:         'Add HTTP header: X-Frame-Options: SAMEORIGIN in your server configuration.',
+    favicon:        'Create a 32x32px and 180x180px PNG icon. Add <link rel="icon" href="/favicon.ico"> and <link rel="apple-touch-icon" href="/apple-touch-icon.png"> in <head>.',
+  };
+  return m[issue] || 'Address this issue by editing your HTML or server configuration. Refer to Google\'s Search Central documentation for implementation details.';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// COMPETITOR GAP ANALYSIS (rule-based, not AI)
+// ─────────────────────────────────────────────────────────────────────────────
+function buildCompetitorGaps(pd, cms) {
+  const gaps = [];
+
+  if (!pd.schema?.types?.includes('FAQPage')) {
+    gaps.push({ opportunity: 'FAQ Schema for Featured Snippets', description: 'Top competitors use FAQPage schema to capture FAQ rich results and "People Also Ask" boxes, taking up more SERP real estate.', action: 'Add 5+ FAQ items with FAQPage JSON-LD schema targeting question-based queries your audience searches.' });
+  }
+  if ((pd.schema?.count || 0) < 2) {
+    gaps.push({ opportunity: 'Rich Snippet Coverage', description: 'Competitors with 3+ schema types get star ratings, breadcrumbs, and event info in SERPs — dramatically higher CTR.', action: 'Implement BreadcrumbList, Organization, and a content-type schema (Article, Product, or HowTo) to compete for rich results.' });
+  }
+  if (!pd.openGraph?.image) {
+    gaps.push({ opportunity: 'Social Sharing Visual Presence', description: 'Pages with OG images receive significantly more social shares and clicks when content is shared on LinkedIn, Facebook, and messaging apps.', action: 'Create a 1200x630px branded OG image template and apply it to all key pages. Tools: Canva, Figma.' });
+  }
+  if ((pd.wordCount || 0) < 1000) {
+    gaps.push({ opportunity: 'Comprehensive Content Depth', description: 'Top-ranking pages for most competitive queries have 1,500-3,000 words of in-depth content covering the topic comprehensively.', action: 'Expand your content with subtopics, expert insights, data points, and FAQ sections. Use "People Also Ask" for content ideas.' });
+  }
+  if (!pd.links?.external || pd.links.external < 2) {
+    gaps.push({ opportunity: 'Authority Signal Citations', description: 'Google\'s quality raters and algorithms favor pages that cite authoritative external sources, demonstrating research and expertise.', action: 'Add 3-5 outbound links to authoritative sources (government, academic, major publications) relevant to your content.' });
+  }
+  if ((pd.headings?.h2 || 0) < 3) {
+    gaps.push({ opportunity: 'Content Structure and Scannability', description: 'Top competitors use 5-10 H2 subheadings to structure content for scanners, improve dwell time, and target multiple keyword variants.', action: 'Add H2 subheadings for each major topic section. Use keyword-rich but natural subheadings that answer specific user questions.' });
+  }
+  if (!pd.secHeaders?.csp) {
+    gaps.push({ opportunity: 'Security Header Completeness', description: 'Enterprise competitors implement full security headers (CSP, HSTS, X-Frame-Options), signaling a trusted, secure site to both users and Google.', action: 'Implement Content-Security-Policy and other security headers via your CDN or server config. Use securityheaders.com to test.' });
+  }
+  if (!pd.openGraph?.twitterCard) {
+    gaps.push({ opportunity: 'X/Twitter Engagement Optimization', description: 'Competitors with Twitter Card tags get rich preview cards when their content is shared on X, driving significantly more engagement and clicks.', action: 'Add twitter:card, twitter:title, twitter:description, and twitter:image meta tags to all pages.' });
+  }
+
+  return gaps.slice(0, 6);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILITIES
+// ─────────────────────────────────────────────────────────────────────────────
+function capitalize(s) {
+  if (!s) return '';
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
