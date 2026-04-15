@@ -256,6 +256,52 @@ h1 span {
   color: var(--muted2);
 }
 
+/* ── DOMAIN AUTHORITY COMPARISON ── */
+.da-compare-section {
+  margin-bottom: 2rem;
+}
+.da-compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.da-compare-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.35rem 1.5rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.da-compare-card.a { border-color: rgba(124,111,247,0.3); }
+.da-compare-card.b { border-color: rgba(34,211,238,0.25); }
+.da-compare-label {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.da-compare-label.a { color: var(--siteA); }
+.da-compare-label.b { color: var(--siteB); }
+.da-compare-row { display: flex; align-items: center; gap: 1rem; }
+.da-ring-wrap { position: relative; flex-shrink: 0; }
+.da-ring-num {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-family: 'Syne', sans-serif;
+  font-size: 1.15rem; font-weight: 800;
+}
+.da-compare-info { flex: 1; min-width: 0; }
+.da-compare-tier {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+}
+.da-compare-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-top: 0.2rem; }
+.da-signals-row {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem;
+}
+.da-sig-pill {
+  font-size: 0.68rem; padding: 0.18rem 0.55rem; border-radius: 999px;
+  font-weight: 600;
+}
+.da-sig-pass { background: var(--green2); color: var(--green); }
+.da-sig-fail { background: var(--red2); color: var(--red); }
+.da-section-head {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.85rem;
+}
+
 /* ── SCORE BAR ── */
 .score-bar-wrap { margin-bottom: 2rem; }
 .score-bar-label {
@@ -589,6 +635,15 @@ h1 span {
     <div class="site-card b" id="card-b"></div>
   </div>
 
+  <!-- Domain Authority Comparison -->
+  <div class="da-compare-section" id="da-compare-section" style="display:none">
+    <div class="da-section-head">🏅 Domain Authority Estimate</div>
+    <div class="da-compare-grid">
+      <div class="da-compare-card a" id="da-card-a"></div>
+      <div class="da-compare-card b" id="da-card-b"></div>
+    </div>
+  </div>
+
   <!-- Category Score Cards -->
   <div class="cat-grid" id="cat-grid"></div>
 
@@ -874,6 +929,110 @@ function scoreSite(pd) {
   return scores;
 }
 
+// ── DOMAIN AUTHORITY ESTIMATOR ───────────────────────────────
+function computeDomainAuthority(pd) {
+  let score = 0;
+  if (pd.isHttps)                  score += 10;
+  if (pd.secHeaders?.hsts)         score += 4;
+  if (pd.secHeaders?.xContentType) score += 2;
+  if (pd.secHeaders?.xFrame)       score += 2;
+  if (pd.secHeaders?.csp)          score += 2;
+  if (pd.canonical)                score += 5;
+  if (!pd.isNoindex)               score += 4;
+  if (pd.lang)                     score += 2;
+  if (pd.hasCharset)               score += 2;
+  if (pd.hasFavicon)               score += 2;
+  if (!pd.wasRedirected)           score += 3;
+  if (pd.hasSitemap)               score += 2;
+  if (pd.hasRobotsTxt)             score += 2;
+  const wc = pd.wordCount || 0;
+  if (wc >= 2000)      score += 18;
+  else if (wc >= 1000) score += 14;
+  else if (wc >= 500)  score += 9;
+  else if (wc >= 300)  score += 5;
+  else if (wc >= 150)  score += 2;
+  const sc = pd.schema?.count || 0;
+  if (sc >= 4)      score += 12;
+  else if (sc >= 2) score += 8;
+  else if (sc >= 1) score += 4;
+  const ext = pd.links?.external || 0;
+  const int_ = pd.links?.internal || 0;
+  if (ext >= 5) score += 6; else if (ext >= 2) score += 4; else if (ext >= 1) score += 2;
+  if (int_ >= 10) score += 6; else if (int_ >= 5) score += 4; else if (int_ >= 2) score += 2;
+  const ttfb = pd.ttfb || 0;
+  if (ttfb > 0 && ttfb < 800) score += 10; else if (ttfb < 1800) score += 5;
+  if (pd.hasViewport)            score += 3;
+  if (pd.openGraph?.image)       score += 2;
+  if (pd.openGraph?.twitterCard) score += 1;
+  if (pd.title && pd.titleLen >= 50 && pd.titleLen <= 60) score += 2;
+  if (pd.metaDesc && pd.descLen >= 120 && pd.descLen <= 155) score += 2;
+  score = Math.max(1, Math.min(100, score));
+  const tier =
+    score >= 70 ? 'Strong Authority'      :
+    score >= 50 ? 'Established Authority' :
+    score >= 35 ? 'Developing Authority'  :
+    score >= 20 ? 'New / Low Authority'   : 'Very Low Authority';
+  return { score, tier };
+}
+
+function renderDACompare(urlA, urlB, pdA, pdB) {
+  const daA = computeDomainAuthority(pdA);
+  const daB = computeDomainAuthority(pdB);
+
+  function daColor(score) {
+    return score >= 70 ? '#60a5fa' : score >= 50 ? '#34d399' : score >= 35 ? '#fbbf24' : score >= 20 ? '#fb923c' : '#f87171';
+  }
+
+  function sigPills(pd) {
+    const sigs = [
+      { label: 'HTTPS',       pass: !!pd.isHttps },
+      { label: 'Canonical',   pass: !!pd.canonical },
+      { label: 'Schema',      pass: (pd.schema?.count || 0) > 0 },
+      { label: 'HSTS',        pass: !!pd.secHeaders?.hsts },
+      { label: 'OG Image',    pass: !!pd.openGraph?.image },
+      { label: 'Sitemap',     pass: !!pd.hasSitemap },
+      { label: 'Robots.txt',  pass: !!pd.hasRobotsTxt },
+      { label: '1000+ Words', pass: (pd.wordCount || 0) >= 1000 },
+      { label: 'Fast TTFB',   pass: pd.ttfb > 0 && pd.ttfb < 800 },
+    ];
+    return sigs.map(s =>
+      `<span class="da-sig-pill ${s.pass ? 'da-sig-pass' : 'da-sig-fail'}">${s.pass ? '✓' : '✗'} ${s.label}</span>`
+    ).join('');
+  }
+
+  function daCardHtml(da, pd, url, side) {
+    const color = daColor(da.score);
+    const circumference = 175;
+    const offset = circumference - (da.score / 100) * circumference;
+    const r = 28;
+    const hostname = hn(url);
+    return `
+      <div class="da-compare-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Competitor'}: ${escHtml(hostname)}</div>
+      <div class="da-compare-row">
+        <div class="da-ring-wrap">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle cx="36" cy="36" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+            <circle cx="36" cy="36" r="${r}" fill="none" stroke="${color}" stroke-width="6"
+              stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+              stroke-linecap="round" transform="rotate(-90 36 36)"
+              style="transition:stroke-dashoffset 0.8s ease"/>
+          </svg>
+          <div class="da-ring-num" style="color:${color}">${da.score}</div>
+        </div>
+        <div class="da-compare-info">
+          <div class="da-compare-tier" style="color:${color}">${da.tier}</div>
+          <div class="da-compare-desc">Score out of 100 based on on-page signals</div>
+        </div>
+      </div>
+      <div class="da-signals-row">${sigPills(pd)}</div>
+    `;
+  }
+
+  document.getElementById('da-card-a').innerHTML = daCardHtml(daA, pdA, urlA, 'a');
+  document.getElementById('da-card-b').innerHTML = daCardHtml(daB, pdB, urlB, 'b');
+  document.getElementById('da-compare-section').style.display = 'block';
+}
+
 // ── MAIN COMPARE FLOW ────────────────────────────────────────
 async function startCompare() {
   let urlA = document.getElementById('input-a').value.trim();
@@ -931,6 +1090,9 @@ function renderResults(urlA, urlB, pdA, pdB) {
 
   // Site header cards
   renderSiteCards(urlA, urlB, pdA, pdB, scA, scB);
+
+  // Domain Authority comparison
+  renderDACompare(urlA, urlB, pdA, pdB);
 
   // Category grid
   renderCatGrid(scA, scB);
@@ -1051,8 +1213,11 @@ function na(val) { return val || '—'; }
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function buildOverviewRows(urlA, urlB, pdA, pdB, scA, scB) {
+  const daA = computeDomainAuthority(pdA);
+  const daB = computeDomainAuthority(pdB);
   return [
     { label: 'Overall SEO Score',    valA: scA._total + ' / 100', valB: scB._total + ' / 100', winner: winner(scA._total, scB._total) },
+    { label: 'Domain Authority Est.', valA: daA.score + ' / 100 — ' + daA.tier, valB: daB.score + ' / 100 — ' + daB.tier, winner: winner(daA.score, daB.score) },
     { label: 'Page Title',           valA: na(escHtml((pdA.title || '').slice(0,55))), valB: na(escHtml((pdB.title || '').slice(0,55))), winner: winner(scA.title, scB.title) },
     { label: 'Title Length (chars)', valA: pdA.titleLen || 0, valB: pdB.titleLen || 0, winner: winner(scA.title, scB.title) },
     { label: 'Meta Description',     valA: pdA.descLen ? pdA.descLen + ' chars' : '❌ Missing', valB: pdB.descLen ? pdB.descLen + ' chars' : '❌ Missing', winner: winner(scA.metaDesc, scB.metaDesc) },
@@ -1062,6 +1227,8 @@ function buildOverviewRows(urlA, urlB, pdA, pdB, scA, scB) {
     { label: 'HTTPS',                valA: tf(pdA.isHttps), valB: tf(pdB.isHttps), winner: winner(+pdA.isHttps, +pdB.isHttps) },
     { label: 'Has Canonical',        valA: tf(pdA.canonical), valB: tf(pdB.canonical), winner: winner(+!!pdA.canonical, +!!pdB.canonical) },
     { label: 'OG Image',             valA: tf(pdA.openGraph?.image), valB: tf(pdB.openGraph?.image), winner: winner(+!!pdA.openGraph?.image, +!!pdB.openGraph?.image) },
+    { label: 'Sitemap.xml',          valA: pdA.hasSitemap ? '✅ Found' : '❌ Missing', valB: pdB.hasSitemap ? '✅ Found' : '❌ Missing', winner: winner(+!!pdA.hasSitemap, +!!pdB.hasSitemap) },
+    { label: 'Robots.txt',           valA: pdA.hasRobotsTxt ? '✅ Found' : '❌ Missing', valB: pdB.hasRobotsTxt ? '✅ Found' : '❌ Missing', winner: winner(+!!pdA.hasRobotsTxt, +!!pdB.hasRobotsTxt) },
   ];
 }
 
@@ -1112,6 +1279,8 @@ function buildTechnicalRows(urlA, urlB, pdA, pdB, scA, scB) {
     { label: 'HTML Lang',           valA: pdA.lang || '❌ Missing', valB: pdB.lang || '❌ Missing', winner: winner(+!!pdA.lang, +!!pdB.lang) },
     { label: 'Robots / Noindex',    valA: pdA.isNoindex ? '🚫 Noindex!' : '✅ Indexable', valB: pdB.isNoindex ? '🚫 Noindex!' : '✅ Indexable', winner: winner(+!pdA.isNoindex, +!pdB.isNoindex) },
     { label: 'Redirected',          valA: pdA.wasRedirected ? '⚠ Yes' : '✅ No', valB: pdB.wasRedirected ? '⚠ Yes' : '✅ No', winner: winner(+!pdA.wasRedirected, +!pdB.wasRedirected) },
+    { label: 'Sitemap.xml',         valA: pdA.hasSitemap ? '✅ Found' : '❌ Missing', valB: pdB.hasSitemap ? '✅ Found' : '❌ Missing', winner: winner(+!!pdA.hasSitemap, +!!pdB.hasSitemap) },
+    { label: 'Robots.txt',          valA: pdA.hasRobotsTxt ? '✅ Found' : '❌ Missing', valB: pdB.hasRobotsTxt ? '✅ Found' : '❌ Missing', winner: winner(+!!pdA.hasRobotsTxt, +!!pdB.hasRobotsTxt) },
     { label: 'TTFB',                valA: pdA.ttfb ? pdA.ttfb + 'ms' : '—', valB: pdB.ttfb ? pdB.ttfb + 'ms' : '—', winner: winner(scA.ttfb, scB.ttfb) },
     { label: 'Cache-Control',       valA: pdA.cacheControl || '❌ Not set', valB: pdB.cacheControl || '❌ Not set', winner: winner(+!!pdA.cacheControl, +!!pdB.cacheControl) },
     { label: 'Favicon',             valA: tf(pdA.hasFavicon), valB: tf(pdB.hasFavicon), winner: winner(+pdA.hasFavicon, +pdB.hasFavicon) },
@@ -1262,6 +1431,10 @@ function renderGapReport(urlA, urlB, pdA, pdB, scA, scB) {
     `Add descriptive alt text to all images for accessibility and image SEO.`);
   checkGap('Cache-Control', +!!pdA.cacheControl, +!!pdB.cacheControl,
     `Set Cache-Control headers on all static assets to improve repeat visit speed.`);
+  checkGap('Sitemap.xml', +!!pdA.hasSitemap, +!!pdB.hasSitemap,
+    `Create and submit a sitemap.xml to Google Search Console to improve crawl coverage.`);
+  checkGap('Robots.txt', +!!pdA.hasRobotsTxt, +!!pdB.hasRobotsTxt,
+    `Add a robots.txt to manage crawl budget and point bots to your sitemap.`);
 
   if (!gaps.length) {
     document.getElementById('gap-report').innerHTML = `

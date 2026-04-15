@@ -32,7 +32,41 @@ async function handlePageData(request) {
     const ttfb = Date.now() - t0;
     const html = await res.text();
     const headers = Object.fromEntries(res.headers.entries());
-    return new Response(JSON.stringify(extractPageSignals(html, headers, res.url, res.status, ttfb, url)), { headers: CORS });
+    const signals = extractPageSignals(html, headers, res.url, res.status, ttfb, url);
+
+    // ── CHECK SITEMAP.XML & ROBOTS.TXT ───────────────────────────────────────
+    try {
+      const origin = new URL(res.url).origin;
+      const [robotsRes, sitemapRes] = await Promise.allSettled([
+        fetch(origin + '/robots.txt', { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RankSight/2.0)' }, redirect: 'follow' }),
+        fetch(origin + '/sitemap.xml', { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RankSight/2.0)' }, redirect: 'follow' }),
+      ]);
+
+      // robots.txt: pass if 200 and non-empty
+      if (robotsRes.status === 'fulfilled' && robotsRes.value.status === 200) {
+        const robotsTxt = await robotsRes.value.text();
+        signals.hasRobotsTxt = robotsTxt.trim().length > 0;
+        signals.robotsTxtContent = robotsTxt.slice(0, 500); // first 500 chars for preview
+      } else {
+        signals.hasRobotsTxt = false;
+        signals.robotsTxtContent = null;
+      }
+
+      // sitemap.xml: pass if 200 and looks like XML
+      if (sitemapRes.status === 'fulfilled' && sitemapRes.value.status === 200) {
+        const sitemapTxt = await sitemapRes.value.text();
+        signals.hasSitemap = /<urlset|<sitemapindex/i.test(sitemapTxt);
+        signals.sitemapUrl = origin + '/sitemap.xml';
+      } else {
+        signals.hasSitemap = false;
+        signals.sitemapUrl = null;
+      }
+    } catch {
+      signals.hasRobotsTxt = false;
+      signals.hasSitemap = false;
+    }
+
+    return new Response(JSON.stringify(signals), { headers: CORS });
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message, ttfb: null }), { headers: CORS });
   }
@@ -348,6 +382,8 @@ async function handleAudit(request, env) {
       { title: 'Page Speed', value: pd.ttfb ? `TTFB ${pd.ttfb}ms` : 'Unknown', description: ttfbStatus === 'pass' ? 'Fast TTFB — good for Core Web Vitals.' : ttfbStatus === 'warn' ? 'TTFB needs improvement (target <800ms).' : 'Slow TTFB — critical performance issue.', status: ttfbStatus },
       { title: 'Word Count', value: `${pd.wordCount ?? 0} words`, description: wordsStatus === 'pass' ? 'Good content depth.' : pd.wordCount < 150 ? 'Very thin content — expand significantly.' : 'Content below recommended 300+ words.', status: wordsStatus },
       { title: 'Canonical URL', value: pd.canonical ? 'Set' : 'Missing', description: pd.canonical ? `Canonical: ${pd.canonical.slice(0,50)}` : 'No canonical tag — add one to prevent duplicate content issues.', status: pd.canonical ? 'pass' : 'warn' },
+      { title: 'Sitemap.xml', value: pd.hasSitemap === true ? 'Found' : pd.hasSitemap === false ? 'Not Found' : 'Unknown', description: pd.hasSitemap ? `Sitemap detected at ${pd.sitemapUrl || '/sitemap.xml'} — search engines can discover all pages.` : 'No sitemap.xml found at /sitemap.xml. Create and submit one in Google Search Console.', status: pd.hasSitemap ? 'pass' : 'fail' },
+      { title: 'Robots.txt', value: pd.hasRobotsTxt === true ? 'Found' : pd.hasRobotsTxt === false ? 'Not Found' : 'Unknown', description: pd.hasRobotsTxt ? 'robots.txt is present — controls crawler access to your site.' : 'No robots.txt found at /robots.txt. Add one to manage crawl budget and direct search bots.', status: pd.hasRobotsTxt ? 'pass' : 'warn' },
     ];
 
     // ── METRICS ───────────────────────────────────────────────────────────────
@@ -554,6 +590,22 @@ function buildRules(pd, cms, getFix) {
     description: 'The page URL was redirected. Ensure redirects are minimal and use 301 (permanent) redirects only.',
     fix: 'Audit redirects using a crawler like Screaming Frog. Eliminate chains longer than 1 hop. Update all internal links to point to the final URL.',
     effort: 'Medium 1-2hr', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 8, priority: 'medium',
+    pass: !!pd.hasSitemap,
+    title: 'Create and Submit a Sitemap.xml',
+    description: 'No sitemap.xml was found at /sitemap.xml. A sitemap helps search engines discover and crawl all your pages efficiently, especially for large or newly launched sites.',
+    fix: 'Generate a sitemap.xml listing all important URLs. For WordPress use Yoast SEO or Rank Math. For custom sites use an online sitemap generator. Submit the URL to Google Search Console under Sitemaps.',
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
+  });
+  add({
+    category: 'technical', weight: 6, priority: 'medium',
+    pass: !!pd.hasRobotsTxt,
+    title: 'Add a Robots.txt File',
+    description: 'No robots.txt was found at /robots.txt. This file instructs search engine crawlers which pages to access, helping manage crawl budget and prevent indexing of sensitive or low-value pages.',
+    fix: 'Create a robots.txt file in your site root. At minimum include: User-agent: * \\nAllow: / \\nSitemap: https://yourdomain.com/sitemap.xml. Test it in Google Search Console under Settings > robots.txt.',
+    effort: 'Quick <30min', ranking_impact: 'Short-term 1-4wks',
   });
 
   // ── CONTENT ────────────────────────────────────────────────────────────────
@@ -997,6 +1049,10 @@ function computeDomainAuthority(pd, url) {
   if (pd.hasCharset)              score += 2;
   if (pd.hasFavicon)              score += 2;
   if (!pd.wasRedirected)          score += 3;
+
+  // — Crawlability (max 4) —
+  if (pd.hasSitemap)              score += 2;
+  if (pd.hasRobotsTxt)            score += 2;
 
   // — Content depth (max 18) —
   const wc = pd.wordCount || 0;
