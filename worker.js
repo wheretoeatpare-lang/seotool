@@ -1123,9 +1123,9 @@ function capitalize(s) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ── TOP COMPETITORS FINDER ────────────────────────────────────
-// Scrapes Google search results for keywords extracted from the
-// audited page's title/meta description.  No AI, no paid API.
-// Returns up to 8 real competing domains.
+// Uses DuckDuckGo HTML search (Bing as fallback) to find real competing
+// domains for keywords extracted from the audited page's title/meta.
+// No AI, no paid API.  Returns up to 3 real competing domains.
 // ─────────────────────────────────────────────────────────────
 async function handleTopCompetitors(request) {
   if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
@@ -1156,81 +1156,146 @@ async function handleTopCompetitors(request) {
       .slice(0, 4)
       .map(([k]) => k);
 
-    const query = topKw.length >= 2 ? topKw.join(' ') : (auditedHost.split('.')[0] + ' competitors');
-    const keywords = topKw; // return the extracted keywords to the frontend
+    const query = topKw.length >= 2 ? topKw.join(' ') : (auditedHost.split('.')[0] + ' alternatives');
+    const keywords = topKw;
 
-    // ── Fetch Google SERP ───────────────────────────────────────────────────
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=20&hl=en&gl=us`;
-    let html = '';
-    try {
-      const res = await fetch(searchUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-          'Accept-Language': 'en-US,en;q=0.9',
-          'Cache-Control': 'no-cache',
-          'Referer': 'https://www.google.com/',
-        },
-        redirect: 'follow',
-      });
-      html = await res.text();
-    } catch (fetchErr) {
-      return new Response(JSON.stringify({ competitors: [], query, keywords, error: 'Search fetch failed: ' + fetchErr.message }), { headers: CORS });
-    }
-
-    // ── Parse SERP result blocks — extract URL + snippet title ─────────────
-    // Each organic result in Google HTML typically looks like:
-    //   <div class="..."><a href="/url?q=https://example.com/..."><h3>Page Title</h3></a>...<span>snippet text</span></div>
+    // ── Domain block-list ───────────────────────────────────────────────────
     const BLOCKED = new Set([
-      auditedHost, 'google.com', 'youtube.com', 'facebook.com',
-      'wikipedia.org', 'twitter.com', 'instagram.com', 'linkedin.com',
-      'amazon.com', 'reddit.com', 'pinterest.com', 'tiktok.com',
-      'quora.com', 'yelp.com', 'bbc.com', 'cnn.com', 'forbes.com',
-      'trustpilot.com', 'bing.com', 'yahoo.com', 'msn.com',
+      auditedHost,
+      'google.com','googleapis.com','gstatic.com',
+      'youtube.com','facebook.com','wikipedia.org',
+      'twitter.com','x.com','instagram.com','linkedin.com',
+      'amazon.com','reddit.com','pinterest.com','tiktok.com',
+      'quora.com','yelp.com','bbc.com','cnn.com','forbes.com',
+      'trustpilot.com','bing.com','yahoo.com','msn.com',
+      'duckduckgo.com','w3schools.com','stackoverflow.com',
+      'medium.com','substack.com','github.com','gitlab.com',
     ]);
 
     const competitors = [];
     const seen = new Set([...BLOCKED]);
 
-    // Strategy: find /url?q= hrefs, grab the h3 sibling title nearby
-    // We'll chunk the HTML around each match to pull the title text
-    const urlPattern = /href="\/url\?q=(https?:\/\/[^"&]+)[^"]*"[^>]*>.*?<h3[^>]*>([^<]*)<\/h3>/gis;
-    let m;
-    while ((m = urlPattern.exec(html)) !== null && competitors.length < 3) {
+    // ── Helper: extract domain from a URL string ────────────────────────────
+    function extractDomain(rawUrl) {
       try {
-        const rawUrl  = decodeURIComponent(m[1]);
-        const serpTitle = m[2].replace(/&#\d+;|&[a-z]+;/g, ' ').trim();
-        const domain  = new URL(rawUrl).hostname.replace(/^www\./, '');
-        if (domain && !seen.has(domain) && !domain.includes('google') && domain.includes('.')) {
+        const u = new URL(decodeURIComponent(rawUrl));
+        const d = u.hostname.replace(/^www\./, '');
+        return (d && d.includes('.') && !d.includes('google')) ? d : null;
+      } catch { return null; }
+    }
+
+    // ── Helper: parse competitor URLs + titles from DDG HTML ───────────────
+    function parseDDGResults(html) {
+      const found = [];
+      // Pattern 1: DuckDuckGo result__a anchor links (main organic results)
+      const p1 = /<a[^>]+class="[^"]*result__a[^"]*"[^>]+href="(https?:\/\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+      let m;
+      while ((m = p1.exec(html)) !== null) {
+        const domain = extractDomain(m[1]);
+        const title  = m[2].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#\d+;|&[a-z]+;/g,' ').trim();
+        if (domain) found.push({ domain, title: title || domain, rawUrl: m[1] });
+      }
+      // Pattern 2: uddg= redirect-encoded links used by DDG
+      const p2 = /uddg=(https?%3A%2F%2F[^&"'\s]+)/gi;
+      while ((m = p2.exec(html)) !== null) {
+        const domain = extractDomain(m[1]);
+        if (domain) found.push({ domain, title: domain, rawUrl: m[1] });
+      }
+      // Pattern 3: result__url spans contain the display domain
+      const p3 = /<a[^>]+href="(https?:\/\/(?!(?:www\.)?duckduckgo)[^"]+)"[^>]*>\s*(?:<[bB][^>]*>)?([^<]{4,80}?)(?:<\/[bB]>)?\s*<\/a>/gi;
+      while ((m = p3.exec(html)) !== null) {
+        const domain = extractDomain(m[1]);
+        const title  = m[2].replace(/&amp;/g,'&').replace(/&#\d+;|&[a-z]+;/g,' ').trim();
+        if (domain && title.length > 3) found.push({ domain, title, rawUrl: m[1] });
+      }
+      return found;
+    }
+
+    // ── Helper: parse Bing SERP HTML ────────────────────────────────────────
+    function parseBingResults(html) {
+      const found = [];
+      // Bing organic: <h2><a href="https://...">Title</a></h2>
+      const p1 = /<h2[^>]*>\s*<a[^>]+href="(https?:\/\/[^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+      let m;
+      while ((m = p1.exec(html)) !== null) {
+        const domain = extractDomain(m[1]);
+        const title  = m[2].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&#\d+;|&[a-z]+;/g,' ').trim();
+        if (domain) found.push({ domain, title: title || domain, rawUrl: m[1] });
+      }
+      // Bing fallback: any result anchor with data-tag or b_algo context
+      const p2 = /class="b_algo"[\s\S]{0,400}?href="(https?:\/\/[^"]+)"/gi;
+      while ((m = p2.exec(html)) !== null) {
+        const domain = extractDomain(m[1]);
+        if (domain) found.push({ domain, title: domain, rawUrl: m[1] });
+      }
+      return found;
+    }
+
+    // ── Try DuckDuckGo HTML search ─────────────────────────────────────────
+    let serpHtml = '';
+    let source   = 'ddg';
+    try {
+      const ddgUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}&kl=us-en`;
+      const res = await fetch(ddgUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
+        },
+        redirect: 'follow',
+        signal: AbortSignal.timeout(10000),
+      });
+      if (res.ok) serpHtml = await res.text();
+    } catch { /* fall through to Bing */ }
+
+    // ── Parse DDG results ──────────────────────────────────────────────────
+    if (serpHtml) {
+      const found = parseDDGResults(serpHtml);
+      for (const { domain, title } of found) {
+        if (competitors.length >= 3) break;
+        if (!seen.has(domain)) {
           seen.add(domain);
           competitors.push({
             domain,
             url: 'https://' + domain,
-            serp_title: serpTitle || domain,
+            serp_title: title || domain,
             serp_rank: competitors.length + 1,
           });
         }
-      } catch {}
+      }
     }
 
-    // Fallback pattern: plain /url?q= links without h3 capture
+    // ── Fallback: Bing search if DDG gave < 3 results ─────────────────────
     if (competitors.length < 3) {
-      const plain = /href="\/url\?q=(https?:\/\/[^"&]+)/gi;
-      while ((m = plain.exec(html)) !== null && competitors.length < 3) {
-        try {
-          const rawUrl = decodeURIComponent(m[1]);
-          const domain = new URL(rawUrl).hostname.replace(/^www\./, '');
-          if (domain && !seen.has(domain) && !domain.includes('google') && domain.includes('.')) {
-            seen.add(domain);
-            competitors.push({
-              domain,
-              url: 'https://' + domain,
-              serp_title: domain,
-              serp_rank: competitors.length + 1,
-            });
+      source = competitors.length === 0 ? 'bing' : 'ddg+bing';
+      try {
+        const bingUrl = `https://www.bing.com/search?q=${encodeURIComponent(query)}&count=20&setlang=en-US`;
+        const res = await fetch(bingUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+          },
+          redirect: 'follow',
+          signal: AbortSignal.timeout(10000),
+        });
+        if (res.ok) {
+          const bingHtml = await res.text();
+          const found = parseBingResults(bingHtml);
+          for (const { domain, title } of found) {
+            if (competitors.length >= 3) break;
+            if (!seen.has(domain)) {
+              seen.add(domain);
+              competitors.push({
+                domain,
+                url: 'https://' + domain,
+                serp_title: title || domain,
+                serp_rank: competitors.length + 1,
+              });
+            }
           }
-        } catch {}
-      }
+        }
+      } catch { /* ignore */ }
     }
 
     // ── For each top-3 competitor, fetch their page data in parallel ────────
@@ -1259,7 +1324,7 @@ async function handleTopCompetitors(request) {
 
     const results = enriched.map(r => r.status === 'fulfilled' ? r.value : r.reason);
 
-    return new Response(JSON.stringify({ competitors: results, query, keywords }), { headers: CORS });
+    return new Response(JSON.stringify({ competitors: results, query, keywords, source }), { headers: CORS });
   } catch (err) {
     return new Response(JSON.stringify({ competitors: [], error: err.message }), { status: 500, headers: CORS });
   }
