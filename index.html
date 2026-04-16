@@ -488,6 +488,58 @@ h1 span {
 .tc-hint { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.5rem; }
 .tc-hint a { color: var(--accent2); text-decoration: none; }
 .tc-hint a:hover { text-decoration: underline; }
+
+/* ── SUGGESTED COMPETITORS ── */
+.tc-suggestions-label {
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+  margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.tc-suggestions-label .tc-badge {
+  background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.25);
+  color: var(--accent2); padding: 0.1rem 0.55rem; border-radius: 999px;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em;
+}
+.tc-comp-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.65rem; margin-bottom: 1.75rem;
+}
+.tc-comp-card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 0.85rem 1rem;
+  display: flex; flex-direction: column; gap: 0.55rem;
+  transition: border-color 0.2s, box-shadow 0.2s; cursor: pointer;
+}
+.tc-comp-card:hover {
+  border-color: rgba(124,111,247,0.45);
+  box-shadow: 0 0 0 3px rgba(124,111,247,0.1);
+}
+.tc-comp-card-domain {
+  font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
+  color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tc-comp-card-rank {
+  font-size: 0.7rem; color: var(--muted);
+}
+.tc-comp-card-btn {
+  background: linear-gradient(135deg, var(--accent), #5a4fcc);
+  color: white; border: none; padding: 0.4rem 0.85rem;
+  border-radius: 7px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.76rem; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s; align-self: flex-start;
+  box-shadow: 0 2px 8px rgba(124,111,247,0.3);
+}
+.tc-comp-card-btn:hover { opacity: 0.85; }
+.tc-comp-loading {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 0; color: var(--muted); font-size: 0.83rem;
+}
+.tc-comp-spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 .tc-sites-header {
   display: grid; grid-template-columns: 1fr 60px 1fr;
   gap: 1rem; align-items: stretch; margin-bottom: 1.5rem;
@@ -2592,9 +2644,22 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
         ${tcEsc(hostname)}
       </div>
     </div>
+
+    <div id="tc-top-competitors-section" style="margin-bottom:1.5rem">
+      <div class="tc-suggestions-label">
+        🏆 Top Competitors Found in Google <span class="tc-badge">LIVE SERP</span>
+      </div>
+      <div id="tc-comp-list">
+        <div class="tc-comp-loading">
+          <div class="tc-comp-spinner"></div>
+          Searching Google for real competitors of ${tcEsc(hostname)}…
+        </div>
+      </div>
+    </div>
+
     <div style="margin-bottom:0.5rem">
       <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem">
-        ◆ Competitor URL
+        ◆ Or Enter a Custom Competitor URL
       </div>
       <div class="tc-input-row">
         <input type="url" id="tc-competitor-input" class="tc-url-input"
@@ -2604,14 +2669,63 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
           Compare →
         </button>
       </div>
-      <div class="tc-hint">Enter any competitor URL to see a full side-by-side SEO comparison. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
+      <div class="tc-hint">Enter any URL to see a full side-by-side SEO comparison. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
     </div>
     <div id="tc-result-area"></div>
   `;
 
-  // If pageData already fetched, store it
+  // Store page data for comparison use
   window._tcAuditedPageData = auditedPageData;
   window._tcAuditedUrl = auditedUrl;
+
+  // Auto-fetch real top competitors from SERP
+  (async () => {
+    const listEl = document.getElementById('tc-comp-list');
+    if (!listEl) return;
+    try {
+      const res = await fetch('/api/top-competitors', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: auditedUrl,
+          title: auditedPageData?.title || '',
+          metaDesc: auditedPageData?.metaDesc || '',
+        }),
+      });
+      const data = await res.json();
+      const comps = data.competitors || [];
+
+      if (!comps.length) {
+        listEl.innerHTML = `<div style="font-size:0.82rem;color:var(--muted);padding:0.5rem 0">
+          No competitors found automatically — use the input below to compare manually.
+        </div>`;
+        return;
+      }
+
+      listEl.innerHTML = `
+        <div class="tc-comp-grid">
+          ${comps.map((c, i) => `
+            <div class="tc-comp-card" onclick="tcSelectCompetitor('${tcEsc(auditedUrl)}','${tcEsc(c.url)}')">
+              <div class="tc-comp-card-domain">${tcEsc(c.domain)}</div>
+              <div class="tc-comp-card-rank">🔍 SERP rank #${i + 1}</div>
+              <button class="tc-comp-card-btn">Compare →</button>
+            </div>`).join('')}
+        </div>
+        <div style="font-size:0.72rem;color:var(--muted2);margin-top:-0.75rem;margin-bottom:0.25rem">
+          Query: <em style="color:var(--muted)">${tcEsc(data.query || '')}</em> — Results from live Google search
+        </div>`;
+    } catch (err) {
+      if (listEl) listEl.innerHTML = `<div style="font-size:0.82rem;color:var(--muted);padding:0.5rem 0">
+        Could not load competitors automatically — use the input below.
+      </div>`;
+    }
+  })();
+}
+
+function tcSelectCompetitor(urlA, urlB) {
+  const input = document.getElementById('tc-competitor-input');
+  if (input) { input.value = urlB; input.focus(); }
+  runTCCompare(urlA);
 }
 
 async function runTCCompare(urlA) {

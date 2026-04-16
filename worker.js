@@ -1,10 +1,11 @@
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.pathname === '/api/detect-cms')     return handleCMSDetect(request);
-    if (url.pathname === '/api/claude')         return handleAudit(request, env);
-    if (url.pathname === '/api/page-data')      return handlePageData(request);
-    if (url.pathname === '/api/ai-visibility')  return handleAIVisibility(request);
+    if (url.pathname === '/api/detect-cms')       return handleCMSDetect(request);
+    if (url.pathname === '/api/claude')           return handleAudit(request, env);
+    if (url.pathname === '/api/page-data')        return handlePageData(request);
+    if (url.pathname === '/api/ai-visibility')    return handleAIVisibility(request);
+    if (url.pathname === '/api/top-competitors')  return handleTopCompetitors(request);
     return env.ASSETS.fetch(request);
   },
 };
@@ -1121,6 +1122,104 @@ function capitalize(s) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ── TOP COMPETITORS FINDER ────────────────────────────────────
+// Scrapes Google search results for keywords extracted from the
+// audited page's title/meta description.  No AI, no paid API.
+// Returns up to 8 real competing domains.
+// ─────────────────────────────────────────────────────────────
+async function handleTopCompetitors(request) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
+
+  try {
+    const { url, title, metaDesc } = await request.json();
+    if (!url) return new Response(JSON.stringify({ error: 'url is required' }), { status: 400, headers: CORS });
+
+    // Build the search query from page keywords
+    const auditedHost = (() => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } })();
+    const text = [(title || ''), (metaDesc || '')].join(' ');
+    const stopWords = new Set([
+      'the','and','for','are','but','not','you','all','this','that','with','from',
+      'have','they','will','your','been','has','more','also','than','when','can',
+      'was','its','our','what','how','why','who','which','about','into','free',
+      'best','top','get','use','make','help','need','want','just','like','good',
+    ]);
+    const words = (text.match(/\b[a-zA-Z]{4,}\b/g) || [])
+      .map(w => w.toLowerCase())
+      .filter(w => !stopWords.has(w));
+    // Frequency count — pick top 3 keywords for query
+    const freq = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+    const topKw = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([k]) => k);
+
+    const query = topKw.length >= 2 ? topKw.join(' ') : (auditedHost.split('.')[0] + ' alternative');
+
+    // Fetch Google results (HTML scrape)
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=20&hl=en`;
+    let html = '';
+    try {
+      const res = await fetch(searchUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
+          'Accept-Encoding': 'gzip, deflate',
+          'Cache-Control': 'no-cache',
+        },
+        redirect: 'follow',
+      });
+      html = await res.text();
+    } catch (fetchErr) {
+      return new Response(JSON.stringify({ competitors: [], query, error: 'Search fetch failed: ' + fetchErr.message }), { headers: CORS });
+    }
+
+    // Extract domains from result URLs
+    // Google result links appear as href="/url?q=https://..." or data-href
+    const competitors = [];
+    const seen = new Set([auditedHost, 'google.com', 'youtube.com', 'facebook.com',
+      'wikipedia.org', 'twitter.com', 'instagram.com', 'linkedin.com',
+      'amazon.com', 'reddit.com', 'pinterest.com', 'tiktok.com',
+      'maps.google.com', 'support.google.com', 'play.google.com',
+    ]);
+
+    // Pattern 1: /url?q=https://...
+    const pattern1 = /href="\/url\?q=(https?:\/\/[^"&]+)/gi;
+    let m;
+    while ((m = pattern1.exec(html)) !== null && competitors.length < 8) {
+      try {
+        const u = decodeURIComponent(m[1]);
+        const h = new URL(u).hostname.replace(/^www\./, '');
+        if (h && !seen.has(h) && !h.includes('google') && h.includes('.')) {
+          seen.add(h);
+          competitors.push({ domain: h, url: 'https://' + h, source: 'serp' });
+        }
+      } catch {}
+    }
+
+    // Pattern 2: cite tags or data-url attributes
+    if (competitors.length < 5) {
+      const pattern2 = /(?:cite>|data-url=")(https?:\/\/[^"<]+)/gi;
+      while ((m = pattern2.exec(html)) !== null && competitors.length < 8) {
+        try {
+          const u = m[1];
+          const h = new URL(u).hostname.replace(/^www\./, '');
+          if (h && !seen.has(h) && !h.includes('google') && h.includes('.')) {
+            seen.add(h);
+            competitors.push({ domain: h, url: 'https://' + h, source: 'serp' });
+          }
+        } catch {}
+      }
+    }
+
+    return new Response(JSON.stringify({ competitors: competitors.slice(0, 8), query }), { headers: CORS });
+  } catch (err) {
+    return new Response(JSON.stringify({ competitors: [], error: err.message }), { status: 500, headers: CORS });
+  }
+}
+
 // AI VISIBILITY ANALYSER  — rule-based, no AI calls, no cost
 // Generates a realistic brand visibility report from the brand name alone.
 // ─────────────────────────────────────────────────────────────────────────────
