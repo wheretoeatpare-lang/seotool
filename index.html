@@ -461,6 +461,187 @@ h1 span {
 .gap-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.5rem; }
 .gap-action { font-size: 0.8rem; color: var(--accent2); font-weight: 500; }
 
+/* ── TOP COMPETITORS TAB ── */
+.tc-input-row {
+  display: grid; grid-template-columns: 1fr auto; gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.tc-url-input {
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.75rem 1rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.92rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.tc-url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+.tc-url-input::placeholder { color: var(--muted2); }
+.tc-compare-btn {
+  background: linear-gradient(135deg, var(--accent), #5a4fcc);
+  color: white; border: none; padding: 0.75rem 1.5rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem; font-weight: 600; cursor: pointer;
+  transition: opacity 0.2s; white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(124,111,247,0.3);
+}
+.tc-compare-btn:hover { opacity: 0.88; }
+.tc-compare-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.tc-hint { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.5rem; }
+.tc-hint a { color: var(--accent2); text-decoration: none; }
+.tc-hint a:hover { text-decoration: underline; }
+.tc-sites-header {
+  display: grid; grid-template-columns: 1fr 60px 1fr;
+  gap: 1rem; align-items: stretch; margin-bottom: 1.5rem;
+}
+.tc-site-card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.1rem 1.25rem;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.tc-site-card.a { border-color: rgba(124,111,247,0.35); }
+.tc-site-card.b { border-color: rgba(34,211,238,0.28); }
+.tc-site-label {
+  font-size: 0.67rem; font-weight: 700; letter-spacing: 0.07em;
+  text-transform: uppercase; margin-bottom: 0.1rem;
+}
+.tc-site-label.a { color: var(--accent); }
+.tc-site-label.b { color: var(--cyan); }
+.tc-site-title {
+  font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700;
+  color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tc-site-url { font-size: 0.75rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tc-site-score { font-family: 'Syne', sans-serif; font-size: 1.75rem; font-weight: 800; margin-top: 0.35rem; }
+.tc-site-score.a { color: var(--accent); }
+.tc-site-score.b { color: var(--cyan); }
+.tc-winner-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3);
+  color: var(--green); padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.04em;
+  margin-top: 0.2rem; width: fit-content;
+}
+.tc-vs-center {
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800;
+  color: var(--muted2);
+}
+.tc-da-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;
+}
+.tc-da-card {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.1rem 1.25rem;
+}
+.tc-da-card.a { border-color: rgba(124,111,247,0.3); }
+.tc-da-card.b { border-color: rgba(34,211,238,0.25); }
+.tc-da-row { display: flex; align-items: center; gap: 0.85rem; }
+.tc-da-ring { position: relative; flex-shrink: 0; }
+.tc-da-num {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-family: 'Syne', sans-serif;
+  font-size: 1.05rem; font-weight: 800;
+}
+.tc-da-info { flex: 1; min-width: 0; }
+.tc-da-tier { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; }
+.tc-da-desc { font-size: 0.74rem; color: var(--muted); margin-top: 0.15rem; }
+.tc-sig-pills { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.5rem; }
+.tc-sig-pill { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 999px; font-weight: 600; }
+.tc-sig-pass { background: var(--green2); color: var(--green); }
+.tc-sig-fail { background: var(--red2); color: var(--red); }
+.tc-cat-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem; margin-bottom: 1.5rem;
+}
+.tc-cat-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.1rem;
+}
+.tc-cat-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.6rem; }
+.tc-cat-scores { display: flex; gap: 0.6rem; align-items: flex-end; margin-bottom: 0.5rem; }
+.tc-cat-val { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; }
+.tc-cat-val.a { color: var(--accent); }
+.tc-cat-val.b { color: var(--cyan); }
+.tc-cat-sep { color: var(--muted2); font-size: 0.9rem; padding-bottom: 2px; }
+.tc-cat-bar { height: 4px; border-radius: 999px; background: var(--bg4); overflow: hidden; display: flex; }
+.tc-cat-bar-a { height: 100%; background: var(--accent); transition: width 0.6s; }
+.tc-cat-bar-b { height: 100%; background: var(--cyan); transition: width 0.6s; }
+.tc-cat-winner { font-size: 0.7rem; color: var(--muted); margin-top: 0.3rem; }
+.tc-cat-winner .w { color: var(--green); font-weight: 600; }
+.tc-sub-tabs { display: flex; gap: 0.35rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 0; margin-bottom: 1.25rem; }
+.tc-sub-btn {
+  background: none; border: none; color: var(--muted); padding: 0.5rem 0.85rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.tc-sub-btn:hover { color: var(--text); }
+.tc-sub-btn.active { color: var(--accent2); border-bottom-color: var(--accent); }
+.tc-sub-panel { display: none; }
+.tc-sub-panel.active { display: block; }
+.tc-table { width: 100%; border-collapse: collapse; }
+.tc-table th, .tc-table td { padding: 0.65rem 0.9rem; text-align: left; font-size: 0.82rem; border-bottom: 1px solid var(--border); }
+.tc-table thead th {
+  font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  background: var(--bg3); padding: 0.55rem 0.9rem;
+}
+.tc-table thead th.col-a { color: var(--accent); }
+.tc-table thead th.col-b { color: var(--cyan); }
+.tc-table tbody tr:hover { background: rgba(255,255,255,0.015); }
+.tc-table td.signal { color: var(--muted); font-size: 0.76rem; }
+.tc-table td.win { color: var(--green); font-weight: 600; }
+.tc-table td.lose { color: var(--red); }
+.tc-table td.tie { color: var(--muted); }
+.tc-verdict-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.18rem 0.55rem; border-radius: 999px;
+  font-size: 0.66rem; font-weight: 700; white-space: nowrap;
+}
+.tc-verdict-a { background: rgba(124,111,247,0.15); color: var(--accent); }
+.tc-verdict-b { background: rgba(34,211,238,0.15); color: var(--cyan); }
+.tc-verdict-tie { background: var(--bg4); color: var(--muted); }
+.tc-insights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem; }
+.tc-insight-card {
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 12px; padding: 1.1rem;
+}
+.tc-insight-card.a { border-color: rgba(124,111,247,0.25); }
+.tc-insight-card.b { border-color: rgba(34,211,238,0.2); }
+.tc-insight-header { display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.75rem; }
+.tc-insight-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tc-insight-dot.a { background: var(--accent); }
+.tc-insight-dot.b { background: var(--cyan); }
+.tc-insight-title { font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700; }
+.tc-insight-item { display: flex; align-items: flex-start; gap: 0.4rem; padding: 0.35rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+.tc-insight-item:last-child { border-bottom: none; }
+.tc-insight-text { color: var(--muted); line-height: 1.45; }
+.tc-insight-text strong { color: var(--text); font-weight: 600; }
+.tc-kw-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.tc-kw-chip {
+  display: inline-block; background: rgba(124,111,247,0.1);
+  border: 1px solid rgba(124,111,247,0.2); color: var(--accent2);
+  padding: 0.13rem 0.55rem; border-radius: 999px; font-size: 0.73rem;
+  margin: 2px; font-weight: 500;
+}
+.tc-kw-chip.shared { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.25); color: var(--green); }
+.tc-kw-chip.b-only { background: rgba(34,211,238,0.1); border-color: rgba(34,211,238,0.2); color: var(--cyan); }
+.tc-section-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; }
+.tc-section-head {
+  padding: 0.75rem 1.1rem; background: var(--bg4); border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+}
+.tc-spinner-wrap { position: relative; width: 48px; height: 48px; margin: 0 auto 1rem; }
+.tc-spinner-ring { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--border2); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+.tc-spinner-inner { position: absolute; inset: 8px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--cyan); animation: spin 1.3s linear infinite reverse; }
+@media (max-width: 640px) {
+  .tc-sites-header { grid-template-columns: 1fr; }
+  .tc-vs-center { display: none; }
+  .tc-da-grid { grid-template-columns: 1fr; }
+  .tc-insights-grid { grid-template-columns: 1fr; }
+  .tc-kw-grid { grid-template-columns: 1fr; }
+  .tc-input-row { grid-template-columns: 1fr; }
+}
+
 /* ── CWV PANEL ── */
 .cwv-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
 .cwv-card {
@@ -853,7 +1034,6 @@ footer .logo-f {
     <a href="#features">Features</a>
     <a href="#" onclick="scrollToAudit(); return false;">Audit Now</a>
     <a href="/competitor.html">Competitor Analysis</a>
-	<a href="/ai-search.html">AI Search</a>
     <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   </div>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
@@ -1082,6 +1262,7 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('schema')">🧩 Schema</button>
       <button class="tab-btn" onclick="switchTab('cwv')">⚡ Core Web Vitals</button>
       <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
+      <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Competitors</button>
       <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
     </div>
 
@@ -1134,6 +1315,13 @@ footer .logo-f {
     </div>
     <div class="tab-panel" id="tab-techstack">
       <div id="techstack-content" style="color:var(--muted);font-size:0.9rem;padding:2rem;text-align:center">Detecting tech stack…</div>
+    </div>
+    <div class="tab-panel" id="tab-top-competitors">
+      <div id="top-competitors-content">
+        <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.88rem">
+          Compare your audited site against a competitor. Enter their URL below.
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1270,7 +1458,7 @@ function scrollToAudit() {
 function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
-  const names = ['overview','suggestions','metrics','keywords','schema','cwv','competitors','techstack'];
+  const names = ['overview','suggestions','metrics','keywords','schema','cwv','competitors','top-competitors','techstack'];
   document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', names[i] === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
@@ -2040,6 +2228,9 @@ function renderResults(url, data, cmsData, pageData) {
   // Tech Stack
   renderTechStack(cmsData, url);
 
+  // Top Competitors tab — init with audited URL and its pageData
+  initTopCompetitorsTab(url, pageData);
+
   // Show results
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2381,6 +2572,537 @@ document.addEventListener('click', (e) => {
 window.addEventListener('load', () => {
   tryRestoreFromHash();
 });
+
+// ══════════════════════════════════════════════════════════════
+// TOP COMPETITORS TAB — full side-by-side competitor comparison
+// Same engine as competitor.html, embedded in the audit results
+// ══════════════════════════════════════════════════════════════
+
+function initTopCompetitorsTab(auditedUrl, auditedPageData) {
+  const el = document.getElementById('top-competitors-content');
+  let hostname = auditedUrl;
+  try { hostname = new URL(auditedUrl).hostname.replace(/^www\./, ''); } catch {}
+
+  el.innerHTML = `
+    <div style="margin-bottom:1.25rem">
+      <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem">
+        ◆ Audited Site
+      </div>
+      <div style="background:var(--bg3);border:1px solid rgba(124,111,247,0.3);border-radius:10px;padding:0.7rem 1rem;font-size:0.88rem;color:var(--accent2);font-weight:600">
+        ${tcEsc(hostname)}
+      </div>
+    </div>
+    <div style="margin-bottom:0.5rem">
+      <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem">
+        ◆ Competitor URL
+      </div>
+      <div class="tc-input-row">
+        <input type="url" id="tc-competitor-input" class="tc-url-input"
+          placeholder="https://competitor.com"
+          onkeydown="if(event.key==='Enter') runTCCompare('${tcEsc(auditedUrl)}')" />
+        <button class="tc-compare-btn" id="tc-run-btn" onclick="runTCCompare('${tcEsc(auditedUrl)}')">
+          Compare →
+        </button>
+      </div>
+      <div class="tc-hint">Enter any competitor URL to see a full side-by-side SEO comparison. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
+    </div>
+    <div id="tc-result-area"></div>
+  `;
+
+  // If pageData already fetched, store it
+  window._tcAuditedPageData = auditedPageData;
+  window._tcAuditedUrl = auditedUrl;
+}
+
+async function runTCCompare(urlA) {
+  let urlB = document.getElementById('tc-competitor-input').value.trim();
+  if (!urlB) { showToast('⚠ Enter a competitor URL', 'var(--amber)'); return; }
+  if (!urlB.startsWith('http')) urlB = 'https://' + urlB;
+  try { new URL(urlB); } catch { showToast('⚠ Invalid URL', 'var(--red)'); return; }
+
+  const hnA = tcHostname(urlA), hnB = tcHostname(urlB);
+  if (hnA === hnB) { showToast('⚠ Enter a different site', 'var(--amber)'); return; }
+
+  const btn = document.getElementById('tc-run-btn');
+  btn.disabled = true; btn.textContent = 'Fetching…';
+
+  const area = document.getElementById('tc-result-area');
+  area.innerHTML = `
+    <div style="text-align:center;padding:2.5rem 1rem">
+      <div class="tc-spinner-wrap"><div class="tc-spinner-ring"></div><div class="tc-spinner-inner"></div></div>
+      <div style="color:var(--muted);font-size:0.85rem">Fetching <strong style="color:var(--text)">${tcEsc(hnB)}</strong> page data…</div>
+    </div>`;
+
+  try {
+    const pdA = window._tcAuditedPageData || await tcFetchPageData(urlA);
+    const pdB = await tcFetchPageData(urlB);
+    tcRenderComparison(urlA, urlB, pdA, pdB);
+  } catch(e) {
+    area.innerHTML = `<div style="color:var(--red);padding:1.5rem;font-size:0.85rem">⚠ ${tcEsc(e.message)}</div>`;
+  }
+
+  btn.disabled = false; btn.textContent = 'Compare →';
+}
+
+async function tcFetchPageData(url) {
+  const res = await fetch('/api/page-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch: ' + url);
+  const d = await res.json();
+  if (d.error) throw new Error(d.error);
+  return d;
+}
+
+// ── SCORING (same logic as competitor.html) ──────────────────
+function tcScore(pd) {
+  const tl = pd.titleLen || 0, dl = pd.descLen || 0;
+  const og = pd.openGraph || {}, sh = pd.secHeaders || {};
+  const sc = {};
+  sc.title      = tl>=50&&tl<=60?100:tl>=40&&tl<=70?70:tl>0?40:0;
+  sc.metaDesc   = dl>=120&&dl<=155?100:dl>=80&&dl<=170?70:dl>0?40:0;
+  sc.canonical  = pd.canonical?100:0;
+  sc.https      = pd.isHttps?100:0;
+  sc.viewport   = pd.hasViewport?100:0;
+  sc.h1         = (pd.headings?.h1||0)===1?100:(pd.headings?.h1||0)>1?50:0;
+  sc.h2         = (pd.headings?.h2||0)>=3?100:(pd.headings?.h2||0)>=1?60:0;
+  const tot=pd.images?.total||0,mis=pd.images?.missingAlt||0;
+  sc.imgAlt     = tot===0?80:Math.round((1-mis/tot)*100);
+  sc.ogTags     = (og.title?35:0)+(og.description?35:0)+(og.image?30:0);
+  sc.twitterCard= og.twitterCard?100:0;
+  sc.schema     = (pd.schema?.count||0)>=3?100:(pd.schema?.count||0)===2?80:(pd.schema?.count||0)===1?50:0;
+  const wc=pd.wordCount||0;
+  sc.wordCount  = wc>=1000?100:wc>=500?70:wc>=300?50:wc>0?30:0;
+  const ttfb=pd.ttfb||9999;
+  sc.ttfb       = ttfb<800?100:ttfb<1800?60:20;
+  const sz=pd.pageSizeKb||0;
+  sc.pageSize   = sz<100?100:sz<300?75:sz<600?50:25;
+  sc.intLinks   = (pd.links?.internal||0)>=5?100:(pd.links?.internal||0)>=2?70:(pd.links?.internal||0)>=1?40:0;
+  sc.extLinks   = (pd.links?.external||0)>=3?100:(pd.links?.external||0)>=1?60:0;
+  let sec=0;if(sh.hsts)sec+=25;if(sh.xContentType)sec+=25;if(sh.xFrame)sec+=25;if(sh.csp)sec+=25;
+  sc.secHeaders = sec;
+  sc.favicon    = pd.hasFavicon?100:0;
+  sc.charset    = pd.hasCharset?100:0;
+  sc.lang       = pd.lang?100:0;
+  sc.noindex    = pd.isNoindex?0:100;
+  sc.redirect   = pd.wasRedirected?60:100;
+  const is=pd.inlineScripts||0;
+  sc.inlineScripts=is===0?100:is<=3?80:is<=7?50:20;
+  sc.cacheCtrl  = pd.cacheControl?100:0;
+  const cat = ks => Math.round(ks.reduce((s,k)=>s+(sc[k]||0),0)/ks.length);
+  sc._cat = {
+    content:     cat(['title','metaDesc','wordCount','h1','h2','imgAlt']),
+    technical:   cat(['https','canonical','viewport','noindex','charset','lang','redirect']),
+    performance: cat(['ttfb','pageSize','inlineScripts','cacheCtrl']),
+    social:      cat(['ogTags','twitterCard']),
+    schema:      cat(['schema']),
+    links:       cat(['intLinks','extLinks']),
+    security:    cat(['secHeaders','favicon']),
+  };
+  const w={content:25,technical:20,performance:15,social:10,schema:15,links:10,security:5};
+  sc._total = Math.round(Object.entries(w).reduce((s,[k,v])=>s+(sc._cat[k]||0)*v,0)/100);
+  return sc;
+}
+
+function tcDA(pd) {
+  let s=0;
+  if(pd.isHttps)s+=10;if(pd.secHeaders?.hsts)s+=4;if(pd.secHeaders?.xContentType)s+=2;
+  if(pd.secHeaders?.xFrame)s+=2;if(pd.secHeaders?.csp)s+=2;if(pd.canonical)s+=5;
+  if(!pd.isNoindex)s+=4;if(pd.lang)s+=2;if(pd.hasCharset)s+=2;if(pd.hasFavicon)s+=2;
+  if(!pd.wasRedirected)s+=3;if(pd.hasSitemap)s+=2;if(pd.hasRobotsTxt)s+=2;
+  const wc=pd.wordCount||0;
+  if(wc>=2000)s+=18;else if(wc>=1000)s+=14;else if(wc>=500)s+=9;else if(wc>=300)s+=5;else if(wc>=150)s+=2;
+  const sc=pd.schema?.count||0;
+  if(sc>=4)s+=12;else if(sc>=2)s+=8;else if(sc>=1)s+=4;
+  const ext=pd.links?.external||0,int_=pd.links?.internal||0;
+  if(ext>=5)s+=6;else if(ext>=2)s+=4;else if(ext>=1)s+=2;
+  if(int_>=10)s+=6;else if(int_>=5)s+=4;else if(int_>=2)s+=2;
+  const ttfb=pd.ttfb||0;
+  if(ttfb>0&&ttfb<800)s+=10;else if(ttfb<1800)s+=5;
+  if(pd.hasViewport)s+=3;if(pd.openGraph?.image)s+=2;if(pd.openGraph?.twitterCard)s+=1;
+  if(pd.title&&pd.titleLen>=50&&pd.titleLen<=60)s+=2;
+  if(pd.metaDesc&&pd.descLen>=120&&pd.descLen<=155)s+=2;
+  s=Math.max(1,Math.min(100,s));
+  const tier=s>=70?'Strong Authority':s>=50?'Established Authority':s>=35?'Developing Authority':s>=20?'New / Low Authority':'Very Low Authority';
+  const color=s>=70?'#60a5fa':s>=50?'#34d399':s>=35?'#fbbf24':s>=20?'#fb923c':'#f87171';
+  return {score:s,tier,color};
+}
+
+// ── KEYWORD EXTRACTION ───────────────────────────────────────
+function tcKeywords(pd) {
+  const stop=new Set(['the','and','for','are','but','not','you','all','this','that','with','from','have','they','will','your','been','has','more','also','than','when','can','was','its','our','what','get','use','used','into','just','how','about']);
+  const text=[(pd.title||''),(pd.metaDesc||'')].join(' ').toLowerCase();
+  const words=text.replace(/[^\w\s]/g,' ').split(/\s+/).filter(w=>w.length>3&&!stop.has(w)&&!/^\d+$/.test(w));
+  const freq={};words.forEach(w=>freq[w]=(freq[w]||0)+1);
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([word])=>word);
+}
+
+// ── HELPERS ──────────────────────────────────────────────────
+function tcHostname(url){try{return new URL(url).hostname.replace(/^www\./,'');}catch{return url;}}
+function tcEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function tcTf(v){return v?'✅ Yes':'❌ No';}
+function tcNa(v){return v||'—';}
+function tcWinner(a,b){return a>b?'a':b>a?'b':'tie';}
+function tcVerdictHtml(w,hA,hB){
+  if(w==='a') return `<span class="tc-verdict-pill tc-verdict-a">${tcEsc(hA.slice(0,14))}</span>`;
+  if(w==='b') return `<span class="tc-verdict-pill tc-verdict-b">${tcEsc(hB.slice(0,14))}</span>`;
+  return `<span class="tc-verdict-pill tc-verdict-tie">Tie</span>`;
+}
+
+// ── RENDER FULL COMPARISON ───────────────────────────────────
+function tcRenderComparison(urlA, urlB, pdA, pdB) {
+  const scA=tcScore(pdA), scB=tcScore(pdB);
+  const daA=tcDA(pdA), daB=tcDA(pdB);
+  const hA=tcHostname(urlA), hB=tcHostname(urlB);
+  const kwA=tcKeywords(pdA), kwB=tcKeywords(pdB);
+
+  const area = document.getElementById('tc-result-area');
+
+  // Build site header cards
+  const tie = scA._total === scB._total;
+  function siteCardHtml(pd, sc, url, side) {
+    const h = tcHostname(url);
+    const leads = side==='a' ? scA._total > scB._total : scB._total > scA._total;
+    return `
+      <div class="tc-site-card ${side}">
+        <div class="tc-site-label ${side}">◆ ${side==='a'?'Your Site':'Competitor'}</div>
+        <div class="tc-site-title">${pd.title ? tcEsc(pd.title.slice(0,50))+(pd.title.length>50?'…':'') : tcEsc(h)}</div>
+        <div class="tc-site-url">${tcEsc(h)}</div>
+        <div class="tc-site-score ${side}">${sc._total}<span style="font-size:0.85rem;color:var(--muted);font-weight:400"> / 100</span></div>
+        ${leads&&!tie?'<div class="tc-winner-badge">🏆 Leading</div>':tie?'<div class="tc-winner-badge" style="background:var(--amber2);border-color:rgba(251,191,36,0.3);color:var(--amber)">⚖ Tied</div>':''}
+      </div>`;
+  }
+
+  // DA ring SVG
+  function daRingHtml(da, pd, url, side) {
+    const circ=175, r=28, off=circ-(da.score/100)*circ;
+    const sigs=[
+      {l:'HTTPS',p:!!pd.isHttps},{l:'Canonical',p:!!pd.canonical},{l:'Schema',p:(pd.schema?.count||0)>0},
+      {l:'HSTS',p:!!pd.secHeaders?.hsts},{l:'OG Image',p:!!pd.openGraph?.image},
+      {l:'Sitemap',p:!!pd.hasSitemap},{l:'1000w+',p:(pd.wordCount||0)>=1000},
+      {l:'Fast TTFB',p:pd.ttfb>0&&pd.ttfb<800}
+    ];
+    return `
+      <div class="tc-da-card ${side}">
+        <div style="font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:${side==='a'?'var(--accent)':'var(--cyan)'};margin-bottom:0.6rem">
+          ◆ ${side==='a'?'Your Site':'Competitor'}: ${tcEsc(tcHostname(url))}
+        </div>
+        <div class="tc-da-row">
+          <div class="tc-da-ring">
+            <svg width="66" height="66" viewBox="0 0 72 72">
+              <circle cx="36" cy="36" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+              <circle cx="36" cy="36" r="${r}" fill="none" stroke="${da.color}" stroke-width="6"
+                stroke-dasharray="${circ}" stroke-dashoffset="${off}"
+                stroke-linecap="round" transform="rotate(-90 36 36)"/>
+            </svg>
+            <div class="tc-da-num" style="color:${da.color}">${da.score}</div>
+          </div>
+          <div class="tc-da-info">
+            <div class="tc-da-tier" style="color:${da.color}">${da.tier}</div>
+            <div class="tc-da-desc">On-page authority score / 100</div>
+          </div>
+        </div>
+        <div class="tc-sig-pills">
+          ${sigs.map(s=>`<span class="tc-sig-pill ${s.p?'tc-sig-pass':'tc-sig-fail'}">${s.p?'✓':'✗'} ${s.l}</span>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  // Category grid
+  const cats=[
+    {key:'content',label:'✍️ Content'},{key:'technical',label:'🔍 Technical'},
+    {key:'performance',label:'⚡ Performance'},{key:'schema',label:'🧩 Schema'},
+    {key:'social',label:'📣 Social / OG'},{key:'links',label:'🔗 Links'},
+    {key:'security',label:'🔒 Security'},
+  ];
+  const catGridHtml = cats.map(c=>{
+    const a=scA._cat[c.key]||0,b=scB._cat[c.key]||0,tot=a+b||1;
+    const w=a>b?'a':b>a?'b':null;
+    return `<div class="tc-cat-card">
+      <div class="tc-cat-title">${c.label}</div>
+      <div class="tc-cat-scores">
+        <span class="tc-cat-val a">${a}</span>
+        <span class="tc-cat-sep">vs</span>
+        <span class="tc-cat-val b">${b}</span>
+      </div>
+      <div class="tc-cat-bar">
+        <div class="tc-cat-bar-a" style="width:${(a/tot*100).toFixed(1)}%"></div>
+        <div class="tc-cat-bar-b" style="width:${(b/tot*100).toFixed(1)}%"></div>
+      </div>
+      <div class="tc-cat-winner">${w?`<span class="w">${w==='a'?'Your Site':'Competitor'}</span> leads`:'<span style="color:var(--amber)">Tied</span>'}</div>
+    </div>`;
+  }).join('');
+
+  // Table builder
+  function tableHtml(rows) {
+    const head=`<thead><tr>
+      <th>Signal</th>
+      <th class="col-a">${tcEsc(hA)}</th>
+      <th class="col-b">${tcEsc(hB)}</th>
+      <th>Winner</th>
+    </tr></thead>`;
+    const body='<tbody>'+rows.map(r=>{
+      const aw=r.w==='a',bw=r.w==='b';
+      return `<tr>
+        <td class="signal">${r.label}</td>
+        <td class="${aw?'win':bw?'lose':'tie'}">${r.vA}</td>
+        <td class="${bw?'win':aw?'lose':'tie'}">${r.vB}</td>
+        <td style="white-space:nowrap">${tcVerdictHtml(r.w,hA,hB)}</td>
+      </tr>`;
+    }).join('')+'</tbody>';
+    return `<div class="tc-section-card"><div class="tc-section-head">Comparison Table</div><div style="overflow-x:auto"><table class="tc-table">${head}${body}</table></div></div>`;
+  }
+
+  // Overview rows
+  const overviewRows=[
+    {label:'Overall SEO Score',vA:scA._total+' / 100',vB:scB._total+' / 100',w:tcWinner(scA._total,scB._total)},
+    {label:'Domain Authority',vA:daA.score+' — '+daA.tier,vB:daB.score+' — '+daB.tier,w:tcWinner(daA.score,daB.score)},
+    {label:'Page Title',vA:tcNa(tcEsc((pdA.title||'').slice(0,50))),vB:tcNa(tcEsc((pdB.title||'').slice(0,50))),w:tcWinner(scA.title,scB.title)},
+    {label:'Title Length',vA:(pdA.titleLen||0)+' chars',vB:(pdB.titleLen||0)+' chars',w:tcWinner(scA.title,scB.title)},
+    {label:'Meta Description',vA:pdA.descLen?(pdA.descLen+' chars'):'❌ Missing',vB:pdB.descLen?(pdB.descLen+' chars'):'❌ Missing',w:tcWinner(scA.metaDesc,scB.metaDesc)},
+    {label:'Word Count',vA:(pdA.wordCount||0).toLocaleString()+' words',vB:(pdB.wordCount||0).toLocaleString()+' words',w:tcWinner(pdA.wordCount||0,pdB.wordCount||0)},
+    {label:'TTFB',vA:pdA.ttfb?(pdA.ttfb+'ms'):'—',vB:pdB.ttfb?(pdB.ttfb+'ms'):'—',w:tcWinner(scA.ttfb,scB.ttfb)},
+    {label:'Schema Markup',vA:(pdA.schema?.count||0)+' type(s)',vB:(pdB.schema?.count||0)+' type(s)',w:tcWinner(pdA.schema?.count||0,pdB.schema?.count||0)},
+    {label:'HTTPS',vA:tcTf(pdA.isHttps),vB:tcTf(pdB.isHttps),w:tcWinner(+pdA.isHttps,+pdB.isHttps)},
+    {label:'Canonical Tag',vA:tcTf(pdA.canonical),vB:tcTf(pdB.canonical),w:tcWinner(+!!pdA.canonical,+!!pdB.canonical)},
+    {label:'OG Image',vA:tcTf(pdA.openGraph?.image),vB:tcTf(pdB.openGraph?.image),w:tcWinner(+!!pdA.openGraph?.image,+!!pdB.openGraph?.image)},
+    {label:'Sitemap.xml',vA:pdA.hasSitemap?'✅ Found':'❌ Missing',vB:pdB.hasSitemap?'✅ Found':'❌ Missing',w:tcWinner(+!!pdA.hasSitemap,+!!pdB.hasSitemap)},
+    {label:'Robots.txt',vA:pdA.hasRobotsTxt?'✅ Found':'❌ Missing',vB:pdB.hasRobotsTxt?'✅ Found':'❌ Missing',w:tcWinner(+!!pdA.hasRobotsTxt,+!!pdB.hasRobotsTxt)},
+  ];
+
+  // Technical rows
+  const techRows=[
+    {label:'HTTPS',vA:tcTf(pdA.isHttps),vB:tcTf(pdB.isHttps),w:tcWinner(+pdA.isHttps,+pdB.isHttps)},
+    {label:'Canonical',vA:pdA.canonical?'✅ '+tcEsc(pdA.canonical.slice(0,45)):'❌ Missing',vB:pdB.canonical?'✅ '+tcEsc(pdB.canonical.slice(0,45)):'❌ Missing',w:tcWinner(+!!pdA.canonical,+!!pdB.canonical)},
+    {label:'Viewport Meta',vA:tcTf(pdA.hasViewport),vB:tcTf(pdB.hasViewport),w:tcWinner(+pdA.hasViewport,+pdB.hasViewport)},
+    {label:'Charset',vA:tcTf(pdA.hasCharset),vB:tcTf(pdB.hasCharset),w:tcWinner(+pdA.hasCharset,+pdB.hasCharset)},
+    {label:'HTML Lang',vA:pdA.lang||'❌ Missing',vB:pdB.lang||'❌ Missing',w:tcWinner(+!!pdA.lang,+!!pdB.lang)},
+    {label:'Noindex',vA:pdA.isNoindex?'🚫 Noindex':'✅ Indexable',vB:pdB.isNoindex?'🚫 Noindex':'✅ Indexable',w:tcWinner(+!pdA.isNoindex,+!pdB.isNoindex)},
+    {label:'Sitemap.xml',vA:pdA.hasSitemap?'✅ Found':'❌ Missing',vB:pdB.hasSitemap?'✅ Found':'❌ Missing',w:tcWinner(+!!pdA.hasSitemap,+!!pdB.hasSitemap)},
+    {label:'Robots.txt',vA:pdA.hasRobotsTxt?'✅ Found':'❌ Missing',vB:pdB.hasRobotsTxt?'✅ Found':'❌ Missing',w:tcWinner(+!!pdA.hasRobotsTxt,+!!pdB.hasRobotsTxt)},
+    {label:'TTFB',vA:pdA.ttfb?(pdA.ttfb+'ms'):'—',vB:pdB.ttfb?(pdB.ttfb+'ms'):'—',w:tcWinner(scA.ttfb,scB.ttfb)},
+    {label:'Cache-Control',vA:pdA.cacheControl||'❌ Not set',vB:pdB.cacheControl||'❌ Not set',w:tcWinner(+!!pdA.cacheControl,+!!pdB.cacheControl)},
+    {label:'Favicon',vA:tcTf(pdA.hasFavicon),vB:tcTf(pdB.hasFavicon),w:tcWinner(+pdA.hasFavicon,+pdB.hasFavicon)},
+    {label:'HSTS',vA:tcTf(pdA.secHeaders?.hsts),vB:tcTf(pdB.secHeaders?.hsts),w:tcWinner(+!!pdA.secHeaders?.hsts,+!!pdB.secHeaders?.hsts)},
+    {label:'X-Content-Type',vA:tcTf(pdA.secHeaders?.xContentType),vB:tcTf(pdB.secHeaders?.xContentType),w:tcWinner(+!!pdA.secHeaders?.xContentType,+!!pdB.secHeaders?.xContentType)},
+    {label:'X-Frame-Options',vA:tcTf(pdA.secHeaders?.xFrame),vB:tcTf(pdB.secHeaders?.xFrame),w:tcWinner(+!!pdA.secHeaders?.xFrame,+!!pdB.secHeaders?.xFrame)},
+    {label:'CSP Header',vA:tcTf(pdA.secHeaders?.csp),vB:tcTf(pdB.secHeaders?.csp),w:tcWinner(+!!pdA.secHeaders?.csp,+!!pdB.secHeaders?.csp)},
+    {label:'Page Size',vA:(pdA.pageSizeKb||0)+' KB',vB:(pdB.pageSizeKb||0)+' KB',w:tcWinner(scA.pageSize,scB.pageSize)},
+    {label:'Inline Scripts',vA:pdA.inlineScripts||0,vB:pdB.inlineScripts||0,w:tcWinner(scA.inlineScripts,scB.inlineScripts)},
+  ];
+
+  // Content rows
+  const contentRows=[
+    {label:'Title',vA:tcNa(tcEsc((pdA.title||'').slice(0,50))),vB:tcNa(tcEsc((pdB.title||'').slice(0,50))),w:tcWinner(scA.title,scB.title)},
+    {label:'Title Length',vA:(pdA.titleLen||0)+' chars',vB:(pdB.titleLen||0)+' chars',w:tcWinner(scA.title,scB.title)},
+    {label:'Meta Desc Length',vA:(pdA.descLen||0)+' chars',vB:(pdB.descLen||0)+' chars',w:tcWinner(scA.metaDesc,scB.metaDesc)},
+    {label:'H1 Tags',vA:pdA.headings?.h1||0,vB:pdB.headings?.h1||0,w:tcWinner(scA.h1,scB.h1)},
+    {label:'H2 Tags',vA:pdA.headings?.h2||0,vB:pdB.headings?.h2||0,w:tcWinner(scA.h2,scB.h2)},
+    {label:'H3 Tags',vA:pdA.headings?.h3||0,vB:pdB.headings?.h3||0,w:tcWinner(pdA.headings?.h3||0,pdB.headings?.h3||0)},
+    {label:'Word Count',vA:(pdA.wordCount||0).toLocaleString()+' words',vB:(pdB.wordCount||0).toLocaleString()+' words',w:tcWinner(pdA.wordCount||0,pdB.wordCount||0)},
+    {label:'Total Images',vA:pdA.images?.total||0,vB:pdB.images?.total||0,w:tcWinner(pdA.images?.total||0,pdB.images?.total||0)},
+    {label:'Images Missing Alt',vA:pdA.images?.missingAlt||0,vB:pdB.images?.missingAlt||0,w:tcWinner(scA.imgAlt,scB.imgAlt)},
+    {label:'Internal Links',vA:pdA.links?.internal||0,vB:pdB.links?.internal||0,w:tcWinner(pdA.links?.internal||0,pdB.links?.internal||0)},
+    {label:'External Links',vA:pdA.links?.external||0,vB:pdB.links?.external||0,w:tcWinner(pdA.links?.external||0,pdB.links?.external||0)},
+    {label:'Page Size',vA:(pdA.pageSizeKb||0)+' KB',vB:(pdB.pageSizeKb||0)+' KB',w:tcWinner(scA.pageSize,scB.pageSize)},
+  ];
+
+  // Social rows
+  const ogA=pdA.openGraph||{},ogB=pdB.openGraph||{},schA=pdA.schema||{},schB=pdB.schema||{};
+  const socialRows=[
+    {label:'OG Title',vA:ogA.title?'✅ '+tcEsc(ogA.title.slice(0,45)):'❌ Missing',vB:ogB.title?'✅ '+tcEsc(ogB.title.slice(0,45)):'❌ Missing',w:tcWinner(+!!ogA.title,+!!ogB.title)},
+    {label:'OG Description',vA:tcTf(ogA.description),vB:tcTf(ogB.description),w:tcWinner(+!!ogA.description,+!!ogB.description)},
+    {label:'OG Image',vA:tcTf(ogA.image),vB:tcTf(ogB.image),w:tcWinner(+!!ogA.image,+!!ogB.image)},
+    {label:'Twitter Card',vA:ogA.twitterCard?'✅ '+ogA.twitterCard:'❌ Missing',vB:ogB.twitterCard?'✅ '+ogB.twitterCard:'❌ Missing',w:tcWinner(+!!ogA.twitterCard,+!!ogB.twitterCard)},
+    {label:'Schema Count',vA:(schA.count||0)+' block(s)',vB:(schB.count||0)+' block(s)',w:tcWinner(schA.count||0,schB.count||0)},
+    {label:'Schema Types',vA:(schA.types||[]).join(', ')||'—',vB:(schB.types||[]).join(', ')||'—',w:tcWinner(schA.count||0,schB.count||0)},
+    {label:'Social Score',vA:scA._cat.social+' / 100',vB:scB._cat.social+' / 100',w:tcWinner(scA._cat.social,scB._cat.social)},
+  ];
+
+  // Keyword overlap
+  const setA=new Set(kwA),setB=new Set(kwB);
+  const shared=kwA.filter(k=>setB.has(k));
+  const onlyA=kwA.filter(k=>!setB.has(k)).slice(0,10);
+  const onlyB=kwB.filter(k=>!setA.has(k)).slice(0,10);
+  const kwHtml=`
+    <div class="tc-section-card">
+      <div class="tc-section-head">Keyword Overlap (from title &amp; meta description)</div>
+      <div style="padding:1.1rem">
+        <div class="tc-kw-grid">
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--accent);margin-bottom:0.5rem">◆ Only in ${tcEsc(hA)}</div>
+            <div>${onlyA.length?onlyA.map(k=>`<span class="tc-kw-chip">${tcEsc(k)}</span>`).join(''):'<span style="color:var(--muted);font-size:0.8rem">—</span>'}</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--green);margin-bottom:0.5rem">✦ Shared Keywords</div>
+            <div>${shared.length?shared.map(k=>`<span class="tc-kw-chip shared">${tcEsc(k)}</span>`).join(''):'<span style="color:var(--muted);font-size:0.8rem">No overlap</span>'}</div>
+          </div>
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--cyan);margin-bottom:0.5rem">◆ Only in ${tcEsc(hB)}</div>
+            <div>${onlyB.length?onlyB.map(k=>`<span class="tc-kw-chip b-only">${tcEsc(k)}</span>`).join(''):'<span style="color:var(--muted);font-size:0.8rem">—</span>'}</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted)">
+          Shared: <strong style="color:var(--green)">${shared.length}</strong> · 
+          Your Site unique: <strong style="color:var(--accent)">${onlyA.length}</strong> · 
+          Competitor unique: <strong style="color:var(--cyan)">${onlyB.length}</strong>
+        </div>
+      </div>
+    </div>`;
+
+  // Insights
+  function buildInsights(pd, sc) {
+    const items=[];
+    if(sc._total>=80)items.push({icon:'🏆',text:`<strong>Strong SEO</strong> — score ${sc._total}/100`});
+    else if(sc._total>=60)items.push({icon:'✅',text:`<strong>Decent foundation</strong> — score ${sc._total}/100`});
+    else items.push({icon:'⚠',text:`<strong>SEO needs work</strong> — score ${sc._total}/100`});
+    if(pd.wordCount>=1000)items.push({icon:'✅',text:`<strong>Good content depth</strong> — ${pd.wordCount.toLocaleString()} words`});
+    else if(pd.wordCount<300)items.push({icon:'❌',text:`<strong>Thin content</strong> — only ${pd.wordCount||0} words`});
+    if((pd.schema?.count||0)>=2)items.push({icon:'✅',text:`<strong>Good schema</strong> — ${pd.schema.count} type(s)`});
+    else if(!(pd.schema?.count))items.push({icon:'❌',text:`<strong>No schema markup</strong>`});
+    if(!pd.openGraph?.image)items.push({icon:'❌',text:`<strong>No OG image</strong>`});
+    else items.push({icon:'✅',text:`<strong>OG image set</strong>`});
+    if(pd.ttfb&&pd.ttfb<800)items.push({icon:'✅',text:`<strong>Fast TTFB</strong> — ${pd.ttfb}ms`});
+    else if(pd.ttfb&&pd.ttfb>=1800)items.push({icon:'❌',text:`<strong>Slow TTFB</strong> — ${pd.ttfb}ms`});
+    if((pd.headings?.h2||0)>=3)items.push({icon:'✅',text:`<strong>${pd.headings.h2} H2s</strong> — well structured`});
+    else items.push({icon:'⚠',text:`<strong>Few H2s</strong> — add more subheadings`});
+    return items.slice(0,5);
+  }
+  function insightCardHtml(pd, sc, side, url) {
+    const items=buildInsights(pd,sc);
+    return `<div class="tc-insight-card ${side}">
+      <div class="tc-insight-header">
+        <div class="tc-insight-dot ${side}"></div>
+        <div class="tc-insight-title">${tcEsc(tcHostname(url))} — Key Findings</div>
+      </div>
+      ${items.map(i=>`<div class="tc-insight-item"><span style="flex-shrink:0">${i.icon}</span><span class="tc-insight-text">${i.text}</span></div>`).join('')}
+    </div>`;
+  }
+
+  // Gap report
+  function buildGaps(scA, scB, pdA, pdB) {
+    const gaps=[];
+    function chk(label, a, b, advice) {
+      if(a!==b) gaps.push({label,a,b,advice,side:a>b?'a':'b'});
+    }
+    chk('Title Optimisation',scA.title,scB.title,'Ensure your title is 50–60 chars with your primary keyword at the start.');
+    chk('Meta Description',scA.metaDesc,scB.metaDesc,'Write a 120–155 char description with a clear call-to-action.');
+    chk('Content Depth',pdA.wordCount||0,pdB.wordCount||0,'Expand content to 1,000+ words covering the topic comprehensively.');
+    chk('H2 Subheadings',pdA.headings?.h2||0,pdB.headings?.h2||0,'Add 3–6 H2 subheadings to structure content and target keyword variants.');
+    chk('Schema Markup',pdA.schema?.count||0,pdB.schema?.count||0,'Add JSON-LD schema (WebPage, Organization, FAQPage) to earn rich results.');
+    chk('OG / Social Tags',scA.ogTags,scB.ogTags,'Add og:title, og:description, og:image for better social sharing previews.');
+    chk('Twitter Card',scA.twitterCard,scB.twitterCard,'Add twitter:card and twitter:image meta tags for X/Twitter previews.');
+    chk('Internal Links',pdA.links?.internal||0,pdB.links?.internal||0,'Add more internal links to distribute page authority and improve crawlability.');
+    chk('External Links',pdA.links?.external||0,pdB.links?.external||0,'Link to 3–5 authoritative sources to signal research depth.');
+    chk('Security Headers',scA.secHeaders,scB.secHeaders,'Implement HSTS, X-Content-Type-Options, X-Frame-Options, and CSP headers.');
+    chk('Page Speed (TTFB)',scA.ttfb,scB.ttfb,'Use a CDN, enable caching, and compress assets to improve server response time.');
+    chk('Image Alt Text',scA.imgAlt,scB.imgAlt,'Add descriptive alt text to all images for accessibility and image SEO.');
+    chk('Cache-Control',+!!pdA.cacheControl,+!!pdB.cacheControl,'Set Cache-Control headers on static assets to speed up repeat visits.');
+    chk('Sitemap.xml',+!!pdA.hasSitemap,+!!pdB.hasSitemap,'Create and submit a sitemap.xml to Google Search Console.');
+    chk('Robots.txt',+!!pdA.hasRobotsTxt,+!!pdB.hasRobotsTxt,'Add a robots.txt to manage crawl budget and point bots to your sitemap.');
+    return gaps;
+  }
+  const gaps=buildGaps(scA,scB,pdA,pdB);
+  const aBehind=gaps.filter(g=>g.side==='b');
+  const aLeads=gaps.filter(g=>g.side==='a');
+  function gapTableHtml(items, title, loserSide) {
+    if(!items.length) return '';
+    const isA = loserSide==='a';
+    const loserColor = isA ? 'var(--red)' : 'var(--cyan)';
+    const winnerColor = isA ? 'var(--cyan)' : 'var(--red)';
+    const loserLabel = isA ? tcEsc(hA) : tcEsc(hB);
+    const winnerLabel = isA ? tcEsc(hB) : tcEsc(hA);
+    return `<div class="tc-section-card">
+      <div class="tc-section-head">${title}</div>
+      <div style="overflow-x:auto"><table class="tc-table">
+        <thead><tr>
+          <th>Signal</th>
+          <th style="color:${loserColor}">${loserLabel}</th>
+          <th style="color:${winnerColor}">${winnerLabel}</th>
+          <th>Action</th>
+        </tr></thead>
+        <tbody>
+          ${items.map(g=>`<tr>
+            <td class="signal">${g.label}</td>
+            <td class="lose">${isA?g.a:g.b}</td>
+            <td class="win">${isA?g.b:g.a}</td>
+            <td style="font-size:0.78rem;color:var(--muted);max-width:240px">${g.advice}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+  }
+  const gapHtml = (!gaps.length)
+    ? `<div style="text-align:center;padding:3rem;color:var(--muted);font-size:0.88rem">🏆 No significant gaps — sites are evenly matched.</div>`
+    : (aBehind.length?`<div style="margin-bottom:0.85rem;padding:0.75rem 1rem;background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);border-radius:10px;font-size:0.83rem;color:var(--red)">⚠ <strong>${aBehind.length} area(s)</strong> where <strong>${tcEsc(hA)}</strong> falls behind</div>`:'')
+      + gapTableHtml(aBehind, '🔴 '+tcEsc(hA)+' — Fix These to Catch Up', 'a')
+      + (aLeads.length?`<div style="margin:0.85rem 0;padding:0.75rem 1rem;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);border-radius:10px;font-size:0.83rem;color:var(--green)">✅ <strong>${aLeads.length} area(s)</strong> where <strong>${tcEsc(hA)}</strong> already leads</div>`:'')
+      + gapTableHtml(aLeads, '✅ '+tcEsc(hA)+' Advantages — Maintain These', 'b');
+
+  // Sub-tab switcher id
+  const uid = 'tc'+Date.now();
+
+  // Assemble everything
+  area.innerHTML = `
+    <hr style="border:none;border-top:1px solid var(--border);margin:1.5rem 0">
+
+    <!-- Score Headers -->
+    <div class="tc-sites-header">
+      ${siteCardHtml(pdA,scA,urlA,'a')}
+      <div class="tc-vs-center">VS</div>
+      ${siteCardHtml(pdB,scB,urlB,'b')}
+    </div>
+
+    <!-- DA Comparison -->
+    <div style="margin-bottom:1.25rem">
+      <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.75rem">🏅 Domain Authority Estimate</div>
+      <div class="tc-da-grid">
+        ${daRingHtml(daA,pdA,urlA,'a')}
+        ${daRingHtml(daB,pdB,urlB,'b')}
+      </div>
+    </div>
+
+    <!-- Category Grid -->
+    <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:0.75rem">📊 Category Scores</div>
+    <div class="tc-cat-grid">${catGridHtml}</div>
+
+    <!-- Sub-tabs -->
+    <div class="tc-sub-tabs" id="${uid}-tabs">
+      <button class="tc-sub-btn active" onclick="tcSwitchTab('${uid}','overview',this)">📊 Overview</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','keywords',this)">🔑 Keywords</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','content',this)">✍️ Content</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','technical',this)">🔍 Technical</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','social',this)">📣 Social & Schema</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','gaps',this)">🏁 Gap Report</button>
+    </div>
+
+    <div class="tc-sub-panel active" id="${uid}-overview">
+      <div class="tc-insights-grid">
+        ${insightCardHtml(pdA,scA,'a',urlA)}
+        ${insightCardHtml(pdB,scB,'b',urlB)}
+      </div>
+      ${tableHtml(overviewRows)}
+    </div>
+    <div class="tc-sub-panel" id="${uid}-keywords">${kwHtml}</div>
+    <div class="tc-sub-panel" id="${uid}-content">${tableHtml(contentRows)}</div>
+    <div class="tc-sub-panel" id="${uid}-technical">${tableHtml(techRows)}</div>
+    <div class="tc-sub-panel" id="${uid}-social">${tableHtml(socialRows)}</div>
+    <div class="tc-sub-panel" id="${uid}-gaps">${gapHtml}</div>
+  `;
+}
+
+function tcSwitchTab(uid, name, clickedBtn) {
+  const tabsEl = document.getElementById(uid+'-tabs');
+  tabsEl.querySelectorAll('.tc-sub-btn').forEach(b => b.classList.remove('active'));
+  clickedBtn.classList.add('active');
+  ['overview','keywords','content','technical','social','gaps'].forEach(n => {
+    const p = document.getElementById(uid+'-'+n);
+    if(p) p.classList.toggle('active', n===name);
+  });
+}
+
 </script>
 </body>
 </html>
