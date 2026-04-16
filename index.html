@@ -1434,6 +1434,7 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
       <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Competitors</button>
       <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
+      <button class="tab-btn" onclick="switchTab('backlinks')">🔗 Backlinks</button>
     </div>
 
     <div class="tab-panel active" id="tab-overview">
@@ -1491,6 +1492,11 @@ footer .logo-f {
         <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.88rem">
           Compare your audited site against a competitor. Enter their URL below.
         </div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-backlinks">
+      <div id="backlinks-content">
+        <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.88rem">Run an audit first to load backlink data.</div>
       </div>
     </div>
   </div>
@@ -1628,7 +1634,7 @@ function scrollToAudit() {
 function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
-  const names = ['overview','suggestions','metrics','keywords','schema','cwv','competitors','top-competitors','techstack'];
+  const names = ['overview','suggestions','metrics','keywords','schema','cwv','competitors','top-competitors','techstack','backlinks'];
   document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', names[i] === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
@@ -1976,17 +1982,18 @@ function exportReport() {
 
 // ─── MAIN AUDIT FLOW ─────────────────────────────────────────
 async function startAudit() {
-  const url = document.getElementById('url-input').value.trim();
-  if (!url || !url.startsWith('http')) {
+  let url = document.getElementById('url-input').value.trim();
+  if (!url) {
     document.getElementById('url-input').style.borderColor = 'var(--red)';
     document.getElementById('url-input').style.boxShadow = '0 0 0 3px rgba(248,113,113,0.15)';
-    showToast('⚠ Please enter a valid URL (starting with https://)', 'var(--red)');
+    showToast('⚠ Please enter a URL to audit', 'var(--red)');
     setTimeout(() => {
       document.getElementById('url-input').style.borderColor = '';
       document.getElementById('url-input').style.boxShadow = '';
     }, 2500);
     return;
   }
+  if (!url.startsWith('http')) url = 'https://' + url;
 
   currentUrl = url;
   const options = getActiveOptions();
@@ -2401,6 +2408,9 @@ function renderResults(url, data, cmsData, pageData) {
   // Top Competitors tab — init with audited URL and its pageData
   initTopCompetitorsTab(url, pageData);
 
+  // Backlinks tab
+  renderBacklinks(url, data);
+
   // Show results
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2716,6 +2726,101 @@ function renderTechStack(cmsData, url) {
     </div>
   `;
 }
+// ─── BACKLINKS TAB ────────────────────────────────────────────
+function renderBacklinks(url, data) {
+  const el = document.getElementById('backlinks-content');
+  if (!el) return;
+
+  let hostname = url;
+  try { hostname = new URL(url).hostname; } catch(e) {}
+
+  const bl  = data.backlinks || {};
+  const da  = data.domain_authority || {};
+  const cat = (data.categories || {}).backlinks || {};
+
+  const score            = cat.score  != null ? cat.score  : (da.score  != null ? da.score  : '—');
+  const grade            = cat.grade  != null ? cat.grade  : (da.grade  != null ? da.grade  : '—');
+  const scoreColor       = typeof score === 'number' ? (score >= 80 ? 'var(--green)' : score >= 60 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)';
+  const domainAge        = bl.domain_age        || da.domain_age        || '—';
+  const totalBacklinks   = bl.total_backlinks   != null ? bl.total_backlinks   : (da.estimated_backlinks != null ? da.estimated_backlinks : '—');
+  const referringDomains = bl.referring_domains != null ? bl.referring_domains : (da.referring_domains    != null ? da.referring_domains    : '—');
+  const trustScore       = bl.trust_score       != null ? bl.trust_score       : (da.trust_flow           != null ? da.trust_flow           : '—');
+  const spamScore        = bl.spam_score        != null ? bl.spam_score        : '—';
+  const doFollow         = bl.dofollow_pct      != null ? bl.dofollow_pct      : '—';
+  const topAnchors       = bl.top_anchors       || [];
+  const topSources       = bl.top_sources       || [];
+  const note             = cat.note             || da.description || '';
+
+  function metric(label, val, hint, good) {
+    const dot = good === true ? '🟢' : good === false ? '🔴' : '⚪';
+    return '<tr>'
+      + '<td style="padding:0.85rem 1rem;font-size:0.86rem;border-bottom:1px solid var(--border);color:var(--muted)">' + label + '</td>'
+      + '<td style="padding:0.85rem 1rem;font-size:0.9rem;font-weight:700;border-bottom:1px solid var(--border)">' + dot + ' ' + val + '</td>'
+      + '<td style="padding:0.85rem 1rem;font-size:0.78rem;color:var(--muted);border-bottom:1px solid var(--border)">' + hint + '</td>'
+      + '</tr>';
+  }
+
+  const isGoodDA   = typeof score === 'number' ? score >= 50 : undefined;
+  const isGoodSpam = spamScore !== '—' ? Number(spamScore) < 30 : undefined;
+  const isGoodDF   = doFollow  !== '—' ? Number(doFollow) >= 60  : undefined;
+
+  el.innerHTML =
+    '<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:1.5rem 1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">'
+    + '<div style="text-align:center;flex-shrink:0">'
+    +   '<div style="font-family:\'Syne\',sans-serif;font-size:2.8rem;font-weight:800;color:' + scoreColor + ';line-height:1">' + score + '</div>'
+    +   '<div style="font-size:0.67rem;color:var(--muted);font-weight:600;letter-spacing:0.06em">/ 100</div>'
+    +   (grade !== '—' ? '<div style="background:' + scoreColor + '22;color:' + scoreColor + ';padding:3px 12px;border-radius:6px;font-size:0.75rem;font-weight:700;display:inline-block;margin-top:6px">Grade ' + grade + '</div>' : '')
+    + '</div>'
+    + '<div style="flex:1;min-width:180px">'
+    +   '<div style="font-family:\'Syne\',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.3rem">🔗 Backlink Profile — ' + hostname + '</div>'
+    +   '<div style="font-size:0.83rem;color:var(--muted);line-height:1.6">' + (note || 'Backlink authority signals estimated from on-page analysis, domain metadata, and crawl headers.') + '</div>'
+    + '</div>'
+    + '<a href="https://backlinks.live/report/?url=' + encodeURIComponent(url) + '" target="_blank" rel="noopener" style="flex-shrink:0;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--accent),#5a4fcc);color:white;text-decoration:none;padding:0.65rem 1.25rem;border-radius:10px;font-size:0.82rem;font-weight:600;box-shadow:0 4px 14px rgba(124,111,247,0.3);white-space:nowrap">🔗 Full Report on backlinks.live ↗</a>'
+    + '</div>'
+
+    + '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">'
+    +   '<div style="padding:0.85rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">📊 Estimated Backlink Signals</div>'
+    +   '<table style="width:100%;border-collapse:collapse">'
+    +     '<thead><tr>'
+    +       '<th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);text-align:left">Signal</th>'
+    +       '<th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);text-align:left">Value</th>'
+    +       '<th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);text-align:left">What it means</th>'
+    +     '</tr></thead>'
+    +     '<tbody>'
+    +       metric('Domain Authority (DA)', score, 'Score 0–100 — higher = stronger link equity & trust.', isGoodDA)
+    +       metric('Estimated Backlinks', totalBacklinks, 'Total inbound links pointing to this domain.', undefined)
+    +       metric('Referring Domains', referringDomains, 'Unique domains linking in — more diverse is better.', undefined)
+    +       metric('Domain Age', domainAge, 'Older domains generally carry more authority.', undefined)
+    +       metric('Trust Score', trustScore, 'Editorial quality signal of inbound links (higher = better).', undefined)
+    +       metric('Spam Score', spamScore !== '—' ? spamScore + '%' : '—', 'Links from low-quality / spammy sites. Keep below 30%.', isGoodSpam)
+    +       metric('DoFollow %', doFollow !== '—' ? doFollow + '%' : '—', 'Percentage of links that pass link equity. 60%+ is healthy.', isGoodDF)
+    +     '</tbody>'
+    +   '</table>'
+    + '</div>'
+
+    + (topAnchors.length
+      ? '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">'
+        + '<div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem">🏷 Top Anchor Texts</div>'
+        + '<div style="display:flex;flex-wrap:wrap;gap:0.4rem">'
+        + topAnchors.map(function(a){ return '<span style="background:rgba(124,111,247,0.1);border:1px solid rgba(124,111,247,0.22);color:var(--accent2);padding:0.25rem 0.7rem;border-radius:8px;font-size:0.78rem;font-weight:600">' + a + '</span>'; }).join('')
+        + '</div></div>'
+      : '')
+
+    + (topSources.length
+      ? '<div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">'
+        + '<div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.75rem">🌐 Top Referring Domains</div>'
+        + '<div style="display:flex;flex-direction:column;gap:0.5rem">'
+        + topSources.map(function(s){ return '<div style="display:flex;align-items:center;gap:0.6rem;font-size:0.83rem"><span style="color:var(--green)">↗</span><span style="color:var(--text)">' + s + '</span></div>'; }).join('')
+        + '</div></div>'
+      : '')
+
+    + '<div style="background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:1rem 1.25rem;font-size:0.8rem;color:var(--muted);line-height:1.6">'
+    + '<strong style="color:var(--amber)">ℹ Note:</strong> Backlink data above is estimated from on-page signals and domain metadata. '
+    + 'For a full, live backlink report with all referring domains, anchor texts, and link types, click the '
+    + '<strong style="color:var(--text)">"Full Report on backlinks.live"</strong> button above — it\'s free.'
+    + '</div>';
+}
+
 // ─── MOBILE NAV ───────────────────────────────────────────────
 function toggleMobileNav() {
   const btn = document.getElementById('nav-hamburger');
