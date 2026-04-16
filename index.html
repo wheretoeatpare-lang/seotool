@@ -489,7 +489,137 @@ h1 span {
 .tc-hint a { color: var(--accent2); text-decoration: none; }
 .tc-hint a:hover { text-decoration: underline; }
 
-/* ── SUGGESTED COMPETITORS ── */
+/* ── KEYWORD RANKING HEADER ── */
+.tc-kw-header {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;
+}
+.tc-kw-label {
+  font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+  flex-shrink: 0;
+}
+.tc-kw-pill {
+  background: rgba(124,111,247,0.12); border: 1px solid rgba(124,111,247,0.25);
+  color: var(--accent2); padding: 0.2rem 0.7rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.tc-live-badge {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25);
+  color: var(--green); padding: 0.2rem 0.7rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em;
+}
+.tc-live-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--green);
+  animation: pulse 2s infinite;
+}
+
+/* ── COMPETITOR AUDIT CARDS ── */
+.tc-comp-audit-grid {
+  display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.75rem;
+}
+.tc-comp-audit-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; overflow: hidden;
+  transition: border-color 0.2s;
+}
+.tc-comp-audit-card:hover { border-color: var(--border3); }
+
+/* card header */
+.tc-comp-audit-head {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1rem 1.4rem; border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.tc-comp-rank-badge {
+  width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 800;
+}
+.tc-comp-rank-badge.r1 { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.tc-comp-rank-badge.r2 { background: rgba(156,163,175,0.12); color: #9ca3af; border: 1px solid rgba(156,163,175,0.25); }
+.tc-comp-rank-badge.r3 { background: rgba(180,120,80,0.12); color: #cd7f32; border: 1px solid rgba(180,120,80,0.25); }
+.tc-comp-audit-meta { flex: 1; min-width: 0; }
+.tc-comp-audit-domain {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tc-comp-audit-serp-title {
+  font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tc-comp-audit-score-wrap { flex-shrink: 0; text-align: right; }
+.tc-comp-audit-score {
+  font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
+  line-height: 1;
+}
+.tc-comp-audit-score-label { font-size: 0.67rem; color: var(--muted); margin-top: 0.1rem; }
+.tc-comp-audit-cta {
+  flex-shrink: 0;
+  background: var(--bg4); border: 1px solid var(--border2);
+  color: var(--accent2); padding: 0.45rem 1rem; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s; white-space: nowrap;
+}
+.tc-comp-audit-cta:hover { background: rgba(124,111,247,0.12); border-color: rgba(124,111,247,0.35); }
+
+/* card body — signal pills */
+.tc-comp-audit-body { padding: 0.9rem 1.4rem; }
+.tc-comp-signals-row {
+  display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.9rem;
+}
+.tc-sig-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 0.22rem 0.65rem; border-radius: 7px; font-size: 0.72rem; font-weight: 600;
+}
+.tc-sig-chip.pass { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.22); color: var(--green); }
+.tc-sig-chip.fail { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.22); color: var(--red); }
+.tc-sig-chip.warn { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.22); color: var(--amber); }
+
+/* stat row */
+.tc-comp-stats-row {
+  display: flex; flex-wrap: wrap; gap: 1rem;
+}
+.tc-comp-stat { display: flex; flex-direction: column; gap: 0.1rem; }
+.tc-comp-stat-val {
+  font-family: 'Syne', sans-serif; font-size: 0.92rem; font-weight: 700; color: var(--text);
+}
+.tc-comp-stat-lbl { font-size: 0.68rem; color: var(--muted2); }
+
+/* loading skeleton */
+.tc-skel-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.2rem 1.4rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.tc-skel-rank {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: var(--bg4); flex-shrink: 0; animation: skel 1.4s ease infinite;
+}
+.tc-skel-lines { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+.tc-skel-line {
+  height: 10px; border-radius: 6px; background: var(--bg4); animation: skel 1.4s ease infinite;
+}
+.tc-skel-line.short { width: 45%; }
+@keyframes skel {
+  0%,100% { opacity: 0.5; } 50% { opacity: 1; }
+}
+
+/* spinner for spinner-wrap reuse */
+.tc-comp-loading {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 0; color: var(--muted); font-size: 0.83rem;
+}
+.tc-comp-spinner {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── SUGGESTED COMPETITORS (legacy, kept for compat) ── */
 .tc-suggestions-label {
   font-family: 'Syne', sans-serif; font-size: 0.72rem; font-weight: 700;
   color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
@@ -518,9 +648,7 @@ h1 span {
   font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
   color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.tc-comp-card-rank {
-  font-size: 0.7rem; color: var(--muted);
-}
+.tc-comp-card-rank { font-size: 0.7rem; color: var(--muted); }
 .tc-comp-card-btn {
   background: linear-gradient(135deg, var(--accent), #5a4fcc);
   color: white; border: none; padding: 0.4rem 0.85rem;
@@ -530,16 +658,6 @@ h1 span {
   box-shadow: 0 2px 8px rgba(124,111,247,0.3);
 }
 .tc-comp-card-btn:hover { opacity: 0.85; }
-.tc-comp-loading {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 1rem 0; color: var(--muted); font-size: 0.83rem;
-}
-.tc-comp-spinner {
-  width: 16px; height: 16px; border-radius: 50%;
-  border: 2px solid var(--border2); border-top-color: var(--accent);
-  animation: spin 0.8s linear infinite; flex-shrink: 0;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 .tc-sites-header {
   display: grid; grid-template-columns: 1fr 60px 1fr;
   gap: 1rem; align-items: stretch; margin-bottom: 1.5rem;
@@ -2635,6 +2753,108 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
   let hostname = auditedUrl;
   try { hostname = new URL(auditedUrl).hostname.replace(/^www\./, ''); } catch {}
 
+  // ── Score helper (reuses tc scoring) ─────────────────────────────────────
+  function scoreColor(s) {
+    return s >= 80 ? 'var(--green)' : s >= 60 ? 'var(--amber)' : 'var(--red)';
+  }
+  function rankClass(i) { return ['r1','r2','r3'][i] || 'r3'; }
+  function rankLabel(i) { return ['🥇','🥈','🥉'][i] || `#${i+1}`; }
+
+  // ── Build signal chips from pageData ──────────────────────────────────────
+  function signalChips(pd) {
+    if (!pd) return '<span style="color:var(--muted);font-size:0.78rem">Could not fetch page data</span>';
+    const chips = [
+      { label: 'HTTPS',      pass: pd.isHttps,              warn: false },
+      { label: 'H1 Tag',     pass: pd.headings?.h1 === 1,   warn: pd.headings?.h1 > 1 },
+      { label: 'Meta Desc',  pass: pd.descLen >= 120 && pd.descLen <= 155, warn: pd.descLen > 0 && (pd.descLen < 120 || pd.descLen > 155) },
+      { label: 'Schema',     pass: (pd.schema?.count || 0) >= 1, warn: false },
+      { label: 'OG Tags',    pass: !!(pd.openGraph?.title && pd.openGraph?.image), warn: !!pd.openGraph?.title },
+      { label: 'Sitemap',    pass: pd.hasSitemap,           warn: false },
+      { label: 'Robots.txt', pass: pd.hasRobotsTxt,         warn: false },
+      { label: 'Canonical',  pass: !!pd.canonical,          warn: false },
+      { label: 'Alt Text',   pass: pd.images?.missingAlt === 0 && pd.images?.total > 0, warn: pd.images?.missingAlt > 0 && pd.images?.missingAlt <= 2 },
+      { label: 'Fast TTFB',  pass: pd.ttfb > 0 && pd.ttfb < 800, warn: pd.ttfb >= 800 && pd.ttfb < 1800 },
+    ];
+    return chips.map(c => {
+      const cls = c.pass ? 'pass' : c.warn ? 'warn' : 'fail';
+      const icon = c.pass ? '✓' : c.warn ? '~' : '✗';
+      return `<span class="tc-sig-chip ${cls}">${icon} ${c.label}</span>`;
+    }).join('');
+  }
+
+  // ── Build stat pills from pageData ────────────────────────────────────────
+  function statRow(pd) {
+    if (!pd) return '';
+    return `
+      <div class="tc-comp-stats-row">
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.wordCount ? pd.wordCount.toLocaleString() : '—'}</span>
+          <span class="tc-comp-stat-lbl">Word Count</span>
+        </div>
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.headings?.h2 ?? '—'}</span>
+          <span class="tc-comp-stat-lbl">H2 Tags</span>
+        </div>
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.schema?.count ?? 0}</span>
+          <span class="tc-comp-stat-lbl">Schema Types</span>
+        </div>
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.links?.internal ?? '—'}</span>
+          <span class="tc-comp-stat-lbl">Internal Links</span>
+        </div>
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.ttfb ? pd.ttfb + 'ms' : '—'}</span>
+          <span class="tc-comp-stat-lbl">TTFB</span>
+        </div>
+        <div class="tc-comp-stat">
+          <span class="tc-comp-stat-val">${pd.pageSizeKb ? pd.pageSizeKb + 'KB' : '—'}</span>
+          <span class="tc-comp-stat-lbl">Page Size</span>
+        </div>
+      </div>`;
+  }
+
+  // ── Render a single competitor audit card ─────────────────────────────────
+  function compCardHtml(comp, idx) {
+    const sc  = comp.pageData ? tcScore(comp.pageData) : null;
+    const total = sc ? sc._total : null;
+    const color = total !== null ? scoreColor(total) : 'var(--muted)';
+    return `
+      <div class="tc-comp-audit-card">
+        <div class="tc-comp-audit-head">
+          <div class="tc-comp-rank-badge ${rankClass(idx)}">${rankLabel(idx)}</div>
+          <div class="tc-comp-audit-meta">
+            <div class="tc-comp-audit-domain">${tcEsc(comp.domain)}</div>
+            <div class="tc-comp-audit-serp-title">${tcEsc(comp.serp_title || comp.domain)}</div>
+          </div>
+          <div class="tc-comp-audit-score-wrap">
+            <div class="tc-comp-audit-score" style="color:${color}">${total !== null ? total : '—'}</div>
+            <div class="tc-comp-audit-score-label">SEO Score / 100</div>
+          </div>
+          <button class="tc-comp-audit-cta" onclick="tcSelectCompetitor('${tcEsc(auditedUrl)}','${tcEsc(comp.url)}')">
+            Full Compare →
+          </button>
+        </div>
+        <div class="tc-comp-audit-body">
+          <div class="tc-comp-signals-row">${signalChips(comp.pageData)}</div>
+          ${statRow(comp.pageData)}
+        </div>
+      </div>`;
+  }
+
+  // ── Skeleton cards shown while loading ────────────────────────────────────
+  function skeletonHtml() {
+    return [1,2,3].map(i => `
+      <div class="tc-skel-card">
+        <div class="tc-skel-rank"></div>
+        <div class="tc-skel-lines">
+          <div class="tc-skel-line"></div>
+          <div class="tc-skel-line short"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Initial shell ─────────────────────────────────────────────────────────
   el.innerHTML = `
     <div style="margin-bottom:1.25rem">
       <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem">
@@ -2645,21 +2865,18 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
       </div>
     </div>
 
-    <div id="tc-top-competitors-section" style="margin-bottom:1.5rem">
-      <div class="tc-suggestions-label">
-        🏆 Top Competitors Found in Google <span class="tc-badge">LIVE SERP</span>
-      </div>
-      <div id="tc-comp-list">
-        <div class="tc-comp-loading">
-          <div class="tc-comp-spinner"></div>
-          Searching Google for real competitors of ${tcEsc(hostname)}…
-        </div>
-      </div>
+    <div id="tc-kw-header-wrap"></div>
+
+    <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.85rem;display:flex;align-items:center;gap:0.6rem">
+      🏆 Top 3 Competing Sites Ranking for Your Keywords
+      <span style="font-family:'DM Sans',sans-serif;font-size:0.7rem;font-weight:500;color:var(--muted2);text-transform:none;letter-spacing:0">— audited live</span>
     </div>
 
-    <div style="margin-bottom:0.5rem">
+    <div id="tc-comp-audit-list">${skeletonHtml()}</div>
+
+    <div style="margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border)">
       <div style="font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.6rem">
-        ◆ Or Enter a Custom Competitor URL
+        ◆ Compare Against a Custom URL
       </div>
       <div class="tc-input-row">
         <input type="url" id="tc-competitor-input" class="tc-url-input"
@@ -2669,54 +2886,59 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
           Compare →
         </button>
       </div>
-      <div class="tc-hint">Enter any URL to see a full side-by-side SEO comparison. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
+      <div class="tc-hint">Full side-by-side SEO comparison with 40+ signals. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
     </div>
     <div id="tc-result-area"></div>
   `;
 
-  // Store page data for comparison use
   window._tcAuditedPageData = auditedPageData;
-  window._tcAuditedUrl = auditedUrl;
+  window._tcAuditedUrl      = auditedUrl;
 
-  // Auto-fetch real top competitors from SERP
+  // ── Fetch & render top 3 competitors ─────────────────────────────────────
   (async () => {
-    const listEl = document.getElementById('tc-comp-list');
+    const listEl = document.getElementById('tc-comp-audit-list');
+    const kwWrap = document.getElementById('tc-kw-header-wrap');
     if (!listEl) return;
     try {
       const res = await fetch('/api/top-competitors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: auditedUrl,
-          title: auditedPageData?.title || '',
+          url:      auditedUrl,
+          title:    auditedPageData?.title    || '',
           metaDesc: auditedPageData?.metaDesc || '',
         }),
       });
       const data = await res.json();
-      const comps = data.competitors || [];
+      const comps    = data.competitors || [];
+      const keywords = data.keywords    || [];
+      const query    = data.query       || '';
+
+      // Keyword header
+      if (kwWrap && keywords.length) {
+        kwWrap.innerHTML = `
+          <div class="tc-kw-header">
+            <span class="tc-kw-label">🔑 Target Keywords</span>
+            ${keywords.map(k => `<span class="tc-kw-pill">${tcEsc(k)}</span>`).join('')}
+            <span class="tc-live-badge"><span class="tc-live-dot"></span>Live SERP</span>
+          </div>`;
+      }
 
       if (!comps.length) {
-        listEl.innerHTML = `<div style="font-size:0.82rem;color:var(--muted);padding:0.5rem 0">
-          No competitors found automatically — use the input below to compare manually.
+        listEl.innerHTML = `<div style="color:var(--muted);font-size:0.85rem;padding:1rem 0;text-align:center">
+          ⚠ No competitors found for query: <em>${tcEsc(query)}</em><br>
+          <span style="font-size:0.78rem">Try comparing manually using the input below.</span>
         </div>`;
         return;
       }
 
-      listEl.innerHTML = `
-        <div class="tc-comp-grid">
-          ${comps.map((c, i) => `
-            <div class="tc-comp-card" onclick="tcSelectCompetitor('${tcEsc(auditedUrl)}','${tcEsc(c.url)}')">
-              <div class="tc-comp-card-domain">${tcEsc(c.domain)}</div>
-              <div class="tc-comp-card-rank">🔍 SERP rank #${i + 1}</div>
-              <button class="tc-comp-card-btn">Compare →</button>
-            </div>`).join('')}
-        </div>
-        <div style="font-size:0.72rem;color:var(--muted2);margin-top:-0.75rem;margin-bottom:0.25rem">
-          Query: <em style="color:var(--muted)">${tcEsc(data.query || '')}</em> — Results from live Google search
+      listEl.innerHTML = `<div class="tc-comp-audit-grid">${comps.map((c, i) => compCardHtml(c, i)).join('')}</div>
+        <div style="font-size:0.7rem;color:var(--muted2);margin-top:-0.5rem">
+          Searched Google for: <em style="color:var(--muted)">"${tcEsc(query)}"</em> · Shows top 3 organic results, excluding directories &amp; social platforms
         </div>`;
     } catch (err) {
-      if (listEl) listEl.innerHTML = `<div style="font-size:0.82rem;color:var(--muted);padding:0.5rem 0">
-        Could not load competitors automatically — use the input below.
+      if (listEl) listEl.innerHTML = `<div style="color:var(--muted);font-size:0.85rem;padding:1rem 0">
+        ⚠ Could not load competitors — use the manual compare below.
       </div>`;
     }
   })();
@@ -2725,6 +2947,9 @@ function initTopCompetitorsTab(auditedUrl, auditedPageData) {
 function tcSelectCompetitor(urlA, urlB) {
   const input = document.getElementById('tc-competitor-input');
   if (input) { input.value = urlB; input.focus(); }
+  // Scroll to the result area smoothly
+  const area = document.getElementById('tc-result-area');
+  if (area) area.scrollIntoView({ behavior: 'smooth', block: 'start' });
   runTCCompare(urlA);
 }
 

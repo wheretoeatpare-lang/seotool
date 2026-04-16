@@ -1135,30 +1135,32 @@ async function handleTopCompetitors(request) {
     const { url, title, metaDesc } = await request.json();
     if (!url) return new Response(JSON.stringify({ error: 'url is required' }), { status: 400, headers: CORS });
 
-    // Build the search query from page keywords
     const auditedHost = (() => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; } })();
+
+    // ── Extract top keywords from title + meta description ─────────────────
     const text = [(title || ''), (metaDesc || '')].join(' ');
     const stopWords = new Set([
       'the','and','for','are','but','not','you','all','this','that','with','from',
       'have','they','will','your','been','has','more','also','than','when','can',
       'was','its','our','what','how','why','who','which','about','into','free',
       'best','top','get','use','make','help','need','want','just','like','good',
+      'website','page','site','online','service','platform','tool','tools',
     ]);
     const words = (text.match(/\b[a-zA-Z]{4,}\b/g) || [])
       .map(w => w.toLowerCase())
       .filter(w => !stopWords.has(w));
-    // Frequency count — pick top 3 keywords for query
     const freq = {};
     for (const w of words) freq[w] = (freq[w] || 0) + 1;
     const topKw = Object.entries(freq)
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 3)
+      .slice(0, 4)
       .map(([k]) => k);
 
-    const query = topKw.length >= 2 ? topKw.join(' ') : (auditedHost.split('.')[0] + ' alternative');
+    const query = topKw.length >= 2 ? topKw.join(' ') : (auditedHost.split('.')[0] + ' competitors');
+    const keywords = topKw; // return the extracted keywords to the frontend
 
-    // Fetch Google results (HTML scrape)
-    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=20&hl=en`;
+    // ── Fetch Google SERP ───────────────────────────────────────────────────
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=20&hl=en&gl=us`;
     let html = '';
     try {
       const res = await fetch(searchUrl, {
@@ -1166,55 +1168,98 @@ async function handleTopCompetitors(request) {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
           'Accept-Language': 'en-US,en;q=0.9',
-          'Accept-Encoding': 'gzip, deflate',
           'Cache-Control': 'no-cache',
+          'Referer': 'https://www.google.com/',
         },
         redirect: 'follow',
       });
       html = await res.text();
     } catch (fetchErr) {
-      return new Response(JSON.stringify({ competitors: [], query, error: 'Search fetch failed: ' + fetchErr.message }), { headers: CORS });
+      return new Response(JSON.stringify({ competitors: [], query, keywords, error: 'Search fetch failed: ' + fetchErr.message }), { headers: CORS });
     }
 
-    // Extract domains from result URLs
-    // Google result links appear as href="/url?q=https://..." or data-href
-    const competitors = [];
-    const seen = new Set([auditedHost, 'google.com', 'youtube.com', 'facebook.com',
+    // ── Parse SERP result blocks — extract URL + snippet title ─────────────
+    // Each organic result in Google HTML typically looks like:
+    //   <div class="..."><a href="/url?q=https://example.com/..."><h3>Page Title</h3></a>...<span>snippet text</span></div>
+    const BLOCKED = new Set([
+      auditedHost, 'google.com', 'youtube.com', 'facebook.com',
       'wikipedia.org', 'twitter.com', 'instagram.com', 'linkedin.com',
       'amazon.com', 'reddit.com', 'pinterest.com', 'tiktok.com',
-      'maps.google.com', 'support.google.com', 'play.google.com',
+      'quora.com', 'yelp.com', 'bbc.com', 'cnn.com', 'forbes.com',
+      'trustpilot.com', 'bing.com', 'yahoo.com', 'msn.com',
     ]);
 
-    // Pattern 1: /url?q=https://...
-    const pattern1 = /href="\/url\?q=(https?:\/\/[^"&]+)/gi;
+    const competitors = [];
+    const seen = new Set([...BLOCKED]);
+
+    // Strategy: find /url?q= hrefs, grab the h3 sibling title nearby
+    // We'll chunk the HTML around each match to pull the title text
+    const urlPattern = /href="\/url\?q=(https?:\/\/[^"&]+)[^"]*"[^>]*>.*?<h3[^>]*>([^<]*)<\/h3>/gis;
     let m;
-    while ((m = pattern1.exec(html)) !== null && competitors.length < 8) {
+    while ((m = urlPattern.exec(html)) !== null && competitors.length < 3) {
       try {
-        const u = decodeURIComponent(m[1]);
-        const h = new URL(u).hostname.replace(/^www\./, '');
-        if (h && !seen.has(h) && !h.includes('google') && h.includes('.')) {
-          seen.add(h);
-          competitors.push({ domain: h, url: 'https://' + h, source: 'serp' });
+        const rawUrl  = decodeURIComponent(m[1]);
+        const serpTitle = m[2].replace(/&#\d+;|&[a-z]+;/g, ' ').trim();
+        const domain  = new URL(rawUrl).hostname.replace(/^www\./, '');
+        if (domain && !seen.has(domain) && !domain.includes('google') && domain.includes('.')) {
+          seen.add(domain);
+          competitors.push({
+            domain,
+            url: 'https://' + domain,
+            serp_title: serpTitle || domain,
+            serp_rank: competitors.length + 1,
+          });
         }
       } catch {}
     }
 
-    // Pattern 2: cite tags or data-url attributes
-    if (competitors.length < 5) {
-      const pattern2 = /(?:cite>|data-url=")(https?:\/\/[^"<]+)/gi;
-      while ((m = pattern2.exec(html)) !== null && competitors.length < 8) {
+    // Fallback pattern: plain /url?q= links without h3 capture
+    if (competitors.length < 3) {
+      const plain = /href="\/url\?q=(https?:\/\/[^"&]+)/gi;
+      while ((m = plain.exec(html)) !== null && competitors.length < 3) {
         try {
-          const u = m[1];
-          const h = new URL(u).hostname.replace(/^www\./, '');
-          if (h && !seen.has(h) && !h.includes('google') && h.includes('.')) {
-            seen.add(h);
-            competitors.push({ domain: h, url: 'https://' + h, source: 'serp' });
+          const rawUrl = decodeURIComponent(m[1]);
+          const domain = new URL(rawUrl).hostname.replace(/^www\./, '');
+          if (domain && !seen.has(domain) && !domain.includes('google') && domain.includes('.')) {
+            seen.add(domain);
+            competitors.push({
+              domain,
+              url: 'https://' + domain,
+              serp_title: domain,
+              serp_rank: competitors.length + 1,
+            });
           }
         } catch {}
       }
     }
 
-    return new Response(JSON.stringify({ competitors: competitors.slice(0, 8), query }), { headers: CORS });
+    // ── For each top-3 competitor, fetch their page data in parallel ────────
+    const enriched = await Promise.allSettled(
+      competitors.map(async (comp) => {
+        try {
+          const t0 = Date.now();
+          const res = await fetch(comp.url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (compatible; RankSight/2.0; +https://seotool.webmasterjamez.workers.dev)',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            },
+            redirect: 'follow',
+            signal: AbortSignal.timeout(8000),
+          });
+          const ttfb = Date.now() - t0;
+          const pageHtml = await res.text();
+          const headers  = Object.fromEntries(res.headers.entries());
+          const signals  = extractPageSignals(pageHtml, headers, res.url, res.status, ttfb, comp.url);
+          return { ...comp, pageData: signals, fetchOk: true };
+        } catch {
+          return { ...comp, pageData: null, fetchOk: false };
+        }
+      })
+    );
+
+    const results = enriched.map(r => r.status === 'fulfilled' ? r.value : r.reason);
+
+    return new Response(JSON.stringify({ competitors: results, query, keywords }), { headers: CORS });
   } catch (err) {
     return new Response(JSON.stringify({ competitors: [], error: err.message }), { status: 500, headers: CORS });
   }
