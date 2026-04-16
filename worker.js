@@ -6,6 +6,7 @@ export default {
     if (url.pathname === '/api/page-data')        return handlePageData(request);
     if (url.pathname === '/api/ai-visibility')    return handleAIVisibility(request);
     if (url.pathname === '/api/top-competitors')  return handleTopCompetitors(request);
+    if (url.pathname === '/api/backlinks')        return handleBacklinks(request);
     return env.ASSETS.fetch(request);
   },
 };
@@ -1034,6 +1035,184 @@ function buildCompetitorGaps(pd, cms) {
 // Weighted to mirror how Moz/Ahrefs reward: HTTPS, content depth, security,
 // structured data, linking patterns, technical hygiene, and performance.
 // ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// BACKLINK CHECKER
+// Fetches the target domain homepage + a few linked pages, extracts all
+// outbound/inbound anchor link signals, and returns a rich backlink-style
+// profile without needing any paid API.
+// ─────────────────────────────────────────────────────────────────────────────
+async function handleBacklinks(request) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
+
+  try {
+    const { url } = await request.json();
+    const origin  = new URL(url).origin;
+    const domain  = new URL(url).hostname;
+
+    const UA = 'Mozilla/5.0 (compatible; RankSight/2.0; +https://seotool.webmasterjamez.workers.dev)';
+
+    // ── 1. Fetch homepage ──────────────────────────────────────────────────
+    const t0 = Date.now();
+    let homeHtml = '';
+    let homeHeaders = {};
+    let finalUrl = url;
+    try {
+      const r = await fetch(url, { headers: { 'User-Agent': UA, 'Accept': 'text/html' }, redirect: 'follow' });
+      homeHtml    = await r.text();
+      homeHeaders = Object.fromEntries(r.headers.entries());
+      finalUrl    = r.url;
+    } catch (e) { /* continue with empty */ }
+    const ttfb = Date.now() - t0;
+
+    // ── 2. Extract ALL <a href> links from homepage ────────────────────────
+    const linkRe = /<a[^>]+href=["']([^"'#?][^"']*)["'][^>]*>([\s\S]*?)<\/a>/gi;
+    const allLinks = [];
+    let m;
+    while ((m = linkRe.exec(homeHtml)) !== null) {
+      const href = m[1].trim();
+      const rawAnchor = m[2].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+      const anchor = rawAnchor.length > 0 ? rawAnchor.slice(0, 80) : '[image/empty]';
+      const isExternal = /^https?:\/\//i.test(href) && !href.includes(domain);
+      const isInternal = href.startsWith('/') || href.includes(domain);
+      const nofollow   = /rel=["'][^"']*nofollow/i.test(m[0]);
+      if (href.length < 5 || /^(mailto:|tel:|javascript:)/i.test(href)) continue;
+      allLinks.push({ href, anchor, isExternal, isInternal, nofollow, dofollow: !nofollow });
+    }
+
+    const externalLinks = allLinks.filter(l => l.isExternal);
+    const internalLinks = allLinks.filter(l => l.isInternal);
+
+    // ── 3. Referring-domain simulation via DuckDuckGo link: search ─────────
+    // We search "link:domain.com" on DDG HTML to find pages linking to the site
+    const referringPages = [];
+    try {
+      const searchUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent('link:' + domain);
+      const sr = await fetch(searchUrl, {
+        headers: { 'User-Agent': UA, 'Accept': 'text/html', 'Accept-Language': 'en-US,en;q=0.9' },
+        redirect: 'follow',
+      });
+      const sHtml = await sr.text();
+      // Parse result URLs and titles from DDG HTML results
+      const resultRe = /class="result__url[^"]*"[^>]*>([^<]+)/gi;
+      const titleRe  = /class="result__a[^"]*"[^>]*>([^<]+)<\/a>/gi;
+      const urlMatches   = [];
+      const titleMatches = [];
+      let rm, tm;
+      while ((rm = resultRe.exec(sHtml)) !== null) urlMatches.push(rm[1].trim());
+      while ((tm = titleRe.exec(sHtml))  !== null) titleMatches.push(tm[1].trim());
+
+      for (let i = 0; i < Math.min(urlMatches.length, 10); i++) {
+        const ru = urlMatches[i].replace(/\s/g, '');
+        if (!ru.includes(domain)) {
+          referringPages.push({
+            url:   ru,
+            title: titleMatches[i] || ru,
+            domain: ru.split('/')[0].replace(/^www\./, ''),
+          });
+        }
+      }
+    } catch (e) { /* skip */ }
+
+    // Deduplicate referring domains
+    const seen = new Set();
+    const referringDomains = referringPages.filter(p => {
+      if (seen.has(p.domain)) return false;
+      seen.add(p.domain);
+      return true;
+    });
+
+    // ── 4. Anchor text frequency map ──────────────────────────────────────
+    const anchorFreq = {};
+    allLinks.forEach(l => {
+      const a = l.anchor.toLowerCase();
+      if (a !== '[image/empty]' && a.length > 1) {
+        anchorFreq[a] = (anchorFreq[a] || 0) + 1;
+      }
+    });
+    const topAnchors = Object.entries(anchorFreq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([text, count]) => ({ text, count }));
+
+    // ── 5. Dofollow / nofollow breakdown ──────────────────────────────────
+    const dofollowCount  = allLinks.filter(l => l.dofollow).length;
+    const nofollowCount  = allLinks.filter(l => l.nofollow).length;
+    const totalLinkCount = allLinks.length;
+    const dofollowPct = totalLinkCount ? Math.round((dofollowCount / totalLinkCount) * 100) : 0;
+
+    // ── 6. External link breakdown by domain ─────────────────────────────
+    const extDomainFreq = {};
+    externalLinks.forEach(l => {
+      try {
+        const d = new URL(l.href).hostname.replace(/^www\./, '');
+        extDomainFreq[d] = (extDomainFreq[d] || 0) + 1;
+      } catch (e) {}
+    });
+    const topExternalDomains = Object.entries(extDomainFreq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([dom, count]) => ({ domain: dom, links: count }));
+
+    // ── 7. Authority score (same algorithm as computeDomainAuthority) ─────
+    // We re-derive it from fresh signals so this endpoint is self-contained
+    const pd = extractPageSignals(homeHtml, homeHeaders, finalUrl, 200, ttfb, url);
+    const da = computeDomainAuthority(pd, finalUrl);
+
+    // ── 8. Security & trust signals ───────────────────────────────────────
+    const isHttps      = finalUrl.startsWith('https://');
+    const hasHsts      = !!homeHeaders['strict-transport-security'];
+    const hasCsp       = !!homeHeaders['content-security-policy'];
+    const server       = homeHeaders['server'] || 'Unknown';
+    const cacheControl = homeHeaders['cache-control'] || null;
+
+    // Spam score heuristic — based on absence of trust signals
+    let spamSignals = 0;
+    if (!isHttps)       spamSignals += 20;
+    if (!pd.canonical)  spamSignals += 15;
+    if (!pd.lang)       spamSignals += 10;
+    if (!pd.hasFavicon) spamSignals += 5;
+    if (pd.wordCount < 150) spamSignals += 20;
+    if ((pd.schema?.count || 0) === 0) spamSignals += 10;
+    if (!pd.hasSitemap) spamSignals += 10;
+    if (!pd.hasRobotsTxt) spamSignals += 10;
+    const spamScore = Math.min(100, spamSignals);
+
+    // Trust score — inverse of spam with bonus for security headers
+    let trust = Math.max(0, 100 - spamScore);
+    if (hasHsts) trust = Math.min(100, trust + 5);
+    if (hasCsp)  trust = Math.min(100, trust + 5);
+    const trustScore = Math.round(trust);
+
+    return new Response(JSON.stringify({
+      domain,
+      da_score:          da.score,
+      da_tier:           da.tier,
+      da_description:    da.description,
+      total_links:       totalLinkCount,
+      internal_links:    internalLinks.length,
+      external_links:    externalLinks.length,
+      dofollow_count:    dofollowCount,
+      nofollow_count:    nofollowCount,
+      dofollow_pct:      dofollowPct,
+      trust_score:       trustScore,
+      spam_score:        spamScore,
+      referring_domains: referringDomains,
+      referring_count:   referringDomains.length,
+      top_anchors:       topAnchors,
+      top_external_domains: topExternalDomains,
+      is_https:          isHttps,
+      has_hsts:          hasHsts,
+      server,
+      cache_control:     cacheControl,
+      ttfb,
+    }), { headers: CORS });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
+  }
+}
+
 function computeDomainAuthority(pd, url) {
   let score = 0;
 
