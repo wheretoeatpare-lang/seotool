@@ -1532,6 +1532,11 @@ footer .logo-f {
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
       <button class="tab-btn" onclick="switchTab('schema')">🧩 Schema</button>
       <button class="tab-btn" onclick="switchTab('cwv')">⚡ Core Web Vitals</button>
+    </div>
+
+    <!-- Advanced Tabs Row -->
+    <div class="tabs" id="tabs-advanced" style="margin-top:0.5rem">
+      <span style="flex-shrink:0;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:0.55rem 0.5rem 0.55rem 0.75rem;align-self:center">Advanced</span>
       <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
       <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Competitors</button>
       <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
@@ -1739,16 +1744,15 @@ function scrollToAudit() {
 function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
-  // Update active button — use exact regex match to avoid 'competitors'
-  // matching inside 'top-competitors'
-  const tabsBar = document.querySelector('#main-results .tabs');
-  if (tabsBar) {
+  // Update active button across both tab bars — use exact regex match to avoid
+  // 'competitors' matching inside 'top-competitors'
+  document.querySelectorAll('#main-results .tabs').forEach(tabsBar => {
     tabsBar.querySelectorAll('.tab-btn').forEach(b => {
       const oc = b.getAttribute('onclick') || '';
       const m  = oc.match(/switchTab\('([^']+)'\)/);
       b.classList.toggle('active', m ? m[1] === name : false);
     });
-  }
+  });
 
   // Hide every main tab panel by explicit ID — avoids CSS child-combinator
   // issues and is guaranteed to find every panel regardless of nesting
