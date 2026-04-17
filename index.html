@@ -2110,17 +2110,41 @@ function exportReport() {
   showToast('✅ Full HTML report downloaded!');
 }
 
+// ─── URL VALIDATION ───────────────────────────────────────────
+function isValidWebsite(input) {
+  // Prepend scheme if missing so URL() can parse it
+  const raw = input.startsWith('http') ? input : 'https://' + input;
+  try {
+    const parsed = new URL(raw);
+    const host = parsed.hostname;
+    // Must have at least one dot and a TLD of 2+ chars (e.g. .com, .io, .co.uk)
+    // and no spaces — rejects bare words like "sss" or "hello world"
+    return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(host);
+  } catch {
+    return false;
+  }
+}
+
+function showInputError(msg) {
+  const inp = document.getElementById('url-input');
+  inp.style.borderColor = 'var(--red)';
+  inp.style.boxShadow = '0 0 0 3px rgba(248,113,113,0.15)';
+  showToast(msg, 'var(--red)');
+  setTimeout(() => {
+    inp.style.borderColor = '';
+    inp.style.boxShadow = '';
+  }, 2500);
+}
+
 // ─── MAIN AUDIT FLOW ─────────────────────────────────────────
 async function startAudit() {
   let url = document.getElementById('url-input').value.trim();
   if (!url) {
-    document.getElementById('url-input').style.borderColor = 'var(--red)';
-    document.getElementById('url-input').style.boxShadow = '0 0 0 3px rgba(248,113,113,0.15)';
-    showToast('⚠ Please enter a URL to audit', 'var(--red)');
-    setTimeout(() => {
-      document.getElementById('url-input').style.borderColor = '';
-      document.getElementById('url-input').style.boxShadow = '';
-    }, 2500);
+    showInputError('⚠ Please enter a website URL to audit');
+    return;
+  }
+  if (!isValidWebsite(url)) {
+    showInputError('⚠ Please enter a valid website (e.g. example.com or https://example.com)');
     return;
   }
   if (!url.startsWith('http')) url = 'https://' + url;

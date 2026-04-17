@@ -1035,16 +1035,31 @@ function renderDACompare(urlA, urlB, pdA, pdB) {
 }
 
 // ── MAIN COMPARE FLOW ────────────────────────────────────────
+function isValidWebsite(input) {
+  const raw = input.startsWith('http') ? input : 'https://' + input;
+  try {
+    const parsed = new URL(raw);
+    const host = parsed.hostname;
+    return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(host);
+  } catch {
+    return false;
+  }
+}
+
 async function startCompare() {
   let urlA = document.getElementById('input-a').value.trim();
   let urlB = document.getElementById('input-b').value.trim();
 
+  if (!urlA || !urlB) {
+    showToast('⚠ Please enter both website URLs', 'var(--red)'); return;
+  }
+  if (!isValidWebsite(urlA) || !isValidWebsite(urlB)) {
+    showToast('⚠ Please enter valid websites (e.g. example.com)', 'var(--red)'); return;
+  }
+
   if (!urlA.startsWith('http')) urlA = 'https://' + urlA;
   if (!urlB.startsWith('http')) urlB = 'https://' + urlB;
 
-  try { new URL(urlA); new URL(urlB); } catch {
-    showToast('⚠ Please enter valid URLs', 'var(--red)'); return;
-  }
   if (hn(urlA) === hn(urlB)) {
     showToast('⚠ Please enter two different sites', 'var(--amber)'); return;
   }
