@@ -1194,6 +1194,105 @@ footer .logo-f {
   .da-card { flex-direction: column; gap: 1rem; }
   .da-card::before { top: 0; left: 0; right: 0; bottom: auto; width: auto; height: 4px; border-radius: 4px 4px 0 0; }
 }
+
+/* ── BACKLINKS TAB ── */
+.bl-header {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.5rem;
+  display: flex; align-items: center; gap: 1.5rem;
+  flex-wrap: wrap; margin-bottom: 1.25rem;
+}
+.bl-gauge-wrap { position: relative; flex-shrink: 0; }
+.bl-gauge-wrap svg { display: block; }
+.bl-gauge-label {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%); text-align: center;
+}
+.bl-gauge-num { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; line-height: 1; }
+.bl-gauge-sub { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.06em; font-weight: 600; }
+.bl-header-info { flex: 1; min-width: 140px; }
+.bl-header-domain { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
+.bl-tier-badge {
+  display: inline-flex; align-items: center;
+  padding: 0.18rem 0.65rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 700; margin-bottom: 0.45rem;
+}
+.bl-header-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; }
+.bl-grade-wrap { flex-shrink: 0; text-align: center; }
+.bl-grade-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; line-height: 1; }
+.bl-grade-lbl { font-size: 0.63rem; color: var(--muted); font-weight: 600; letter-spacing: 0.06em; margin-top: 2px; }
+.bl-stats-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0.65rem; margin-bottom: 1.25rem;
+}
+@media (max-width: 700px) { .bl-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 400px) { .bl-stats-grid { grid-template-columns: 1fr 1fr; } }
+.bl-stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 0.9rem 1rem;
+}
+.bl-stat-icon { font-size: 1rem; margin-bottom: 0.2rem; }
+.bl-stat-val { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); line-height: 1.1; }
+.bl-stat-label { font-size: 0.68rem; font-weight: 600; color: var(--muted); margin-top: 0.15rem; }
+.bl-stat-tip { font-size: 0.63rem; color: var(--muted2); margin-top: 0.1rem; line-height: 1.3; }
+.bl-section {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.bl-section:last-child { margin-bottom: 0; }
+.bl-section-head {
+  padding: 0.75rem 1rem; background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.7rem; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.bl-section-badge {
+  font-size: 0.68rem; font-weight: 700; padding: 0.12rem 0.55rem;
+  border-radius: 5px; text-transform: none; letter-spacing: 0;
+}
+.bl-ratio-bar-wrap { padding: 1rem 1rem 0.85rem; }
+.bl-ratio-bar {
+  height: 10px; border-radius: 99px; overflow: hidden;
+  background: var(--bg4); display: flex; margin-bottom: 0.7rem;
+}
+.bl-ratio-fill-df { background: linear-gradient(90deg, var(--green), #6ee7b7); transition: width 1s ease; }
+.bl-ratio-legend { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.bl-ratio-leg-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; }
+.bl-ratio-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.bl-meters-grid { display: grid; grid-template-columns: 1fr 1fr; }
+@media (max-width: 520px) { .bl-meters-grid { grid-template-columns: 1fr; } }
+.bl-meter { padding: 1rem 1.2rem; border-right: 1px solid var(--border); }
+.bl-meter:last-child { border-right: none; }
+.bl-meter-label { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.5rem; }
+.bl-meter-val { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; line-height: 1; margin-bottom: 0.35rem; }
+.bl-meter-bar-track { height: 5px; background: var(--bg3); border-radius: 99px; overflow: hidden; margin-bottom: 0.3rem; }
+.bl-meter-bar-fill { height: 100%; border-radius: 99px; transition: width 1s ease; }
+.bl-meter-note { font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
+.bl-table { width: 100%; border-collapse: collapse; }
+.bl-table th {
+  padding: 0.55rem 1rem; font-size: 0.68rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border); text-align: left;
+}
+.bl-table td { padding: 0.75rem 1rem; font-size: 0.83rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.bl-table tr:last-child td { border-bottom: none; }
+.bl-table tr:hover td { background: rgba(255,255,255,0.015); }
+.bl-anchor-bar-wrap { display: flex; align-items: center; gap: 8px; }
+.bl-anchor-bar-track { flex: 1; height: 5px; background: var(--bg3); border-radius: 99px; overflow: hidden; min-width: 60px; }
+.bl-anchor-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 99px; }
+.bl-domain-val { font-weight: 600; color: var(--text); word-break: break-all; }
+.bl-domain-title { font-size: 0.72rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; max-width: 260px; margin-top: 0.1rem; }
+.bl-type-chip {
+  display: inline-block; padding: 0.12rem 0.5rem; border-radius: 5px;
+  font-size: 0.68rem; font-weight: 700;
+  background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.22); color: var(--green);
+}
+.bl-signals-body .bl-signal-row { display: flex; border-bottom: 1px solid var(--border); }
+.bl-signals-body .bl-signal-row:last-child { border-bottom: none; }
+.bl-signal-label { padding: 0.72rem 1rem; font-size: 0.82rem; color: var(--muted); width: 38%; min-width: 110px; }
+.bl-signal-val { padding: 0.72rem 1rem; font-size: 0.82rem; font-weight: 600; flex: 1; }
+
 </style>
 </head>
 <body>
@@ -1640,17 +1739,29 @@ function scrollToAudit() {
 function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
-  // Scope strictly to the main results tabs — avoids collisions with
-  // competitor sub-tab panels that also carry .tab-btn / .tab-panel classes
+  // Update active button — use exact regex match to avoid 'competitors'
+  // matching inside 'top-competitors'
   const tabsBar = document.querySelector('#main-results .tabs');
   if (tabsBar) {
     tabsBar.querySelectorAll('.tab-btn').forEach(b => {
-      const onclick = b.getAttribute('onclick') || '';
-      b.classList.toggle('active', onclick.indexOf("'" + name + "'") !== -1);
+      const oc = b.getAttribute('onclick') || '';
+      const m  = oc.match(/switchTab\('([^']+)'\)/);
+      b.classList.toggle('active', m ? m[1] === name : false);
     });
   }
-  // Only hide/show direct tab-panel children of #main-results
-  document.querySelectorAll('#main-results > .tab-panel').forEach(p => p.classList.remove('active'));
+
+  // Hide every main tab panel by explicit ID — avoids CSS child-combinator
+  // issues and is guaranteed to find every panel regardless of nesting
+  const ALL_PANELS = [
+    'tab-overview','tab-suggestions','tab-metrics','tab-backlinks',
+    'tab-broken-links','tab-keywords','tab-schema','tab-cwv',
+    'tab-competitors','tab-top-competitors','tab-techstack'
+  ];
+  ALL_PANELS.forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.classList.remove('active');
+  });
+
   const target = document.getElementById('tab-' + name);
   if (target) target.classList.add('active');
 }
@@ -2765,7 +2876,6 @@ function renderBacklinks(url, data, pageData) {
 }
 
 async function _fetchAndRenderBacklinks(url, hostname, el, auditData, pageData) {
-  // Pull what we already have from the audit as fallback
   const da  = auditData.domain_authority || {};
   const cat = (auditData.categories || {}).backlinks || {};
 
@@ -2779,233 +2889,226 @@ async function _fetchAndRenderBacklinks(url, hostname, el, auditData, pageData) 
     if (res.ok) live = await res.json();
   } catch(e) {}
 
-  // Merge live data with audit fallbacks
-  const daScore      = (live && live.da_score != null) ? live.da_score : (cat.score != null ? cat.score : (da.score != null ? da.score : 0));
-  const daGrade      = cat.grade || da.grade || (daScore >= 90 ? 'A' : daScore >= 80 ? 'B' : daScore >= 65 ? 'C' : daScore >= 50 ? 'D' : 'F');
-  const daTier       = (live && live.da_tier)        || da.tier        || '—';
-  const daDesc       = (live && live.da_description) || da.description || '';
-  const totalLinks   = (live && live.total_links   != null) ? live.total_links   : '—';
-  const internalLinks= (live && live.internal_links != null) ? live.internal_links : (pageData?.links?.internal || '—');
-  const externalLinks= (live && live.external_links != null) ? live.external_links : (pageData?.links?.external || '—');
-  const dofollowCount= (live && live.dofollow_count != null) ? live.dofollow_count : '—';
-  const nofollowCount= (live && live.nofollow_count != null) ? live.nofollow_count : '—';
-  const dofollowPct  = (live && live.dofollow_pct  != null) ? live.dofollow_pct  : '—';
-  const trustScore   = (live && live.trust_score   != null) ? live.trust_score   : '—';
-  const spamScore    = (live && live.spam_score    != null) ? live.spam_score    : '—';
-  const refDomains   = (live && live.referring_domains) ? live.referring_domains : [];
-  const refCount     = (live && live.referring_count != null) ? live.referring_count : refDomains.length;
-  const topAnchors   = (live && live.top_anchors)       ? live.top_anchors       : [];
-  const topExtDoms   = (live && live.top_external_domains) ? live.top_external_domains : [];
-  const isHttps      = (live && live.is_https != null)  ? live.is_https  : true;
-  const ttfb         = (live && live.ttfb)               ? live.ttfb      : null;
+  // ── Merge live + audit fallbacks ─────────────────────────────────────────
+  const daScore       = (live && live.da_score      != null) ? live.da_score      : (cat.score != null ? cat.score : (da.score != null ? da.score : 0));
+  const daGrade       = cat.grade || da.grade || (daScore >= 90 ? 'A' : daScore >= 80 ? 'B' : daScore >= 65 ? 'C' : daScore >= 50 ? 'D' : 'F');
+  const daTier        = (live && live.da_tier)        || da.tier        || 'Unrated';
+  const daDesc        = (live && live.da_description) || da.description || 'Domain authority estimated from on-page signals.';
+  const totalLinks    = (live && live.total_links    != null) ? live.total_links    : '—';
+  const internalLinks = (live && live.internal_links != null) ? live.internal_links : (pageData && pageData.links ? pageData.links.internal : '—');
+  const externalLinks = (live && live.external_links != null) ? live.external_links : (pageData && pageData.links ? pageData.links.external : '—');
+  const dofollowCount = (live && live.dofollow_count != null) ? live.dofollow_count : '—';
+  const nofollowCount = (live && live.nofollow_count != null) ? live.nofollow_count : '—';
+  const dofollowPct   = (live && live.dofollow_pct   != null) ? live.dofollow_pct   : 0;
+  const trustScore    = (live && live.trust_score    != null) ? live.trust_score    : null;
+  const spamScore     = (live && live.spam_score     != null) ? live.spam_score     : null;
+  const refDomains    = (live && live.referring_domains)      ? live.referring_domains : [];
+  const refCount      = (live && live.referring_count != null) ? live.referring_count : refDomains.length;
+  const topAnchors    = (live && live.top_anchors)            ? live.top_anchors       : [];
+  const topExtDoms    = (live && live.top_external_domains)   ? live.top_external_domains : [];
+  const isHttps       = (live && live.is_https != null)       ? live.is_https  : true;
+  const hasHsts       = live ? !!live.has_hsts   : false;
+  const server        = (live && live.server)                 ? live.server    : 'Unknown';
+  const cacheControl  = (live && live.cache_control)          ? live.cache_control : null;
+  const ttfb          = (live && live.ttfb)                   ? live.ttfb      : null;
 
-  // Colors
+  // ── Color helpers ─────────────────────────────────────────────────────────
   const scoreColor = daScore >= 70 ? 'var(--green)' : daScore >= 50 ? 'var(--amber)' : 'var(--red)';
-  const trustColor = typeof trustScore === 'number' ? (trustScore >= 70 ? 'var(--green)' : trustScore >= 40 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)';
-  const spamColor  = typeof spamScore  === 'number' ? (spamScore  <= 20 ? 'var(--green)' : spamScore  <= 50 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)';
+  const trustColor = trustScore != null ? (trustScore >= 70 ? 'var(--green)' : trustScore >= 40 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)';
+  const spamColor  = spamScore  != null ? (spamScore  <= 20 ? 'var(--green)' : spamScore  <= 50 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)';
 
-  // DA gauge arc
-  const circ = 2 * Math.PI * 40; // r=40
-  const filled = circ * (1 - (daScore / 100));
+  // ── Gauge arc ─────────────────────────────────────────────────────────────
+  const circ   = 2 * Math.PI * 40;
+  const offset = circ * (1 - daScore / 100);
 
-  // Dofollow bar width
-  const dfBarW = typeof dofollowPct === 'number' ? dofollowPct : 0;
-  const nfBarW = 100 - dfBarW;
+  // ── DoFollow bar ─────────────────────────────────────────────────────────
+  const dfPct = typeof dofollowPct === 'number' ? dofollowPct : 0;
 
-  // Anchor text rows
-  const maxAnchorCount = topAnchors.length ? topAnchors[0].count : 1;
+  // ── Anchor rows ───────────────────────────────────────────────────────────
+  const maxCount = topAnchors.length ? topAnchors[0].count : 1;
   const anchorRows = topAnchors.length
     ? topAnchors.map(a => {
-        const pct = Math.round((a.count / maxAnchorCount) * 100);
+        const pct = Math.round((a.count / maxCount) * 100);
         return `<tr>
-          <td style="padding:0.7rem 1rem;font-size:0.84rem;border-bottom:1px solid var(--border);max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.text}</td>
-          <td style="padding:0.7rem 1rem;border-bottom:1px solid var(--border);min-width:140px">
-            <div style="display:flex;align-items:center;gap:8px">
-              <div style="flex:1;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden">
-                <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:99px"></div>
-              </div>
-              <span style="font-size:0.75rem;color:var(--muted);flex-shrink:0">${a.count}</span>
+          <td class="bl-table-cell" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.text}</td>
+          <td>
+            <div class="bl-anchor-bar-wrap">
+              <div class="bl-anchor-bar-track"><div class="bl-anchor-bar-fill" style="width:${pct}%"></div></div>
+              <span style="font-size:0.73rem;color:var(--muted);flex-shrink:0;min-width:22px">${a.count}</span>
             </div>
           </td>
         </tr>`;
       }).join('')
-    : `<tr><td colspan="2" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.83rem">No anchor data found</td></tr>`;
+    : '<tr><td colspan="2" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.82rem">No anchor data found</td></tr>';
 
-  // Referring domain rows
+  // ── Referring domain rows ─────────────────────────────────────────────────
   const refRows = refDomains.length
     ? refDomains.map((r, i) => `<tr>
-        <td style="padding:0.7rem 1rem;font-size:0.78rem;color:var(--muted);border-bottom:1px solid var(--border)">${i + 1}</td>
-        <td style="padding:0.7rem 1rem;font-size:0.84rem;border-bottom:1px solid var(--border)">
-          <div style="font-weight:600;color:var(--text)">${r.domain || r.url}</div>
-          ${r.title && r.title !== r.domain ? `<div style="font-size:0.75rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px">${r.title}</div>` : ''}
+        <td style="color:var(--muted);width:32px">${i + 1}</td>
+        <td>
+          <div class="bl-domain-val">${r.domain || r.url || '—'}</div>
+          ${r.title && r.title !== (r.domain || '') ? `<div class="bl-domain-title">${r.title}</div>` : ''}
         </td>
-        <td style="padding:0.7rem 1rem;border-bottom:1px solid var(--border)">
-          <span style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.22);color:var(--green);padding:0.15rem 0.55rem;border-radius:5px;font-size:0.7rem;font-weight:700">dofollow</span>
-        </td>
-      </tr>`).join('')
-    : `<tr><td colspan="3" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.83rem">No referring domains found via search</td></tr>`;
+        <td><span class="bl-type-chip">dofollow</span></td>
+      </tr>`)
+    .join('')
+    : '<tr><td colspan="3" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.82rem">No referring domains found</td></tr>';
 
-  // Top external domains rows
-  const extDomRows = topExtDoms.length
+  // ── External domain rows ──────────────────────────────────────────────────
+  const extRows = topExtDoms.length
     ? topExtDoms.map(d => `<tr>
-        <td style="padding:0.65rem 1rem;font-size:0.84rem;border-bottom:1px solid var(--border);font-weight:500">${d.domain}</td>
-        <td style="padding:0.65rem 1rem;font-size:0.84rem;border-bottom:1px solid var(--border);color:var(--accent2)">${d.links}</td>
-      </tr>`).join('')
-    : `<tr><td colspan="2" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.83rem">No external links found</td></tr>`;
+        <td class="bl-domain-val">${d.domain}</td>
+        <td style="color:var(--accent2);font-weight:700">${d.links}</td>
+      </tr>`)
+    .join('')
+    : '<tr><td colspan="2" style="padding:1.5rem;text-align:center;color:var(--muted);font-size:0.82rem">No external links detected</td></tr>';
+
+  // ── Technical signals rows ────────────────────────────────────────────────
+  const signals = [
+    ['HTTPS',          isHttps ? '✅ Enabled'  : '❌ Disabled',   isHttps ? 'var(--green)' : 'var(--red)'],
+    ['HSTS Header',    hasHsts ? '✅ Present'  : '⚠ Missing',     hasHsts ? 'var(--green)' : 'var(--amber)'],
+    ['Server',         server,                                      'var(--muted)'],
+    ['Cache-Control',  cacheControl ? '✅ ' + cacheControl : '⚠ Not set', cacheControl ? 'var(--green)' : 'var(--amber)'],
+    ['TTFB',           ttfb ? ((ttfb < 800 ? '✅ ' : ttfb < 1800 ? '⚠ ' : '❌ ') + ttfb + 'ms') : '—',
+                       ttfb ? (ttfb < 800 ? 'var(--green)' : ttfb < 1800 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)'],
+  ];
+
+  // ── Stats cards data ──────────────────────────────────────────────────────
+  const stats = [
+    ['🔗', 'Total Links',      totalLinks,    'All <a> links on page'],
+    ['📥', 'Internal Links',   internalLinks, 'Links within the site'],
+    ['📤', 'External Links',   externalLinks, 'Links to other domains'],
+    ['🌐', 'Referring Domains',refCount,      'Unique linking domains'],
+    ['✅', 'DoFollow',         dofollowCount, 'Links passing equity'],
+    ['🚫', 'NoFollow',         nofollowCount, 'Links with rel=nofollow'],
+    ['🛡', 'Trust Score',      trustScore != null ? trustScore + '/100' : '—', 'Link quality signal'],
+    ['⚠', 'Spam Score',       spamScore  != null ? spamScore  + '%'    : '—', 'Low-quality link risk'],
+  ];
 
   el.innerHTML = `
-    <!-- ── HEADER SCORE CARD ───────────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
-      <!-- DA Gauge -->
-      <div style="position:relative;flex-shrink:0">
-        <svg width="110" height="110" viewBox="0 0 100 100">
+    <!-- HEADER -->
+    <div class="bl-header">
+      <div class="bl-gauge-wrap">
+        <svg width="106" height="106" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
           <circle cx="50" cy="50" r="40" fill="none"
             stroke="${scoreColor}" stroke-width="8" stroke-linecap="round"
             stroke-dasharray="${circ.toFixed(1)}"
-            stroke-dashoffset="${filled.toFixed(1)}"
+            stroke-dashoffset="${offset.toFixed(1)}"
             transform="rotate(-90 50 50)"
             style="transition:stroke-dashoffset 1.2s ease"/>
         </svg>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
-          <div style="font-family:'Syne',sans-serif;font-size:1.55rem;font-weight:800;color:${scoreColor};line-height:1">${daScore}</div>
-          <div style="font-size:0.58rem;color:var(--muted);letter-spacing:0.06em;font-weight:600">DA SCORE</div>
+        <div class="bl-gauge-label">
+          <div class="bl-gauge-num" style="color:${scoreColor}">${daScore}</div>
+          <div class="bl-gauge-sub">DA SCORE</div>
         </div>
       </div>
-      <!-- Info -->
-      <div style="flex:1;min-width:160px">
-        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:0.25rem">🔗 ${hostname}</div>
-        <div style="display:inline-flex;align-items:center;gap:5px;background:${scoreColor}18;border:1px solid ${scoreColor}44;color:${scoreColor};padding:0.2rem 0.65rem;border-radius:999px;font-size:0.72rem;font-weight:700;margin-bottom:0.5rem">${daTier}</div>
-        <div style="font-size:0.82rem;color:var(--muted);line-height:1.55">${daDesc}</div>
+      <div class="bl-header-info">
+        <div class="bl-header-domain">🔗 ${hostname}</div>
+        <div class="bl-tier-badge" style="background:${scoreColor}18;border:1px solid ${scoreColor}44;color:${scoreColor}">${daTier}</div>
+        <div class="bl-header-desc">${daDesc}</div>
       </div>
-      <!-- Grade chip -->
-      <div style="flex-shrink:0;text-align:center">
-        <div style="font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;color:${scoreColor};line-height:1">${daGrade}</div>
-        <div style="font-size:0.65rem;color:var(--muted);font-weight:600;letter-spacing:0.06em">GRADE</div>
+      <div class="bl-grade-wrap">
+        <div class="bl-grade-num" style="color:${scoreColor}">${daGrade}</div>
+        <div class="bl-grade-lbl">GRADE</div>
       </div>
     </div>
 
-    <!-- ── STATS GRID ─────────────────────────────────────────── -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.75rem;margin-bottom:1.25rem">
-      ${[
-        ['🔗', 'Total Links', totalLinks, 'All <a> links on the page'],
-        ['📥', 'Internal Links', internalLinks, 'Links pointing within the site'],
-        ['📤', 'External Links', externalLinks, 'Links pointing to other domains'],
-        ['🌐', 'Referring Domains', refCount, 'Unique domains found linking in'],
-        ['✅', 'DoFollow Links', dofollowCount, 'Links that pass link equity'],
-        ['🚫', 'NoFollow Links', nofollowCount, 'Links with rel="nofollow"'],
-        ['🛡', 'Trust Score', trustScore !== '—' ? trustScore + '/100' : '—', 'Quality signal of link profile'],
-        ['⚠', 'Spam Score', spamScore !== '—' ? spamScore + '%' : '—', 'Low-quality link risk indicator'],
-      ].map(([icon, label, val, tip]) => `
-        <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem">
-          <div style="font-size:1.1rem;margin-bottom:0.25rem">${icon}</div>
-          <div style="font-family:'Syne',sans-serif;font-size:1.25rem;font-weight:800;color:var(--text);line-height:1.1">${val}</div>
-          <div style="font-size:0.72rem;font-weight:600;color:var(--muted);margin-top:0.2rem">${label}</div>
-          <div style="font-size:0.67rem;color:var(--muted2);margin-top:0.15rem;line-height:1.4">${tip}</div>
+    <!-- STATS GRID -->
+    <div class="bl-stats-grid">
+      ${stats.map(([icon, label, val, tip]) => `
+        <div class="bl-stat-card">
+          <div class="bl-stat-icon">${icon}</div>
+          <div class="bl-stat-val">${val}</div>
+          <div class="bl-stat-label">${label}</div>
+          <div class="bl-stat-tip">${tip}</div>
         </div>`).join('')}
     </div>
 
-    <!-- ── DOFOLLOW vs NOFOLLOW BAR ────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">
-      <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.85rem">⚖ DoFollow vs NoFollow Ratio</div>
-      <div style="display:flex;height:12px;border-radius:99px;overflow:hidden;margin-bottom:0.75rem">
-        <div style="width:${dfBarW}%;background:linear-gradient(90deg,var(--green),#6ee7b7);transition:width 1s ease"></div>
-        <div style="width:${nfBarW}%;background:var(--bg4)"></div>
-      </div>
-      <div style="display:flex;gap:1.5rem;flex-wrap:wrap">
-        <div style="display:flex;align-items:center;gap:6px;font-size:0.8rem">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
-          <span style="color:var(--text);font-weight:600">DoFollow</span>
-          <span style="color:var(--muted)">${dofollowPct !== '—' ? dofollowPct + '%' : '—'} (${dofollowCount})</span>
+    <!-- DOFOLLOW / NOFOLLOW -->
+    <div class="bl-section">
+      <div class="bl-section-head">⚖ DoFollow vs NoFollow Ratio</div>
+      <div class="bl-ratio-bar-wrap">
+        <div class="bl-ratio-bar">
+          <div class="bl-ratio-fill-df" style="width:${dfPct}%"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;font-size:0.8rem">
-          <div style="width:10px;height:10px;border-radius:50%;background:var(--bg4);border:1px solid var(--border2);flex-shrink:0"></div>
-          <span style="color:var(--text);font-weight:600">NoFollow</span>
-          <span style="color:var(--muted)">${dofollowPct !== '—' ? (100 - dfBarW) + '%' : '—'} (${nofollowCount})</span>
+        <div class="bl-ratio-legend">
+          <div class="bl-ratio-leg-item">
+            <div class="bl-ratio-dot" style="background:var(--green)"></div>
+            <span style="color:var(--text);font-weight:600">DoFollow</span>
+            <span style="color:var(--muted)">${dfPct}% (${dofollowCount})</span>
+          </div>
+          <div class="bl-ratio-leg-item">
+            <div class="bl-ratio-dot" style="background:var(--bg4);border:1px solid var(--border2)"></div>
+            <span style="color:var(--text);font-weight:600">NoFollow</span>
+            <span style="color:var(--muted)">${100 - dfPct}% (${nofollowCount})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRUST & SPAM METERS -->
+    <div class="bl-section">
+      <div class="bl-section-head">📊 Quality Signals</div>
+      <div class="bl-meters-grid">
+        <div class="bl-meter">
+          <div class="bl-meter-label">🛡 Trust Score</div>
+          <div class="bl-meter-val" style="color:${trustColor}">${trustScore != null ? trustScore : '—'}<span style="font-size:0.85rem;color:var(--muted);font-weight:400"> /100</span></div>
+          <div class="bl-meter-bar-track"><div class="bl-meter-bar-fill" style="width:${trustScore != null ? trustScore : 0}%;background:${trustColor}"></div></div>
+          <div class="bl-meter-note">${trustScore != null ? (trustScore >= 70 ? 'High trust — strong link signals' : trustScore >= 40 ? 'Medium — room to improve' : 'Low — fix technical issues first') : 'N/A'}</div>
+        </div>
+        <div class="bl-meter">
+          <div class="bl-meter-label">⚠ Spam Score</div>
+          <div class="bl-meter-val" style="color:${spamColor}">${spamScore != null ? spamScore : '—'}<span style="font-size:0.85rem;color:var(--muted);font-weight:400">%</span></div>
+          <div class="bl-meter-bar-track"><div class="bl-meter-bar-fill" style="width:${spamScore != null ? spamScore : 0}%;background:${spamColor}"></div></div>
+          <div class="bl-meter-note">${spamScore != null ? (spamScore <= 20 ? 'Healthy — low spam risk' : spamScore <= 50 ? 'Moderate — review link quality' : 'High risk — disavow toxic links') : 'N/A'}</div>
         </div>
       </div>
     </div>
 
-    <!-- ── TRUST & SPAM METERS ────────────────────────────────── -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem">
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.65rem">🛡 Trust Score</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:${trustColor};line-height:1;margin-bottom:0.4rem">${typeof trustScore === 'number' ? trustScore : '—'}<span style="font-size:0.85rem;color:var(--muted);font-weight:400"> /100</span></div>
-        <div style="height:5px;background:var(--bg3);border-radius:99px;overflow:hidden">
-          <div style="width:${typeof trustScore === 'number' ? trustScore : 0}%;height:100%;background:${trustColor};border-radius:99px;transition:width 1s ease"></div>
-        </div>
-        <div style="font-size:0.73rem;color:var(--muted);margin-top:0.4rem">${typeof trustScore === 'number' ? (trustScore >= 70 ? 'High trust — strong signals' : trustScore >= 40 ? 'Medium trust — needs improvement' : 'Low trust — fix technical issues') : 'N/A'}</div>
-      </div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.4rem">
-        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.65rem">⚠ Spam Score</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800;color:${spamColor};line-height:1;margin-bottom:0.4rem">${typeof spamScore === 'number' ? spamScore : '—'}<span style="font-size:0.85rem;color:var(--muted);font-weight:400">%</span></div>
-        <div style="height:5px;background:var(--bg3);border-radius:99px;overflow:hidden">
-          <div style="width:${typeof spamScore === 'number' ? spamScore : 0}%;height:100%;background:${spamColor};border-radius:99px;transition:width 1s ease"></div>
-        </div>
-        <div style="font-size:0.73rem;color:var(--muted);margin-top:0.4rem">${typeof spamScore === 'number' ? (spamScore <= 20 ? 'Healthy — low spam risk' : spamScore <= 50 ? 'Moderate — check link quality' : 'High risk — disavow toxic links') : 'N/A'}</div>
-      </div>
-    </div>
-
-    <!-- ── TOP ANCHOR TEXTS ───────────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
-      <div style="padding:0.85rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">🏷 Top Anchor Texts</div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead><tr>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);text-align:left">Anchor Text</th>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;border-bottom:1px solid var(--border);text-align:left">Frequency</th>
-        </tr></thead>
+    <!-- ANCHOR TEXTS -->
+    <div class="bl-section">
+      <div class="bl-section-head">🏷 Top Anchor Texts</div>
+      <table class="bl-table">
+        <thead><tr><th>Anchor Text</th><th>Frequency</th></tr></thead>
         <tbody>${anchorRows}</tbody>
       </table>
     </div>
 
-    <!-- ── REFERRING DOMAINS ──────────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
-      <div style="padding:0.85rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-        <span style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">🌐 Referring Domains</span>
-        <span style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.22);color:var(--green);padding:0.15rem 0.6rem;border-radius:5px;font-size:0.7rem;font-weight:700">${refCount} found</span>
+    <!-- REFERRING DOMAINS -->
+    <div class="bl-section">
+      <div class="bl-section-head">
+        🌐 Referring Domains
+        <span class="bl-section-badge" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.22);color:var(--green)">${refCount} found</span>
       </div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead><tr>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left;width:36px">#</th>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left">Domain</th>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left">Link Type</th>
-        </tr></thead>
+      <table class="bl-table">
+        <thead><tr><th style="width:32px">#</th><th>Domain</th><th>Type</th></tr></thead>
         <tbody>${refRows}</tbody>
       </table>
     </div>
 
-    <!-- ── TOP EXTERNAL DOMAINS ───────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
-      <div style="padding:0.85rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">📤 Top Linked-To Domains</div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead><tr>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left">Domain</th>
-          <th style="padding:0.6rem 1rem;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;border-bottom:1px solid var(--border);text-align:left">Links</th>
-        </tr></thead>
-        <tbody>${extDomRows}</tbody>
+    <!-- TOP EXTERNAL DOMAINS -->
+    <div class="bl-section">
+      <div class="bl-section-head">📤 Top Outbound Domains</div>
+      <table class="bl-table">
+        <thead><tr><th>Domain</th><th>Links</th></tr></thead>
+        <tbody>${extRows}</tbody>
       </table>
     </div>
 
-    <!-- ── SIGNALS TABLE ──────────────────────────────────────── -->
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden">
-      <div style="padding:0.85rem 1rem;background:var(--bg3);border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">🔍 Technical Link Signals</div>
-      <table style="width:100%;border-collapse:collapse">
-        <tbody>
-          ${[
-            ['HTTPS', isHttps ? '✅ Enabled' : '❌ Disabled', isHttps ? 'var(--green)' : 'var(--red)'],
-            ['HSTS Header', (live && live.has_hsts) ? '✅ Present' : '⚠ Missing', (live && live.has_hsts) ? 'var(--green)' : 'var(--amber)'],
-            ['Server', (live && live.server) || 'Unknown', 'var(--muted)'],
-            ['Cache-Control', (live && live.cache_control) ? '✅ ' + live.cache_control : '⚠ Not set', (live && live.cache_control) ? 'var(--green)' : 'var(--amber)'],
-            ['TTFB', ttfb ? (ttfb < 800 ? '✅ ' : ttfb < 1800 ? '⚠ ' : '❌ ') + ttfb + 'ms' : '—', ttfb ? (ttfb < 800 ? 'var(--green)' : ttfb < 1800 ? 'var(--amber)' : 'var(--red)') : 'var(--muted)'],
-          ].map(([label, val, color]) => `
-            <tr>
-              <td style="padding:0.8rem 1rem;font-size:0.84rem;color:var(--muted);border-bottom:1px solid var(--border);width:40%">${label}</td>
-              <td style="padding:0.8rem 1rem;font-size:0.84rem;font-weight:600;color:${color};border-bottom:1px solid var(--border)">${val}</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
+    <!-- TECHNICAL SIGNALS -->
+    <div class="bl-section">
+      <div class="bl-section-head">🔍 Technical Link Signals</div>
+      <div class="bl-signals-body">
+        ${signals.map(([label, val, color]) => `
+          <div class="bl-signal-row">
+            <div class="bl-signal-label">${label}</div>
+            <div class="bl-signal-val" style="color:${color}">${val}</div>
+          </div>`).join('')}
+      </div>
     </div>`;
 }
+
 
 // ─── MOBILE NAV ───────────────────────────────────────────────
 function toggleMobileNav() {
