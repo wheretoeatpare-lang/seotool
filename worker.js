@@ -7,6 +7,7 @@ export default {
     if (url.pathname === '/api/ai-visibility')    return handleAIVisibility(request);
     if (url.pathname === '/api/top-competitors')  return handleTopCompetitors(request);
     if (url.pathname === '/api/backlinks')        return handleBacklinks(request);
+    if (url.pathname === '/api/broken-links')     return handleBrokenLinks(request);
     return env.ASSETS.fetch(request);
   },
 };
@@ -1210,6 +1211,169 @@ async function handleBacklinks(request) {
 
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BROKEN LINKS CHECKER
+// Crawls the target page, extracts all internal page links + all hyperlinks,
+// checks each one with a HEAD request, and returns:
+//   - brokenPages   : internal URLs that return 4xx/5xx or fail to connect
+//   - brokenLinks   : all hyperlinks (internal + external) that are broken,
+//                     including the source page where they were found
+// ─────────────────────────────────────────────────────────────────────────────
+async function handleBrokenLinks(request) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (request.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
+
+  try {
+    const { url } = await request.json();
+    if (!url) return new Response(JSON.stringify({ error: 'url is required' }), { status: 400, headers: CORS });
+
+    const origin = new URL(url).origin;
+    const domain = new URL(url).hostname;
+    const UA     = 'Mozilla/5.0 (compatible; RankSight/2.0; +https://seotool.webmasterjamez.workers.dev)';
+
+    // ── 1. Fetch the seed page ─────────────────────────────────────────────
+    let seedHtml = '';
+    let seedFinalUrl = url;
+    try {
+      const r = await fetch(url, {
+        headers: { 'User-Agent': UA, 'Accept': 'text/html' },
+        redirect: 'follow',
+      });
+      seedHtml     = await r.text();
+      seedFinalUrl = r.url;
+    } catch (e) {
+      return new Response(JSON.stringify({
+        error: 'Could not fetch the page: ' + e.message,
+        brokenPages: [], brokenLinks: [], summary: { checked: 0, broken: 0, ok: 0 },
+      }), { headers: CORS });
+    }
+
+    // ── 2. Extract every <a href> from the seed page ───────────────────────
+    function extractLinks(html, baseUrl) {
+      const re  = /<a[^>]+href=[\"']([^\"'#][^\"']*)[\"'][^>]*>/gi;
+      const found = [];
+      let m;
+      while ((m = re.exec(html)) !== null) {
+        let href = m[1].trim();
+        if (/^(mailto:|tel:|javascript:|#)/i.test(href)) continue;
+        // Resolve relative URLs
+        try {
+          href = new URL(href, baseUrl).href;
+        } catch { continue; }
+        // Strip fragment
+        href = href.split('#')[0];
+        if (!href) continue;
+        found.push(href);
+      }
+      return [...new Set(found)];
+    }
+
+    const allLinks = extractLinks(seedHtml, seedFinalUrl);
+
+    // Classify links
+    const internalLinks = allLinks.filter(h => {
+      try { return new URL(h).hostname === domain; } catch { return false; }
+    });
+    const externalLinks = allLinks.filter(h => {
+      try { return new URL(h).hostname !== domain; } catch { return false; }
+    });
+
+    // ── 3. Check each link (HEAD with GET fallback, 5s timeout) ───────────
+    const MAX_CHECK = 60; // cap to avoid Worker CPU limits
+    const toCheck = [
+      ...internalLinks.slice(0, 40),
+      ...externalLinks.slice(0, 20),
+    ].slice(0, MAX_CHECK);
+
+    async function checkUrl(href) {
+      try {
+        let res = await fetch(href, {
+          method: 'HEAD',
+          headers: { 'User-Agent': UA },
+          redirect: 'follow',
+          signal: AbortSignal.timeout(5000),
+        });
+        // Some servers reject HEAD; retry with GET
+        if (res.status === 405 || res.status === 501) {
+          res = await fetch(href, {
+            method: 'GET',
+            headers: { 'User-Agent': UA },
+            redirect: 'follow',
+            signal: AbortSignal.timeout(5000),
+          });
+        }
+        return { href, status: res.status, ok: res.status >= 200 && res.status < 400 };
+      } catch (e) {
+        return { href, status: null, ok: false, error: e.message };
+      }
+    }
+
+    // Run checks in parallel batches of 10
+    const results = [];
+    const BATCH = 10;
+    for (let i = 0; i < toCheck.length; i += BATCH) {
+      const batch = toCheck.slice(i, i + BATCH);
+      const batchResults = await Promise.all(batch.map(checkUrl));
+      results.push(...batchResults);
+    }
+
+    // ── 4. Categorise results ──────────────────────────────────────────────
+    const broken = results.filter(r => !r.ok);
+    const ok     = results.filter(r =>  r.ok);
+
+    // brokenPages: internal URLs that are broken (the destination page is missing)
+    const brokenPages = broken
+      .filter(r => { try { return new URL(r.href).hostname === domain; } catch { return false; } })
+      .map(r => ({
+        url:    r.href,
+        status: r.status || 'Connection failed',
+        type:   r.status >= 500 ? 'Server Error' : r.status === 404 ? 'Not Found' : r.status === 403 ? 'Forbidden' : r.status === 410 ? 'Gone' : r.status ? `HTTP ${r.status}` : 'Connection Failed',
+        foundOn: seedFinalUrl,  // where this broken page link was found
+      }));
+
+    // brokenLinks: ALL broken hyperlinks (internal + external) with source location
+    const brokenLinks = broken.map(r => {
+      const isInternal = (() => { try { return new URL(r.href).hostname === domain; } catch { return false; } })();
+      return {
+        url:      r.href,
+        status:   r.status || 'Connection failed',
+        type:     r.status >= 500 ? 'Server Error' : r.status === 404 ? 'Not Found' : r.status === 403 ? 'Forbidden' : r.status === 410 ? 'Gone' : r.status ? `HTTP ${r.status}` : 'Connection Failed',
+        linkType: isInternal ? 'Internal' : 'External',
+        foundOn:  seedFinalUrl,  // the page where this broken link was found
+        anchor:   extractAnchorText(seedHtml, r.href),
+      };
+    });
+
+    // ── 5. Helper: find anchor text for a given href ───────────────────────
+    function extractAnchorText(html, href) {
+      // Match href inside the HTML (relative or absolute)
+      const escaped = href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp('<a[^>]+href=["\'][^"\']*' + escaped.split('/').pop().replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[^"\']*["\'][^>]*>([\\s\\S]*?)<\\/a>', 'i');
+      const m  = html.match(re);
+      if (!m) return '';
+      return m[1].replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 80);
+    }
+
+    return new Response(JSON.stringify({
+      seedUrl:     seedFinalUrl,
+      domain,
+      brokenPages,
+      brokenLinks,
+      summary: {
+        checked:        results.length,
+        broken:         broken.length,
+        ok:             ok.length,
+        internalChecked: internalLinks.slice(0, 40).length,
+        externalChecked: externalLinks.slice(0, 20).length,
+        totalLinksFound: allLinks.length,
+      },
+    }), { headers: CORS });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message, brokenPages: [], brokenLinks: [], summary: { checked: 0, broken: 0, ok: 0 } }), { status: 500, headers: CORS });
   }
 }
 

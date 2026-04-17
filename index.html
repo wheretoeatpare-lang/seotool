@@ -1428,13 +1428,14 @@ footer .logo-f {
       <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
       <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
       <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
+      <button class="tab-btn" onclick="switchTab('backlinks')">🔗 Backlinks</button>
+      <button class="tab-btn" onclick="switchTab('broken-links')">🔴 Broken Links</button>
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
       <button class="tab-btn" onclick="switchTab('schema')">🧩 Schema</button>
       <button class="tab-btn" onclick="switchTab('cwv')">⚡ Core Web Vitals</button>
       <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
       <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Competitors</button>
       <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
-      <button class="tab-btn" onclick="switchTab('backlinks')">🔗 Backlinks</button>
     </div>
 
     <div class="tab-panel active" id="tab-overview">
@@ -1497,6 +1498,11 @@ footer .logo-f {
     <div class="tab-panel" id="tab-backlinks">
       <div id="backlinks-content">
         <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.88rem">Run an audit first to load backlink data.</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="tab-broken-links">
+      <div id="broken-links-content">
+        <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:0.88rem">Run an audit first to check for broken links.</div>
       </div>
     </div>
   </div>
@@ -2418,7 +2424,10 @@ function renderResults(url, data, cmsData, pageData) {
   initTopCompetitorsTab(url, pageData);
 
   // Backlinks tab
-  renderBacklinks(url, data);
+  renderBacklinks(url, data, pageData);
+
+  // Broken Links tab
+  renderBrokenLinks(url);
 
   // Show results
   document.getElementById('results-section').style.display = 'block';
@@ -2736,7 +2745,7 @@ function renderTechStack(cmsData, url) {
   `;
 }
 // ─── BACKLINKS TAB ────────────────────────────────────────────
-function renderBacklinks(url, data) {
+function renderBacklinks(url, data, pageData) {
   const el = document.getElementById('backlinks-content');
   if (!el) return;
 
@@ -2752,10 +2761,10 @@ function renderBacklinks(url, data) {
     </div>`;
 
   // Kick off the live fetch — non-blocking
-  _fetchAndRenderBacklinks(url, hostname, el, data);
+  _fetchAndRenderBacklinks(url, hostname, el, data, pageData);
 }
 
-async function _fetchAndRenderBacklinks(url, hostname, el, auditData) {
+async function _fetchAndRenderBacklinks(url, hostname, el, auditData, pageData) {
   // Pull what we already have from the audit as fallback
   const da  = auditData.domain_authority || {};
   const cat = (auditData.categories || {}).backlinks || {};
@@ -2776,8 +2785,8 @@ async function _fetchAndRenderBacklinks(url, hostname, el, auditData) {
   const daTier       = (live && live.da_tier)        || da.tier        || '—';
   const daDesc       = (live && live.da_description) || da.description || '';
   const totalLinks   = (live && live.total_links   != null) ? live.total_links   : '—';
-  const internalLinks= (live && live.internal_links != null) ? live.internal_links : (auditData.pageData?.links?.internal || '—');
-  const externalLinks= (live && live.external_links != null) ? live.external_links : (auditData.pageData?.links?.external || '—');
+  const internalLinks= (live && live.internal_links != null) ? live.internal_links : (pageData?.links?.internal || '—');
+  const externalLinks= (live && live.external_links != null) ? live.external_links : (pageData?.links?.external || '—');
   const dofollowCount= (live && live.dofollow_count != null) ? live.dofollow_count : '—';
   const nofollowCount= (live && live.nofollow_count != null) ? live.nofollow_count : '—';
   const dofollowPct  = (live && live.dofollow_pct  != null) ? live.dofollow_pct  : '—';
@@ -3722,6 +3731,227 @@ function tcSwitchTab(uid, name, clickedBtn) {
     const p = document.getElementById(uid+'-'+n);
     if(p) p.classList.toggle('active', n===name);
   });
+}
+
+// ── BROKEN LINKS TAB ─────────────────────────────────────────────────────────
+function renderBrokenLinks(url) {
+  const el = document.getElementById('broken-links-content');
+  if (!el) return;
+
+  let hostname = url;
+  try { hostname = new URL(url).hostname; } catch(e) {}
+
+  el.innerHTML = `
+    <div style="text-align:center;padding:3rem 1rem">
+      <div style="display:inline-block;width:44px;height:44px;border-radius:50%;border:2px solid var(--border2);border-top-color:var(--red);animation:spin 0.9s linear infinite;margin-bottom:1.25rem"></div>
+      <div style="color:var(--muted);font-size:0.88rem">Scanning links on <strong style="color:var(--text)">${hostname}</strong>…</div>
+      <div style="color:var(--muted2);font-size:0.78rem;margin-top:0.4rem">Checking up to 60 internal &amp; external links for broken destinations</div>
+    </div>`;
+
+  _fetchAndRenderBrokenLinks(url, hostname, el);
+}
+
+async function _fetchAndRenderBrokenLinks(url, hostname, el) {
+  let data = null;
+  try {
+    const res = await fetch('/api/broken-links', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    if (res.ok) data = await res.json();
+  } catch(e) {}
+
+  if (!data || data.error) {
+    el.innerHTML = `<div style="text-align:center;padding:3rem 1rem;color:var(--red);font-size:0.88rem">
+      ⚠ Could not scan links: ${data?.error || 'Network error'}
+    </div>`;
+    return;
+  }
+
+  const { brokenPages = [], brokenLinks = [], summary = {} } = data;
+  const totalBroken  = summary.broken || 0;
+  const totalChecked = summary.checked || 0;
+  const totalOk      = summary.ok || 0;
+  const healthPct    = totalChecked > 0 ? Math.round((totalOk / totalChecked) * 100) : 100;
+  const healthColor  = healthPct >= 90 ? 'var(--green)' : healthPct >= 70 ? 'var(--amber)' : 'var(--red)';
+
+  // ── Status type badge color ────────────────────────────────────────────────
+  function typeColor(type) {
+    if (type === 'Not Found' || type === 'Gone')    return 'var(--red)';
+    if (type === 'Server Error')                    return '#f97316';
+    if (type === 'Forbidden')                       return 'var(--amber)';
+    if (type === 'Connection Failed')               return 'var(--muted)';
+    return 'var(--muted)';
+  }
+  function typeBg(type) {
+    if (type === 'Not Found' || type === 'Gone')    return 'rgba(248,113,113,0.1)';
+    if (type === 'Server Error')                    return 'rgba(249,115,22,0.1)';
+    if (type === 'Forbidden')                       return 'rgba(251,191,36,0.1)';
+    return 'rgba(148,163,184,0.1)';
+  }
+
+  // ── Broken pages rows ─────────────────────────────────────────────────────
+  const brokenPagesRows = brokenPages.length
+    ? brokenPages.map((p, i) => `
+      <tr>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--muted);white-space:nowrap">${i+1}</td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);max-width:320px">
+          <div style="font-size:0.84rem;font-weight:600;color:var(--text);word-break:break-all">${p.url}</div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:0.2rem">Found on: <span style="color:var(--accent2)">${p.foundOn}</span></div>
+        </td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap">
+          <span style="background:${typeBg(p.type)};border:1px solid ${typeColor(p.type)}44;color:${typeColor(p.type)};padding:0.2rem 0.6rem;border-radius:6px;font-size:0.73rem;font-weight:700">${p.status}</span>
+        </td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap">
+          <span style="font-size:0.78rem;color:${typeColor(p.type)};font-weight:600">${p.type}</span>
+        </td>
+      </tr>`).join('')
+    : `<tr><td colspan="4" style="padding:2rem;text-align:center;color:var(--green);font-size:0.88rem">✅ No broken internal pages found</td></tr>`;
+
+  // ── Broken hyperlinks rows ────────────────────────────────────────────────
+  const brokenLinksRows = brokenLinks.length
+    ? brokenLinks.map((lk, i) => `
+      <tr>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);font-size:0.78rem;color:var(--muted);white-space:nowrap">${i+1}</td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);max-width:280px">
+          <div style="font-size:0.84rem;font-weight:600;color:var(--text);word-break:break-all">${lk.url}</div>
+          ${lk.anchor ? `<div style="font-size:0.72rem;color:var(--muted);margin-top:0.15rem">Anchor: <em>"${lk.anchor}"</em></div>` : ''}
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:0.2rem">Found on: <a href="${lk.foundOn}" target="_blank" rel="noopener" style="color:var(--accent2);text-decoration:none;word-break:break-all">${lk.foundOn}</a></div>
+        </td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap">
+          <span style="background:${typeBg(lk.type)};border:1px solid ${typeColor(lk.type)}44;color:${typeColor(lk.type)};padding:0.2rem 0.6rem;border-radius:6px;font-size:0.73rem;font-weight:700">${lk.status}</span>
+        </td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap">
+          <span style="font-size:0.78rem;color:${typeColor(lk.type)};font-weight:600">${lk.type}</span>
+        </td>
+        <td style="padding:0.8rem 1rem;border-bottom:1px solid var(--border);white-space:nowrap">
+          <span style="background:${lk.linkType==='Internal'?'rgba(124,111,247,0.12)':'rgba(34,211,238,0.1)'};border:1px solid ${lk.linkType==='Internal'?'rgba(124,111,247,0.3)':'rgba(34,211,238,0.3)'};color:${lk.linkType==='Internal'?'var(--accent2)':'var(--cyan)'};padding:0.15rem 0.55rem;border-radius:5px;font-size:0.7rem;font-weight:700">${lk.linkType}</span>
+        </td>
+      </tr>`).join('')
+    : `<tr><td colspan="5" style="padding:2rem;text-align:center;color:var(--green);font-size:0.88rem">✅ No broken hyperlinks found</td></tr>`;
+
+  el.innerHTML = `
+    <!-- ── SUMMARY HEADER ────────────────────────────────────────────────── -->
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:1.75rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap">
+      <!-- Health gauge -->
+      <div style="position:relative;flex-shrink:0">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+          <circle cx="50" cy="50" r="38" fill="none"
+            stroke="${healthColor}" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="${(2*Math.PI*38).toFixed(1)}"
+            stroke-dashoffset="${((2*Math.PI*38)*(1-healthPct/100)).toFixed(1)}"
+            transform="rotate(-90 50 50)"
+            style="transition:stroke-dashoffset 1.2s ease"/>
+        </svg>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+          <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:${healthColor};line-height:1">${healthPct}%</div>
+          <div style="font-size:0.55rem;color:var(--muted);letter-spacing:0.06em;font-weight:600">HEALTHY</div>
+        </div>
+      </div>
+      <!-- Info -->
+      <div style="flex:1;min-width:160px">
+        <div style="font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:0.3rem">🔴 Broken Link Report</div>
+        <div style="font-size:0.84rem;color:var(--muted);margin-bottom:0.6rem">${hostname}</div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <span style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:var(--red);padding:0.2rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:700">${totalBroken} Broken</span>
+          <span style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:var(--green);padding:0.2rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:700">${totalOk} OK</span>
+          <span style="background:rgba(148,163,184,0.08);border:1px solid var(--border);color:var(--muted);padding:0.2rem 0.7rem;border-radius:6px;font-size:0.78rem;font-weight:600">${totalChecked} Checked</span>
+        </div>
+      </div>
+      <!-- Stats mini-grid -->
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:0.6rem;flex-shrink:0">
+        ${[
+          ['🔗', 'Links Found', summary.totalLinksFound || '—'],
+          ['📥', 'Internal Checked', summary.internalChecked || 0],
+          ['📤', 'External Checked', summary.externalChecked || 0],
+          ['💔', 'Broken Pages', brokenPages.length],
+        ].map(([icon, label, val]) => `
+          <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:0.65rem 0.85rem;text-align:center">
+            <div style="font-size:1rem;margin-bottom:0.15rem">${icon}</div>
+            <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--text)">${val}</div>
+            <div style="font-size:0.65rem;color:var(--muted);font-weight:600;margin-top:0.1rem">${label}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    ${totalBroken === 0 ? `
+    <div style="background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(52,211,153,0.03));border:1px solid rgba(52,211,153,0.2);border-radius:14px;padding:2rem;text-align:center;margin-bottom:1.25rem">
+      <div style="font-size:2rem;margin-bottom:0.5rem">✅</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;color:var(--green);margin-bottom:0.4rem">No Broken Links Detected</div>
+      <div style="font-size:0.84rem;color:var(--muted)">All ${totalChecked} checked links on <strong style="color:var(--text)">${hostname}</strong> returned valid responses.</div>
+    </div>` : ''}
+
+    <!-- ── BROKEN PAGES TABLE ─────────────────────────────────────────────── -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700">💔 Broken Internal Pages</div>
+        <span style="background:${brokenPages.length?'rgba(248,113,113,0.12)':'rgba(52,211,153,0.1)'};border:1px solid ${brokenPages.length?'rgba(248,113,113,0.3)':'rgba(52,211,153,0.3)'};color:${brokenPages.length?'var(--red)':'var(--green)'};padding:0.15rem 0.6rem;border-radius:5px;font-size:0.73rem;font-weight:700">${brokenPages.length} found</span>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);padding:0.6rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg3)">
+        These are internal pages on <strong>${hostname}</strong> that return error codes — pages your site links to that don't exist or are broken.
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg3)">
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">#</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">Broken Page URL &amp; Location Found</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">Status</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">Error Type</th>
+            </tr>
+          </thead>
+          <tbody>${brokenPagesRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── BROKEN HYPERLINKS TABLE ───────────────────────────────────────── -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.25rem">
+      <div style="padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700">🔗 All Broken Hyperlinks</div>
+        <span style="background:${brokenLinks.length?'rgba(248,113,113,0.12)':'rgba(52,211,153,0.1)'};border:1px solid ${brokenLinks.length?'rgba(248,113,113,0.3)':'rgba(52,211,153,0.3)'};color:${brokenLinks.length?'var(--red)':'var(--green)'};padding:0.15rem 0.6rem;border-radius:5px;font-size:0.73rem;font-weight:700">${brokenLinks.length} found</span>
+      </div>
+      <div style="font-size:0.75rem;color:var(--muted);padding:0.6rem 1.25rem;border-bottom:1px solid var(--border);background:var(--bg3)">
+        Every broken hyperlink (internal &amp; external) found on <strong>${hostname}</strong>, including the anchor text used and the exact page where each broken link lives.
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:var(--bg3)">
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">#</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">Broken URL · Anchor Text · Found On (Location)</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">Status</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">Error Type</th>
+              <th style="padding:0.65rem 1rem;text-align:left;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap">Link Type</th>
+            </tr>
+          </thead>
+          <tbody>${brokenLinksRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── HOW TO FIX ────────────────────────────────────────────────────── -->
+    ${totalBroken > 0 ? `
+    <div style="background:linear-gradient(135deg,rgba(124,111,247,0.07),rgba(34,211,238,0.04));border:1px solid rgba(124,111,247,0.2);border-radius:14px;padding:1.25rem 1.5rem">
+      <div style="font-family:'Syne',sans-serif;font-size:0.88rem;font-weight:700;margin-bottom:0.75rem">🛠 How to Fix Broken Links</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0.75rem">
+        ${[
+          ['404 Not Found', 'Either redirect the old URL to a relevant live page using a 301 redirect, update the link to the correct destination, or remove the link.'],
+          ['410 Gone', 'The resource has been permanently removed. Remove or replace the link with a current, working alternative.'],
+          ['5xx Server Error', 'The destination server is having problems. Check if the link is valid and try again later; if persistent, replace with a working URL.'],
+          ['Connection Failed', 'The domain may be down or no longer exist. Verify the domain, and either update or remove the link.'],
+          ['External Broken Links', 'For broken external links, replace with a current URL, find an archived version at web.archive.org, or remove the link entirely.'],
+          ['Internal Broken Links', 'Update your CMS or code to fix the internal URL — check for typos, deleted pages, or misconfigured redirects.'],
+        ].map(([title, text]) => `
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:0.9rem 1rem">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:0.3rem">${title}</div>
+            <div style="font-size:0.74rem;color:var(--muted);line-height:1.55">${text}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
+  `;
 }
 
 </script>
