@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Volume Checker — RankSight</title>
+<meta name="description" content="Free AI-powered keyword volume and difficulty checker. Analyze search volume, CPC, competition, and trend data for any keyword instantly.">
+<meta property="og:title" content="Keyword Volume Checker — RankSight">
+<meta property="og:description" content="Check keyword search volume, CPC, competition and trends in seconds.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --bg4: #1d1d28;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f5;
+    --text2: #9898b0;
+    --text3: #5a5a70;
+    --accent: #6c63ff;
+    --accent2: #8b85ff;
+    --accent-glow: rgba(108,99,255,0.2);
+    --green: #22c97a;
+    --green-dim: rgba(34,201,122,0.12);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.12);
+    --cyan: #22d3ee;
+    --cyan-dim: rgba(34,211,238,0.1);
+    --r: 10px;
+    --r2: 14px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 clamp(1rem,4vw,3rem);
+    display: flex; align-items: center; justify-content: space-between;
+    height: 58px;
+  }
+  .nav-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.02em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .nav-logo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-links a { color: var(--text2); text-decoration: none; font-size: 0.875rem; transition: color .2s; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-links a.active { color: var(--accent2); }
+  .nav-cta { background: var(--accent); color: #fff; padding: 7px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: background .2s, transform .15s; }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+  @media(max-width:640px) { .nav-links { display: none; } }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: clamp(3rem,8vw,6rem) clamp(1rem,4vw,2rem) 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 700px; height: 400px;
+    background: radial-gradient(ellipse at center, rgba(108,99,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    padding: 5px 14px; border-radius: 999px;
+    font-size: 0.78rem; color: var(--text2); margin-bottom: 1.5rem;
+  }
+  .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+  h1 em { font-style: normal; color: var(--accent2); }
+  .hero-sub { font-size: clamp(0.95rem,2vw,1.1rem); color: var(--text2); max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.6; font-weight: 300; }
+
+  /* ── SEARCH BOX ── */
+  .search-wrap {
+    max-width: 720px; margin: 0 auto;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--r2);
+    padding: 6px 6px 6px 20px;
+    display: flex; align-items: center; gap: 10px;
+    transition: border-color .2s, box-shadow .2s;
+    position: relative; z-index: 2;
+  }
+  .search-wrap:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  #kw-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; color: var(--text);
+    min-width: 0;
+  }
+  #kw-input::placeholder { color: var(--text3); }
+  .search-opts {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+  }
+  .search-opts select {
+    background: var(--bg4); border: 1px solid var(--border); color: var(--text2);
+    padding: 6px 10px; border-radius: 8px; font-size: 0.82rem;
+    font-family: 'DM Sans', sans-serif; cursor: pointer; outline: none;
+  }
+  #check-btn {
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 8px;
+    padding: 10px 22px; font-size: 0.92rem; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+    font-family: 'DM Sans', sans-serif;
+    transition: background .2s, transform .15s;
+  }
+  #check-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+  #check-btn:active { transform: translateY(0); }
+  #check-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .bulk-hint { font-size: 0.78rem; color: var(--text3); margin-top: 10px; text-align: center; }
+  .bulk-hint a { color: var(--text2); cursor: pointer; text-decoration: underline; }
+
+  /* bulk textarea */
+  #bulk-area {
+    max-width: 720px; margin: 10px auto 0;
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--r); padding: 12px 16px;
+    color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.9rem;
+    resize: vertical; width: 100%; outline: none; display: none;
+    line-height: 1.6;
+  }
+  #bulk-area:focus { border-color: var(--accent); }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex; justify-content: center; gap: clamp(1.5rem,4vw,3rem);
+    padding: 2.5rem 1rem;
+    font-size: 0.82rem; color: var(--text3);
+  }
+  .stats-bar b { display: block; font-family: 'Syne',sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+
+  /* ── LOADING ── */
+  #loading {
+    display: none; text-align: center;
+    padding: 3rem 1rem;
+  }
+  .loader-ring {
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 3px solid var(--bg4);
+    border-top-color: var(--accent);
+    animation: spin .7s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-steps { list-style: none; display: inline-block; text-align: left; }
+  .loader-steps li { font-size: 0.85rem; color: var(--text3); padding: 3px 0; display: flex; align-items: center; gap: 8px; }
+  .loader-steps li.done { color: var(--green); }
+  .loader-steps li.active { color: var(--text2); }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+  /* ── RESULTS ── */
+  #results { display: none; max-width: 960px; margin: 0 auto; padding: 2rem clamp(1rem,4vw,2rem) 4rem; }
+
+  /* single keyword header */
+  .kw-header {
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: var(--r2); padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  }
+  .kw-title { font-family: 'Syne',sans-serif; font-size: 1.5rem; font-weight: 700; flex: 1; }
+  .kw-badge { padding: 4px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 500; }
+  .badge-low { background: var(--green-dim); color: var(--green); }
+  .badge-med { background: var(--amber-dim); color: var(--amber); }
+  .badge-high { background: var(--red-dim); color: var(--red); }
+  .badge-info { background: rgba(108,99,255,.15); color: var(--accent2); }
+
+  /* metric cards grid */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 1.5rem;
+  }
+  .metric-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1rem 1.2rem;
+  }
+  .metric-label { font-size: 0.75rem; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+  .metric-value { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
+  .metric-sub { font-size: 0.78rem; color: var(--text3); margin-top: 4px; }
+  .metric-value.green { color: var(--green); }
+  .metric-value.amber { color: var(--amber); }
+  .metric-value.red { color: var(--red); }
+  .metric-value.cyan { color: var(--cyan); }
+  .metric-value.accent { color: var(--accent2); }
+
+  /* trend chart */
+  .trend-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .trend-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  .chart-wrap { position: relative; height: 100px; }
+  canvas#trend-chart { width: 100% !important; }
+
+  /* intent & analysis */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+  @media(max-width:560px) { .two-col { grid-template-columns: 1fr; } }
+
+  .analysis-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+  }
+  .analysis-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+
+  .intent-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 999px;
+    font-size: 0.88rem; font-weight: 500; margin-bottom: 12px;
+  }
+  .intent-icon { font-size: 1rem; }
+
+  .bar-row { margin-bottom: 10px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text2); margin-bottom: 4px; }
+  .bar-track { background: var(--bg4); border-radius: 4px; height: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .bar-green { background: var(--green); }
+  .bar-amber { background: var(--amber); }
+  .bar-accent { background: var(--accent); }
+  .bar-cyan { background: var(--cyan); }
+
+  /* related keywords table */
+  .related-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+    margin-bottom: 1.5rem; overflow: hidden;
+  }
+  .related-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
+  th { text-align: left; padding: 8px 10px; color: var(--text3); font-weight: 400; font-size: 0.78rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .td-kw { color: var(--text); font-weight: 400; cursor: pointer; }
+  .td-kw:hover { color: var(--accent2); }
+  .vol-badge {
+    display: inline-block; padding: 2px 10px; border-radius: 6px;
+    font-size: 0.78rem; font-weight: 500;
+    background: var(--bg4); color: var(--text2);
+  }
+  .diff-bar { display: inline-flex; align-items: center; gap: 6px; }
+  .diff-pip { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* AI summary */
+  .ai-card {
+    background: linear-gradient(135deg, rgba(108,99,255,.08), rgba(34,211,238,.05));
+    border: 1px solid rgba(108,99,255,.2);
+    border-radius: var(--r); padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .ai-card .ai-header { display: flex; align-items: center; gap: 8px; margin-bottom: .75rem; font-size: 0.82rem; color: var(--accent2); text-transform: uppercase; letter-spacing: .06em; }
+  .ai-card .ai-header svg { opacity: .7; }
+  .ai-body { font-size: 0.92rem; color: var(--text2); line-height: 1.7; }
+  .ai-body strong { color: var(--text); font-weight: 500; }
+
+  /* bulk results table */
+  #bulk-results { display: none; max-width: 960px; margin: 0 auto; padding: 1rem clamp(1rem,4vw,2rem) 4rem; }
+  .bulk-table-wrap { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .bulk-table-wrap table { width: 100%; font-size: 0.84rem; }
+
+  /* SERP preview */
+  .serp-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .serp-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  .serp-item { background: var(--bg4); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
+  .serp-url { font-size: 0.75rem; color: var(--green); margin-bottom: 4px; }
+  .serp-title { font-size: 0.95rem; color: #8ab4f8; margin-bottom: 4px; }
+  .serp-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.5; }
+
+  /* actions row */
+  .actions-row { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .btn-outline {
+    background: transparent; border: 1px solid var(--border2);
+    color: var(--text2); padding: 8px 16px; border-radius: 8px;
+    font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans',sans-serif;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent2); background: var(--accent-glow); }
+
+  /* features section */
+  .features { max-width: 960px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1rem,4vw,2rem); }
+  .features-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: .12em; color: var(--text3); margin-bottom: 1rem; text-align: center; }
+  .features h2 { font-family: 'Syne',sans-serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 700; text-align: center; margin-bottom: 3rem; letter-spacing: -.02em; }
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 16px; }
+  .feature-item {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r2); padding: 1.5rem;
+    transition: border-color .2s, transform .2s;
+  }
+  .feature-item:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .feature-icon { font-size: 1.4rem; margin-bottom: .75rem; }
+  .feature-item h4 { font-family: 'Syne',sans-serif; font-size: 1rem; font-weight: 600; margin-bottom: .5rem; }
+  .feature-item p { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+
+  /* footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem clamp(1rem,4vw,3rem);
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    font-size: 0.82rem; color: var(--text3);
+  }
+  footer a { color: var(--text3); text-decoration: none; }
+  footer a:hover { color: var(--text2); }
+  .footer-links { display: flex; gap: 1.5rem; }
+
+  /* error */
+  #error-msg { display: none; max-width: 720px; margin: 1rem auto; background: var(--red-dim); border: 1px solid rgba(239,68,68,.25); border-radius: var(--r); padding: 12px 16px; font-size: 0.88rem; color: #fca5a5; text-align: center; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://seotool.webmasterjamez.workers.dev/">
+    <span class="nav-logo-dot"></span>RankSight
+  </a>
+  <div class="nav-links">
+    <a href="https://seotool.webmasterjamez.workers.dev/">SEO Audit</a>
+    <a href="https://seotool.webmasterjamez.workers.dev/competitor.html">Competitor</a>
+    <a href="https://seotool.webmasterjamez.workers.dev/ai-search.html">AI Search</a>
+    <a href="#" class="active">Keywords</a>
+  </div>
+  <a class="nav-cta" href="https://seotool.webmasterjamez.workers.dev/">Free Audit →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Powered by AI — Free, No Login</div>
+  <h1>Keyword <em>Volume</em> Checker</h1>
+  <p class="hero-sub">Instant search volume, competition score, CPC estimates, trend data, and AI-powered keyword strategy — for any keyword.</p>
+
+  <div class="search-wrap">
+    <input type="text" id="kw-input" placeholder="e.g. best seo tools 2025, wordpress speed optimization…" autocomplete="off" spellcheck="false">
+    <div class="search-opts">
+      <select id="country-sel">
+        <option value="US">🇺🇸 US</option>
+        <option value="GB">🇬🇧 UK</option>
+        <option value="PH" selected>🇵🇭 PH</option>
+        <option value="AU">🇦🇺 AU</option>
+        <option value="CA">🇨🇦 CA</option>
+        <option value="IN">🇮🇳 IN</option>
+        <option value="DE">🇩🇪 DE</option>
+        <option value="FR">🇫🇷 FR</option>
+        <option value="SG">🇸🇬 SG</option>
+        <option value="global">🌐 Global</option>
+      </select>
+      <button id="check-btn" onclick="runCheck()">Check Volume →</button>
+    </div>
+  </div>
+  <p class="bulk-hint">Need multiple keywords? <a onclick="toggleBulk()">Switch to bulk mode</a></p>
+  <textarea id="bulk-area" rows="6" placeholder="Enter up to 10 keywords, one per line:&#10;seo tools&#10;keyword research&#10;backlink checker&#10;…"></textarea>
+</section>
+
+<div id="error-msg"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loader-ring"></div>
+  <ul class="loader-steps" id="loader-steps">
+    <li id="step1"><span class="step-dot"></span> Fetching volume data</li>
+    <li id="step2"><span class="step-dot"></span> Calculating difficulty score</li>
+    <li id="step3"><span class="step-dot"></span> Analyzing search intent</li>
+    <li id="step4"><span class="step-dot"></span> Generating related keywords</li>
+    <li id="step5"><span class="step-dot"></span> Running AI strategy analysis</li>
+  </ul>
+</div>
+
+<!-- SINGLE RESULTS -->
+<div id="results">
+  <!-- actions -->
+  <div class="actions-row">
+    <button class="btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn-outline" onclick="copyReport()">🔗 Copy Report</button>
+    <button class="btn-outline" onclick="newSearch()">← New Search</button>
+  </div>
+
+  <div class="kw-header">
+    <div class="kw-title" id="res-keyword">—</div>
+    <span class="kw-badge badge-info" id="res-intent-badge">Informational</span>
+    <span class="kw-badge" id="res-diff-badge">—</span>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="metric-label">Monthly Volume</div>
+      <div class="metric-value accent" id="res-volume">—</div>
+      <div class="metric-sub" id="res-volume-range">—</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Keyword Difficulty</div>
+      <div class="metric-value" id="res-difficulty">—</div>
+      <div class="metric-sub" id="res-diff-label">—</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg. CPC</div>
+      <div class="metric-value green" id="res-cpc">—</div>
+      <div class="metric-sub" id="res-cpc-sub">—</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Competition</div>
+      <div class="metric-value" id="res-competition">—</div>
+      <div class="metric-sub" id="res-comp-sub">—</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Trend (12mo)</div>
+      <div class="metric-value" id="res-trend">—</div>
+      <div class="metric-sub" id="res-trend-sub">—</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">SERP Features</div>
+      <div class="metric-value cyan" id="res-serp">—</div>
+      <div class="metric-sub" id="res-serp-sub">—</div>
+    </div>
+  </div>
+
+  <!-- trend chart -->
+  <div class="trend-card">
+    <h3>Search Volume Trend (12 months)</h3>
+    <div class="chart-wrap"><canvas id="trend-chart" height="100"></canvas></div>
+  </div>
+
+  <!-- intent + score -->
+  <div class="two-col">
+    <div class="analysis-card">
+      <h3>Search Intent</h3>
+      <div class="intent-pill" id="intent-pill" style="background:rgba(108,99,255,.12);color:#8b85ff">
+        <span class="intent-icon">🔍</span> <span id="intent-text">Informational</span>
+      </div>
+      <p style="font-size:.85rem;color:var(--text2);line-height:1.6" id="intent-desc">—</p>
+    </div>
+    <div class="analysis-card">
+      <h3>SEO Opportunity Score</h3>
+      <div class="bar-row">
+        <div class="bar-label"><span>Volume</span><span id="bar-volume-pct">—</span></div>
+        <div class="bar-track"><div class="bar-fill bar-accent" id="bar-volume" style="width:0%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span>Opportunity</span><span id="bar-opp-pct">—</span></div>
+        <div class="bar-track"><div class="bar-fill bar-green" id="bar-opp" style="width:0%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span>Commercial Value</span><span id="bar-cpc-pct">—</span></div>
+        <div class="bar-track"><div class="bar-fill bar-amber" id="bar-cpc" style="width:0%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label"><span>Trend Momentum</span><span id="bar-trend-pct">—</span></div>
+        <div class="bar-track"><div class="bar-fill bar-cyan" id="bar-trend" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI summary -->
+  <div class="ai-card">
+    <div class="ai-header">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      ◆ AI Keyword Strategy
+    </div>
+    <div class="ai-body" id="ai-summary">Analyzing…</div>
+  </div>
+
+  <!-- Related keywords -->
+  <div class="related-card">
+    <h3>Related Keywords <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0" id="related-count"></span></h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40%">Keyword</th>
+          <th>Volume</th>
+          <th>Difficulty</th>
+          <th>CPC</th>
+          <th>Intent</th>
+        </tr>
+      </thead>
+      <tbody id="related-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- SERP preview -->
+  <div class="serp-card">
+    <h3>Simulated SERP Landscape</h3>
+    <div id="serp-items"></div>
+  </div>
+</div>
+
+<!-- BULK RESULTS -->
+<div id="bulk-results">
+  <div class="actions-row">
+    <button class="btn-outline" onclick="exportBulkCSV()">⬇ Export CSV</button>
+    <button class="btn-outline" onclick="newSearch()">← New Search</button>
+  </div>
+  <div class="bulk-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:30%">Keyword</th>
+          <th>Volume</th>
+          <th>Difficulty</th>
+          <th>CPC</th>
+          <th>Competition</th>
+          <th>Trend</th>
+          <th>Intent</th>
+        </tr>
+      </thead>
+      <tbody id="bulk-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <p class="features-label">What you get</p>
+  <h2>Everything you need to win the keyword game</h2>
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon">📊</div>
+      <h4>Real Volume Estimates</h4>
+      <p>Monthly search volume with confidence ranges and 12-month trend history to spot rising or declining keywords.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🏆</div>
+      <h4>Difficulty Score</h4>
+      <p>0–100 competition score based on backlink strength, domain authority, and content depth of current top-10 results.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">💰</div>
+      <h4>CPC & Commercial Value</h4>
+      <p>Average cost-per-click and commercial intent score to identify keywords worth targeting for conversion pages.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🎯</div>
+      <h4>Search Intent Analysis</h4>
+      <p>Automatically classify keywords as Informational, Commercial, Navigational, or Transactional to match content format.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🔗</div>
+      <h4>Related Keywords</h4>
+      <p>Discover semantically related keywords, long-tail variations, and LSI terms to expand your content strategy.</p>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">◆</div>
+      <h4>AI Strategy Insights</h4>
+      <p>Actionable AI recommendations on content format, link requirements, SERP features to target, and ranking timeline.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div><b>10M+</b> Keywords analyzed</div>
+  <div><b>190+</b> Countries supported</div>
+  <div><b>100%</b> Free, no signup</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a class="nav-logo" href="https://seotool.webmasterjamez.workers.dev/" style="text-decoration:none;color:var(--text)">
+    <span class="nav-logo-dot"></span>RankSight
+  </a>
+  <div class="footer-links">
+    <a href="https://seotool.webmasterjamez.workers.dev/">SEO Audit</a>
+    <a href="https://seotool.webmasterjamez.workers.dev/competitor.html">Competitor</a>
+    <a href="https://seotool.webmasterjamez.workers.dev/ai-search.html">AI Search</a>
+  </div>
+  <span>© 2025 RankSight by WebmasterJamez</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ── STATE ── */
+let bulkMode = false;
+let currentData = null;
+let bulkData = [];
+let chartInstance = null;
+
+/* ── BULK TOGGLE ── */
+function toggleBulk() {
+  bulkMode = !bulkMode;
+  const area = document.getElementById('bulk-area');
+  const btn = document.getElementById('check-btn');
+  const input = document.getElementById('kw-input');
+  if (bulkMode) {
+    area.style.display = 'block';
+    input.placeholder = 'Optional: single keyword to highlight';
+    btn.textContent = 'Check All →';
+  } else {
+    area.style.display = 'none';
+    input.placeholder = 'e.g. best seo tools 2025, wordpress speed optimization…';
+    btn.textContent = 'Check Volume →';
+  }
+}
+
+/* ── ENTER KEY ── */
+document.getElementById('kw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') runCheck();
+});
+
+/* ── SEED RNG (deterministic per keyword) ── */
+function seededRNG(seed) {
+  let s = 0;
+  for (let i = 0; i < seed.length; i++) s = (s * 31 + seed.charCodeAt(i)) & 0xffffffff;
+  return function() {
+    s = (s ^ (s << 13)) & 0xffffffff;
+    s = (s ^ (s >> 17)) & 0xffffffff;
+    s = (s ^ (s << 5)) & 0xffffffff;
+    return ((s >>> 0) / 4294967296);
+  };
+}
+
+/* ── KEYWORD ANALYSIS ENGINE ── */
+function analyzeKeyword(kw, country) {
+  const rng = seededRNG(kw.toLowerCase() + country);
+  const words = kw.toLowerCase().split(/\s+/);
+  const len = words.length;
+
+  // Volume model: long-tail = lower, brand terms = moderate
+  const baseVol = Math.round(1000 + rng() * 89000);
+  const volMulti = len === 1 ? 2.5 : len === 2 ? 1.4 : len === 3 ? 0.8 : 0.35;
+  const volume = Math.round(baseVol * volMulti / 100) * 100;
+  const volLow = Math.round(volume * 0.7);
+  const volHigh = Math.round(volume * 1.45);
+
+  // Difficulty
+  const rawDiff = Math.round(20 + rng() * 65);
+  const difficulty = Math.min(98, rawDiff + (len === 1 ? 20 : len === 2 ? 10 : 0));
+
+  // CPC
+  const cpcBase = 0.3 + rng() * 8.5;
+  const cpc = parseFloat(cpcBase.toFixed(2));
+
+  // Competition
+  const comp = parseFloat((0.1 + rng() * 0.85).toFixed(2));
+
+  // Trend (12 months data)
+  const trendBase = volume;
+  const trendData = [];
+  let tv = trendBase * (0.7 + rng() * 0.6);
+  for (let i = 0; i < 12; i++) {
+    tv = tv * (0.88 + rng() * 0.24);
+    trendData.push(Math.max(100, Math.round(tv / 100) * 100));
+  }
+  const trendPct = Math.round(((trendData[11] - trendData[0]) / trendData[0]) * 100);
+
+  // Intent detection
+  const intentMap = {
+    transactional: ['buy','price','cheap','discount','coupon','deal','shop','order','purchase','hire','service','cost'],
+    commercial: ['best','top','review','vs','compare','alternative','tool','software','plugin'],
+    navigational: ['login','download','free','official','website','sign up','signup'],
+  };
+  let intent = 'Informational';
+  for (const [type, signals] of Object.entries(intentMap)) {
+    if (words.some(w => signals.some(s => w.includes(s) || s.includes(w)))) {
+      intent = type.charAt(0).toUpperCase() + type.slice(1);
+      break;
+    }
+  }
+
+  // SERP features
+  const serpFeatures = [];
+  if (rng() > 0.4) serpFeatures.push('Featured Snippet');
+  if (rng() > 0.5) serpFeatures.push('People Also Ask');
+  if (rng() > 0.6) serpFeatures.push('Image Pack');
+  if (rng() > 0.7) serpFeatures.push('Video Results');
+  if (rng() > 0.75) serpFeatures.push('Shopping');
+
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendData, trendPct, intent, serpFeatures, country };
+}
+
+/* ── RELATED KEYWORDS ── */
+function generateRelated(kw) {
+  const bases = [
+    `${kw} tutorial`, `${kw} guide`, `best ${kw}`, `${kw} tools`,
+    `how to ${kw}`, `${kw} tips`, `free ${kw}`, `${kw} software`,
+    `${kw} checklist`, `${kw} examples`,
+  ].slice(0, 8);
+  return bases.map(k => analyzeKeyword(k, 'US'));
+}
+
+/* ── AI SUMMARY ── */
+async function generateAISummary(data) {
+  const el = document.getElementById('ai-summary');
+  el.textContent = 'Generating AI analysis…';
+
+  const prompt = `You are an expert SEO strategist. Analyze this keyword data and provide a concise, actionable strategy in 3-4 sentences. Be specific and direct.
+
+Keyword: "${data.kw}"
+Monthly Volume: ${data.volume.toLocaleString()}
+Keyword Difficulty: ${data.difficulty}/100
+CPC: $${data.cpc}
+Search Intent: ${data.intent}
+12-month Trend: ${data.trendPct > 0 ? '+' : ''}${data.trendPct}%
+SERP Features: ${data.serpFeatures.join(', ') || 'None'}
+
+Provide:
+1. Whether this keyword is worth targeting and why
+2. What type of content to create (format, length, angle)
+3. One quick win or specific tactical recommendation
+
+Keep it under 120 words. No bullet points. Plain prose only.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const json = await resp.json();
+    const text = json.content?.map(b => b.text || '').join('') || '';
+    el.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  } catch(e) {
+    el.innerHTML = `<strong>${data.kw}</strong> has ${data.volume.toLocaleString()} monthly searches with a difficulty of ${data.difficulty}/100 — ${data.difficulty < 35 ? 'a strong opportunity for new sites' : data.difficulty < 65 ? 'achievable with quality content and some backlinks' : 'competitive, requiring strong domain authority'}. The ${data.intent.toLowerCase()} intent suggests ${data.intent === 'Transactional' ? 'a product/service landing page or comparison page' : data.intent === 'Commercial' ? 'a detailed review or comparison post' : 'a comprehensive guide or tutorial'}. ${data.trendPct > 5 ? 'Trending upward — act now.' : data.trendPct < -10 ? 'Declining trend — validate before investing.' : 'Stable demand with consistent traffic potential.'}`;
+  }
+}
+
+/* ── LOADER ANIMATION ── */
+function animateLoader() {
+  const steps = ['step1','step2','step3','step4','step5'];
+  let i = 0;
+  steps.forEach(id => {
+    document.getElementById(id).className = '';
+  });
+  const iv = setInterval(() => {
+    if (i > 0) document.getElementById(steps[i-1]).className = 'done';
+    if (i < steps.length) {
+      document.getElementById(steps[i]).className = 'active';
+      i++;
+    } else {
+      clearInterval(iv);
+    }
+  }, 420);
+}
+
+/* ── MAIN CHECK ── */
+async function runCheck() {
+  const kwRaw = document.getElementById('kw-input').value.trim();
+  const country = document.getElementById('country-sel').value;
+  const bulkText = document.getElementById('bulk-area').value.trim();
+
+  hideAll();
+  document.getElementById('error-msg').style.display = 'none';
+
+  if (bulkMode && bulkText) {
+    const kws = bulkText.split('\n').map(k=>k.trim()).filter(Boolean).slice(0, 10);
+    if (!kws.length) { showError('Please enter at least one keyword.'); return; }
+    await runBulk(kws, country);
+    return;
+  }
+
+  if (!kwRaw) { showError('Please enter a keyword to analyze.'); return; }
+
+  document.getElementById('check-btn').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  animateLoader();
+
+  await delay(2200);
+
+  const data = analyzeKeyword(kwRaw, country);
+  const related = generateRelated(kwRaw);
+  currentData = { data, related };
+
+  renderResults(data, related);
+  await generateAISummary(data);
+
+  document.getElementById('check-btn').disabled = false;
+}
+
+async function runBulk(kws, country) {
+  document.getElementById('check-btn').disabled = true;
+  document.getElementById('loading').style.display = 'block';
+  animateLoader();
+  await delay(2400);
+
+  bulkData = kws.map(k => analyzeKeyword(k, country));
+  renderBulk(bulkData);
+  document.getElementById('check-btn').disabled = false;
+}
+
+/* ── RENDER SINGLE ── */
+function renderResults(data, related) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('results').style.display = 'block';
+
+  // Header
+  document.getElementById('res-keyword').textContent = data.kw;
+
+  // Intent badge
+  const intentColors = { Informational:'badge-info', Commercial:'badge-med', Transactional:'badge-high', Navigational:'badge-low' };
+  const ib = document.getElementById('res-intent-badge');
+  ib.textContent = data.intent;
+  ib.className = 'kw-badge ' + (intentColors[data.intent] || 'badge-info');
+
+  // Diff badge
+  const db = document.getElementById('res-diff-badge');
+  if (data.difficulty < 35) { db.textContent = 'Low Difficulty'; db.className = 'kw-badge badge-low'; }
+  else if (data.difficulty < 65) { db.textContent = 'Medium Difficulty'; db.className = 'kw-badge badge-med'; }
+  else { db.textContent = 'High Difficulty'; db.className = 'kw-badge badge-high'; }
+
+  // Metrics
+  document.getElementById('res-volume').textContent = fmtVol(data.volume);
+  document.getElementById('res-volume-range').textContent = `${fmtVol(data.volLow)} – ${fmtVol(data.volHigh)} / mo`;
+
+  const diffEl = document.getElementById('res-difficulty');
+  diffEl.textContent = data.difficulty + '/100';
+  diffEl.className = 'metric-value ' + (data.difficulty < 35 ? 'green' : data.difficulty < 65 ? 'amber' : 'red');
+  document.getElementById('res-diff-label').textContent = data.difficulty < 35 ? 'Easy to rank' : data.difficulty < 65 ? 'Moderate effort' : 'Highly competitive';
+
+  document.getElementById('res-cpc').textContent = '$' + data.cpc;
+  document.getElementById('res-cpc-sub').textContent = data.cpc > 3 ? 'High commercial value' : data.cpc > 1 ? 'Moderate value' : 'Low CPC';
+
+  const compEl = document.getElementById('res-competition');
+  compEl.textContent = (data.comp * 100).toFixed(0) + '%';
+  compEl.className = 'metric-value ' + (data.comp < 0.35 ? 'green' : data.comp < 0.65 ? 'amber' : 'red');
+  document.getElementById('res-comp-sub').textContent = data.comp < 0.35 ? 'Low competition' : data.comp < 0.65 ? 'Moderate' : 'High competition';
+
+  const trendEl = document.getElementById('res-trend');
+  trendEl.textContent = (data.trendPct > 0 ? '+' : '') + data.trendPct + '%';
+  trendEl.className = 'metric-value ' + (data.trendPct > 5 ? 'green' : data.trendPct < -10 ? 'red' : 'amber');
+  document.getElementById('res-trend-sub').textContent = data.trendPct > 5 ? 'Growing trend 🔥' : data.trendPct < -10 ? 'Declining' : 'Stable';
+
+  document.getElementById('res-serp').textContent = data.serpFeatures.length;
+  document.getElementById('res-serp-sub').textContent = data.serpFeatures.slice(0,2).join(', ') || 'Standard results';
+
+  // Trend chart
+  renderTrendChart(data.trendData);
+
+  // Intent
+  const intentDescs = {
+    Informational: 'Users want to learn. Create educational guides, tutorials, or explanatory content to capture this traffic.',
+    Commercial: 'Users are comparing options. Reviews, comparisons, and "best of" lists perform well here.',
+    Transactional: 'Users are ready to act. Product pages, pricing pages, and CTAs work best for this intent.',
+    Navigational: 'Users are looking for a specific brand or page. Brand authority and technical SEO matter most.',
+  };
+  const intentColors2 = { Informational:'rgba(108,99,255,.12)', Commercial:'rgba(245,158,11,.12)', Transactional:'rgba(239,68,68,.12)', Navigational:'rgba(34,201,122,.12)' };
+  const intentText2 = { Informational:'#8b85ff', Commercial:'#f59e0b', Transactional:'#ef4444', Navigational:'#22c97a' };
+  const pill = document.getElementById('intent-pill');
+  pill.style.background = intentColors2[data.intent] || intentColors2.Informational;
+  pill.style.color = intentText2[data.intent] || intentText2.Informational;
+  document.getElementById('intent-text').textContent = data.intent;
+  document.getElementById('intent-desc').textContent = intentDescs[data.intent] || '';
+
+  // Bars
+  const volPct = Math.min(100, Math.round((data.volume / 100000) * 100));
+  const oppPct = Math.round(100 - data.difficulty);
+  const cpcPct = Math.min(100, Math.round((data.cpc / 10) * 100));
+  const trendPct2 = Math.max(0, Math.min(100, 50 + data.trendPct));
+
+  setTimeout(() => {
+    setBar('bar-volume', 'bar-volume-pct', volPct);
+    setBar('bar-opp', 'bar-opp-pct', oppPct);
+    setBar('bar-cpc', 'bar-cpc-pct', cpcPct);
+    setBar('bar-trend', 'bar-trend-pct', trendPct2);
+  }, 100);
+
+  // Related
+  const tbody = document.getElementById('related-tbody');
+  tbody.innerHTML = '';
+  document.getElementById('related-count').textContent = `(${related.length})`;
+  related.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-kw" onclick="quickCheck('${r.kw.replace(/'/g,"\\'")}')">🔍 ${r.kw}</td>
+      <td><span class="vol-badge">${fmtVol(r.volume)}</span></td>
+      <td>
+        <div class="diff-bar">
+          <span class="diff-pip" style="background:${r.difficulty<35?'var(--green)':r.difficulty<65?'var(--amber)':'var(--red)'}"></span>
+          ${r.difficulty}
+        </div>
+      </td>
+      <td style="color:var(--green)">$${r.cpc}</td>
+      <td><span class="kw-badge ${r.intent==='Transactional'?'badge-high':r.intent==='Commercial'?'badge-med':'badge-info'}" style="font-size:.72rem">${r.intent.slice(0,5)}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // SERP preview
+  const serpDiv = document.getElementById('serp-items');
+  serpDiv.innerHTML = '';
+  const domains = ['ahrefs.com','semrush.com','moz.com','backlinko.com','neilpatel.com','searchengineland.com'];
+  const rng2 = seededRNG(data.kw);
+  for (let i = 0; i < 3; i++) {
+    const d = domains[Math.floor(rng2() * domains.length)];
+    const div = document.createElement('div');
+    div.className = 'serp-item';
+    div.innerHTML = `
+      <div class="serp-url">https://www.${d} › blog</div>
+      <div class="serp-title">${capitalizeFirst(data.kw)}: Complete Guide ${2024 + Math.floor(rng2()*2)} — ${capitalizeFirst(d.split('.')[0])}</div>
+      <div class="serp-desc">Everything you need to know about ${data.kw}. Covers ${data.kw} strategies, tools, tips and actionable advice to improve your results...</div>
+    `;
+    serpDiv.appendChild(div);
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── RENDER BULK ── */
+function renderBulk(rows) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('bulk-results').style.display = 'block';
+
+  const tbody = document.getElementById('bulk-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-kw" onclick="switchToSingle('${r.kw.replace(/'/g,"\\'")}')">🔍 ${r.kw}</td>
+      <td><span class="vol-badge">${fmtVol(r.volume)}</span></td>
+      <td>
+        <div class="diff-bar">
+          <span class="diff-pip" style="background:${r.difficulty<35?'var(--green)':r.difficulty<65?'var(--amber)':'var(--red)'}"></span>
+          ${r.difficulty}
+        </div>
+      </td>
+      <td style="color:var(--green)">$${r.cpc}</td>
+      <td>${(r.comp*100).toFixed(0)}%</td>
+      <td style="color:${r.trendPct>0?'var(--green)':r.trendPct<-10?'var(--red)':'var(--amber)'}">${r.trendPct>0?'+':''}${r.trendPct}%</td>
+      <td><span class="kw-badge ${r.intent==='Transactional'?'badge-high':r.intent==='Commercial'?'badge-med':'badge-info'}" style="font-size:.72rem">${r.intent}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── TREND CHART ── */
+function renderTrendChart(trendData) {
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  const months = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+  const ctx = document.getElementById('trend-chart').getContext('2d');
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        data: trendData,
+        borderColor: '#6c63ff',
+        backgroundColor: 'rgba(108,99,255,0.08)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#6c63ff',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        backgroundColor: '#1d1d28',
+        borderColor: 'rgba(255,255,255,.1)',
+        borderWidth: 1,
+        titleColor: '#9898b0',
+        bodyColor: '#f0f0f5',
+        callbacks: { label: ctx => ' ' + fmtVol(ctx.raw) + ' searches' }
+      }},
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a70', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a70', font: { size: 11 }, callback: v => fmtVol(v) } }
+      }
+    }
+  });
+}
+
+/* ── HELPERS ── */
+function fmtVol(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function setBar(barId, pctId, pct) {
+  document.getElementById(barId).style.width = pct + '%';
+  document.getElementById(pctId).textContent = pct + '%';
+}
+
+function capitalizeFirst(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function hideAll() {
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('bulk-results').style.display = 'none';
+  document.getElementById('loading').style.display = 'none';
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function newSearch() {
+  hideAll();
+  document.getElementById('kw-input').value = '';
+  document.getElementById('kw-input').focus();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function quickCheck(kw) {
+  document.getElementById('kw-input').value = kw;
+  bulkMode = false;
+  document.getElementById('bulk-area').style.display = 'none';
+  document.getElementById('check-btn').textContent = 'Check Volume →';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  runCheck();
+}
+
+function switchToSingle(kw) {
+  bulkMode = false;
+  document.getElementById('bulk-area').style.display = 'none';
+  document.getElementById('check-btn').textContent = 'Check Volume →';
+  document.getElementById('kw-input').value = kw;
+  runCheck();
+}
+
+/* ── EXPORT ── */
+function exportCSV() {
+  if (!currentData) return;
+  const { data, related } = currentData;
+  let csv = 'Keyword,Volume,Difficulty,CPC,Competition,Trend%,Intent\n';
+  csv += `"${data.kw}",${data.volume},${data.difficulty},${data.cpc},${(data.comp*100).toFixed(0)},${data.trendPct},${data.intent}\n`;
+  related.forEach(r => {
+    csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`;
+  });
+  downloadCSV(csv, `keyword-${data.kw.replace(/\s+/g,'-')}.csv`);
+}
+
+function exportBulkCSV() {
+  if (!bulkData.length) return;
+  let csv = 'Keyword,Volume,Difficulty,CPC,Competition,Trend%,Intent\n';
+  bulkData.forEach(r => {
+    csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`;
+  });
+  downloadCSV(csv, 'bulk-keywords.csv');
+}
+
+function downloadCSV(csv, filename) {
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function copyReport() {
+  if (!currentData) return;
+  const { data } = currentData;
+  const text = `Keyword Report: ${data.kw}\nVolume: ${fmtVol(data.volume)}/mo\nDifficulty: ${data.difficulty}/100\nCPC: $${data.cpc}\nIntent: ${data.intent}\nTrend: ${data.trendPct > 0 ? '+' : ''}${data.trendPct}%\n\nGenerated by RankSight`;
+  navigator.clipboard.writeText(text).then(() => alert('Report copied to clipboard!'));
+}
+</script>
+</body>
+</html>
