@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Blog Writer — Free AI Blog Post Generator | RankSorcery</title>
+<meta name="description" content="Free AI blog writer — generate SEO-optimized, long-form blog posts in seconds. No sign-up required. Choose tone, length, keywords, and more.">
+<link rel="canonical" href="https://ranksorcery.com/ai-blog-writer">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/ai-blog-writer">
+<meta property="og:title" content="AI Blog Writer — Free AI Blog Post Generator | RankSorcery">
+<meta property="og:description" content="Generate high-quality, SEO-optimized blog posts instantly with AI. Free, unlimited, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-blog-writer","url":"https://ranksorcery.com/ai-blog-writer","name":"AI Blog Writer | RankSorcery","description":"Free AI-powered blog writer. Generate SEO-optimized blog posts instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-brand span{color:var(--text)}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
+.nav-cta:hover{background:rgba(79,255,176,.22)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.3rem;flex-direction:column;gap:5px}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:.2s}
+@media(max-width:720px){
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:1rem}
+  .nav-links.open{display:flex}
+  .nav-ham{display:flex}
+  .nav-cta{margin-left:0;width:100%}
+}
+
+.hero{text-align:center;padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;animation:fadeDown .5s .1s ease both}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);max-width:580px;margin:1rem auto 0;line-height:1.7;font-size:.95rem;animation:fadeDown .5s .2s ease both}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
+.pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted)}
+
+.main-wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--card-shadow);margin-bottom:1.25rem;transition:border-color .2s}
+
+.form-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;display:block}
+.form-label .req{color:var(--fail);margin-left:2px}
+
+textarea, input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s;resize:vertical}
+textarea:focus, input[type=text]:focus{border-color:rgba(79,255,176,.4);box-shadow:0 0 0 3px rgba(79,255,176,.06)}
+textarea::placeholder, input[type=text]::placeholder{color:var(--muted)}
+textarea{min-height:90px;line-height:1.6}
+
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-top:.3rem}
+.model-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;position:relative}
+.model-card:hover{border-color:rgba(79,255,176,.35);background:rgba(79,255,176,.04)}
+.model-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-card input[type=radio]{display:none}
+.model-icon{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.model-info{flex:1;min-width:0}
+.model-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-desc{font-size:.7rem;color:var(--muted);margin-top:1px}
+.model-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(79,255,176,.15);color:var(--accent);border:1px solid rgba(79,255,176,.25);margin-left:.4rem;flex-shrink:0}
+
+.adv-toggle{display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.85rem;color:var(--muted);font-weight:500;user-select:none;padding:.5rem 0;transition:color .2s}
+.adv-toggle:hover{color:var(--text)}
+.adv-toggle .chevron{transition:transform .25s;font-size:.75rem}
+.adv-toggle.open .chevron{transform:rotate(180deg)}
+.adv-body{display:none;padding-top:1rem}
+.adv-body.open{display:block}
+
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.fields-grid{grid-template-columns:1fr}}
+
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+select:focus{border-color:rgba(79,255,176,.4)}
+select option{background:var(--bg2)}
+
+.btn-generate{width:100%;padding:.9rem 2rem;background:linear-gradient(135deg,rgba(79,255,176,.2) 0%,rgba(0,255,255,.12) 100%);border:1.5px solid var(--accent);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.02em;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:.25rem}
+.btn-generate:hover{background:linear-gradient(135deg,rgba(79,255,176,.3) 0%,rgba(0,255,255,.2) 100%);box-shadow:0 0 24px rgba(79,255,176,.15)}
+.btn-generate:active{transform:scale(.99)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+.output-card{display:none;margin-bottom:1.25rem}
+.output-card.show{display:block}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem}
+.output-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem}
+.output-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-export{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.btn-export:hover{border-color:var(--accent);color:var(--accent)}
+.btn-copy{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid rgba(79,255,176,.35);background:var(--accent-dim);color:var(--accent);cursor:pointer;transition:all .15s}
+.btn-copy:hover{background:rgba(79,255,176,.22)}
+
+.output-content{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.4rem 1.6rem;min-height:180px;line-height:1.85;font-size:.93rem;color:var(--text);white-space:pre-wrap;font-family:'Inter',sans-serif}
+.output-content h1,.output-content h2,.output-content h3{font-family:'Syne',sans-serif;font-weight:700;margin:1.2em 0 .5em;color:var(--text)}
+.output-content h1{font-size:1.4rem}
+.output-content h2{font-size:1.2rem;color:var(--accent)}
+.output-content h3{font-size:1rem;color:var(--text)}
+.output-content p{margin-bottom:1em}
+.output-content ul,
+.output-content ol{margin:.5em 0 1em 1.4em}
+.output-content li{margin-bottom:.3em}
+.output-content strong{color:var(--text);font-weight:600}
+.output-content em{color:var(--muted)}
+.output-content table{width:100%;border-collapse:collapse;margin:1em 0;font-size:.87rem}
+.output-content th{background:var(--accent-dim);color:var(--accent);font-family:'DM Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;padding:.55rem .8rem;border:1px solid var(--border)}
+.output-content td{padding:.5rem .8rem;border:1px solid var(--border)}
+.output-content tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.output-content blockquote{border-left:3px solid var(--accent);padding:.5em 1em;margin:1em 0;background:var(--accent-dim);border-radius:0 6px 6px 0;font-style:italic;color:var(--muted)}
+.output-content code{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:.1em .4em;font-family:'DM Mono',monospace;font-size:.82rem;color:var(--accent2)}
+.output-content a{color:var(--accent);text-decoration:underline}
+
+.word-count{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.75rem;display:flex;gap:1.2rem}
+.word-count span{color:var(--text)}
+
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.spinner-wrap.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted)}
+
+.steps-bar{display:flex;flex-direction:column;gap:.3rem;margin-top:.5rem}
+.step-item{display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);opacity:.4;transition:opacity .3s}
+.step-item.active{opacity:1;color:var(--accent)}
+.step-item.done{opacity:.7;color:var(--muted)}
+.step-item.done::before{content:'✓ '}
+.step-item.active::before{content:'⟳ '}
+
+.error-box{display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:8px;padding:.85rem 1rem;color:var(--fail);font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.error-box.show{display:block}
+
+.random-btn{font-size:.72rem;font-family:'DM Mono',monospace;padding:.25rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.random-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.char-count{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);float:right;margin-top:.35rem}
+
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-brand">Rank<span>Sorcery</span></a>
+  <button class="nav-ham" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor Analysis</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+    <a href="https://ranksorcery.com/document-checker.html">📄 Doc Checker</a>
+    <a href="https://ranksorcery.com/ai-blog-writer" style="color:var(--accent)">✍️ Blog Writer</a>
+    <a href="https://ranksorcery.com/#" class="nav-cta">Run Free Audit →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ Powered by AI · Free · No Sign-Up</div>
+  <h1>AI Blog <em>Writer</em></h1>
+  <p class="hero-sub">Generate SEO-optimized, long-form blog posts in seconds. Pick your tone, length, keywords — and let AI do the heavy lifting.</p>
+  <div class="hero-pills">
+    <span class="pill">✍️ Full Blog Posts</span>
+    <span class="pill">🔑 SEO Keywords</span>
+    <span class="pill">📐 Custom Length</span>
+    <span class="pill">🎨 Tone of Voice</span>
+    <span class="pill">📤 Export TXT / DOC / HTML</span>
+  </div>
+</section>
+
+<main class="main-wrap">
+
+  <!-- Topic -->
+  <div class="card">
+    <label class="form-label" for="topic">Blog Topic <span class="req">*</span>
+      <button class="random-btn" onclick="setRandomTopic()" title="Try a random topic">🎲 Random</button>
+    </label>
+    <textarea id="topic" placeholder="e.g. The Ultimate Guide to On-Page SEO in 2025 — What Actually Works" maxlength="500" oninput="updateCharCount(this,'topic-chars',500)"></textarea>
+    <div class="char-count"><span id="topic-chars">0</span> / 500</div>
+  </div>
+
+  <!-- AI Model -->
+  <div class="card">
+    <label class="form-label">Choose AI Model</label>
+    <div class="model-grid" id="model-grid">
+      <label class="model-card selected">
+        <input type="radio" name="model" value="openai" checked>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div class="model-info">
+          <div class="model-name">GPT-4o<span class="model-badge">Fast</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="gemini">
+        <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
+        <div class="model-info">
+          <div class="model-name">Gemini Flash<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Google · High capability</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="claude">
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div class="model-info">
+          <div class="model-name">Claude Sonnet<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="mistral">
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div class="model-info">
+          <div class="model-name">Mistral Large</div>
+          <div class="model-desc">Mistral AI · Efficient</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="llama">
+        <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
+        <div class="model-info">
+          <div class="model-name">Llama 4<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Meta · Open source</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="deepseek">
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div class="model-info">
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Advanced Options -->
+  <div class="card">
+    <div class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+      ⚙️ Advanced Options
+      <span class="chevron">▼</span>
+    </div>
+    <div class="adv-body" id="adv-body">
+      <div class="fields-grid">
+        <div>
+          <label class="form-label" for="keywords">SEO Keywords <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="keywords" placeholder="e.g. on-page SEO, meta tags, title optimization">
+        </div>
+        <div>
+          <label class="form-label" for="subheadings">Subheadings <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="subheadings" placeholder="e.g. What is SEO?, Why it matters, Tips">
+        </div>
+        <div>
+          <label class="form-label" for="length">Length</label>
+          <select id="length">
+            <option value="">None (AI decides)</option>
+            <option value="short">Short (500–800 words)</option>
+            <option value="medium" selected>Medium (1000–1500 words)</option>
+            <option value="long">Long (2000–3000 words)</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" for="tone">Tone of Voice</label>
+          <select id="tone">
+            <option value="">None (AI decides)</option>
+            <option value="Informative" selected>Informative</option>
+            <option value="Professional">Professional</option>
+            <option value="Casual">Casual</option>
+            <option value="Friendly">Friendly</option>
+            <option value="Persuasive">Persuasive</option>
+            <option value="Conversational">Conversational</option>
+            <option value="Authoritative">Authoritative</option>
+            <option value="Humorous">Humorous</option>
+            <option value="Formal">Formal</option>
+            <option value="Serious">Serious</option>
+            <option value="Empathetic">Empathetic</option>
+            <option value="Motivational">Motivational</option>
+            <option value="Optimistic">Optimistic</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Inspirational">Inspirational</option>
+            <option value="Witty">Witty</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" for="pov">Point of View</label>
+          <select id="pov">
+            <option value="">None</option>
+            <option value="First person singular">First person (I / me)</option>
+            <option value="First person plural">First person plural (we)</option>
+            <option value="Second person" selected>Second person (you)</option>
+            <option value="Third person">Third person</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" for="tables">Include Tables</label>
+          <select id="tables">
+            <option value="">None</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" for="quotes">Include Quotes</label>
+          <select id="quotes">
+            <option value="">None</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <label class="form-label" for="notes">Additional Notes <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+        <textarea id="notes" style="min-height:70px" placeholder="Any extra instructions, context, or requirements for the AI..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- Generate Button -->
+  <button class="btn-generate" id="gen-btn" onclick="generateBlog()">
+    <span id="gen-icon">✨</span>
+    <span id="gen-text">Generate Blog Post</span>
+  </button>
+
+  <!-- Spinner -->
+  <div class="card spinner-wrap" id="spinner-wrap">
+    <div class="spinner"></div>
+    <div class="spinner-text">AI is writing your blog post…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Analyzing your topic</div>
+      <div class="step-item" id="step2">Crafting the introduction</div>
+      <div class="step-item" id="step3">Writing main sections</div>
+      <div class="step-item" id="step4">Adding SEO optimizations</div>
+      <div class="step-item" id="step5">Polishing the conclusion</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="card output-card" id="output-card">
+    <div class="output-header">
+      <div class="output-title">
+        <div class="dot"></div>
+        Blog Post Generated
+      </div>
+      <div class="export-btns">
+        <button class="btn-copy" onclick="copyOutput()">📋 Copy</button>
+        <button class="btn-export" onclick="exportTxt()">⬇ TXT</button>
+        <button class="btn-export" onclick="exportDoc()">⬇ DOC</button>
+        <button class="btn-export" onclick="exportHtml()">⬇ HTML</button>
+      </div>
+    </div>
+    <div class="output-content" id="output-content"></div>
+    <div class="word-count" id="word-count"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Part of <a href="https://ranksorcery.com/">RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p>
+</footer>
+
+<script>
+// ─── Model card selection ────────────────────────────────────
+document.querySelectorAll('.model-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input[type=radio]').checked = true;
+  });
+});
+
+// ─── Advanced toggle ─────────────────────────────────────────
+function toggleAdv() {
+  const toggle = document.getElementById('adv-toggle');
+  const body = document.getElementById('adv-body');
+  toggle.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+// ─── Char count ──────────────────────────────────────────────
+function updateCharCount(el, countId, max) {
+  document.getElementById(countId).textContent = el.value.length;
+}
+
+// ─── Random topics ───────────────────────────────────────────
+const randomTopics = [
+  "10 Proven SEO Strategies That Still Work in 2025",
+  "The Ultimate Guide to Content Marketing for Small Businesses",
+  "How to Build a Personal Brand on LinkedIn From Scratch",
+  "AI Tools for Marketers: The Complete 2025 Comparison",
+  "Why Most Websites Fail at Technical SEO (And How to Fix It)",
+  "Beginner's Guide to Email Marketing That Actually Converts",
+  "How to Write Blog Posts That Rank on Google's First Page",
+  "Remote Work Productivity: 15 Tools Every Digital Nomad Needs",
+  "The Science of Viral Content: What Makes People Share Posts",
+  "Local SEO in 2025: How to Dominate Google Maps Rankings",
+  "E-commerce SEO: The Step-by-Step Guide to Ranking Product Pages",
+  "How to Use AI for Keyword Research Without Expensive Tools",
+];
+function setRandomTopic() {
+  const t = randomTopics[Math.floor(Math.random() * randomTopics.length)];
+  const el = document.getElementById('topic');
+  el.value = t;
+  updateCharCount(el, 'topic-chars', 500);
+}
+
+// ─── Build prompt ────────────────────────────────────────────
+function buildPrompt() {
+  const topic = document.getElementById('topic').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
+  const subheadings = document.getElementById('subheadings').value.trim();
+  const length = document.getElementById('length').value;
+  const tone = document.getElementById('tone').value;
+  const pov = document.getElementById('pov').value;
+  const tables = document.getElementById('tables').value;
+  const quotes = document.getElementById('quotes').value;
+  const notes = document.getElementById('notes').value.trim();
+
+  const lengthMap = { short: '500–800 words', medium: '1000–1500 words', long: '2000–3000 words' };
+
+  let prompt = `Write a comprehensive, high-quality, SEO-optimized blog post about: "${topic}"\n\n`;
+  prompt += `Format the blog post in clean Markdown with a compelling H1 title, H2/H3 subheadings, and well-structured paragraphs.\n\n`;
+
+  if (lengthMap[length]) prompt += `Target length: ${lengthMap[length]}.\n`;
+  if (tone) prompt += `Tone of voice: ${tone}.\n`;
+  if (pov) prompt += `Point of view: ${pov}.\n`;
+  if (keywords) prompt += `Naturally include these SEO keywords: ${keywords}.\n`;
+  if (subheadings) prompt += `Use these subheadings (or similar): ${subheadings}.\n`;
+  if (tables === 'yes') prompt += `Include at least one relevant comparison or data table.\n`;
+  if (tables === 'no') prompt += `Do not include any tables.\n`;
+  if (quotes === 'yes') prompt += `Include 1–2 relevant blockquote citations or expert quotes.\n`;
+  if (quotes === 'no') prompt += `Do not include blockquotes.\n`;
+  if (notes) prompt += `Additional instructions: ${notes}\n`;
+
+  prompt += `\nMake the post engaging, practical, and valuable for readers. Start directly with the blog post content — no preamble.`;
+
+  return prompt;
+}
+
+// ─── Steps animation ─────────────────────────────────────────
+let stepTimeout;
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4','step5'];
+  let i = 0;
+  function next() {
+    steps.forEach((s,idx) => {
+      const el = document.getElementById(s);
+      if (idx < i) { el.className = 'step-item done'; }
+      else if (idx === i) { el.className = 'step-item active'; }
+      else { el.className = 'step-item'; }
+    });
+    if (i < steps.length - 1) { i++; stepTimeout = setTimeout(next, 1400); }
+  }
+  next();
+}
+
+// ─── Main generate ───────────────────────────────────────────
+async function generateBlog() {
+  const topic = document.getElementById('topic').value.trim();
+  const errorBox = document.getElementById('error-box');
+
+  errorBox.className = 'error-box';
+  errorBox.textContent = '';
+
+  if (!topic) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = '⚠ Please enter a blog topic to get started.';
+    document.getElementById('topic').focus();
+    return;
+  }
+
+  const model = document.querySelector('input[name=model]:checked').value;
+  const prompt = buildPrompt();
+
+  // UI: loading state
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').textContent = '⏳';
+  document.getElementById('gen-text').textContent = 'Generating…';
+
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('output-card').classList.remove('show');
+  animateSteps();
+
+  try {
+    const raw = await callAI(model, prompt);
+    showOutput(raw);
+  } catch (err) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = '✨';
+    document.getElementById('gen-text').textContent = 'Generate Again';
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5'].forEach(s => {
+      document.getElementById(s).className = 'step-item';
+    });
+  }
+}
+
+// ─── AI Call via Pollinations.ai (no API key required) ───────
+async function callAI(model, prompt) {
+  // Model mapping for pollinations.ai
+  const modelMap = {
+    openai: 'openai',
+    gemini: 'gemini',
+    claude: 'claude-hybridspace',
+    mistral: 'mistral',
+    llama: 'llama',
+    deepseek: 'deepseek'
+  };
+  const pModel = modelMap[model] || 'openai';
+
+  const payload = {
+    messages: [
+      {
+        role: 'system',
+        content: 'You are an expert SEO content writer and digital marketing specialist. You write engaging, well-structured, and SEO-optimized blog posts in clean Markdown format. Your writing is always high-quality, original, and valuable to readers.'
+      },
+      {
+        role: 'user',
+        content: prompt
+      }
+    ],
+    model: pModel,
+    seed: Math.floor(Math.random() * 99999)
+  };
+
+  const res = await fetch('https://text.pollinations.ai/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    throw new Error(`AI service returned an error (${res.status}). Please try again.`);
+  }
+
+  const text = await res.text();
+  if (!text || text.trim().length < 20) {
+    throw new Error('The AI returned an empty response. Please try again.');
+  }
+  return text;
+}
+
+// ─── Render output ───────────────────────────────────────────
+let lastRawOutput = '';
+
+function showOutput(raw) {
+  lastRawOutput = raw;
+  const container = document.getElementById('output-content');
+  container.innerHTML = markdownToHtml(raw);
+
+  const words = raw.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+  const readTime = Math.ceil(words / 200);
+  document.getElementById('word-count').innerHTML =
+    `Words: <span>${words.toLocaleString()}</span> &nbsp;·&nbsp; Read time: <span>~${readTime} min</span>`;
+
+  document.getElementById('output-card').classList.add('show');
+  document.getElementById('output-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Minimal Markdown → HTML ─────────────────────────────────
+function markdownToHtml(md) {
+  let h = md
+    // Headings
+    .replace(/^#{6}\s+(.+)$/gm, '<h6>$1</h6>')
+    .replace(/^#{5}\s+(.+)$/gm, '<h5>$1</h5>')
+    .replace(/^#{4}\s+(.+)$/gm, '<h4>$1</h4>')
+    .replace(/^#{3}\s+(.+)$/gm, '<h3>$1</h3>')
+    .replace(/^#{2}\s+(.+)$/gm, '<h2>$1</h2>')
+    .replace(/^#{1}\s+(.+)$/gm, '<h1>$1</h1>')
+    // Blockquotes
+    .replace(/^>\s+(.+)$/gm, '<blockquote>$1</blockquote>')
+    // Bold & italic
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>')
+    .replace(/_(.+?)_/g, '<em>$1</em>')
+    // Inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Horizontal rule
+    .replace(/^---+$/gm, '<hr>')
+    // Unordered lists
+    .replace(/^\s*[-*+]\s+(.+)$/gm, '<li>$1</li>')
+    // Ordered lists
+    .replace(/^\s*\d+\.\s+(.+)$/gm, '<li>$1</li>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+    // Tables
+    .replace(/^\|(.+)\|$/gm, row => {
+      const cells = row.slice(1, -1).split('|').map(c => c.trim());
+      return '<tr>' + cells.map(c => `<td>${c}</td>`).join('') + '</tr>';
+    })
+    .replace(/<tr><td>[-: |]+<\/td><\/tr>/g, '') // remove separator rows
+    // Paragraphs (lines that aren't already block elements)
+    .split('\n')
+    .map(line => {
+      if (/^<(h[1-6]|li|blockquote|hr|tr|thead|tbody|table)/.test(line.trim())) return line;
+      if (line.trim() === '') return '<br>';
+      return `<p>${line}</p>`;
+    })
+    .join('\n');
+
+  // Wrap consecutive <li> in <ul>
+  h = h.replace(/(<li>.*?<\/li>\n*)+/g, m => `<ul>${m}</ul>`);
+
+  // Wrap consecutive <tr> in <table>
+  h = h.replace(/(<tr>.*?<\/tr>\n*)+/g, m => `<table>${m}</table>`);
+
+  // Clean up empty paragraphs
+  h = h.replace(/<p><\/p>/g, '').replace(/<p><br><\/p>/g, '');
+
+  return h;
+}
+
+// ─── Copy ────────────────────────────────────────────────────
+function copyOutput() {
+  navigator.clipboard.writeText(lastRawOutput).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+// ─── Export TXT ──────────────────────────────────────────────
+function exportTxt() {
+  downloadFile(lastRawOutput, 'blog-post.txt', 'text/plain');
+}
+
+// ─── Export DOC ──────────────────────────────────────────────
+function exportDoc() {
+  const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'><head><meta charset='utf-8'></head><body>${markdownToHtml(lastRawOutput)}</body></html>`;
+  downloadFile(html, 'blog-post.doc', 'application/msword');
+}
+
+// ─── Export HTML ─────────────────────────────────────────────
+function exportHtml() {
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blog Post</title><style>body{font-family:Georgia,serif;max-width:760px;margin:2rem auto;padding:0 1.5rem;line-height:1.8;color:#1a1a1a}h1,h2,h3{font-family:Arial,sans-serif}h1{font-size:2rem;margin-bottom:.5rem}h2{color:#1a6b45;margin-top:2rem}blockquote{border-left:4px solid #1a6b45;padding:.5em 1em;margin:1em 0;background:#f5fff8;font-style:italic}table{width:100%;border-collapse:collapse;margin:1em 0}th,td{padding:.5rem .8rem;border:1px solid #ccc}th{background:#1a6b45;color:#fff}code{background:#f0f0f0;padding:.1em .4em;border-radius:3px}</style></head><body>${markdownToHtml(lastRawOutput)}</body></html>`;
+  downloadFile(html, 'blog-post.html', 'text/html');
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+</script>
+</body>
+</html>
