@@ -522,7 +522,25 @@ async function generateBlog() {
 }
 
 // ─── AI Call via OpenRouter (streaming, no user login needed) ────
-const OPENROUTER_API_KEY = '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'; // 🔑 Replace with your key from openrouter.ai
+
+// In callAI(), change the fetch URL from:
+const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+    'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
+    'X-Title': 'RankSorcery AI Blog Writer',
+  },
+  body: JSON.stringify({ ... }),
+});
+
+// To just:
+const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ ... }),
+});
 
 const MODEL_MAP = {
   'gpt-4o':                        'openai/gpt-4o',
