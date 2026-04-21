@@ -521,68 +521,75 @@ async function generateBlog() {
   }
 }
 
-// ─── Wait for Puter.js to be ready ───────────────────────────
-function waitForPuter(timeout = 10000) {
-  return new Promise((resolve, reject) => {
-    if (typeof window.puter !== 'undefined' && window.puter?.ai) {
-      return resolve(window.puter);
-    }
-    const interval = 100;
-    let elapsed = 0;
-    const timer = setInterval(() => {
-      if (typeof window.puter !== 'undefined' && window.puter?.ai) {
-        clearInterval(timer);
-        resolve(window.puter);
-      } else {
-        elapsed += interval;
-        if (elapsed >= timeout) {
-          clearInterval(timer);
-          reject(new Error('Puter.js failed to load. Please check your internet connection and try again.'));
-        }
-      }
-    }, interval);
-  });
-}
+// ─── AI Call via OpenRouter (streaming, no user login needed) ────
+const OPENROUTER_API_KEY = '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'; // 🔑 Replace with your key from openrouter.ai
 
-// ─── AI Call via Puter.js (real models, streaming, no API key) ───
+const MODEL_MAP = {
+  'gpt-4o':                        'openai/gpt-4o',
+  'gemini-2.0-flash':              'google/gemini-2.0-flash-001',
+  'claude-sonnet-4-5':             'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':          'mistralai/mistral-large',
+  'meta-llama/llama-4-maverick':   'meta-llama/llama-4-maverick',
+  'deepseek-chat':                 'deepseek/deepseek-chat',
+};
+
 async function callAI(model, prompt) {
-  // Wait for Puter.js to finish initializing before calling it
-  const p = await waitForPuter();
-
   const systemPrompt = 'You are an expert SEO content writer and digital marketing specialist. You write engaging, well-structured, and SEO-optimized blog posts in clean Markdown format. Your writing is always high-quality, original, and valuable to readers.';
 
-  // Show output card early so we can stream into it
+  const orModel = MODEL_MAP[model] || 'openai/gpt-4o';
+
   const outputContent = document.getElementById('output-content');
   outputContent.innerHTML = '';
   document.getElementById('output-card').classList.add('show');
 
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
+      'X-Title': 'RankSorcery AI Blog Writer',
+    },
+    body: JSON.stringify({
+      model: orModel,
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: prompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `API error ${res.status}. Please try again.`);
+  }
+
+  // Read the SSE stream
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
   let fullText = '';
+  let buffer = '';
 
-  try {
-    const response = await p.ai.chat(
-      prompt,
-      {
-        model: model,
-        system: systemPrompt,
-        stream: true,
-      }
-    );
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // keep incomplete line for next chunk
 
-    for await (const part of response) {
-      const chunk = part?.text ?? part?.choices?.[0]?.delta?.content ?? '';
-      if (chunk) {
-        fullText += chunk;
-        // Live-render markdown as chunks arrive
-        outputContent.innerHTML = markdownToHtml(fullText);
-      }
-    }
-  } catch (err) {
-    // If streaming not supported, fall back to non-streaming
-    if (err?.message?.includes('stream') || err?.message?.includes('not supported')) {
-      const response = await p.ai.chat(prompt, { model, system: systemPrompt });
-      fullText = response?.message?.content ?? response?.text ?? '';
-    } else {
-      throw err;
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed === 'data: [DONE]') continue;
+      if (!trimmed.startsWith('data: ')) continue;
+      try {
+        const json = JSON.parse(trimmed.slice(6));
+        const chunk = json?.choices?.[0]?.delta?.content ?? '';
+        if (chunk) {
+          fullText += chunk;
+          outputContent.innerHTML = markdownToHtml(fullText);
+        }
+      } catch (_) { /* skip malformed chunks */ }
     }
   }
 
@@ -702,6 +709,5 @@ function downloadFile(content, filename, type) {
   a.click();
 }
 </script>
-<script src="https://js.puter.com/v2/"></script>
 </body>
 </html>
