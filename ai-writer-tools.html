@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free AI Writer Tools — RankSorcery</title>
+<meta name="description" content="Get your writing done faster and easier with 60+ free AI writer tools. Generate content, rewrite text, write emails, stories, and more — powered by AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(139,92,246,0.5);
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --purple-glow: rgba(139,92,246,0.15);
+    --cyan: #22d3ee;
+    --text: #f1f0fb;
+    --muted: #8b8a99;
+    --muted2: #5a5970;
+    --card-bg: rgba(255,255,255,0.03);
+    --card-hover: rgba(139,92,246,0.08);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 1.2rem; color: var(--text); text-decoration: none;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .nav-logo span { color: var(--purple); }
+  .nav-links { display: flex; align-items: center; gap: 0.25rem; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 0.875rem;
+    padding: 0.4rem 0.75rem; border-radius: var(--radius-sm);
+    transition: color .2s, background .2s;
+  }
+  .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  .nav-links a.active { color: var(--purple-light); }
+  .btn-nav {
+    background: var(--purple); color: #fff !important;
+    padding: 0.4rem 1rem !important; border-radius: var(--radius-sm);
+    font-weight: 500; transition: opacity .2s !important;
+  }
+  .btn-nav:hover { opacity: 0.85; background: var(--purple) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; overflow: hidden;
+    padding: 5rem 2rem 4rem; text-align: center;
+  }
+  .hero-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 30% at 80% 50%, rgba(34,211,238,0.06) 0%, transparent 60%);
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.3);
+    color: var(--purple-light); border-radius: 99px;
+    padding: 0.3rem 0.9rem; font-size: 0.8rem; font-weight: 500;
+    margin-bottom: 1.5rem; letter-spacing: 0.03em;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1;
+    letter-spacing: -0.02em; margin-bottom: 1rem;
+    animation: fadeUp 0.7s ease both 0.1s;
+  }
+  .hero h1 em { font-style: normal; color: var(--purple-light); }
+  .hero p {
+    color: var(--muted); max-width: 520px; margin: 0 auto 2.5rem;
+    font-size: 1.05rem; font-weight: 300;
+    animation: fadeUp 0.7s ease both 0.2s;
+  }
+  .hero-stats {
+    display: flex; justify-content: center; gap: 2.5rem; flex-wrap: wrap;
+    animation: fadeUp 0.7s ease both 0.3s;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    display: block; font-family: 'Syne', sans-serif;
+    font-size: 1.6rem; font-weight: 800; color: var(--text);
+    line-height: 1;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted2); margin-top: 0.2rem; }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 560px; margin: 3rem auto 0; padding: 0 1rem;
+    animation: fadeUp 0.7s ease both 0.35s;
+  }
+  .search-box {
+    display: flex; align-items: center; gap: 0.75rem;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .search-box:focus-within {
+    border-color: rgba(139,92,246,0.5);
+    box-shadow: 0 0 0 3px rgba(139,92,246,0.1);
+  }
+  .search-box svg { color: var(--muted); flex-shrink: 0; }
+  .search-box input {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+  }
+  .search-box input::placeholder { color: var(--muted2); }
+  .search-box button {
+    background: var(--purple); border: none; cursor: pointer;
+    color: #fff; border-radius: var(--radius-sm);
+    padding: 0.5rem 1.1rem; font-size: 0.85rem; font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .2s;
+    white-space: nowrap;
+  }
+  .search-box button:hover { opacity: 0.85; }
+
+  /* ── MAIN LAYOUT ── */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+
+  /* ── FILTER TABS ── */
+  .filter-bar {
+    display: flex; align-items: center; gap: 0.5rem;
+    flex-wrap: wrap; padding: 2.5rem 0 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+  }
+  .filter-btn {
+    background: var(--card-bg); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 99px;
+    padding: 0.4rem 1rem; font-size: 0.82rem;
+    cursor: pointer; transition: all .2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .filter-btn:hover { border-color: var(--border-hover); color: var(--purple-light); }
+  .filter-btn.active {
+    background: var(--purple); border-color: var(--purple);
+    color: #fff;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 3.5rem; }
+  .section-header {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .section-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--purple-glow); border: 1px solid rgba(139,92,246,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; flex-shrink: 0;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1rem; color: var(--text); letter-spacing: 0.01em;
+  }
+  .section-count {
+    margin-left: auto; font-size: 0.75rem; color: var(--muted2);
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 99px; padding: 0.15rem 0.6rem;
+  }
+
+  /* ── TOOL GRID ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+  }
+
+  /* ── TOOL CARD ── */
+  .tool-card {
+    position: relative; overflow: hidden;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem 0.9rem;
+    cursor: pointer; text-decoration: none;
+    display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem;
+    transition: background .2s, border-color .2s, transform .2s, box-shadow .2s;
+    animation: fadeIn 0.5s ease both;
+  }
+  .tool-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139,92,246,0.12);
+  }
+  .tool-card::after {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--purple), var(--cyan));
+    opacity: 0; transition: opacity .25s;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .tool-card:hover::after { opacity: 1; }
+
+  .tool-emoji {
+    font-size: 1.4rem; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.04); border-radius: 8px;
+  }
+  .tool-name {
+    font-size: 0.82rem; font-weight: 500; color: var(--text);
+    line-height: 1.3;
+  }
+  .tool-tag {
+    font-size: 0.68rem; color: var(--purple-light);
+    background: rgba(139,92,246,0.1); border-radius: 4px;
+    padding: 0.1rem 0.4rem; margin-top: auto;
+  }
+  .tool-new {
+    position: absolute; top: 0.5rem; right: 0.5rem;
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    color: #fff; border-radius: 4px; padding: 0.15rem 0.4rem;
+    text-transform: uppercase;
+  }
+
+  /* ── SEO BLOCK ── */
+  .seo-block {
+    background: linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(34,211,238,0.03) 100%);
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 3rem; margin: 3rem 0;
+  }
+  .seo-block h2 {
+    font-family: 'Syne', sans-serif; font-size: 1.5rem;
+    font-weight: 700; margin-bottom: 1rem; letter-spacing: -0.01em;
+  }
+  .seo-block p { color: var(--muted); font-weight: 300; line-height: 1.8; margin-bottom: 1rem; }
+  .seo-block p:last-child { margin-bottom: 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 1.5rem; margin-top: 4rem;
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; }
+  .footer-logo span { color: var(--purple); }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { color: var(--muted2); text-decoration: none; font-size: 0.82rem; transition: color .2s; }
+  .footer-links a:hover { color: var(--purple-light); }
+  .footer-copy { color: var(--muted2); font-size: 0.8rem; width: 100%; }
+
+  /* ── KEYFRAMES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .hero { padding: 3.5rem 1rem 3rem; }
+    .filter-bar { gap: 0.4rem; }
+    .tool-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .seo-block { padding: 2rem 1.5rem; }
+  }
+
+  /* ── HIDDEN CARDS (for filter) ── */
+  .tool-card.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-logo">Rank<span>Sorcery</span></a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🔍 SEO Auditor</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="https://ranksorcery.com/document-checker.html">📄 Doc Checker</a>
+    <a href="#" class="active">✍️ AI Writer</a>
+    <a href="https://ranksorcery.com/#" class="btn-nav">Free Audit →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">✍️ Free AI Writer Tools</div>
+  <h1>Write Better, Faster with <em>AI</em></h1>
+  <p>60+ free AI writing tools to generate content, rewrite text, craft emails, write stories, and much more — no account needed.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">60+</span>
+      <div class="stat-label">Writing Tools</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num">9</span>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat">
+      <span class="stat-num">Free</span>
+      <div class="stat-label">No Login Needed</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search tools… (e.g. blog writer, email, poem)" oninput="filterTools()">
+      <button onclick="filterTools()">Search</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- FILTER TABS -->
+  <div class="filter-bar" id="filterBar">
+    <button class="filter-btn active" onclick="setCategory('all', this)">All Tools</button>
+    <button class="filter-btn" onclick="setCategory('content', this)">📝 Content</button>
+    <button class="filter-btn" onclick="setCategory('rewrite', this)">🔄 Rewriting</button>
+    <button class="filter-btn" onclick="setCategory('story', this)">📖 Story & Books</button>
+    <button class="filter-btn" onclick="setCategory('email', this)">✉️ Email & Letters</button>
+    <button class="filter-btn" onclick="setCategory('poem', this)">🎵 Poems & Lyrics</button>
+    <button class="filter-btn" onclick="setCategory('business', this)">💼 Business</button>
+    <button class="filter-btn" onclick="setCategory('education', this)">🎓 Education</button>
+    <button class="filter-btn" onclick="setCategory('fun', this)">🎉 Creative & Fun</button>
+    <button class="filter-btn" onclick="setCategory('seo', this)">🔍 SEO Writing</button>
+  </div>
+
+  <!-- SECTION: Article & Content -->
+  <div class="section" data-cat="content" id="sec-content">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div class="section-title">Article &amp; Content Writer</div>
+      <span class="section-count">18 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Blog Writer"><div class="tool-emoji">📰</div><div class="tool-name">AI Blog Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Writer"><div class="tool-emoji">✍️</div><div class="tool-name">AI Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Write Anything"><div class="tool-emoji">💡</div><div class="tool-name">Write Anything</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Content Generator"><div class="tool-emoji">⚡</div><div class="tool-name">AI Content Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Paragraph Generator"><div class="tool-emoji">¶</div><div class="tool-name">Paragraph Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Paragraph Expander"><div class="tool-emoji">📏</div><div class="tool-name">Paragraph Expander</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Text Generator"><div class="tool-emoji">🤖</div><div class="tool-name">AI Text Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Blog Outline Generator"><div class="tool-emoji">🗂️</div><div class="tool-name">Blog Outline Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Blog Intro Generator"><div class="tool-emoji">🚀</div><div class="tool-name">Blog Intro Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Copy-Writer"><div class="tool-emoji">💬</div><div class="tool-name">AI Copy-Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="FAQ Generator"><div class="tool-emoji">❓</div><div class="tool-name">FAQ Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Introduction Paragraph"><div class="tool-emoji">🎯</div><div class="tool-name">Introduction Paragraph</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="News Article Generator"><div class="tool-emoji">🗞️</div><div class="tool-name">News Article Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Press Release Writer"><div class="tool-emoji">📣</div><div class="tool-name">Press Release Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Topic Sentence Generator"><div class="tool-emoji">🖊️</div><div class="tool-name">Topic Sentence Generator</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Paper Writer"><div class="tool-emoji">📄</div><div class="tool-name">AI Paper Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="Website Content Writer"><div class="tool-emoji">🌐</div><div class="tool-name">Website Content Writer</div><div class="tool-tag">Content</div></a>
+      <a href="#" class="tool-card" data-cat="content" data-name="AI Newsletter Writer"><div class="tool-emoji">📧</div><div class="tool-name">AI Newsletter Writer</div><div class="tool-tag">Content</div><div class="tool-new">New</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: SEO Writing -->
+  <div class="section" data-cat="seo" id="sec-seo">
+    <div class="section-header">
+      <div class="section-icon">🔍</div>
+      <div class="section-title">SEO Writing Tools</div>
+      <span class="section-count">6 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="seo" data-name="AI Meta Description"><div class="tool-emoji">🏷️</div><div class="tool-name">AI Meta Description</div><div class="tool-tag">SEO</div></a>
+      <a href="#" class="tool-card" data-cat="seo" data-name="SEO Title Generator"><div class="tool-emoji">🏆</div><div class="tool-name">SEO Title Generator</div><div class="tool-tag">SEO</div></a>
+      <a href="#" class="tool-card" data-cat="seo" data-name="Keyword Rich Content"><div class="tool-emoji">🔑</div><div class="tool-name">Keyword-Rich Content</div><div class="tool-tag">SEO</div></a>
+      <a href="#" class="tool-card" data-cat="seo" data-name="Alt Text Generator"><div class="tool-emoji">🖼️</div><div class="tool-name">Alt Text Generator</div><div class="tool-tag">SEO</div></a>
+      <a href="#" class="tool-card" data-cat="seo" data-name="Schema Markup Writer"><div class="tool-emoji">🧩</div><div class="tool-name">Schema Markup Writer</div><div class="tool-tag">SEO</div></a>
+      <a href="#" class="tool-card" data-cat="seo" data-name="SEO Content Brief"><div class="tool-emoji">📋</div><div class="tool-name">SEO Content Brief</div><div class="tool-tag">SEO</div><div class="tool-new">New</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Rewriting & Editing -->
+  <div class="section" data-cat="rewrite" id="sec-rewrite">
+    <div class="section-header">
+      <div class="section-icon">🔄</div>
+      <div class="section-title">Rewriting &amp; Editing</div>
+      <span class="section-count">8 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Plagiarism Remover"><div class="tool-emoji">🛡️</div><div class="tool-name">Plagiarism Remover</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Sentence Rewriter"><div class="tool-emoji">🔁</div><div class="tool-name">Sentence Rewriter</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Paragraph Rewriter"><div class="tool-emoji">📝</div><div class="tool-name">Paragraph Rewriter</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Essay Rewriter"><div class="tool-emoji">✏️</div><div class="tool-name">Essay Rewriter</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="AI Summarizer"><div class="tool-emoji">📎</div><div class="tool-name">AI Summarizer</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="AI Text Expander"><div class="tool-emoji">↔️</div><div class="tool-name">AI Text Expander</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Essay Extender"><div class="tool-emoji">📐</div><div class="tool-name">Essay Extender</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="AI Paraphraser"><div class="tool-emoji">🔃</div><div class="tool-name">AI Paraphraser</div><div class="tool-tag">Rewrite</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Story & Book -->
+  <div class="section" data-cat="story" id="sec-story">
+    <div class="section-header">
+      <div class="section-icon">📖</div>
+      <div class="section-title">Story &amp; Book Writer</div>
+      <span class="section-count">12 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="story" data-name="AI Story Generator"><div class="tool-emoji">📖</div><div class="tool-name">AI Story Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="AI Book Writer"><div class="tool-emoji">📚</div><div class="tool-name">AI Book Writer</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Story Character Generator"><div class="tool-emoji">🧙</div><div class="tool-name">Story Character Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Plot Generator"><div class="tool-emoji">🗺️</div><div class="tool-name">Plot Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Backstory Generator"><div class="tool-emoji">⏳</div><div class="tool-name">Backstory Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Book Title Generator"><div class="tool-emoji">🏷️</div><div class="tool-name">Book Title Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Fantasy Story Generator"><div class="tool-emoji">🐉</div><div class="tool-name">Fantasy Story Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="AI Dialogue Writer"><div class="tool-emoji">💬</div><div class="tool-name">AI Dialogue Writer</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Story Outline Generator"><div class="tool-emoji">📋</div><div class="tool-name">Story Outline Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Plot Twist Generator"><div class="tool-emoji">🌀</div><div class="tool-name">Plot Twist Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="AI Scene Generator"><div class="tool-emoji">🎬</div><div class="tool-name">AI Scene Generator</div><div class="tool-tag">Story</div></a>
+      <a href="#" class="tool-card" data-cat="story" data-name="Story Prompt Generator"><div class="tool-emoji">💭</div><div class="tool-name">Story Prompt Generator</div><div class="tool-tag">Story</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Email & Letters -->
+  <div class="section" data-cat="email" id="sec-email">
+    <div class="section-header">
+      <div class="section-icon">✉️</div>
+      <div class="section-title">Email &amp; Letter Writing</div>
+      <span class="section-count">8 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="email" data-name="Email Writer"><div class="tool-emoji">📧</div><div class="tool-name">Email Writer</div><div class="tool-tag">Email</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Email Response Generator"><div class="tool-emoji">↩️</div><div class="tool-name">Email Response Generator</div><div class="tool-tag">Email</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="AI Letter Writer"><div class="tool-emoji">🖋️</div><div class="tool-name">AI Letter Writer</div><div class="tool-tag">Letter</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Cover Letter Generator"><div class="tool-emoji">📁</div><div class="tool-name">Cover Letter Generator</div><div class="tool-tag">Letter</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Application Letter Generator"><div class="tool-emoji">📩</div><div class="tool-name">Application Letter Generator</div><div class="tool-tag">Letter</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Thank You Note"><div class="tool-emoji">🙏</div><div class="tool-name">Thank You Note</div><div class="tool-tag">Letter</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Sales Email Generator"><div class="tool-emoji">💼</div><div class="tool-name">Sales Email Generator</div><div class="tool-tag">Email</div></a>
+      <a href="#" class="tool-card" data-cat="email" data-name="Cold Outreach Email"><div class="tool-emoji">🎯</div><div class="tool-name">Cold Outreach Email</div><div class="tool-tag">Email</div><div class="tool-new">New</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Poems & Lyrics -->
+  <div class="section" data-cat="poem" id="sec-poem">
+    <div class="section-header">
+      <div class="section-icon">🎵</div>
+      <div class="section-title">Poem &amp; Lyrics Writer</div>
+      <span class="section-count">6 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="poem" data-name="AI Poem Generator"><div class="tool-emoji">🌸</div><div class="tool-name">AI Poem Generator</div><div class="tool-tag">Poem</div></a>
+      <a href="#" class="tool-card" data-cat="poem" data-name="Love Poem Generator"><div class="tool-emoji">❤️</div><div class="tool-name">Love Poem Generator</div><div class="tool-tag">Poem</div></a>
+      <a href="#" class="tool-card" data-cat="poem" data-name="Rhyme Generator"><div class="tool-emoji">🎶</div><div class="tool-name">Rhyme Generator</div><div class="tool-tag">Poem</div></a>
+      <a href="#" class="tool-card" data-cat="poem" data-name="Haiku Generator"><div class="tool-emoji">🍃</div><div class="tool-name">Haiku Generator</div><div class="tool-tag">Poem</div></a>
+      <a href="#" class="tool-card" data-cat="poem" data-name="Rap Lyrics Generator"><div class="tool-emoji">🎤</div><div class="tool-name">Rap Lyrics Generator</div><div class="tool-tag">Lyrics</div></a>
+      <a href="#" class="tool-card" data-cat="poem" data-name="Lyrics Generator"><div class="tool-emoji">🎸</div><div class="tool-name">Lyrics Generator</div><div class="tool-tag">Lyrics</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Business -->
+  <div class="section" data-cat="business" id="sec-business">
+    <div class="section-header">
+      <div class="section-icon">💼</div>
+      <div class="section-title">Business &amp; Professional</div>
+      <span class="section-count">10 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="business" data-name="AI Script Generator"><div class="tool-emoji">🎙️</div><div class="tool-name">AI Script Generator</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Hook Sentence"><div class="tool-emoji">🪝</div><div class="tool-name">Hook Sentence</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Review Generator"><div class="tool-emoji">⭐</div><div class="tool-name">Review Generator</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Website Tagline"><div class="tool-emoji">💡</div><div class="tool-name">Website Tagline</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Product Description"><div class="tool-emoji">🛍️</div><div class="tool-name">Product Description</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Job Description"><div class="tool-emoji">🧑‍💼</div><div class="tool-name">Job Description</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="LinkedIn Summary"><div class="tool-emoji">🔵</div><div class="tool-name">LinkedIn Summary</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Vision Statement"><div class="tool-emoji">🔭</div><div class="tool-name">Vision Statement</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="Speech Writer"><div class="tool-emoji">🎤</div><div class="tool-name">Speech Writer</div><div class="tool-tag">Business</div></a>
+      <a href="#" class="tool-card" data-cat="business" data-name="About Us Generator"><div class="tool-emoji">🏢</div><div class="tool-name">About Us Generator</div><div class="tool-tag">Business</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Education -->
+  <div class="section" data-cat="education" id="sec-education">
+    <div class="section-header">
+      <div class="section-icon">🎓</div>
+      <div class="section-title">Education &amp; Study Tools</div>
+      <span class="section-count">10 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="education" data-name="AI Essay Writer"><div class="tool-emoji">📝</div><div class="tool-name">AI Essay Writer</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Thesis Statement Generator"><div class="tool-emoji">🎓</div><div class="tool-name">Thesis Statement Generator</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="AI Answer Generator"><div class="tool-emoji">💡</div><div class="tool-name">AI Answer Generator</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Homework Helper"><div class="tool-emoji">📚</div><div class="tool-name">Homework Helper</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="AI Notes Maker"><div class="tool-emoji">🗒️</div><div class="tool-name">AI Notes Maker</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Assignment Writer"><div class="tool-emoji">📐</div><div class="tool-name">Assignment Writer</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Research Paper Writer"><div class="tool-emoji">🔬</div><div class="tool-name">Research Paper Writer</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Discussion Post Generator"><div class="tool-emoji">💬</div><div class="tool-name">Discussion Post Generator</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="AI Question Generator"><div class="tool-emoji">❓</div><div class="tool-name">AI Question Generator</div><div class="tool-tag">Education</div></a>
+      <a href="#" class="tool-card" data-cat="education" data-name="Legal Document Generator"><div class="tool-emoji">⚖️</div><div class="tool-name">Legal Document Generator</div><div class="tool-tag">Education</div></a>
+    </div>
+  </div>
+
+  <!-- SECTION: Creative & Fun -->
+  <div class="section" data-cat="fun" id="sec-fun">
+    <div class="section-header">
+      <div class="section-icon">🎉</div>
+      <div class="section-title">Creative &amp; Fun</div>
+      <span class="section-count">8 tools</span>
+    </div>
+    <div class="tool-grid">
+      <a href="#" class="tool-card" data-cat="fun" data-name="Pick-Up Line Generator"><div class="tool-emoji">😏</div><div class="tool-name">Pick-Up Line Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="AI Response Generator"><div class="tool-emoji">🤖</div><div class="tool-name">AI Response Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="AI Recipe Generator"><div class="tool-emoji">🍳</div><div class="tool-name">AI Recipe Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="Roast Comeback Generator"><div class="tool-emoji">🔥</div><div class="tool-name">Roast Comeback Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="Text Response Generator"><div class="tool-emoji">💬</div><div class="tool-name">Text Response Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="TikTok Comment Generator"><div class="tool-emoji">🎵</div><div class="tool-name">TikTok Comment Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="Incorrect Quote Generator"><div class="tool-emoji">😂</div><div class="tool-name">Incorrect Quote Generator</div><div class="tool-tag">Fun</div></a>
+      <a href="#" class="tool-card" data-cat="fun" data-name="Roleplay Scenario"><div class="tool-emoji">🎭</div><div class="tool-name">Roleplay Scenario</div><div class="tool-tag">Fun</div></a>
+    </div>
+  </div>
+
+  <!-- SEO BLOCK -->
+  <div class="seo-block">
+    <h2>RankSorcery Free AI Writer Tools</h2>
+    <p>In an era where digital content drives online success, creators, marketers, and businesses face constant pressure to produce high-quality material consistently. RankSorcery's free AI writer tools transform the often exhausting content creation process into a fast, inspiring experience.</p>
+    <p>Our suite of 60+ AI-powered writing tools covers every scenario — from SEO-optimized blog posts and product descriptions to creative stories, professional emails, academic essays, and beyond. Powered by the latest large language models, these tools understand context, maintain your brand voice, and produce content that genuinely resonates with your audience.</p>
+    <p>Unlike basic text generators, RankSorcery's AI writer tools are deeply integrated with our SEO toolkit — so the content you create is optimized to rank. No account required, no paywalls, no limits. Just fast, free, AI-powered writing.</p>
+  </div>
+
+</div><!-- /container -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="container" style="width:100%; display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;">
+    <div class="footer-logo">Rank<span>Sorcery</span></div>
+    <div class="footer-links">
+      <a href="https://ranksorcery.com/">SEO Auditor</a>
+      <a href="https://ranksorcery.com/competitor.html">Competitor Analysis</a>
+      <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a>
+      <a href="https://ranksorcery.com/ai-search.html">AI Search</a>
+      <a href="https://ranksorcery.com/document-checker.html">Doc Checker</a>
+    </div>
+    <div class="footer-copy">© 2025 RankSorcery — Free AI SEO &amp; Writer Tools · <a href="https://ranksorcery.com/sitemap.xml" style="color:var(--muted2);">Sitemap</a></div>
+  </div>
+</footer>
+
+<script>
+  let currentCategory = 'all';
+  let currentSearch = '';
+
+  function setCategory(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function filterTools() {
+    currentSearch = document.getElementById('searchInput').value.toLowerCase().trim();
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const cards = document.querySelectorAll('.tool-card');
+    const sections = document.querySelectorAll('.section');
+
+    cards.forEach(card => {
+      const cat = card.dataset.cat;
+      const name = card.dataset.name.toLowerCase();
+      const matchCat = currentCategory === 'all' || cat === currentCategory;
+      const matchSearch = !currentSearch || name.includes(currentSearch);
+      if (matchCat && matchSearch) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Hide sections with no visible cards
+    sections.forEach(section => {
+      const visible = section.querySelectorAll('.tool-card:not(.hidden)').length;
+      section.style.display = visible > 0 ? '' : 'none';
+    });
+  }
+</script>
+
+</body>
+</html>
