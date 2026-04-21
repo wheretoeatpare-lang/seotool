@@ -523,17 +523,8 @@ async function generateBlog() {
 
 // ─── AI Call via Pollinations.ai (no API key required) ───────
 async function callAI(model, prompt) {
-  // Model mapping for pollinations.ai
-  const modelMap = {
-    openai: 'openai',
-    gemini: 'gemini',
-    claude: 'claude-hybridspace',
-    mistral: 'mistral',
-    llama: 'llama',
-    deepseek: 'deepseek'
-  };
-  const pModel = modelMap[model] || 'openai';
-
+  // All models route through Pollinations' OpenAI-compatible endpoint
+  // Using 'openai' model name which is the stable alias for GPT-OSS
   const payload = {
     messages: [
       {
@@ -545,11 +536,11 @@ async function callAI(model, prompt) {
         content: prompt
       }
     ],
-    model: pModel,
+    model: 'openai',
     seed: Math.floor(Math.random() * 99999)
   };
 
-  const res = await fetch('https://text.pollinations.ai/', {
+  const res = await fetch('https://text.pollinations.ai/openai', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
@@ -559,7 +550,8 @@ async function callAI(model, prompt) {
     throw new Error(`AI service returned an error (${res.status}). Please try again.`);
   }
 
-  const text = await res.text();
+  const data = await res.json();
+  const text = data?.choices?.[0]?.message?.content;
   if (!text || text.trim().length < 20) {
     throw new Error('The AI returned an empty response. Please try again.');
   }
