@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocCheck — AI Document Reviewer | RankSight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #111318;
+    --bg3: #1a1d24;
+    --border: #2a2d35;
+    --accent: #4fffb0;
+    --accent2: #0ff;
+    --accent-dim: rgba(79,255,176,0.12);
+    --warn: #ffb74d;
+    --fail: #ff5c5c;
+    --pass: #4fffb0;
+    --text: #e8eaf0;
+    --muted: #6b7280;
+    --card-shadow: 0 4px 32px rgba(0,0,0,0.5);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,12,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; gap: 2rem;
+    height: 56px;
+  }
+  .nav-brand {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.1rem;
+    color: var(--accent); letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .nav-brand span { color: var(--text); }
+  nav a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--text); }
+  .nav-cta {
+    margin-left: auto;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    color: var(--accent) !important;
+    padding: .35rem .9rem; border-radius: 6px;
+    font-size: 0.8rem !important;
+    transition: background .2s !important;
+  }
+  .nav-cta:hover { background: rgba(79,255,176,0.22) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 5rem 2rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,255,176,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: var(--accent-dim);
+    border: 1px solid rgba(79,255,176,0.3);
+    border-radius: 999px;
+    padding: .3rem .9rem;
+    font-size: .75rem; font-family: 'DM Mono', monospace;
+    color: var(--accent); letter-spacing: .05em;
+    margin-bottom: 1.5rem;
+    animation: fadeDown .5s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.03em;
+    animation: fadeDown .5s .1s ease both;
+  }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+  .hero-sub {
+    color: var(--muted); max-width: 560px; margin: 1rem auto 0;
+    line-height: 1.7; font-size: .95rem;
+    animation: fadeDown .5s .2s ease both;
+  }
+  .hero-pills {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem;
+    margin-top: 1.5rem;
+    animation: fadeDown .5s .3s ease both;
+  }
+  .pill {
+    font-size: .75rem; padding: .25rem .7rem;
+    border-radius: 999px; border: 1px solid var(--border);
+    background: var(--bg2); color: var(--muted);
+  }
+
+  /* ── MAIN GRID ── */
+  .main-wrap {
+    max-width: 1240px; margin: 0 auto; padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── UPLOAD ZONE ── */
+  .upload-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+  @media(max-width:720px){ .upload-grid { grid-template-columns: 1fr; } }
+
+  .doc-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: var(--card-shadow);
+    transition: border-color .2s;
+  }
+  .doc-card:focus-within { border-color: rgba(79,255,176,0.4); }
+  .doc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: .7rem; letter-spacing: .1em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: .75rem;
+    display: flex; align-items: center; gap: .4rem;
+  }
+  .doc-label .num {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--accent); color: #000;
+    font-size: .65rem; display: grid; place-items: center;
+    font-weight: 700;
+  }
+  .doc-card textarea {
+    width: 100%; min-height: 200px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: .82rem; line-height: 1.7;
+    padding: .85rem 1rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .doc-card textarea:focus { border-color: rgba(79,255,176,0.4); }
+  .doc-card textarea::placeholder { color: var(--muted); }
+
+  /* file drop zone */
+  .drop-zone {
+    border: 1.5px dashed var(--border);
+    border-radius: 8px;
+    padding: .6rem 1rem;
+    text-align: center;
+    font-size: .75rem; color: var(--muted);
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+    margin-top: .6rem;
+  }
+  .drop-zone:hover, .drop-zone.drag { border-color: var(--accent); background: var(--accent-dim); }
+  .drop-zone input { display: none; }
+
+  /* ── CHECKLIST CONFIG ── */
+  .checklist-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.2rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: .9rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+  .checklist-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: .6rem;
+  }
+  .check-item {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .55rem .8rem;
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+    cursor: pointer; transition: border-color .15s, background .15s;
+    user-select: none;
+  }
+  .check-item:hover { border-color: rgba(79,255,176,0.3); }
+  .check-item input[type=checkbox] { display: none; }
+  .check-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--muted); flex-shrink: 0;
+    display: grid; place-items: center;
+    transition: border-color .15s, background .15s;
+  }
+  .check-item.active .check-box {
+    border-color: var(--accent); background: var(--accent);
+  }
+  .check-item.active .check-box::after {
+    content: '✓'; font-size: .65rem; color: #000; font-weight: 900;
+  }
+  .check-item span { font-size: .8rem; color: var(--muted); }
+  .check-item.active span { color: var(--text); }
+
+  /* ── REVIEW BUTTON ── */
+  .btn-review {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #00e5ff);
+    color: #000;
+    border: none; border-radius: 10px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    padding: 1rem 2rem; cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity .2s, transform .15s;
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    margin-bottom: 2rem;
+  }
+  .btn-review:hover { opacity: .9; transform: translateY(-1px); }
+  .btn-review:active { transform: translateY(0); }
+  .btn-review:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+  /* ── RESULTS ── */
+  #results { display: none; }
+
+  .results-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .results-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.4rem;
+  }
+  .score-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: .75rem; padding: .3rem .8rem;
+    border-radius: 999px; border: 1px solid;
+  }
+  .score-pass { color: var(--pass); border-color: var(--pass); background: rgba(79,255,176,0.1); }
+  .score-fail { color: var(--fail); border-color: var(--fail); background: rgba(255,92,92,0.1); }
+  .score-warn { color: var(--warn); border-color: var(--warn); background: rgba(255,183,77,0.1); }
+
+  /* stat row */
+  .stat-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+  .stat-val {
+    font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800;
+    line-height: 1;
+  }
+  .stat-lbl { font-size: .72rem; color: var(--muted); margin-top: .3rem; }
+  .c-green { color: var(--pass); }
+  .c-red { color: var(--fail); }
+  .c-warn { color: var(--warn); }
+  .c-blue { color: var(--accent2); }
+
+  /* findings table */
+  .findings-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; margin-bottom: 1.2rem;
+  }
+  .findings-head {
+    padding: .9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: .9rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .finding-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 120px 80px;
+    align-items: start;
+    gap: 1rem;
+    padding: .85rem 1.25rem;
+    border-bottom: 1px solid rgba(42,45,53,0.7);
+    font-size: .84rem;
+    transition: background .15s;
+    animation: fadeIn .3s ease both;
+  }
+  .finding-row:hover { background: var(--bg3); }
+  .finding-row:last-child { border-bottom: none; }
+  .find-num {
+    font-family: 'DM Mono', monospace; font-size: .7rem;
+    color: var(--muted); padding-top: 2px;
+  }
+  .find-detail { line-height: 1.5; }
+  .find-detail strong { display: block; margin-bottom: .2rem; }
+  .find-detail .orig { font-size: .78rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+  .find-cat {
+    font-size: .72rem; padding: .2rem .55rem; border-radius: 4px;
+    font-family: 'DM Mono', monospace; align-self: start;
+    border: 1px solid; white-space: nowrap;
+  }
+  .cat-missing { color: var(--fail); border-color: rgba(255,92,92,.4); background: rgba(255,92,92,.08); }
+  .cat-mismatch { color: var(--warn); border-color: rgba(255,183,77,.4); background: rgba(255,183,77,.08); }
+  .cat-extra { color: var(--accent2); border-color: rgba(0,255,255,.4); background: rgba(0,255,255,.08); }
+  .cat-ok { color: var(--pass); border-color: rgba(79,255,176,.4); background: rgba(79,255,176,.08); }
+
+  .status-pill {
+    display: inline-block; font-size: .7rem; font-family: 'DM Mono', monospace;
+    padding: .2rem .6rem; border-radius: 4px; font-weight: 600;
+    align-self: start;
+  }
+  .s-pass { background: rgba(79,255,176,.15); color: var(--pass); }
+  .s-fail { background: rgba(255,92,92,.15); color: var(--fail); }
+  .s-warn { background: rgba(255,183,77,.15); color: var(--warn); }
+
+  /* highlighted diff panel */
+  .diff-panel {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 1.2rem; overflow: hidden;
+  }
+  .diff-panel-head {
+    padding: .9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: .9rem;
+  }
+  .diff-body {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  }
+  @media(max-width:640px){ .diff-body { grid-template-columns: 1fr; } }
+  .diff-col {
+    padding: 1rem 1.25rem;
+    font-family: 'DM Mono', monospace; font-size: .8rem; line-height: 1.8;
+    white-space: pre-wrap; word-break: break-word;
+    min-height: 80px; max-height: 240px; overflow-y: auto;
+    border-right: 1px solid var(--border);
+  }
+  .diff-col:last-child { border-right: none; }
+  .diff-col-label {
+    font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: .5rem; font-family: 'DM Mono', monospace;
+  }
+  mark.add { background: rgba(79,255,176,.25); color: var(--pass); border-radius: 2px; }
+  mark.del { background: rgba(255,92,92,.2); color: var(--fail); border-radius: 2px; text-decoration: line-through; }
+  mark.chg { background: rgba(255,183,77,.2); color: var(--warn); border-radius: 2px; }
+
+  /* ai summary */
+  .ai-summary {
+    background: var(--bg2); border: 1px solid rgba(79,255,176,0.2); border-radius: 12px;
+    padding: 1.25rem; margin-bottom: 1.2rem;
+  }
+  .ai-summary-head {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: .9rem;
+    margin-bottom: .85rem; display: flex; align-items: center; gap: .5rem;
+  }
+  .ai-tag {
+    font-family: 'DM Mono', monospace; font-size: .65rem;
+    background: var(--accent-dim); border: 1px solid rgba(79,255,176,.3);
+    color: var(--accent); padding: .15rem .5rem; border-radius: 4px;
+  }
+  .ai-text { font-size: .88rem; color: var(--muted); line-height: 1.75; }
+  .ai-text p + p { margin-top: .6rem; }
+
+  /* loading shimmer */
+  .shimmer {
+    background: linear-gradient(90deg, var(--bg3) 25%, #22252e 50%, var(--bg3) 75%);
+    background-size: 400% 100%;
+    animation: shimmer 1.4s infinite linear;
+    border-radius: 6px;
+  }
+  @keyframes shimmer { to { background-position: -400% 0; } }
+
+  /* ── UTIL ── */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .empty-state {
+    text-align: center; padding: 4rem 2rem;
+    color: var(--muted); font-size: .9rem;
+  }
+  .empty-state .icon { font-size: 2.5rem; margin-bottom: .8rem; }
+
+  /* mobile findings tweak */
+  @media(max-width:640px){
+    .finding-row { grid-template-columns: 28px 1fr; }
+    .find-cat, .status-pill { display: none; }
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--muted); font-size: .75rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="https://seotool.webmasterjamez.workers.dev/">Rank<span>Sight</span></a>
+  <a href="https://seotool.webmasterjamez.workers.dev/">SEO Audit</a>
+  <a href="https://seotool.webmasterjamez.workers.dev/competitor.html">Competitor</a>
+  <a href="https://seotool.webmasterjamez.workers.dev/ai-search.html">AI Search</a>
+  <a href="#" class="nav-cta">DocCheck ✦</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ AI Document Reviewer</div>
+  <h1>Check Documents for<br><em>Accuracy & Consistency</em></h1>
+  <p class="hero-sub">Compare your original document against a system-generated version. Instantly surface errors, missing details, and mismatches — with a clear Pass/Fail report.</p>
+  <div class="hero-pills">
+    <span class="pill">📄 Original vs Generated</span>
+    <span class="pill">🔍 Field-level Comparison</span>
+    <span class="pill">✅ Pass / Fail Checklist</span>
+    <span class="pill">⚡ AI-Powered Analysis</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- UPLOAD -->
+  <div class="upload-grid">
+    <div class="doc-card">
+      <div class="doc-label">
+        <span class="num">1</span> Original Document
+      </div>
+      <textarea id="doc-original" placeholder="Paste the ORIGINAL document content here…
+e.g. the source of truth, manual record, or uploaded document text."></textarea>
+      <label class="drop-zone" id="drop-original">
+        <input type="file" accept=".txt,.pdf,.docx" id="file-original" />
+        ⬆ Drop or click to upload .txt file
+      </label>
+    </div>
+    <div class="doc-card">
+      <div class="doc-label">
+        <span class="num" style="background:var(--accent2);color:#000">2</span>
+        <span style="color:var(--accent2)">System-Generated Version</span>
+      </div>
+      <textarea id="doc-generated" placeholder="Paste the SYSTEM-GENERATED document here…
+e.g. the auto-filled form, OCR output, or AI-generated text."></textarea>
+      <label class="drop-zone" id="drop-generated">
+        <input type="file" accept=".txt,.pdf,.docx" id="file-generated" />
+        ⬆ Drop or click to upload .txt file
+      </label>
+    </div>
+  </div>
+
+  <!-- CHECKLIST CONFIG -->
+  <div class="checklist-card">
+    <div class="section-title">📋 Review Checklist — Select What to Check</div>
+    <div class="checklist-grid" id="checklist">
+      <!-- items injected by JS -->
+    </div>
+  </div>
+
+  <!-- BUTTON -->
+  <button class="btn-review" id="btn-review">
+    <span>🔍</span> Run Document Review
+  </button>
+
+  <!-- RESULTS -->
+  <div id="results">
+
+    <div class="results-header">
+      <div class="results-title">Review Report</div>
+      <div id="overall-badge" class="score-badge score-pass">Overall: PASS</div>
+    </div>
+
+    <div class="stat-row" id="stat-row"></div>
+
+    <div class="ai-summary" id="ai-summary">
+      <div class="ai-summary-head">
+        <span>◆ AI Summary</span>
+        <span class="ai-tag">AI</span>
+      </div>
+      <div class="ai-text" id="ai-text"><div class="shimmer" style="height:14px;width:90%;margin-bottom:.5rem"></div><div class="shimmer" style="height:14px;width:70%"></div></div>
+    </div>
+
+    <div class="diff-panel">
+      <div class="diff-panel-head">📑 Side-by-Side Comparison</div>
+      <div class="diff-body">
+        <div class="diff-col" id="diff-left">
+          <div class="diff-col-label">Original</div>
+          <div id="diff-left-content"></div>
+        </div>
+        <div class="diff-col" id="diff-right">
+          <div class="diff-col-label">System-Generated</div>
+          <div id="diff-right-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="findings-card">
+      <div class="findings-head">
+        🔎 Detailed Findings
+        <span id="findings-count" style="font-size:.75rem;color:var(--muted);font-family:'DM Mono',monospace;margin-left:auto"></span>
+      </div>
+      <div id="findings-list"></div>
+    </div>
+
+  </div><!-- /results -->
+
+</div><!-- /main-wrap -->
+
+<footer>
+  <a href="https://seotool.webmasterjamez.workers.dev/">← Back to RankSight SEO Auditor</a> &nbsp;·&nbsp;
+  DocCheck — AI Document Reviewer &nbsp;·&nbsp; Powered by Claude AI
+</footer>
+
+<script>
+const CHECKLIST_ITEMS = [
+  { id:'names',     label:'Names & People' },
+  { id:'dates',     label:'Dates & Timestamps' },
+  { id:'numbers',   label:'Numbers & Amounts' },
+  { id:'addresses', label:'Addresses & Locations' },
+  { id:'ids',       label:'IDs / Reference Codes' },
+  { id:'structure', label:'Document Structure' },
+  { id:'grammar',   label:'Grammar & Spelling' },
+  { id:'missing',   label:'Missing Fields' },
+  { id:'extra',     label:'Extra / Added Info' },
+  { id:'format',    label:'Format Consistency' },
+];
+
+// Build checklist UI
+const cl = document.getElementById('checklist');
+CHECKLIST_ITEMS.forEach(item => {
+  const div = document.createElement('div');
+  div.className = 'check-item active';
+  div.dataset.id = item.id;
+  div.innerHTML = `<input type="checkbox" checked /><div class="check-box"></div><span>${item.label}</span>`;
+  div.addEventListener('click', () => {
+    div.classList.toggle('active');
+    div.querySelector('input').checked = div.classList.contains('active');
+  });
+  cl.appendChild(div);
+});
+
+// File upload helpers
+function setupDrop(dropId, fileId, textareaId) {
+  const drop = document.getElementById(dropId);
+  const file = document.getElementById(fileId);
+  const ta = document.getElementById(textareaId);
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('drag');
+    readFile(e.dataTransfer.files[0], ta);
+  });
+  file.addEventListener('change', () => readFile(file.files[0], ta));
+}
+function readFile(f, ta) {
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = e => { ta.value = e.target.result; };
+  r.readAsText(f);
+}
+setupDrop('drop-original', 'file-original', 'doc-original');
+setupDrop('drop-generated', 'file-generated', 'doc-generated');
+
+// Main review
+document.getElementById('btn-review').addEventListener('click', runReview);
+
+async function runReview() {
+  const orig = document.getElementById('doc-original').value.trim();
+  const gen  = document.getElementById('doc-generated').value.trim();
+  if (!orig || !gen) { alert('Please paste or upload both documents before running the review.'); return; }
+
+  const activeChecks = [...document.querySelectorAll('.check-item.active')].map(d => d.dataset.id);
+  const checkLabels  = CHECKLIST_ITEMS.filter(i => activeChecks.includes(i.id)).map(i => i.label);
+
+  const btn = document.getElementById('btn-review');
+  btn.disabled = true; btn.textContent = '⏳ Analyzing documents…';
+
+  // Show results skeleton
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('findings-list').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem">Running AI analysis…</div>';
+  document.getElementById('ai-text').innerHTML = '<div class="shimmer" style="height:14px;width:90%;margin-bottom:.5rem"></div><div class="shimmer" style="height:14px;width:70%"></div>';
+  document.getElementById('stat-row').innerHTML = '';
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Diff panel – simple word-level highlight
+  renderDiff(orig, gen);
+
+  // AI Call
+  const prompt = `You are an expert document reviewer. Compare these two documents and check for the following: ${checkLabels.join(', ')}.
+
+ORIGINAL DOCUMENT:
+"""
+${orig.slice(0, 4000)}
+"""
+
+SYSTEM-GENERATED VERSION:
+"""
+${gen.slice(0, 4000)}
+"""
+
+Return ONLY valid JSON (no markdown) in this exact structure:
+{
+  "overallStatus": "PASS" | "FAIL" | "WARNING",
+  "matchScore": <0-100>,
+  "summary": "<2-3 sentence plain-English summary of findings>",
+  "stats": {
+    "totalChecks": <number>,
+    "passed": <number>,
+    "failed": <number>,
+    "warnings": <number>
+  },
+  "findings": [
+    {
+      "id": <number>,
+      "category": "<one of: Missing | Mismatch | Extra | OK>",
+      "checkType": "<one of the checked items>",
+      "description": "<clear description of the finding>",
+      "original": "<relevant snippet from original, max 60 chars>",
+      "generated": "<relevant snippet from generated, max 60 chars>",
+      "status": "PASS" | "FAIL" | "WARNING"
+    }
+  ]
+}`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const rawText = data.content.map(b => b.text || '').join('');
+    const clean = rawText.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    renderResults(result);
+  } catch (err) {
+    document.getElementById('ai-text').innerHTML = `<span style="color:var(--fail)">Analysis failed. Please try again. (${err.message})</span>`;
+    document.getElementById('findings-list').innerHTML = `<div style="padding:1.5rem;color:var(--fail);font-size:.85rem">Could not parse AI response. Please retry.</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span>🔍</span> Run Document Review';
+  }
+}
+
+function renderResults(r) {
+  // Overall badge
+  const badge = document.getElementById('overall-badge');
+  badge.textContent = `Overall: ${r.overallStatus}`;
+  badge.className = 'score-badge ' + (r.overallStatus === 'PASS' ? 'score-pass' : r.overallStatus === 'FAIL' ? 'score-fail' : 'score-warn');
+
+  // Stats
+  const sr = document.getElementById('stat-row');
+  sr.innerHTML = `
+    <div class="stat-card"><div class="stat-val ${r.overallStatus==='PASS'?'c-green':r.overallStatus==='FAIL'?'c-red':'c-warn'}">${r.matchScore}%</div><div class="stat-lbl">Match Score</div></div>
+    <div class="stat-card"><div class="stat-val">${r.stats.totalChecks}</div><div class="stat-lbl">Total Checks</div></div>
+    <div class="stat-card"><div class="stat-val c-green">${r.stats.passed}</div><div class="stat-lbl">Passed</div></div>
+    <div class="stat-card"><div class="stat-val c-red">${r.stats.failed}</div><div class="stat-lbl">Failed</div></div>
+    <div class="stat-card"><div class="stat-val c-warn">${r.stats.warnings}</div><div class="stat-lbl">Warnings</div></div>
+  `;
+
+  // AI Summary
+  document.getElementById('ai-text').innerHTML = `<p>${r.summary}</p>`;
+
+  // Findings
+  const fl = document.getElementById('findings-list');
+  document.getElementById('findings-count').textContent = `${r.findings.length} finding${r.findings.length!==1?'s':''}`;
+  if (!r.findings.length) {
+    fl.innerHTML = '<div class="empty-state"><div class="icon">✅</div><div>No issues found — documents match perfectly.</div></div>';
+    return;
+  }
+  fl.innerHTML = r.findings.map((f, i) => {
+    const catClass = f.category === 'Missing' ? 'cat-missing' : f.category === 'Mismatch' ? 'cat-mismatch' : f.category === 'Extra' ? 'cat-extra' : 'cat-ok';
+    const stClass  = f.status === 'PASS' ? 's-pass' : f.status === 'FAIL' ? 's-fail' : 's-warn';
+    return `<div class="finding-row" style="animation-delay:${i*0.05}s">
+      <div class="find-num">#${f.id}</div>
+      <div class="find-detail">
+        <strong>${f.description}</strong>
+        ${f.original ? `<div class="orig">Original: ${esc(f.original)}</div>` : ''}
+        ${f.generated ? `<div class="orig" style="color:var(--accent2)">Generated: ${esc(f.generated)}</div>` : ''}
+      </div>
+      <span class="find-cat ${catClass}">${f.category} · ${f.checkType}</span>
+      <span class="status-pill ${stClass}">${f.status}</span>
+    </div>`;
+  }).join('');
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderDiff(orig, gen) {
+  const leftEl  = document.getElementById('diff-left-content');
+  const rightEl = document.getElementById('diff-right-content');
+
+  const oWords = orig.split(/(\s+)/);
+  const gWords = gen.split(/(\s+)/);
+  const oSet = new Set(oWords.map(w => w.toLowerCase().replace(/\W/g,'')));
+  const gSet = new Set(gWords.map(w => w.toLowerCase().replace(/\W/g,'')));
+
+  leftEl.innerHTML = oWords.map(w => {
+    const key = w.toLowerCase().replace(/\W/g,'');
+    if (!key) return esc(w);
+    return gSet.has(key) ? esc(w) : `<mark class="del">${esc(w)}</mark>`;
+  }).join('');
+
+  rightEl.innerHTML = gWords.map(w => {
+    const key = w.toLowerCase().replace(/\W/g,'');
+    if (!key) return esc(w);
+    return oSet.has(key) ? esc(w) : `<mark class="add">${esc(w)}</mark>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
