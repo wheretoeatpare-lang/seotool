@@ -67,7 +67,7 @@ body {
 }
 
 /* ── NAV ── */
-nav {
+nav[aria-label="Main navigation"] {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0.85rem 2rem; gap: 1rem;
@@ -529,12 +529,14 @@ h1 span {
   gap: 0.25rem;
   transform: translateY(-8px);
   opacity: 0;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  visibility: hidden;
+  transition: transform 0.25s ease, opacity 0.25s ease, visibility 0.25s ease;
   pointer-events: none;
 }
 .nav-mobile-menu.open {
   transform: translateY(0);
   opacity: 1;
+  visibility: visible;
   pointer-events: all;
 }
 .nav-mobile-menu a {
@@ -561,7 +563,7 @@ h1 span {
 }
 
 @media (max-width: 900px) {
-  nav { padding: 0.85rem 1.25rem; }
+  nav[aria-label="Main navigation"] { padding: 0.85rem 1.25rem; }
   .nav-links { display: none; }
   nav > .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
