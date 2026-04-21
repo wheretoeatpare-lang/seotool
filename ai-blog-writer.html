@@ -530,27 +530,6 @@ async function generateBlog() {
   }
 }
 
-// ─── AI Call via OpenRouter (streaming, no user login needed) ────
-
-// In callAI(), change the fetch URL from:
-const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-    'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
-    'X-Title': 'RankSorcery AI Blog Writer',
-  },
-  body: JSON.stringify({ ... }),
-});
-
-// To just:
-const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ ... }),
-});
-
 const MODEL_MAP = {
   'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
   'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
@@ -570,14 +549,9 @@ async function callAI(model, prompt) {
   outputContent.innerHTML = '';
   document.getElementById('output-card').classList.add('show');
 
-  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-      'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
-      'X-Title': 'RankSorcery AI Blog Writer',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: orModel,
       stream: true,
