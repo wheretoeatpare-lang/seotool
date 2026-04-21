@@ -564,7 +564,9 @@ async function callAI(model, prompt) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `API error ${res.status}. Please try again.`);
+    const apiMsg = err?.error?.message || `API error ${res.status}. Please try again.`;
+    const regionHint = apiMsg.toLowerCase().includes('region') ? ' Please try other ai model.' : '';
+    throw new Error(apiMsg + regionHint);
   }
 
   // Read the SSE stream
