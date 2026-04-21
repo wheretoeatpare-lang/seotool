@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSorcery — Rival Intelligence | Algorithm Combat Analysis</title>
-<meta name="description" content="RankSorcery's Rival Intelligence engine forges a complete Algorithm Combat report — compare any two domains across 40+ ranking signals, keyword overlap, content depth, and authority seals.">
+<title>RankSight — SEO Competitor Analysis</title>
+<meta name="description" content="Free SEO competitor analysis tool. Compare two websites side-by-side across 40+ on-page SEO signals — content, keywords, technical, schema, social and more.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -60,7 +60,7 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 800;
+  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
   background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; letter-spacing: -0.02em;
@@ -561,20 +561,20 @@ h1 span {
 <body>
 
 <nav>
-  <a href="/" class="logo">✦ RankSorcery</a>
+  <a href="/" class="logo">RankSight</a>
   <div class="nav-links">
-    <a href="/">Rank Invocation</a>
-    <a href="/competitor.html" class="active">Rival Intelligence</a>
-	<a href="/ai-search.html">AI Oracle</a>
-    <a href="/" class="nav-cta">Cast the Spell →</a>
+    <a href="/">SEO Audit</a>
+    <a href="/competitor.html" class="active">Competitor Analysis</a>
+	<a href="/ai-search.html">AI Search</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
   </div>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="nav-mobile-menu" id="nav-mobile-menu">
-  <a href="/">Rank Invocation</a>
-  <a href="/competitor.html" class="active">Rival Intelligence</a>
+  <a href="/">SEO Audit</a>
+  <a href="/competitor.html" class="active">Competitor Analysis</a>
   <a href="/" class="nav-mobile-cta">Free Audit →</a>
 </div>
 
@@ -582,10 +582,10 @@ h1 span {
 <section class="hero" id="hero">
   <div class="hero-badge">
     <span class="dot"></span>
-    ✦ Algorithm Combat · 40+ Battle Signals · Rival Intelligence
+    40+ On-Page Signals · Keyword Overlap · Side-by-Side
   </div>
-  <h1>Rival <span>Intelligence</span> — Algorithm Combat</h1>
-  <p>Place two domains into The Forge. Our Algorithm Combat engine dissects 40+ ranking signals side-by-side — keywords, content depth, technical alchemy, schema sigils, and authority seals.</p>
+  <h1>SEO <span>Competitor</span> Analysis</h1>
+  <p>Enter two URLs and get a deep side-by-side comparison of their on-page SEO — keywords, content, technical signals, schema, and more.</p>
 
   <div class="compare-box">
     <div class="compare-inputs">
@@ -597,13 +597,13 @@ h1 span {
       </div>
       <div class="vs-badge">VS</div>
       <div class="site-input-wrap">
-        <div class="site-label b">◆ Rival Domain</div>
+        <div class="site-label b">◆ Competitor Website</div>
         <input type="url" id="input-b" class="site-input b"
           placeholder="https://competitor.com"
           onkeydown="if(event.key==='Enter')startCompare()" />
       </div>
     </div>
-    <button id="compare-btn" onclick="startCompare()">Forge the Battle Report →</button>
+    <button id="compare-btn" onclick="startCompare()">Compare Sites →</button>
   </div>
 </section>
 
@@ -618,16 +618,16 @@ h1 span {
   </p>
   <ul class="loading-steps">
     <li id="ls1"><span class="step-icon">○</span> Fetching My Website page data</li>
-    <li id="ls2"><span class="step-icon">○</span> Summoning rival domain signals</li>
+    <li id="ls2"><span class="step-icon">○</span> Fetching Competitor Website page data</li>
     <li id="ls3"><span class="step-icon">○</span> Extracting keyword signals</li>
-    <li id="ls4"><span class="step-icon">○</span> Scoring 40+ arcane ranking signals</li>
+    <li id="ls4"><span class="step-icon">○</span> Scoring 40+ SEO factors</li>
     <li id="ls5"><span class="step-icon">○</span> Building comparison report</li>
   </ul>
 </div>
 
 <!-- RESULTS -->
 <div id="results-section">
-  <button class="back-btn" onclick="resetTool()">← New Battle</button>
+  <button class="back-btn" onclick="resetTool()">← New Comparison</button>
 
   <!-- Site Header Cards -->
   <div class="sites-header">
@@ -650,12 +650,12 @@ h1 span {
 
   <!-- Tabs -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('overview')">📊 Battle Overview</button>
-    <button class="tab-btn" onclick="switchTab('keywords')">🔑 Keyword Grimoire</button>
-    <button class="tab-btn" onclick="switchTab('content')">✍️ Content Craft</button>
-    <button class="tab-btn" onclick="switchTab('technical')">🔍 Arcane Technical</button>
+    <button class="tab-btn active" onclick="switchTab('overview')">📊 Overview</button>
+    <button class="tab-btn" onclick="switchTab('keywords')">🔑 Keywords</button>
+    <button class="tab-btn" onclick="switchTab('content')">✍️ Content</button>
+    <button class="tab-btn" onclick="switchTab('technical')">🔍 Technical</button>
     <button class="tab-btn" onclick="switchTab('social')">📣 Social & Schema</button>
-    <button class="tab-btn" onclick="switchTab('gaps')">🏁 Power Gap Report</button>
+    <button class="tab-btn" onclick="switchTab('gaps')">🏁 Gap Report</button>
   </div>
 
   <div class="tab-panel active" id="tab-overview">
@@ -748,7 +748,7 @@ function resetTool() {
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('compare-btn').disabled = false;
-  document.getElementById('compare-btn').textContent = 'Forge the Battle Report →';
+  document.getElementById('compare-btn').textContent = 'Compare Sites →';
   ['ls1','ls2','ls3','ls4','ls5'].forEach(id => {
     const el = document.getElementById(id);
     el.className = '';
@@ -1008,7 +1008,7 @@ function renderDACompare(urlA, urlB, pdA, pdB) {
     const r = 28;
     const hostname = hn(url);
     return `
-      <div class="da-compare-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Rival'}: ${escHtml(hostname)}</div>
+      <div class="da-compare-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Competitor'}: ${escHtml(hostname)}</div>
       <div class="da-compare-row">
         <div class="da-ring-wrap">
           <svg width="72" height="72" viewBox="0 0 72 72">
@@ -1147,7 +1147,7 @@ function renderSiteCards(urlA, urlB, pdA, pdB, scA, scB) {
     const hostname = hn(url);
     const winner = side === 'a' ? scA._total > scB._total : scB._total > scA._total;
     return `
-      <div class="site-card-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Rival Website'}</div>
+      <div class="site-card-label ${side}">◆ ${side === 'a' ? 'My Website' : 'Competitor Website'}</div>
       <div class="site-card-title">${pd.title ? escHtml(pd.title.slice(0,55)) + (pd.title.length > 55 ? '…' : '') : hostname}</div>
       <div class="site-card-url">${hostname}</div>
       <div class="site-card-score ${side}">${sc._total}<small> / 100</small></div>
@@ -1188,7 +1188,7 @@ function renderCatGrid(scA, scB) {
           <div class="cat-bar-a" style="width:${(a/total*100).toFixed(1)}%"></div>
           <div class="cat-bar-b" style="width:${(b/total*100).toFixed(1)}%"></div>
         </div>
-        <div class="cat-winner">${winner ? `<span class="w">${winner === 'A' ? 'My Website' : 'Rival'}</span> leads` : '<span style="color:var(--amber)">Tied</span>'}</div>
+        <div class="cat-winner">${winner ? `<span class="w">${winner === 'A' ? 'My Website' : 'Competitor'}</span> leads` : '<span style="color:var(--amber)">Tied</span>'}</div>
       </div>`;
   }).join('');
 }
@@ -1211,7 +1211,7 @@ function renderTable(id, rows, urlA, urlB) {
       <td class="val-b ${bWin ? 'win' : aWin ? 'lose' : 'tie'}">${r.valB}</td>
       <td class="verdict-col">
         ${aWin ? `<span class="verdict-pill verdict-a">My Website</span>`
-               : bWin ? `<span class="verdict-pill verdict-b">Rival</span>`
+               : bWin ? `<span class="verdict-pill verdict-b">Competitor</span>`
                : `<span class="verdict-pill verdict-tie">Tie</span>`}
       </td>
     </tr>`;
@@ -1232,7 +1232,7 @@ function buildOverviewRows(urlA, urlB, pdA, pdB, scA, scB) {
   const daA = computeDomainAuthority(pdA);
   const daB = computeDomainAuthority(pdB);
   return [
-    { label: 'Overall Rank Power Score',    valA: scA._total + ' / 100', valB: scB._total + ' / 100', winner: winner(scA._total, scB._total) },
+    { label: 'Overall SEO Score',    valA: scA._total + ' / 100', valB: scB._total + ' / 100', winner: winner(scA._total, scB._total) },
     { label: 'Domain Authority Est.', valA: daA.score + ' / 100 — ' + daA.tier, valB: daB.score + ' / 100 — ' + daB.tier, winner: winner(daA.score, daB.score) },
     { label: 'Page Title',           valA: na(escHtml((pdA.title || '').slice(0,55))), valB: na(escHtml((pdB.title || '').slice(0,55))), winner: winner(scA.title, scB.title) },
     { label: 'Title Length (chars)', valA: pdA.titleLen || 0, valB: pdB.titleLen || 0, winner: winner(scA.title, scB.title) },
@@ -1353,7 +1353,7 @@ function renderKwOverlap(kwA, kwB, urlA, urlB) {
     <div style="margin-top:1.25rem;font-size:0.8rem;color:var(--muted)">
       Keywords extracted from page title and meta description. Shared: <strong style="color:var(--green)">${shared.length}</strong> · 
       My Website unique: <strong style="color:var(--siteA)">${onlyA.length}</strong> · 
-      Rival unique: <strong style="color:var(--siteB)">${onlyB.length}</strong>
+      Competitor unique: <strong style="color:var(--siteB)">${onlyB.length}</strong>
     </div>
   `;
 }

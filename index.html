@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSorcery — Master the Algorithm | Arcane SEO Intelligence</title>
-<meta name="description" content="RankSorcery transmutes raw crawl data into Ranking Gold. Our arcane SEO intelligence suite delivers deep algorithmic insights, Core Web Vitals alchemy, E-E-A-T mastery, and 60+ ranking signals — forged in The Algorithm.">
+<title>RankSight — AI SEO Auditor | Rank #1 on Google</title>
+<meta name="description" content="Free AI-powered SEO audit tool. Get a comprehensive SEO score, Core Web Vitals, schema analysis, E-E-A-T signals, CMS-specific fixes, and 50+ actionable recommendations to rank #1 on Google.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -34,8 +34,6 @@
   --blue2: rgba(96,165,250,0.12);
   --cyan: #22d3ee;
   --pink: #f472b6;
-  --gold: #e8c97a;
-  --gold2: rgba(232,201,122,0.15);
 }
 
 html { scroll-behavior: smooth; }
@@ -58,7 +56,7 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 800;
+  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
   background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; letter-spacing: -0.02em;
@@ -1300,12 +1298,12 @@ footer .logo-f {
 <body>
 
 <nav>
-  <div class="logo">✦ RankSorcery</div>
+  <div class="logo">RankSight</div>
   <div class="nav-links">    
-    <a href="#" onclick="scrollToAudit(); return false;">The Forge</a>
-    <a href="/competitor.html">Rival Intelligence</a>
-	<a href="/ai-search.html">AI Oracle</a>
-    <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Cast the Spell →</a>
+    <a href="#" onclick="scrollToAudit(); return false;">Audit Now</a>
+    <a href="/competitor.html">Competitor Analysis</a>
+	<a href="/ai-search.html">AI Search</a>
+    <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   </div>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
@@ -1313,106 +1311,45 @@ footer .logo-f {
 </nav>
 <div class="nav-mobile-menu" id="nav-mobile-menu">
   <a href="#features" onclick="closeMobileNav()">Features</a>
-  <a href="#" onclick="scrollToAudit(); closeMobileNav(); return false;">The Forge</a>
-  <a href="/competitor.html" onclick="closeMobileNav()">Rival Intelligence</a>
-  <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Cast the Spell →</a>
+  <a href="#" onclick="scrollToAudit(); closeMobileNav(); return false;">Audit Now</a>
+  <a href="/competitor.html" onclick="closeMobileNav()">Competitor Analysis</a>
+  <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Free Audit →</a>
 </div>
 
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-badge">
     <span class="dot"></span>
-    ✦ Arcane Intelligence · 60+ Ranking Signals · Algorithm Alchemy
+    AI-Powered · 60+ SEO Factors · CMS-Aware Fixes
   </div>
-  <h1>Master the Invisible Arts<br>of <span>The Algorithm</span></h1>
-  <p>Invoke our arcane auditor upon any domain. In moments, The Forge transmutes raw crawl data into a complete Rank Intelligence Report — Core Web Vitals, Schema alchemy, E-E-A-T mastery, and CMS-forged spells of correction.</p>
+  <h1>Rank #1 on Google<br>with <span>Intelligent Audits</span></h1>
+  <p>Enter any URL and get a deep SEO audit with Core Web Vitals, Schema analysis, E-E-A-T scoring, and CMS-specific fixes — all powered by AI.</p>
 
   <div class="audit-container" id="audit-box">
     <div class="url-row">
       <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off"
         onkeydown="if(event.key==='Enter')startAudit()" />
-      <button id="audit-btn" onclick="startAudit()">Invoke the Algorithm →</button>
+      <button id="audit-btn" onclick="startAudit()">Audit Now →</button>
     </div>
     <div class="options-row">
-      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="technical"> 🔍 Technical Alchemy</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="technical"> 🔍 Technical SEO</label>
       <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="performance"> ⚡ Performance</label>
-      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="content"> ✍️ Content Craft</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="content"> ✍️ Content</label>
       <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="ux"> 📱 UX &amp; Mobile</label>
       <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="schema"> 🧩 Schema</label>
-      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="eeat"> 🏆 Authority Seals</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="eeat"> 🏆 E-E-A-T</label>
       <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="social"> 📣 Social/OG</label>
-      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="backlinks"> 🔗 Link Alchemy</label>
+      <label class="option-chip active" onclick="toggleChip(this)"><input type="checkbox" checked name="backlinks"> 🔗 Backlinks</label>
     </div>
   </div>
 
   <div class="stats-bar">
-    <div class="stat-item"><div class="stat-num">60+</div><div class="stat-label">Arcane Signals</div></div>
-    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Spell Schools</div></div>
-    <div class="stat-item"><div class="stat-num">CMS</div><div class="stat-label">Forged Fixes</div></div>
-    <div class="stat-item"><div class="stat-num">AI</div><div class="stat-label">Conjured</div></div>
+    <div class="stat-item"><div class="stat-num">60+</div><div class="stat-label">SEO Factors</div></div>
+    <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Audit Categories</div></div>
+    <div class="stat-item"><div class="stat-num">CMS</div><div class="stat-label">Aware Fixes</div></div>
+    <div class="stat-item"><div class="stat-num">AI</div><div class="stat-label">Powered</div></div>
   </div>
 </section>
-
-<!-- DIGITAL SPELLS SECTION -->
-<section style="padding: 5rem 2rem 4rem; position: relative; overflow: hidden;">
-  <div style="max-width: 960px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 3.5rem;">
-      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(232,201,122,0.08);border:1px solid rgba(232,201,122,0.22);color:#e8c97a;padding:0.38rem 1.1rem;border-radius:999px;font-size:0.76rem;font-weight:700;letter-spacing:0.08em;margin-bottom:1.5rem;text-transform:uppercase">✦ The Arcane Arsenal</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.03em;margin-bottom:1rem">
-        Six Digital Spells.<br><span style="background:linear-gradient(135deg,#e8c97a,var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">One Arcane Platform.</span>
-      </h2>
-      <p style="color:var(--muted);max-width:520px;margin:0 auto;font-size:1rem;line-height:1.75">The Forge runs continuously beneath the surface — transmuting raw crawl data, rival signals, and AI engine outputs into Ranking Gold.</p>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;">
-
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.75rem;position:relative;overflow:hidden;transition:border-color 0.2s,box-shadow 0.2s" onmouseover="this.style.borderColor='rgba(232,201,122,0.35)';this.style.boxShadow='0 0 30px rgba(232,201,122,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.boxShadow='none'">
-        <div style="font-size:1.75rem;margin-bottom:1rem">🔮</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">The Rank Invocation</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.65">Our flagship spell. Feed it any URL and The Forge returns a 60-signal Rank Intelligence Report — Core Web Vitals, E-E-A-T seals, Schema sigils, and CMS-forged fixes.</div>
-        <div style="margin-top:1.25rem"><a href="/" style="color:var(--accent2);font-size:0.82rem;font-weight:600;text-decoration:none">Cast the Spell →</a></div>
-      </div>
-
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.75rem;transition:border-color 0.2s,box-shadow 0.2s" onmouseover="this.style.borderColor='rgba(34,211,238,0.35)';this.style.boxShadow='0 0 30px rgba(34,211,238,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.boxShadow='none'">
-        <div style="font-size:1.75rem;margin-bottom:1rem">⚔️</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">Rival Intelligence</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.65">Place two domains in The Forge. Our Algorithm Combat analysis reveals who holds the advantage across 50+ ranking signals, content depth, and authority seals.</div>
-        <div style="margin-top:1.25rem"><a href="/competitor.html" style="color:var(--cyan);font-size:0.82rem;font-weight:600;text-decoration:none">Forge the Battle Report →</a></div>
-      </div>
-
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.75rem;transition:border-color 0.2s,box-shadow 0.2s" onmouseover="this.style.borderColor='rgba(124,111,247,0.4)';this.style.boxShadow='0 0 30px rgba(124,111,247,0.08)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.boxShadow='none'">
-        <div style="font-size:1.75rem;margin-bottom:1rem">🌐</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">The AI Oracle</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.65">The search landscape has shifted. Our Oracle peers into ChatGPT, Perplexity, Gemini and every AI engine — revealing where your brand is conjured and where it is absent.</div>
-        <div style="margin-top:1.25rem"><a href="/ai-search.html" style="color:var(--accent3);font-size:0.82rem;font-weight:600;text-decoration:none">Invoke the Oracle →</a></div>
-      </div>
-
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.75rem;transition:border-color 0.2s,box-shadow 0.2s" onmouseover="this.style.borderColor='rgba(52,211,153,0.35)';this.style.boxShadow='0 0 30px rgba(52,211,153,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.boxShadow='none'">
-        <div style="font-size:1.75rem;margin-bottom:1rem">🔑</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">Keyword Oracle</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.65">Unearth the search power behind any term. Our Keyword Oracle returns real-time volume, competition density, and CPC alchemy — the raw material of Ranking Gold.</div>
-        <div style="margin-top:1.25rem"><a href="/keyword-volume.html" style="color:var(--green);font-size:0.82rem;font-weight:600;text-decoration:none">Consult the Oracle →</a></div>
-      </div>
-
-      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:1.75rem;transition:border-color 0.2s,box-shadow 0.2s" onmouseover="this.style.borderColor='rgba(251,191,36,0.35)';this.style.boxShadow='0 0 30px rgba(251,191,36,0.06)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.11)';this.style.boxShadow='none'">
-        <div style="font-size:1.75rem;margin-bottom:1rem">📜</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:0.5rem;color:var(--text)">Document Alchemy</div>
-        <div style="font-size:0.84rem;color:var(--muted);line-height:1.65">Every document is a potential ranking asset. Feed it into The Forge and our Document Alchemy spell returns a content sigil inspection — headings, keywords, readability, and structured data.</div>
-        <div style="margin-top:1.25rem"><a href="/document-checker.html" style="color:var(--amber);font-size:0.82rem;font-weight:600;text-decoration:none">Transmute Your Content →</a></div>
-      </div>
-
-      <div style="background:linear-gradient(135deg,rgba(232,201,122,0.06),rgba(124,111,247,0.06));border:1px solid rgba(232,201,122,0.2);border-radius:18px;padding:1.75rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem">
-        <div style="font-size:1.75rem">✦</div>
-        <div style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,#e8c97a,var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Claim Your Mastery</div>
-        <div style="font-size:0.83rem;color:var(--muted);line-height:1.6;max-width:220px">The Algorithm rewards those who understand its invisible arts. Begin your first invocation — free, always.</div>
-        <a href="#audit-box" onclick="scrollToAudit();return false;" style="background:linear-gradient(135deg,#e8c97a,var(--accent));color:#07070d;padding:0.6rem 1.4rem;border-radius:10px;font-size:0.85rem;font-weight:700;text-decoration:none;letter-spacing:0.02em;font-family:'Syne',sans-serif">Invoke the Algorithm →</a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
 
 <!-- LOADING -->
 <div id="loading-state">
@@ -1420,15 +1357,15 @@ footer .logo-f {
     <div class="spinner-ring"></div>
     <div class="spinner-inner"></div>
   </div>
-  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem">Invoking <strong id="loading-url" style="color:var(--text)"></strong></p>
+  <p style="color:var(--muted);margin-bottom:1.5rem;font-size:0.9rem">Analyzing <strong id="loading-url" style="color:var(--text)"></strong></p>
   <ul class="loading-steps" id="loading-steps">
-    <li id="step1"><span class="step-icon">○</span> Summoning page data &amp; server signals</li>
-    <li id="step2"><span class="step-icon">○</span> Deciphering meta runes, headings &amp; content structure</li>
-    <li id="step3"><span class="step-icon">○</span> Inspecting Schema sigils &amp; Open Graph enchantments</li>
-    <li id="step4"><span class="step-icon">○</span> Identifying the platform grimoire &amp; tech stack</li>
-    <li id="step5"><span class="step-icon">○</span> Distilling Core Web Vitals &amp; performance essence</li>
-    <li id="step6"><span class="step-icon">○</span> Calibrating Authority Seals &amp; link alchemy</li>
-    <li id="step7"><span class="step-icon">○</span> Forging CMS-targeted ranking spells</li>
+    <li id="step1"><span class="step-icon">○</span> Fetching real page data &amp; headers</li>
+    <li id="step2"><span class="step-icon">○</span> Analyzing meta tags, headings &amp; content</li>
+    <li id="step3"><span class="step-icon">○</span> Checking schema markup &amp; Open Graph</li>
+    <li id="step4"><span class="step-icon">○</span> Detecting CMS &amp; tech stack</li>
+    <li id="step5"><span class="step-icon">○</span> Evaluating Core Web Vitals &amp; performance</li>
+    <li id="step6"><span class="step-icon">○</span> Scoring E-E-A-T &amp; backlink signals</li>
+    <li id="step7"><span class="step-icon">○</span> Generating CMS-specific AI recommendations</li>
   </ul>
 </div>
 
@@ -1436,10 +1373,10 @@ footer .logo-f {
 <div id="results-section">
   <div id="main-results">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:2rem;padding-top:0.5rem">
-      <button class="back-btn" onclick="resetAudit()" style="margin-bottom:0">← New Invocation</button>
+      <button class="back-btn" onclick="resetAudit()" style="margin-bottom:0">← New Audit</button>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
-        <button class="export-btn" id="share-btn" onclick="shareReport()" style="color:var(--accent2);border-color:rgba(124,111,247,0.35)">🔗 Share the Grimoire</button>
-        <button class="export-btn" onclick="exportReport()">⬇ Export Scroll</button>
+        <button class="export-btn" id="share-btn" onclick="shareReport()" style="color:var(--accent2);border-color:rgba(124,111,247,0.35)">🔗 Share Report</button>
+        <button class="export-btn" onclick="exportReport()">⬇ Export HTML</button>
       </div>
     </div>
 
@@ -1528,27 +1465,27 @@ footer .logo-f {
         </div>
       </div>
       <div class="score-meta">
-        <h2 id="result-title">Rank Intelligence Report</h2>
+        <h2 id="result-title">SEO Audit Complete</h2>
         <div class="url-display" id="result-url"></div>
         <div class="grade-chips" id="grade-chips"></div>
       </div>
     </div>
 
-    <!-- Quick Spells -->
+    <!-- Quick Wins -->
     <div class="quick-wins-bar" id="quick-wins-bar" style="display:none">
-      <div class="qw-label">⚡ Quick Spells — Wins in Under 30 Minutes</div>
+      <div class="qw-label">⚡ Quick Wins — Under 30 Minutes</div>
       <div class="qw-list" id="quick-wins-list"></div>
     </div>
 
     <!-- AI Summary -->
     <div class="ai-summary">
-      <div class="ai-label">◆ Arcane Analysis</div>
+      <div class="ai-label">◆ AI Analysis</div>
       <p id="ai-summary-text" class="streaming-text"></p>
     </div>
 
     <!-- E-E-A-T Summary -->
     <div class="eeat-summary" id="eeat-panel" style="display:none">
-      <div class="eeat-label">🏆 Authority Seals Assessment</div>
+      <div class="eeat-label">🏆 E-E-A-T Assessment</div>
       <p id="eeat-text" style="font-size:0.87rem;color:var(--text);line-height:1.7"></p>
     </div>
 
@@ -1569,7 +1506,7 @@ footer .logo-f {
         </div>
       </div>
       <div class="da-info">
-        <div class="da-title">Domain Power (DA)</div>
+        <div class="da-title">Domain Authority (DA)</div>
         <div class="da-tier" id="da-tier">—</div>
         <div class="da-desc" id="da-desc"></div>
         <div class="da-scale" id="da-scale">
@@ -1587,10 +1524,10 @@ footer .logo-f {
 
     <!-- Tabs -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('overview')">Sigil Overview</button>
-      <button class="tab-btn" onclick="switchTab('suggestions')">Rank Spells</button>
-      <button class="tab-btn" onclick="switchTab('metrics')">The Forge Metrics</button>
-      <button class="tab-btn" onclick="switchTab('backlinks')">🔗 Link Alchemy</button>
+      <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+      <button class="tab-btn" onclick="switchTab('suggestions')">Suggestions</button>
+      <button class="tab-btn" onclick="switchTab('metrics')">Metrics</button>
+      <button class="tab-btn" onclick="switchTab('backlinks')">🔗 Backlinks</button>
       <button class="tab-btn" onclick="switchTab('broken-links')">🔴 Broken Links</button>
       <button class="tab-btn" onclick="switchTab('keywords')">Keywords</button>
       <button class="tab-btn" onclick="switchTab('schema')">🧩 Schema</button>
@@ -1601,7 +1538,7 @@ footer .logo-f {
     <div class="tabs" id="tabs-advanced" style="margin-top:0.5rem">
       <span style="flex-shrink:0;font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;padding:0.55rem 0.5rem 0.55rem 0.75rem;align-self:center">Advanced</span>
       <button class="tab-btn" onclick="switchTab('competitors')">🏁 Gaps</button>
-      <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Rivals</button>
+      <button class="tab-btn" onclick="switchTab('top-competitors')">🏆 Top Competitors</button>
       <button class="tab-btn" onclick="switchTab('techstack')">🔧 Tech Stack</button>
     </div>
 
@@ -1728,7 +1665,7 @@ footer .logo-f {
 <section class="features" id="features">
   <div class="section-label">What We Analyze</div>
   <h2>Everything Google<br>actually ranks you on</h2>
-  <p>RankSorcery audits 60+ arcane ranking signals across 8 categories with real page fetching and platform-forged fix instructions.</p>
+  <p>RankSight audits 60+ SEO factors across 8 categories with real page fetching and CMS-aware fix instructions.</p>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feat-icon purple">🔍</div>
@@ -1767,15 +1704,15 @@ footer .logo-f {
     </div>
     <div class="feature-card">
       <div class="feat-icon green">🏁</div>
-      <h3>Rival Gap Analysis</h3>
+      <h3>Competitor Gap Analysis</h3>
       <p>Identifies what top-ranking competitors likely have that your site is missing, with specific actions to close the gap.</p>
     </div>
   </div>
 </section>
 
 <footer>
-  <span class="logo-f">✦ RankSorcery</span>
-  <p>AI-Powered Rank Invocationing — Real Page Analysis — Platform-Forged Fixes</p>
+  <span class="logo-f">RankSight</span>
+  <p>AI-Powered SEO Auditing — Real Page Analysis — CMS-Aware Fixes</p>
 </footer>
 
 <script>
@@ -1971,7 +1908,7 @@ function tryRestoreFromHash() {
     document.getElementById('share-url-input').value = window.location.href;
 
     // Show "Viewing shared report" notice
-    showToast('👁 Viewing a shared rank invocation report', 'var(--blue)');
+    showToast('👁 Viewing a shared SEO audit report', 'var(--blue)');
     return true;
   } catch (e) {
     return false;
@@ -1988,7 +1925,7 @@ function exportReport() {
 
   const catRows = Object.entries(d.categories || {}).map(([k, v]) => {
     const color = v.score >= 80 ? '#34d399' : v.score >= 60 ? '#fbbf24' : '#f87171';
-    const labels = { technical:'🔍 Technical', performance:'⚡ Performance', content:'✍️ Content Craft', ux:'📱 UX', backlinks:'🔗 Link Alchemy', schema:'🧩 Schema', eeat:'🏆 Authority Seals', social:'📣 Social' };
+    const labels = { technical:'🔍 Technical', performance:'⚡ Performance', content:'✍️ Content', ux:'📱 UX', backlinks:'🔗 Backlinks', schema:'🧩 Schema', eeat:'🏆 E-E-A-T', social:'📣 Social' };
     return `<tr><td style="padding:8px 12px;border-bottom:1px solid #1e1e30">${labels[k]||k}</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;font-weight:700;color:${color}">${v.score}/100</td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30"><span style="background:${color}22;color:${color};padding:2px 8px;border-radius:4px;font-weight:700">${v.grade}</span></td><td style="padding:8px 12px;border-bottom:1px solid #1e1e30;color:#8480aa;font-size:13px">${v.note||''}</td></tr>`;
   }).join('');
 
@@ -2043,7 +1980,7 @@ function exportReport() {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSorcery Rank Invocation — ${currentUrl}</title>
+<title>RankSight SEO Audit — ${currentUrl}</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
@@ -2059,7 +1996,7 @@ function exportReport() {
 
   <!-- HEADER -->
   <div style="border-bottom:1px solid #161624;padding-bottom:24px;margin-bottom:32px">
-    <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#c4b5fd,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">RankSorcery Rank Intelligence Report</div>
+    <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#c4b5fd,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px">RankSight SEO Audit Report</div>
     <div style="color:#8480aa;font-size:13px">Generated: ${new Date().toLocaleString()} &nbsp;|&nbsp; CMS: ${cms}</div>
     <div style="margin-top:10px;background:#161624;border:1px solid #1e1e30;border-radius:8px;padding:10px 14px;font-size:13px;color:#a78bfa;font-family:monospace;word-break:break-all">${currentUrl}</div>
   </div>
@@ -2085,13 +2022,13 @@ function exportReport() {
 
   <!-- QUICK WINS -->
   ${qwItems ? `<div class="section" style="background:rgba(52,211,153,0.05);border-color:rgba(52,211,153,0.2)">
-    <div style="font-size:11px;font-weight:700;color:#34d399;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px">⚡ Quick Spells — Wins in Under 30 Minutes</div>
+    <div style="font-size:11px;font-weight:700;color:#34d399;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px">⚡ Quick Wins — Under 30 Minutes</div>
     ${qwItems}
   </div>` : ''}
 
   <!-- E-E-A-T -->
   ${d.eeat_summary ? `<div class="section" style="background:rgba(244,114,182,0.05);border-color:rgba(244,114,182,0.2)">
-    <div style="font-size:11px;font-weight:700;color:#f472b6;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">🏆 Authority Seals Assessment</div>
+    <div style="font-size:11px;font-weight:700;color:#f472b6;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px">🏆 E-E-A-T Assessment</div>
     <div style="font-size:14px;color:#eeedf8;line-height:1.7">${d.eeat_summary}</div>
   </div>` : ''}
 
@@ -2154,11 +2091,11 @@ function exportReport() {
   ${cwv.ttfb_actual ? `<div class="section"><div style="font-size:13px">Real TTFB: <strong style="color:${cwv.ttfb_actual < 800 ? '#34d399' : cwv.ttfb_actual < 1800 ? '#fbbf24' : '#f87171'}">${cwv.ttfb_actual}ms</strong> &nbsp; <span style="color:#8480aa">Good &lt; 800ms | Needs Improvement &lt; 1800ms | Poor ≥ 1800ms</span></div></div>` : ''}
 
   <!-- COMPETITOR GAPS -->
-  ${gapItems ? `<h2>🏁 Rival Gaps</h2>${gapItems}` : ''}
+  ${gapItems ? `<h2>🏁 Competitor Gaps</h2>${gapItems}` : ''}
 
   <!-- FOOTER -->
   <div style="margin-top:48px;padding-top:24px;border-top:1px solid #161624;text-align:center;color:#8480aa;font-size:12px">
-    Forged by <strong style="color:#a78bfa">RankSorcery</strong> · The Algorithm Alchemist &nbsp;·&nbsp; <a href="https://ranksorcery.com" style="color:#a78bfa">${window.location.origin}</a>
+    Generated by <strong style="color:#a78bfa">RankSight</strong> AI SEO Auditor &nbsp;·&nbsp; <a href="https://seotool.webmasterjamez.workers.dev" style="color:#a78bfa">${window.location.origin}</a>
   </div>
 
 </div>
@@ -2168,7 +2105,7 @@ function exportReport() {
   const blob = new Blob([html], { type: 'text/html' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `ranksorcery-audit-${new URL(currentUrl).hostname}-${Date.now()}.html`;
+  a.download = `ranksight-audit-${new URL(currentUrl).hostname}-${Date.now()}.html`;
   a.click();
   showToast('✅ Full HTML report downloaded!');
 }
@@ -2302,7 +2239,7 @@ async function startAudit() {
   }
 
   btn.disabled = false;
-  btn.textContent = 'Invoke the Algorithm →';
+  btn.textContent = 'Audit Now →';
 }
 
 async function fetchPageData(url) {
@@ -2529,9 +2466,9 @@ function renderResults(url, data, cmsData, pageData) {
   // Grade chips
   const catLabels = {
     technical: '🔍 Technical', performance: '⚡ Perf',
-    content: '✍️ Content Craft', ux: '📱 UX',
+    content: '✍️ Content', ux: '📱 UX',
     backlinks: '🔗 Links', schema: '🧩 Schema',
-    eeat: '🏆 Authority Seals', social: '📣 Social',
+    eeat: '🏆 E-E-A-T', social: '📣 Social',
   };
   document.getElementById('grade-chips').innerHTML = Object.entries(data.categories || {}).map(([k, v]) =>
     `<span class="grade-chip grade-${v.grade}">${catLabels[k] || k}: ${v.grade} (${v.score})</span>`
@@ -2613,8 +2550,8 @@ function renderResults(url, data, cmsData, pageData) {
   // Core Web Vitals
   renderCWV(data.core_web_vitals, pageData);
 
-  // Rival gaps
-  renderRivalGaps(data.competitor_gaps || []);
+  // Competitor gaps
+  renderCompetitorGaps(data.competitor_gaps || []);
 
   // Domain Authority
   renderDA(data.domain_authority);
@@ -2622,8 +2559,8 @@ function renderResults(url, data, cmsData, pageData) {
   // Tech Stack
   renderTechStack(cmsData, url);
 
-  // Top Rivals tab — init with audited URL and its pageData
-  initTopRivalsTab(url, pageData);
+  // Top Competitors tab — init with audited URL and its pageData
+  initTopCompetitorsTab(url, pageData);
 
   // Backlinks tab
   renderBacklinks(url, data, pageData);
@@ -2819,7 +2756,7 @@ function renderCWV(cwv, pageData) {
   `;
 }
 
-function renderRivalGaps(gaps) {
+function renderCompetitorGaps(gaps) {
   const el = document.getElementById('competitors-content');
   if (!el) return;
   if (!gaps || !gaps.length) {
@@ -3233,7 +3170,7 @@ window.addEventListener('load', () => {
 // Same engine as competitor.html, embedded in the audit results
 // ══════════════════════════════════════════════════════════════
 
-function initTopRivalsTab(auditedUrl, auditedPageData) {
+function initTopCompetitorsTab(auditedUrl, auditedPageData) {
   const el = document.getElementById('top-competitors-content');
   let hostname = auditedUrl;
   try { hostname = new URL(auditedUrl).hostname.replace(/^www\./, ''); } catch {}
@@ -3314,9 +3251,9 @@ function initTopRivalsTab(auditedUrl, auditedPageData) {
           </div>
           <div class="tc-comp-audit-score-wrap">
             <div class="tc-comp-audit-score" style="color:${color}">${total !== null ? total : '—'}</div>
-            <div class="tc-comp-audit-score-label">Rank Power Score / 100</div>
+            <div class="tc-comp-audit-score-label">SEO Score / 100</div>
           </div>
-          <button class="tc-comp-audit-cta" onclick="tcSelectRival('${tcEsc(auditedUrl)}','${tcEsc(comp.url)}')">
+          <button class="tc-comp-audit-cta" onclick="tcSelectCompetitor('${tcEsc(auditedUrl)}','${tcEsc(comp.url)}')">
             Full Compare →
           </button>
         </div>
@@ -3371,7 +3308,7 @@ function initTopRivalsTab(auditedUrl, auditedPageData) {
           Compare →
         </button>
       </div>
-      <div class="tc-hint">Full side-by-side SEO comparison with 40+ signals. Or <a href="/competitor.html" target="_blank">open the full Rival Tool →</a></div>
+      <div class="tc-hint">Full side-by-side SEO comparison with 40+ signals. Or <a href="/competitor.html" target="_blank">open the full Competitor Tool →</a></div>
     </div>
     <div id="tc-result-area"></div>
   `;
@@ -3429,7 +3366,7 @@ function initTopRivalsTab(auditedUrl, auditedPageData) {
   })();
 }
 
-function tcSelectRival(urlA, urlB) {
+function tcSelectCompetitor(urlA, urlB) {
   const input = document.getElementById('tc-competitor-input');
   if (input) { input.value = urlB; input.focus(); }
   // Scroll to the result area smoothly
@@ -3591,7 +3528,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
     const leads = side==='a' ? scA._total > scB._total : scB._total > scA._total;
     return `
       <div class="tc-site-card ${side}">
-        <div class="tc-site-label ${side}">◆ ${side==='a'?'Your Site':'Rival'}</div>
+        <div class="tc-site-label ${side}">◆ ${side==='a'?'Your Site':'Competitor'}</div>
         <div class="tc-site-title">${pd.title ? tcEsc(pd.title.slice(0,50))+(pd.title.length>50?'…':'') : tcEsc(h)}</div>
         <div class="tc-site-url">${tcEsc(h)}</div>
         <div class="tc-site-score ${side}">${sc._total}<span style="font-size:0.85rem;color:var(--muted);font-weight:400"> / 100</span></div>
@@ -3611,7 +3548,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
     return `
       <div class="tc-da-card ${side}">
         <div style="font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:${side==='a'?'var(--accent)':'var(--cyan)'};margin-bottom:0.6rem">
-          ◆ ${side==='a'?'Your Site':'Rival'}: ${tcEsc(tcHostname(url))}
+          ◆ ${side==='a'?'Your Site':'Competitor'}: ${tcEsc(tcHostname(url))}
         </div>
         <div class="tc-da-row">
           <div class="tc-da-ring">
@@ -3636,7 +3573,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
 
   // Category grid
   const cats=[
-    {key:'content',label:'✍️ Content Craft'},{key:'technical',label:'🔍 Technical'},
+    {key:'content',label:'✍️ Content'},{key:'technical',label:'🔍 Technical'},
     {key:'performance',label:'⚡ Performance'},{key:'schema',label:'🧩 Schema'},
     {key:'social',label:'📣 Social / OG'},{key:'links',label:'🔗 Links'},
     {key:'security',label:'🔒 Security'},
@@ -3655,7 +3592,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
         <div class="tc-cat-bar-a" style="width:${(a/tot*100).toFixed(1)}%"></div>
         <div class="tc-cat-bar-b" style="width:${(b/tot*100).toFixed(1)}%"></div>
       </div>
-      <div class="tc-cat-winner">${w?`<span class="w">${w==='a'?'Your Site':'Rival'}</span> leads`:'<span style="color:var(--amber)">Tied</span>'}</div>
+      <div class="tc-cat-winner">${w?`<span class="w">${w==='a'?'Your Site':'Competitor'}</span> leads`:'<span style="color:var(--amber)">Tied</span>'}</div>
     </div>`;
   }).join('');
 
@@ -3681,7 +3618,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
 
   // Overview rows
   const overviewRows=[
-    {label:'Overall Rank Power Score',vA:scA._total+' / 100',vB:scB._total+' / 100',w:tcWinner(scA._total,scB._total)},
+    {label:'Overall SEO Score',vA:scA._total+' / 100',vB:scB._total+' / 100',w:tcWinner(scA._total,scB._total)},
     {label:'Domain Authority',vA:daA.score+' — '+daA.tier,vB:daB.score+' — '+daB.tier,w:tcWinner(daA.score,daB.score)},
     {label:'Page Title',vA:tcNa(tcEsc((pdA.title||'').slice(0,50))),vB:tcNa(tcEsc((pdB.title||'').slice(0,50))),w:tcWinner(scA.title,scB.title)},
     {label:'Title Length',vA:(pdA.titleLen||0)+' chars',vB:(pdB.titleLen||0)+' chars',w:tcWinner(scA.title,scB.title)},
@@ -3771,7 +3708,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
         <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted)">
           Shared: <strong style="color:var(--green)">${shared.length}</strong> · 
           Your Site unique: <strong style="color:var(--accent)">${onlyA.length}</strong> · 
-          Rival unique: <strong style="color:var(--cyan)">${onlyB.length}</strong>
+          Competitor unique: <strong style="color:var(--cyan)">${onlyB.length}</strong>
         </div>
       </div>
     </div>`;
@@ -3896,7 +3833,7 @@ function tcRenderComparison(urlA, urlB, pdA, pdB) {
     <div class="tc-sub-tabs" id="${uid}-tabs">
       <button class="tc-sub-btn active" onclick="tcSwitchTab('${uid}','overview',this)">📊 Overview</button>
       <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','keywords',this)">🔑 Keywords</button>
-      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','content',this)">✍️ Content Craft</button>
+      <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','content',this)">✍️ Content</button>
       <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','technical',this)">🔍 Technical</button>
       <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','social',this)">📣 Social & Schema</button>
       <button class="tc-sub-btn" onclick="tcSwitchTab('${uid}','gaps',this)">🏁 Gap Report</button>
