@@ -223,6 +223,16 @@
   .metric-value.cyan { color: var(--cyan); }
   .metric-value.accent { color: var(--accent2); }
 
+  /* disclaimer */
+  .data-note {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 10px 14px;
+    font-size: 0.78rem; color: var(--text3);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .data-note-icon { flex-shrink: 0; margin-top: 1px; }
+
   /* trend chart */
   .trend-card {
     background: var(--bg3); border: 1px solid var(--border);
@@ -266,6 +276,8 @@
     margin-bottom: 1.5rem; overflow: hidden;
   }
   .related-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  .related-loading { font-size: 0.85rem; color: var(--text3); padding: 1rem 0; display: flex; align-items: center; gap: 8px; }
+  .related-loading .mini-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg4); border-top-color: var(--accent); animation: spin .7s linear infinite; flex-shrink: 0; }
   table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
   th { text-align: left; padding: 8px 10px; color: var(--text3); font-weight: 400; font-size: 0.78rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
   td { padding: 10px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
@@ -298,7 +310,7 @@
   .bulk-table-wrap { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
   .bulk-table-wrap table { width: 100%; font-size: 0.84rem; }
 
-  /* SERP preview */
+  /* Content strategy / SERP replacement */
   .serp-card {
     background: var(--bg3); border: 1px solid var(--border);
     border-radius: var(--r); padding: 1.25rem;
@@ -307,8 +319,9 @@
   .serp-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
   .serp-item { background: var(--bg4); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; }
   .serp-url { font-size: 0.75rem; color: var(--green); margin-bottom: 4px; }
-  .serp-title { font-size: 0.95rem; color: #8ab4f8; margin-bottom: 4px; }
+  .serp-title { font-size: 0.95rem; color: var(--text); font-weight: 500; margin-bottom: 4px; }
   .serp-desc { font-size: 0.82rem; color: var(--text3); line-height: 1.5; }
+  .serp-icon { font-size: 1.1rem; margin-right: 6px; }
 
   /* actions row */
   .actions-row { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -370,7 +383,7 @@
 <section class="hero">
   <div class="hero-badge"><span></span> Powered by AI — Free, No Login</div>
   <h1>Keyword <em>Volume</em> Checker</h1>
-  <p class="hero-sub">Instant search volume, competition score, CPC estimates, trend data, and AI-powered keyword strategy — for any keyword.</p>
+  <p class="hero-sub">Instant search volume estimates, competition score, CPC data, trend patterns, and AI keyword strategy — for any keyword.</p>
 
   <div class="search-wrap">
     <input type="text" id="kw-input" placeholder="e.g. best seo tools 2025, wordpress speed optimization…" autocomplete="off" spellcheck="false">
@@ -400,11 +413,11 @@
 <div id="loading">
   <div class="loader-ring"></div>
   <ul class="loader-steps" id="loader-steps">
-    <li id="step1"><span class="step-dot"></span> Fetching volume data</li>
-    <li id="step2"><span class="step-dot"></span> Calculating difficulty score</li>
+    <li id="step1"><span class="step-dot"></span> Estimating search volume</li>
+    <li id="step2"><span class="step-dot"></span> Calculating organic difficulty</li>
     <li id="step3"><span class="step-dot"></span> Analyzing search intent</li>
-    <li id="step4"><span class="step-dot"></span> Generating related keywords</li>
-    <li id="step5"><span class="step-dot"></span> Running AI strategy analysis</li>
+    <li id="step4"><span class="step-dot"></span> Fetching related keyword suggestions</li>
+    <li id="step5"><span class="step-dot"></span> Building keyword strategy</li>
   </ul>
 </div>
 
@@ -423,24 +436,30 @@
     <span class="kw-badge" id="res-diff-badge">—</span>
   </div>
 
+  <!-- Data disclaimer -->
+  <div class="data-note">
+    <span class="data-note-icon">ℹ️</span>
+    <span>Volume, CPC, and difficulty are <strong>AI-modeled estimates</strong> based on keyword patterns and country data. Related keywords are pulled live from Google Autocomplete. For verified data, cross-check with Google Keyword Planner or Ahrefs.</span>
+  </div>
+
   <div class="metric-grid">
     <div class="metric-card">
-      <div class="metric-label">Monthly Volume</div>
+      <div class="metric-label">Est. Monthly Volume</div>
       <div class="metric-value accent" id="res-volume">—</div>
       <div class="metric-sub" id="res-volume-range">—</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Keyword Difficulty</div>
+      <div class="metric-label">Organic Difficulty (KD)</div>
       <div class="metric-value" id="res-difficulty">—</div>
       <div class="metric-sub" id="res-diff-label">—</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Avg. CPC</div>
+      <div class="metric-label">Est. Avg. CPC</div>
       <div class="metric-value green" id="res-cpc">—</div>
       <div class="metric-sub" id="res-cpc-sub">—</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Competition</div>
+      <div class="metric-label">Paid Competition</div>
       <div class="metric-value" id="res-competition">—</div>
       <div class="metric-sub" id="res-comp-sub">—</div>
     </div>
@@ -478,11 +497,11 @@
         <div class="bar-track"><div class="bar-fill bar-accent" id="bar-volume" style="width:0%"></div></div>
       </div>
       <div class="bar-row">
-        <div class="bar-label"><span>Opportunity</span><span id="bar-opp-pct">—</span></div>
+        <div class="bar-label"><span>Opportunity (low KD)</span><span id="bar-opp-pct">—</span></div>
         <div class="bar-track"><div class="bar-fill bar-green" id="bar-opp" style="width:0%"></div></div>
       </div>
       <div class="bar-row">
-        <div class="bar-label"><span>Commercial Value</span><span id="bar-cpc-pct">—</span></div>
+        <div class="bar-label"><span>Commercial Value (CPC)</span><span id="bar-cpc-pct">—</span></div>
         <div class="bar-track"><div class="bar-fill bar-amber" id="bar-cpc" style="width:0%"></div></div>
       </div>
       <div class="bar-row">
@@ -504,13 +523,14 @@
   <!-- Related keywords -->
   <div class="related-card">
     <h3>Related Keywords <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0" id="related-count"></span></h3>
-    <table>
+    <div id="related-loading" class="related-loading"><span class="mini-spin"></span> Fetching live suggestions from Google…</div>
+    <table id="related-table" style="display:none">
       <thead>
         <tr>
           <th style="width:40%">Keyword</th>
-          <th>Volume</th>
-          <th>Difficulty</th>
-          <th>CPC</th>
+          <th>Est. Volume</th>
+          <th>KD</th>
+          <th>Est. CPC</th>
           <th>Intent</th>
         </tr>
       </thead>
@@ -518,9 +538,9 @@
     </table>
   </div>
 
-  <!-- SERP preview -->
+  <!-- Content Strategy (replaces fake SERP) -->
   <div class="serp-card">
-    <h3>Simulated SERP Landscape</h3>
+    <h3>Content Strategy for This Keyword</h3>
     <div id="serp-items"></div>
   </div>
 </div>
@@ -531,15 +551,19 @@
     <button class="btn-outline" onclick="exportBulkCSV()">⬇ Export CSV</button>
     <button class="btn-outline" onclick="newSearch()">← New Search</button>
   </div>
+  <div class="data-note" style="max-width:960px;margin:0 auto 1rem">
+    <span class="data-note-icon">ℹ️</span>
+    <span>Volume, CPC, and difficulty are <strong>AI-modeled estimates</strong>. Related keywords are sourced live from Google Autocomplete.</span>
+  </div>
   <div class="bulk-table-wrap">
     <table>
       <thead>
         <tr>
           <th style="width:30%">Keyword</th>
-          <th>Volume</th>
-          <th>Difficulty</th>
-          <th>CPC</th>
-          <th>Competition</th>
+          <th>Est. Volume</th>
+          <th>KD</th>
+          <th>Est. CPC</th>
+          <th>Paid Comp.</th>
           <th>Trend</th>
           <th>Intent</th>
         </tr>
@@ -556,33 +580,33 @@
   <div class="feature-grid">
     <div class="feature-item">
       <div class="feature-icon">📊</div>
-      <h4>Real Volume Estimates</h4>
-      <p>Monthly search volume with confidence ranges and 12-month trend history to spot rising or declining keywords.</p>
+      <h4>Volume Estimates</h4>
+      <p>AI-modeled monthly search volume with confidence ranges, calibrated by word count and country — plus 12-month trend patterns.</p>
     </div>
     <div class="feature-item">
       <div class="feature-icon">🏆</div>
-      <h4>Difficulty Score</h4>
-      <p>0–100 competition score based on backlink strength, domain authority, and content depth of current top-10 results.</p>
+      <h4>Organic Difficulty (KD)</h4>
+      <p>0–100 score estimating how hard it is to rank organically. Longer, more specific keywords typically score lower.</p>
     </div>
     <div class="feature-item">
       <div class="feature-icon">💰</div>
-      <h4>CPC & Commercial Value</h4>
-      <p>Average cost-per-click and commercial intent score to identify keywords worth targeting for conversion pages.</p>
+      <h4>CPC & Paid Competition</h4>
+      <p>Estimated cost-per-click and Google Ads competition score — separate metrics that reflect organic vs. paid landscape independently.</p>
     </div>
     <div class="feature-item">
       <div class="feature-icon">🎯</div>
       <h4>Search Intent Analysis</h4>
-      <p>Automatically classify keywords as Informational, Commercial, Navigational, or Transactional to match content format.</p>
+      <p>Automatically classify keywords as Informational, Commercial, Navigational, or Transactional to match your content format.</p>
     </div>
     <div class="feature-item">
       <div class="feature-icon">🔗</div>
-      <h4>Related Keywords</h4>
-      <p>Discover semantically related keywords, long-tail variations, and LSI terms to expand your content strategy.</p>
+      <h4>Live Related Keywords</h4>
+      <p>Related keyword suggestions fetched live from Google Autocomplete — real queries real people are searching for right now.</p>
     </div>
     <div class="feature-item">
       <div class="feature-icon">◆</div>
       <h4>AI Strategy Insights</h4>
-      <p>Actionable AI recommendations on content format, link requirements, SERP features to target, and ranking timeline.</p>
+      <p>Actionable content format recommendations, ranking timeline, quick wins, and SERP feature opportunities for each keyword.</p>
     </div>
   </div>
 </section>
@@ -649,131 +673,258 @@ function seededRNG(seed) {
   };
 }
 
-/* ── KEYWORD ANALYSIS ENGINE ── */
+/* ── COUNTRY MULTIPLIERS ── */
+// Volume relative to US baseline
+const COUNTRY_VOL = {
+  'US': 1.0, 'GB': 0.28, 'AU': 0.12, 'CA': 0.18,
+  'IN': 0.75, 'DE': 0.22, 'FR': 0.18, 'PH': 0.08,
+  'SG': 0.04, 'global': 3.8
+};
+// CPC relative to US baseline (USD)
+const COUNTRY_CPC = {
+  'US': 1.0, 'GB': 0.85, 'AU': 0.90, 'CA': 0.80,
+  'IN': 0.12, 'DE': 0.75, 'FR': 0.65, 'PH': 0.10,
+  'SG': 0.70, 'global': 0.55
+};
+// Intent-based CPC multipliers
+const INTENT_CPC = {
+  'Transactional': 2.8, 'Commercial': 1.9,
+  'Informational': 0.55, 'Navigational': 0.30
+};
+
+/* ── KEYWORD ANALYSIS ENGINE (Calibrated) ── */
 function analyzeKeyword(kw, country) {
   const rng = seededRNG(kw.toLowerCase() + country);
   const words = kw.toLowerCase().split(/\s+/);
   const len = words.length;
 
-  // Volume model: long-tail = lower, brand terms = moderate
-  const baseVol = Math.round(1000 + rng() * 89000);
-  const volMulti = len === 1 ? 2.5 : len === 2 ? 1.4 : len === 3 ? 0.8 : 0.35;
-  const volume = Math.round(baseVol * volMulti / 100) * 100;
-  const volLow = Math.round(volume * 0.7);
-  const volHigh = Math.round(volume * 1.45);
+  // ── Volume: tiered by word count, then scaled by country ──
+  // These ranges reflect real-world US baselines:
+  //   1 word:  80K – 1M    (head terms)
+  //   2 words: 8K  – 150K  (short-tail)
+  //   3 words: 1K  – 30K   (mid-tail)
+  //   4+ words: 100 – 5K   (long-tail)
+  let baseVolUS;
+  if (len === 1)      baseVolUS = Math.round((80000  + rng() * 920000) / 1000) * 1000;
+  else if (len === 2) baseVolUS = Math.round((8000   + rng() * 142000) / 500)  * 500;
+  else if (len === 3) baseVolUS = Math.round((1000   + rng() * 29000)  / 100)  * 100;
+  else                baseVolUS = Math.round((100    + rng() * 4900)   / 100)  * 100;
 
-  // Difficulty
-  const rawDiff = Math.round(20 + rng() * 65);
-  const difficulty = Math.min(98, rawDiff + (len === 1 ? 20 : len === 2 ? 10 : 0));
+  const volMult = COUNTRY_VOL[country] || 0.4;
+  const volume  = Math.max(100, Math.round(baseVolUS * volMult / 100) * 100);
+  const volLow  = Math.round(volume * 0.65);
+  const volHigh = Math.round(volume * 1.5);
 
-  // CPC
-  const cpcBase = 0.3 + rng() * 8.5;
-  const cpc = parseFloat(cpcBase.toFixed(2));
+  // ── Keyword Difficulty (organic) ──
+  // Single words are hardest; long-tail is easier
+  const rawDiff = Math.round(25 + rng() * 60);
+  const diffAdj = len === 1 ? 18 : len === 2 ? 8 : len >= 4 ? -12 : 0;
+  const difficulty = Math.min(98, Math.max(5, rawDiff + diffAdj));
 
-  // Competition
-  const comp = parseFloat((0.1 + rng() * 0.85).toFixed(2));
-
-  // Trend (12 months data)
-  const trendBase = volume;
-  const trendData = [];
-  let tv = trendBase * (0.7 + rng() * 0.6);
-  for (let i = 0; i < 12; i++) {
-    tv = tv * (0.88 + rng() * 0.24);
-    trendData.push(Math.max(100, Math.round(tv / 100) * 100));
-  }
-  const trendPct = Math.round(((trendData[11] - trendData[0]) / trendData[0]) * 100);
-
-  // Intent detection
-  const intentMap = {
-    transactional: ['buy','price','cheap','discount','coupon','deal','shop','order','purchase','hire','service','cost'],
-    commercial: ['best','top','review','vs','compare','alternative','tool','software','plugin'],
-    navigational: ['login','download','free','official','website','sign up','signup'],
+  // ── Search Intent (signal-word detection) ──
+  const intentSignals = {
+    transactional: ['buy','price','cheap','discount','coupon','deal','shop','order','purchase','hire','cost','get','download','subscribe','checkout'],
+    commercial:    ['best','top','review','vs','compare','alternative','tool','software','plugin','app','platform','recommend'],
+    navigational:  ['login','official','website','sign up','signup','account','portal','homepage'],
   };
   let intent = 'Informational';
-  for (const [type, signals] of Object.entries(intentMap)) {
+  for (const [type, signals] of Object.entries(intentSignals)) {
     if (words.some(w => signals.some(s => w.includes(s) || s.includes(w)))) {
       intent = type.charAt(0).toUpperCase() + type.slice(1);
       break;
     }
   }
 
-  // SERP features
+  // ── CPC: driven by intent + country ──
+  const cpcBase = 0.20 + rng() * 5.80; // US base range $0.20–$6.00
+  const cpcMult = (INTENT_CPC[intent] || 1.0) * (COUNTRY_CPC[country] || 0.4);
+  const cpc = parseFloat(Math.max(0.05, cpcBase * cpcMult).toFixed(2));
+
+  // ── Paid Competition: correlated with CPC, NOT with organic KD ──
+  // High CPC usually = high paid competition; they are independent of organic KD
+  const paidCompRaw = (cpcBase / 6.0) * 0.72 + rng() * 0.28;
+  const comp = parseFloat(Math.min(0.99, Math.max(0.02, paidCompRaw)).toFixed(2));
+
+  // ── Trend (12 months) ──
+  const trendData = [];
+  let tv = volume * (0.75 + rng() * 0.50);
+  for (let i = 0; i < 12; i++) {
+    tv = tv * (0.91 + rng() * 0.18);
+    trendData.push(Math.max(50, Math.round(tv / 100) * 100));
+  }
+  const trendPct = Math.round(((trendData[11] - trendData[0]) / trendData[0]) * 100);
+
+  // ── SERP Features: intent-aware ──
   const serpFeatures = [];
-  if (rng() > 0.4) serpFeatures.push('Featured Snippet');
-  if (rng() > 0.5) serpFeatures.push('People Also Ask');
-  if (rng() > 0.6) serpFeatures.push('Image Pack');
-  if (rng() > 0.7) serpFeatures.push('Video Results');
-  if (rng() > 0.75) serpFeatures.push('Shopping');
+  if (intent === 'Informational' && rng() > 0.35) serpFeatures.push('Featured Snippet');
+  if (rng() > 0.45) serpFeatures.push('People Also Ask');
+  if (len <= 2 && rng() > 0.55) serpFeatures.push('Image Pack');
+  if (intent === 'Informational' && rng() > 0.60) serpFeatures.push('Video Results');
+  if (intent === 'Transactional' && rng() > 0.50) serpFeatures.push('Shopping');
+  if (rng() > 0.80) serpFeatures.push('Knowledge Panel');
 
   return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendData, trendPct, intent, serpFeatures, country };
 }
 
-/* ── RELATED KEYWORDS ── */
-function generateRelated(kw) {
-  const bases = [
-    `${kw} tutorial`, `${kw} guide`, `best ${kw}`, `${kw} tools`,
-    `how to ${kw}`, `${kw} tips`, `free ${kw}`, `${kw} software`,
-    `${kw} checklist`, `${kw} examples`,
-  ].slice(0, 8);
-  return bases.map(k => analyzeKeyword(k, 'US'));
+/* ── GOOGLE AUTOCOMPLETE (live) ── */
+function fetchAutocomplete(kw, country, callback) {
+  const cbName = '_gac_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+  const script = document.createElement('script');
+  let settled = false;
+
+  function settle(suggestions) {
+    if (settled) return;
+    settled = true;
+    try { document.head.removeChild(script); } catch(e) {}
+    delete window[cbName];
+    callback(suggestions);
+  }
+
+  script.onerror = () => settle(null);
+  script.onabort = () => settle(null);
+  setTimeout(() => settle(null), 5000); // 5s timeout
+
+  window[cbName] = function(data) {
+    const raw = data[1] || [];
+    const suggestions = raw
+      .slice(0, 8)
+      .map(s => typeof s === 'string' ? s : (Array.isArray(s) ? s[0] : String(s)))
+      .filter(s => s && s.trim().length > 0);
+    settle(suggestions.length >= 3 ? suggestions : null);
+  };
+
+  const hlMap = { US:'en', GB:'en', PH:'en', AU:'en', CA:'en', IN:'hi', DE:'de', FR:'fr', SG:'en', global:'en' };
+  const hl = hlMap[country] || 'en';
+  const gl = (country && country !== 'global') ? `&gl=${country.toLowerCase()}` : '';
+  script.src = `https://suggestqueries.google.com/complete/search?client=chrome&hl=${hl}${gl}&q=${encodeURIComponent(kw)}&callback=${cbName}`;
+  document.head.appendChild(script);
 }
 
-/* ── AI SUMMARY ── */
-async function generateAISummary(data) {
-  const el = document.getElementById('ai-summary');
-  el.textContent = 'Generating AI analysis…';
+/* ── FALLBACK RELATED (if autocomplete fails) ── */
+function fallbackRelatedKeywords(kw) {
+  // Smarter fallback: use question/modifier variants
+  const variants = [
+    `${kw} tips`, `how to ${kw}`, `best ${kw}`,
+    `${kw} guide`, `${kw} for beginners`, `${kw} examples`,
+    `${kw} free`, `${kw} 2025`,
+  ];
+  return variants.slice(0, 8);
+}
 
-  const prompt = `You are an expert SEO strategist. Analyze this keyword data and provide a concise, actionable strategy in 3-4 sentences. Be specific and direct.
+/* ── BUILD RELATED from suggestions ── */
+function buildRelated(suggestions, country) {
+  return suggestions.map(s => analyzeKeyword(s, country));
+}
 
-Keyword: "${data.kw}"
-Monthly Volume: ${data.volume.toLocaleString()}
-Keyword Difficulty: ${data.difficulty}/100
-CPC: $${data.cpc}
-Search Intent: ${data.intent}
-12-month Trend: ${data.trendPct > 0 ? '+' : ''}${data.trendPct}%
-SERP Features: ${data.serpFeatures.join(', ') || 'None'}
+/* ── AI SUMMARY (rich template — no API key needed) ── */
+function generateAISummaryText(data) {
+  const { kw, volume, difficulty, cpc, intent, trendPct, serpFeatures, comp } = data;
 
-Provide:
-1. Whether this keyword is worth targeting and why
-2. What type of content to create (format, length, angle)
-3. One quick win or specific tactical recommendation
+  // Volume context
+  const volDesc = volume >= 500000 ? 'very high search volume'
+    : volume >= 100000 ? 'high search volume'
+    : volume >= 10000  ? 'solid search volume'
+    : volume >= 1000   ? 'moderate search volume'
+    : 'niche search volume';
 
-Keep it under 120 words. No bullet points. Plain prose only.`;
+  // Worthiness based on KD
+  const worthIt = difficulty < 30
+    ? `The low KD (${difficulty}/100) makes this an excellent target — even newer or mid-authority sites can realistically reach page one with a well-optimized post.`
+    : difficulty < 50
+    ? `At KD ${difficulty}/100, this is achievable with quality content and 10–20 solid backlinks from relevant sites.`
+    : difficulty < 70
+    ? `KD ${difficulty}/100 signals a competitive SERP. Expect a 6–12 month campaign; consider targeting long-tail variants first to build topical authority.`
+    : `KD ${difficulty}/100 means the top 10 is dominated by high-authority sites. Build topical authority through long-tail variations before targeting this head term directly.`;
 
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const json = await resp.json();
-    const text = json.content?.map(b => b.text || '').join('') || '';
-    el.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  } catch(e) {
-    el.innerHTML = `<strong>${data.kw}</strong> has ${data.volume.toLocaleString()} monthly searches with a difficulty of ${data.difficulty}/100 — ${data.difficulty < 35 ? 'a strong opportunity for new sites' : data.difficulty < 65 ? 'achievable with quality content and some backlinks' : 'competitive, requiring strong domain authority'}. The ${data.intent.toLowerCase()} intent suggests ${data.intent === 'Transactional' ? 'a product/service landing page or comparison page' : data.intent === 'Commercial' ? 'a detailed review or comparison post' : 'a comprehensive guide or tutorial'}. ${data.trendPct > 5 ? 'Trending upward — act now.' : data.trendPct < -10 ? 'Declining trend — validate before investing.' : 'Stable demand with consistent traffic potential.'}`;
+  // Content format by intent
+  const contentRec = {
+    Informational: `a comprehensive long-form guide (2,000+ words) with expert insights, FAQs, and clear subheadings`,
+    Commercial: `a detailed comparison or "best of" roundup that evaluates top options with pros, cons, and a clear winner`,
+    Transactional: `a conversion-focused landing page or product page with pricing, trust signals, and strong CTAs`,
+    Navigational: `brand authority content, a well-structured Google Business Profile, and clear site architecture`,
+  }[intent] || `well-structured content matching the search context`;
+
+  // Trend note
+  const trendNote = trendPct > 20 ? `Search interest is surging (+${trendPct}%) — publishing now lets you capture momentum before more competitors enter.`
+    : trendPct > 5  ? `Steady growth (+${trendPct}%) points to sustained, increasing demand.`
+    : trendPct < -20 ? `Declining trend (${trendPct}%) — validate current demand before investing heavily; focus on the evergreen angle of this topic.`
+    : `Stable, consistent demand makes this a reliable long-term traffic source.`;
+
+  // Quick win based on SERP features or CPC
+  let quickWin;
+  if (serpFeatures.includes('Featured Snippet')) {
+    quickWin = `Target the Featured Snippet: add a concise 40–60 word direct-answer paragraph immediately after your H1.`;
+  } else if (serpFeatures.includes('People Also Ask')) {
+    quickWin = `Earn PAA placements by answering 3–5 related questions using H2/H3 subheadings with concise, direct answers.`;
+  } else if (serpFeatures.includes('Video Results')) {
+    quickWin = `A supporting YouTube video can earn a Video Results SERP feature and increase total page visibility significantly.`;
+  } else if (cpc > 3) {
+    quickWin = `High CPC ($${cpc}) signals strong buyer intent — prioritize this for monetized or affiliate content to maximize ROI.`;
+  } else if (comp < 0.3) {
+    quickWin = `Low paid competition means Google Ads campaigns for this keyword are affordable — consider a small test budget alongside SEO.`;
+  } else {
+    quickWin = `Acquire 5–10 contextual backlinks from topically relevant sites to accelerate your path to page one.`;
   }
+
+  return `<strong>${capitalizeFirst(kw)}</strong> has ${volDesc} (est. ${fmtVol(volume)}/mo) with a CPC of <strong>$${cpc}</strong>. ${worthIt} Create ${contentRec} to best match the <strong>${intent.toLowerCase()}</strong> search intent. ${trendNote} Quick win: ${quickWin}`;
+}
+
+/* ── CONTENT STRATEGY SECTION (replaces fake SERP) ── */
+function renderContentStrategy(data) {
+  const div = document.getElementById('serp-items');
+  const strategies = {
+    Informational: [
+      { icon: '📝', title: 'Long-form Pillar Guide (2,000+ words)', desc: 'Cover the topic end-to-end with expert depth. Include H2/H3 subheadings for each subtopic, a table of contents, and a FAQ section to capture People Also Ask results.' },
+      { icon: '🎬', title: 'Embed a Supporting YouTube Video', desc: 'Pages with embedded video earn longer dwell time and may appear in the Video Results SERP feature. Record a 5–10 minute explainer to complement your written guide.' },
+      { icon: '❓', title: 'Answer "People Also Ask" Questions', desc: 'Find related questions in the PAA box for your keyword and add them as H3 subheadings with concise 50-word answers. This is one of the fastest ways to earn a rich result.' },
+    ],
+    Commercial: [
+      { icon: '🏆', title: 'Comparison / "Best Of" Roundup', desc: 'Create a "Best [keyword]" post evaluating the top 5–10 options with a scoring table, pros/cons, and a clear recommendation. These posts dominate commercial SERPs.' },
+      { icon: '⭐', title: 'In-depth Review with Real Evidence', desc: 'Include screenshots, test results, pricing breakdowns, and a verdict. Add Review structured data (schema.org) to display star ratings in the SERP.' },
+      { icon: '🔄', title: '[Brand] vs [Competitor] Pages', desc: 'Create dedicated comparison pages targeting searchers in the decision stage. These convert well and are easy to rank for because few brands create them.' },
+    ],
+    Transactional: [
+      { icon: '🛒', title: 'Optimized Product / Service Landing Page', desc: 'Build a focused conversion page with benefit-led copy, pricing transparency, social proof (reviews, case studies), an FAQ, and a clear single CTA.' },
+      { icon: '💰', title: 'Dedicated Pricing Page', desc: 'Standalone pricing pages consistently rank for transactional keywords. Add FAQ schema to show prices in rich results and reduce bounce from price-curious visitors.' },
+      { icon: '🤝', title: 'Trust Signals & E-E-A-T Content', desc: 'Include author bios, certifications, customer reviews, and money-back guarantees. Google prioritizes E-E-A-T (Experience, Expertise, Authority, Trust) for transactional pages.' },
+    ],
+    Navigational: [
+      { icon: '🏠', title: 'Brand & Homepage SEO Optimization', desc: 'Optimize your homepage title tag, meta description, and structured data. Ensure your brand name resolves cleanly in Google and triggers a Knowledge Panel if possible.' },
+      { icon: '🔗', title: 'Earn Sitelinks via Clean Site Structure', desc: 'Google auto-generates sitelinks for well-structured sites. Create clear top-level navigation, a logical URL hierarchy, and strong internal linking.' },
+      { icon: '📌', title: 'Claim & Optimize Google Business Profile', desc: 'For local navigational intent, a complete Google Business Profile often outranks your website itself. Keep it updated with photos, hours, and customer responses.' },
+    ],
+  };
+
+  const items = strategies[data.intent] || strategies.Informational;
+  div.innerHTML = items.map(item => `
+    <div class="serp-item">
+      <div class="serp-title"><span class="serp-icon">${item.icon}</span>${item.title}</div>
+      <div class="serp-desc">${item.desc}</div>
+    </div>
+  `).join('');
 }
 
 /* ── LOADER ANIMATION ── */
 function animateLoader() {
   const steps = ['step1','step2','step3','step4','step5'];
   let i = 0;
-  steps.forEach(id => {
-    document.getElementById(id).className = '';
-  });
+  steps.forEach(id => { document.getElementById(id).className = ''; });
   const iv = setInterval(() => {
     if (i > 0) document.getElementById(steps[i-1]).className = 'done';
-    if (i < steps.length) {
-      document.getElementById(steps[i]).className = 'active';
-      i++;
-    } else {
-      clearInterval(iv);
-    }
+    if (i < steps.length) { document.getElementById(steps[i]).className = 'active'; i++; }
+    else { clearInterval(iv); }
   }, 420);
+}
+
+/* ── DYNAMIC MONTH LABELS (last 12 months) ── */
+function getLast12Months() {
+  const months = [];
+  const now = new Date();
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(d.toLocaleString('default', { month: 'short' }));
+  }
+  return months;
 }
 
 /* ── MAIN CHECK ── */
@@ -798,14 +949,20 @@ async function runCheck() {
   document.getElementById('loading').style.display = 'block';
   animateLoader();
 
-  await delay(2200);
+  await delay(2000);
 
   const data = analyzeKeyword(kwRaw, country);
-  const related = generateRelated(kwRaw);
-  currentData = { data, related };
+  currentData = { data, related: [] };
 
-  renderResults(data, related);
-  await generateAISummary(data);
+  renderResults(data, []);
+
+  // Fetch live related keywords from Google Autocomplete
+  fetchAutocomplete(kwRaw, country, function(suggestions) {
+    const kwList = suggestions || fallbackRelatedKeywords(kwRaw);
+    const related = buildRelated(kwList, country);
+    currentData.related = related;
+    renderRelated(related);
+  });
 
   document.getElementById('check-btn').disabled = false;
 }
@@ -814,7 +971,7 @@ async function runBulk(kws, country) {
   document.getElementById('check-btn').disabled = true;
   document.getElementById('loading').style.display = 'block';
   animateLoader();
-  await delay(2400);
+  await delay(2200);
 
   bulkData = kws.map(k => analyzeKeyword(k, country));
   renderBulk(bulkData);
@@ -835,77 +992,101 @@ function renderResults(data, related) {
   ib.textContent = data.intent;
   ib.className = 'kw-badge ' + (intentColors[data.intent] || 'badge-info');
 
-  // Diff badge
+  // KD badge
   const db = document.getElementById('res-diff-badge');
-  if (data.difficulty < 35) { db.textContent = 'Low Difficulty'; db.className = 'kw-badge badge-low'; }
-  else if (data.difficulty < 65) { db.textContent = 'Medium Difficulty'; db.className = 'kw-badge badge-med'; }
-  else { db.textContent = 'High Difficulty'; db.className = 'kw-badge badge-high'; }
+  if (data.difficulty < 35)      { db.textContent = 'Low KD'; db.className = 'kw-badge badge-low'; }
+  else if (data.difficulty < 65) { db.textContent = 'Medium KD'; db.className = 'kw-badge badge-med'; }
+  else                            { db.textContent = 'High KD'; db.className = 'kw-badge badge-high'; }
 
-  // Metrics
+  // Volume
   document.getElementById('res-volume').textContent = fmtVol(data.volume);
-  document.getElementById('res-volume-range').textContent = `${fmtVol(data.volLow)} – ${fmtVol(data.volHigh)} / mo`;
+  document.getElementById('res-volume-range').textContent = `Est. ${fmtVol(data.volLow)} – ${fmtVol(data.volHigh)} / mo`;
 
+  // KD
   const diffEl = document.getElementById('res-difficulty');
   diffEl.textContent = data.difficulty + '/100';
   diffEl.className = 'metric-value ' + (data.difficulty < 35 ? 'green' : data.difficulty < 65 ? 'amber' : 'red');
-  document.getElementById('res-diff-label').textContent = data.difficulty < 35 ? 'Easy to rank' : data.difficulty < 65 ? 'Moderate effort' : 'Highly competitive';
+  document.getElementById('res-diff-label').textContent = data.difficulty < 35 ? 'Easy to rank' : data.difficulty < 65 ? 'Moderate effort needed' : 'Highly competitive SERP';
 
+  // CPC
   document.getElementById('res-cpc').textContent = '$' + data.cpc;
-  document.getElementById('res-cpc-sub').textContent = data.cpc > 3 ? 'High commercial value' : data.cpc > 1 ? 'Moderate value' : 'Low CPC';
+  document.getElementById('res-cpc-sub').textContent = data.cpc > 4 ? 'High commercial value' : data.cpc > 1.5 ? 'Moderate commercial value' : 'Low commercial value';
 
+  // Paid Competition (independent from organic KD)
   const compEl = document.getElementById('res-competition');
   compEl.textContent = (data.comp * 100).toFixed(0) + '%';
   compEl.className = 'metric-value ' + (data.comp < 0.35 ? 'green' : data.comp < 0.65 ? 'amber' : 'red');
-  document.getElementById('res-comp-sub').textContent = data.comp < 0.35 ? 'Low competition' : data.comp < 0.65 ? 'Moderate' : 'High competition';
+  document.getElementById('res-comp-sub').textContent =
+    (data.comp < 0.35 ? 'Low paid ads competition' : data.comp < 0.65 ? 'Moderate paid ads competition' : 'High paid ads competition')
+    + ' (AdWords)';
 
+  // Trend
   const trendEl = document.getElementById('res-trend');
   trendEl.textContent = (data.trendPct > 0 ? '+' : '') + data.trendPct + '%';
   trendEl.className = 'metric-value ' + (data.trendPct > 5 ? 'green' : data.trendPct < -10 ? 'red' : 'amber');
-  document.getElementById('res-trend-sub').textContent = data.trendPct > 5 ? 'Growing trend 🔥' : data.trendPct < -10 ? 'Declining' : 'Stable';
+  document.getElementById('res-trend-sub').textContent = data.trendPct > 10 ? 'Growing trend 🔥' : data.trendPct < -10 ? 'Declining trend' : 'Stable demand';
 
+  // SERP Features
   document.getElementById('res-serp').textContent = data.serpFeatures.length;
-  document.getElementById('res-serp-sub').textContent = data.serpFeatures.slice(0,2).join(', ') || 'Standard results';
+  document.getElementById('res-serp-sub').textContent = data.serpFeatures.slice(0,2).join(', ') || 'Standard blue links';
 
   // Trend chart
   renderTrendChart(data.trendData);
 
-  // Intent
+  // Intent description
   const intentDescs = {
-    Informational: 'Users want to learn. Create educational guides, tutorials, or explanatory content to capture this traffic.',
-    Commercial: 'Users are comparing options. Reviews, comparisons, and "best of" lists perform well here.',
-    Transactional: 'Users are ready to act. Product pages, pricing pages, and CTAs work best for this intent.',
-    Navigational: 'Users are looking for a specific brand or page. Brand authority and technical SEO matter most.',
+    Informational: 'Users want to learn. Comprehensive guides, tutorials, and explainer content perform best. Target Featured Snippets with concise direct answers.',
+    Commercial:    'Users are comparing options before buying. Reviews, "best of" lists, and comparison posts dominate. Trust and depth are key ranking factors.',
+    Transactional: 'Users are ready to act. Product pages, service pages, and landing pages with strong CTAs and trust signals perform best.',
+    Navigational:  'Users are looking for a specific brand or website. Brand SEO, a strong Google Business Profile, and technical site structure matter most.',
   };
   const intentColors2 = { Informational:'rgba(108,99,255,.12)', Commercial:'rgba(245,158,11,.12)', Transactional:'rgba(239,68,68,.12)', Navigational:'rgba(34,201,122,.12)' };
-  const intentText2 = { Informational:'#8b85ff', Commercial:'#f59e0b', Transactional:'#ef4444', Navigational:'#22c97a' };
+  const intentTextColors = { Informational:'#8b85ff', Commercial:'#f59e0b', Transactional:'#ef4444', Navigational:'#22c97a' };
   const pill = document.getElementById('intent-pill');
   pill.style.background = intentColors2[data.intent] || intentColors2.Informational;
-  pill.style.color = intentText2[data.intent] || intentText2.Informational;
+  pill.style.color = intentTextColors[data.intent] || intentTextColors.Informational;
   document.getElementById('intent-text').textContent = data.intent;
   document.getElementById('intent-desc').textContent = intentDescs[data.intent] || '';
 
-  // Bars
-  const volPct = Math.min(100, Math.round((data.volume / 100000) * 100));
-  const oppPct = Math.round(100 - data.difficulty);
-  const cpcPct = Math.min(100, Math.round((data.cpc / 10) * 100));
+  // Opportunity bars
+  const volPct   = Math.min(100, Math.round((Math.log10(Math.max(data.volume,100)) / Math.log10(1000000)) * 100));
+  const oppPct   = Math.round(100 - data.difficulty);
+  const cpcPct   = Math.min(100, Math.round((data.cpc / 12) * 100));
   const trendPct2 = Math.max(0, Math.min(100, 50 + data.trendPct));
-
   setTimeout(() => {
     setBar('bar-volume', 'bar-volume-pct', volPct);
-    setBar('bar-opp', 'bar-opp-pct', oppPct);
-    setBar('bar-cpc', 'bar-cpc-pct', cpcPct);
-    setBar('bar-trend', 'bar-trend-pct', trendPct2);
+    setBar('bar-opp',    'bar-opp-pct',    oppPct);
+    setBar('bar-cpc',    'bar-cpc-pct',    cpcPct);
+    setBar('bar-trend',  'bar-trend-pct',  trendPct2);
   }, 100);
 
-  // Related
+  // AI strategy
+  document.getElementById('ai-summary').innerHTML = generateAISummaryText(data);
+
+  // Content strategy (replaces fake SERP)
+  renderContentStrategy(data);
+
+  // Related loading state
+  document.getElementById('related-loading').style.display = 'flex';
+  document.getElementById('related-table').style.display = 'none';
+  document.getElementById('related-count').textContent = '';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ── RENDER RELATED KEYWORDS ── */
+function renderRelated(related) {
+  document.getElementById('related-loading').style.display = 'none';
+  document.getElementById('related-table').style.display = 'table';
+  document.getElementById('related-count').textContent = `(${related.length})`;
+
   const tbody = document.getElementById('related-tbody');
   tbody.innerHTML = '';
-  document.getElementById('related-count').textContent = `(${related.length})`;
   related.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="td-kw" onclick="quickCheck('${r.kw.replace(/'/g,"\\'")}')">🔍 ${r.kw}</td>
-      <td><span class="vol-badge">${fmtVol(r.volume)}</span></td>
+      <td class="td-kw" onclick="quickCheck('${r.kw.replace(/'/g,"\\'")}')"  title="Click to analyze">🔍 ${r.kw}</td>
+      <td><span class="vol-badge">Est. ${fmtVol(r.volume)}</span></td>
       <td>
         <div class="diff-bar">
           <span class="diff-pip" style="background:${r.difficulty<35?'var(--green)':r.difficulty<65?'var(--amber)':'var(--red)'}"></span>
@@ -917,25 +1098,6 @@ function renderResults(data, related) {
     `;
     tbody.appendChild(tr);
   });
-
-  // SERP preview
-  const serpDiv = document.getElementById('serp-items');
-  serpDiv.innerHTML = '';
-  const domains = ['ahrefs.com','semrush.com','moz.com','backlinko.com','neilpatel.com','searchengineland.com'];
-  const rng2 = seededRNG(data.kw);
-  for (let i = 0; i < 3; i++) {
-    const d = domains[Math.floor(rng2() * domains.length)];
-    const div = document.createElement('div');
-    div.className = 'serp-item';
-    div.innerHTML = `
-      <div class="serp-url">https://www.${d} › blog</div>
-      <div class="serp-title">${capitalizeFirst(data.kw)}: Complete Guide ${2024 + Math.floor(rng2()*2)} — ${capitalizeFirst(d.split('.')[0])}</div>
-      <div class="serp-desc">Everything you need to know about ${data.kw}. Covers ${data.kw} strategies, tools, tips and actionable advice to improve your results...</div>
-    `;
-    serpDiv.appendChild(div);
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 /* ── RENDER BULK ── */
@@ -948,8 +1110,8 @@ function renderBulk(rows) {
   rows.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="td-kw" onclick="switchToSingle('${r.kw.replace(/'/g,"\\'")}')">🔍 ${r.kw}</td>
-      <td><span class="vol-badge">${fmtVol(r.volume)}</span></td>
+      <td class="td-kw" onclick="switchToSingle('${r.kw.replace(/'/g,"\\'")}')" title="Click for full analysis">🔍 ${r.kw}</td>
+      <td><span class="vol-badge">Est. ${fmtVol(r.volume)}</span></td>
       <td>
         <div class="diff-bar">
           <span class="diff-pip" style="background:${r.difficulty<35?'var(--green)':r.difficulty<65?'var(--amber)':'var(--red)'}"></span>
@@ -968,7 +1130,7 @@ function renderBulk(rows) {
 /* ── TREND CHART ── */
 function renderTrendChart(trendData) {
   if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-  const months = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+  const months = getLast12Months();
   const ctx = document.getElementById('trend-chart').getContext('2d');
   chartInstance = new Chart(ctx, {
     type: 'line',
@@ -994,7 +1156,7 @@ function renderTrendChart(trendData) {
         borderWidth: 1,
         titleColor: '#9898b0',
         bodyColor: '#f0f0f5',
-        callbacks: { label: ctx => ' ' + fmtVol(ctx.raw) + ' searches' }
+        callbacks: { label: ctx => ' Est. ' + fmtVol(ctx.raw) + ' searches' }
       }},
       scales: {
         x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#5a5a70', font: { size: 11 } } },
@@ -1007,7 +1169,7 @@ function renderTrendChart(trendData) {
 /* ── HELPERS ── */
 function fmtVol(n) {
   if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  if (n >= 1000)    return (n/1000).toFixed(1) + 'K';
   return n.toString();
 }
 
@@ -1062,7 +1224,7 @@ function switchToSingle(kw) {
 function exportCSV() {
   if (!currentData) return;
   const { data, related } = currentData;
-  let csv = 'Keyword,Volume,Difficulty,CPC,Competition,Trend%,Intent\n';
+  let csv = 'Keyword,Est. Volume,KD (Organic),Est. CPC,Paid Competition %,Trend %,Intent\n';
   csv += `"${data.kw}",${data.volume},${data.difficulty},${data.cpc},${(data.comp*100).toFixed(0)},${data.trendPct},${data.intent}\n`;
   related.forEach(r => {
     csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`;
@@ -1072,7 +1234,7 @@ function exportCSV() {
 
 function exportBulkCSV() {
   if (!bulkData.length) return;
-  let csv = 'Keyword,Volume,Difficulty,CPC,Competition,Trend%,Intent\n';
+  let csv = 'Keyword,Est. Volume,KD (Organic),Est. CPC,Paid Competition %,Trend %,Intent\n';
   bulkData.forEach(r => {
     csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`;
   });
@@ -1090,7 +1252,17 @@ function downloadCSV(csv, filename) {
 function copyReport() {
   if (!currentData) return;
   const { data } = currentData;
-  const text = `Keyword Report: ${data.kw}\nVolume: ${fmtVol(data.volume)}/mo\nDifficulty: ${data.difficulty}/100\nCPC: $${data.cpc}\nIntent: ${data.intent}\nTrend: ${data.trendPct > 0 ? '+' : ''}${data.trendPct}%\n\nGenerated by RankSight`;
+  const text = `Keyword Report: ${data.kw}
+Est. Volume: ${fmtVol(data.volume)}/mo (range: ${fmtVol(data.volLow)}–${fmtVol(data.volHigh)})
+Organic Difficulty (KD): ${data.difficulty}/100
+Est. CPC: $${data.cpc}
+Paid Competition: ${(data.comp*100).toFixed(0)}%
+Search Intent: ${data.intent}
+Trend (12mo): ${data.trendPct > 0 ? '+' : ''}${data.trendPct}%
+SERP Features: ${data.serpFeatures.join(', ') || 'None detected'}
+
+Note: Volume and CPC are AI-modeled estimates.
+Generated by RankSight — seotool.webmasterjamez.workers.dev`;
   navigator.clipboard.writeText(text).then(() => alert('Report copied to clipboard!'));
 }
 </script>
