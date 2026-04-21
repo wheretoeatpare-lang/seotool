@@ -70,29 +70,31 @@ body {
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 2.5rem;
-  background: rgba(7,7,13,0.9);
+  padding: 0.85rem 2rem; gap: 1rem;
+  background: rgba(7,7,13,0.95);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
 }
 .logo {
-  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
   background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; letter-spacing: -0.02em;
-  text-decoration: none;
+  text-decoration: none; flex-shrink: 0; white-space: nowrap;
 }
-.nav-links { display: flex; gap: 1.75rem; align-items: center; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
 .nav-links a {
-  color: var(--muted); text-decoration: none; font-size: 0.88rem;
-  font-weight: 500; transition: color 0.2s;
+  color: var(--muted); text-decoration: none; font-size: 0.8rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.6rem; border-radius: 6px; white-space: nowrap;
 }
-.nav-links a:hover { color: var(--text); }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .nav-links a.active { color: var(--accent2); }
 .nav-cta {
   background: linear-gradient(135deg, var(--accent), #5a4fcc);
-  color: white !important; padding: 0.45rem 1.1rem;
-  border-radius: 8px; font-size: 0.83rem !important;
+  color: white !important; padding: 0.4rem 0.9rem !important;
+  border-radius: 8px; font-size: 0.8rem !important;
+  white-space: nowrap; flex-shrink: 0; text-decoration: none;
 }
 .nav-cta:hover { opacity: 0.88; }
 
@@ -558,11 +560,14 @@ h1 span {
   font-weight: 600 !important;
 }
 
-@media (max-width: 700px) {
-  nav { padding: 0.9rem 1.25rem; }
+@media (max-width: 900px) {
+  nav { padding: 0.85rem 1.25rem; }
   .nav-links { display: none; }
+  nav > .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
   .nav-mobile-menu { display: flex; }
+}
+@media (max-width: 700px) {
   .hero { padding: 7rem 1.25rem 3rem; }
   .compare-inputs { grid-template-columns: 1fr; }
   .vs-badge { display: none; }
@@ -584,19 +589,19 @@ h1 span {
     <a href="/keyword-volume.html">Keyword Research</a>
     <a href="/ai-search.html">AI Search</a>
     <a href="/document-checker.html">Doc Checker</a>
-    <a href="/" class="nav-cta">Free Audit →</a>
   </div>
+  <a href="/" class="nav-cta">Free Audit →</a>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
-  <a href="/" onclick="closeMobileNav()">SEO Auditor</a>
-  <a href="/competitor.html" class="active" onclick="closeMobileNav()">Competitor Analysis</a>
-  <a href="/keyword-volume.html" onclick="closeMobileNav()">Keyword Research</a>
-  <a href="/ai-search.html" onclick="closeMobileNav()">AI Search</a>
-  <a href="/document-checker.html" onclick="closeMobileNav()">Doc Checker</a>
-  <a href="/" class="nav-mobile-cta">Free Audit →</a>
+  <a href="/" onclick="closeMobileNav()">🔍 SEO Auditor</a>
+  <a href="/competitor.html" class="active" onclick="closeMobileNav()">⚔️ Competitor Analysis</a>
+  <a href="/keyword-volume.html" onclick="closeMobileNav()">📊 Keyword Research</a>
+  <a href="/ai-search.html" onclick="closeMobileNav()">🤖 AI Search Visibility</a>
+  <a href="/document-checker.html" onclick="closeMobileNav()">📄 Doc Checker</a>
+  <a href="/" class="nav-mobile-cta">Run Free Audit →</a>
 </div>
 
 <!-- HERO -->
@@ -770,6 +775,7 @@ function resetTool() {
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('compare-btn').disabled = false;
   document.getElementById('compare-btn').textContent = 'Compare Sites →';
+  const _sfx = document.getElementById('site-footer'); if (_sfx) _sfx.style.display = 'none';
   ['ls1','ls2','ls3','ls4','ls5'].forEach(id => {
     const el = document.getElementById(id);
     el.className = '';
@@ -1091,6 +1097,7 @@ async function startCompare() {
   document.getElementById('hero').style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'block';
+  const _sf = document.getElementById('site-footer'); if (_sf) _sf.style.display = 'none';
   document.getElementById('loading-label').textContent = hn(urlA) + ' vs ' + hn(urlB);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -1156,6 +1163,7 @@ function renderResults(urlA, urlB, pdA, pdB) {
 
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('results-section').style.display = 'block';
+  const _sfr = document.getElementById('site-footer'); if (_sfr) _sfr.style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1547,7 +1555,7 @@ document.addEventListener('click', (e) => {
 });
 </script>
 
-<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:2.5rem 2rem 1.75rem;margin-top:3rem">
+<footer id="site-footer" style="display:none;border-top:1px solid rgba(255,255,255,0.06);padding:2.5rem 2rem 1.75rem;margin-top:3rem">
   <div style="max-width:1100px;margin:0 auto;display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:space-between;margin-bottom:1.75rem">
     <div style="max-width:270px">
       <a href="https://ranksorcery.com/" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#c4b5fd,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;text-decoration:none;margin-bottom:0.6rem">RankSorcery</a>
