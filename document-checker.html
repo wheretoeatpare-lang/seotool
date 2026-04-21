@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DocCheck — AI Document Reviewer | RankSight</title>
+<title>DocCheck — Document Reviewer | RankSight</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -15,7 +15,6 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
 
-/* NAV */
 nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
 .nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
 .nav-brand span{color:var(--text)}
@@ -24,7 +23,6 @@ nav a:hover{color:var(--text)}
 .nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
 .nav-cta:hover{background:rgba(79,255,176,.22)!important}
 
-/* HERO */
 .hero{text-align:center;padding:4.5rem 2rem 2.5rem;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
 .hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
@@ -34,18 +32,15 @@ nav a:hover{color:var(--text)}
 .hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
 .pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted)}
 
-/* LAYOUT */
 .main-wrap{max-width:1240px;margin:0 auto;padding:2rem 1.5rem 4rem}
 .upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-bottom:1.2rem}
 @media(max-width:720px){.upload-grid{grid-template-columns:1fr}}
 
-/* DOC CARD */
 .doc-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--card-shadow);transition:border-color .2s}
 .doc-card:focus-within{border-color:rgba(79,255,176,.4)}
 .doc-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.6rem;display:flex;align-items:center;gap:.4rem}
 .doc-label .num{width:18px;height:18px;border-radius:50%;background:var(--accent);color:#000;font-size:.65rem;display:grid;place-items:center;font-weight:700}
 
-/* Format badges */
 .formats-row{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem}
 .fmt-tag{font-size:.68rem;font-family:'DM Mono',monospace;padding:.15rem .45rem;border-radius:4px;border:1px solid}
 .fmt-tag.pdf{color:#ff6b6b;border-color:rgba(255,107,107,.3);background:rgba(255,107,107,.06)}
@@ -53,28 +48,23 @@ nav a:hover{color:var(--text)}
 .fmt-tag.excel{color:#4fffb0;border-color:rgba(79,255,176,.3);background:rgba(79,255,176,.06)}
 .fmt-tag.txt{color:var(--muted);border-color:var(--border);background:transparent}
 
-/* Textarea */
 .doc-card textarea{width:100%;min-height:190px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;font-size:.82rem;line-height:1.7;padding:.85rem 1rem;resize:vertical;outline:none;transition:border-color .2s}
 .doc-card textarea:focus{border-color:rgba(79,255,176,.4)}
 .doc-card textarea::placeholder{color:var(--muted)}
 
-/* File info bar */
 .file-info{display:none;align-items:center;gap:.5rem;margin-top:.5rem;padding:.4rem .65rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--muted)}
 .file-info .fi-name{color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .file-info .fi-clear{cursor:pointer;color:var(--fail);padding:.1rem .3rem;border-radius:3px;transition:background .15s}
 .file-info .fi-clear:hover{background:rgba(255,92,92,.15)}
 
-/* Drop zone */
 .drop-zone{border:1.5px dashed var(--border);border-radius:8px;padding:.65rem 1rem;text-align:center;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;margin-top:.65rem;display:flex;align-items:center;justify-content:center;gap:.4rem}
 .drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
 .drop-zone input{display:none}
 
-/* Processing bar */
 .proc-bar{display:none;align-items:center;gap:.6rem;margin-top:.5rem;padding:.4rem .7rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.2);border-radius:6px;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent)}
 .proc-bar.show{display:flex}
 .spin{animation:spin .7s linear infinite;display:inline-block}
 
-/* CHECKLIST */
 .checklist-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1.2rem}
 .section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:1rem;color:var(--text)}
 .checklist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem}
@@ -87,13 +77,11 @@ nav a:hover{color:var(--text)}
 .check-item span{font-size:.8rem;color:var(--muted)}
 .check-item.active span{color:var(--text)}
 
-/* REVIEW BUTTON */
 .btn-review{width:100%;background:linear-gradient(135deg,var(--accent),#00e5ff);color:#000;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;padding:1rem 2rem;cursor:pointer;letter-spacing:.02em;transition:opacity .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:2rem}
 .btn-review:hover{opacity:.9;transform:translateY(-1px)}
 .btn-review:active{transform:translateY(0)}
 .btn-review:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-/* RESULTS */
 #results{display:none}
 .results-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
 .results-title{font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem}
@@ -102,23 +90,21 @@ nav a:hover{color:var(--text)}
 .score-fail{color:var(--fail);border-color:var(--fail);background:rgba(255,92,92,.1)}
 .score-warn{color:var(--warn);border-color:var(--warn);background:rgba(255,183,77,.1)}
 
-/* Stats */
 .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1rem;margin-bottom:1.5rem}
 .stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem}
 .stat-val{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;line-height:1}
 .stat-lbl{font-size:.72rem;color:var(--muted);margin-top:.3rem}
 .c-green{color:var(--pass)}.c-red{color:var(--fail)}.c-warn{color:var(--warn)}
 
-/* Findings */
 .findings-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.2rem}
 .findings-head{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:.5rem}
-.finding-row{display:grid;grid-template-columns:28px 1fr 130px 80px;align-items:start;gap:1rem;padding:.85rem 1.25rem;border-bottom:1px solid rgba(42,45,53,.7);font-size:.84rem;transition:background .15s;animation:fadeIn .3s ease both}
+.finding-row{display:grid;grid-template-columns:28px 1fr 160px 80px;align-items:start;gap:1rem;padding:.85rem 1.25rem;border-bottom:1px solid rgba(42,45,53,.7);font-size:.84rem;transition:background .15s;animation:fadeIn .3s ease both}
 .finding-row:hover{background:var(--bg3)}
 .finding-row:last-child{border-bottom:none}
 .find-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);padding-top:2px}
 .find-detail{line-height:1.5}
 .find-detail strong{display:block;margin-bottom:.2rem}
-.find-detail .orig{font-size:.78rem;color:var(--muted);font-family:'DM Mono',monospace}
+.find-detail .orig{font-size:.78rem;color:var(--muted);font-family:'DM Mono',monospace;margin-top:.15rem}
 .find-cat{font-size:.72rem;padding:.2rem .55rem;border-radius:4px;font-family:'DM Mono',monospace;align-self:start;border:1px solid;white-space:nowrap}
 .cat-missing{color:var(--fail);border-color:rgba(255,92,92,.4);background:rgba(255,92,92,.08)}
 .cat-mismatch{color:var(--warn);border-color:rgba(255,183,77,.4);background:rgba(255,183,77,.08)}
@@ -129,7 +115,6 @@ nav a:hover{color:var(--text)}
 .s-fail{background:rgba(255,92,92,.15);color:var(--fail)}
 .s-warn{background:rgba(255,183,77,.15);color:var(--warn)}
 
-/* Diff panel */
 .diff-panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;margin-bottom:1.2rem;overflow:hidden}
 .diff-panel-head{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem}
 .diff-body{display:grid;grid-template-columns:1fr 1fr}
@@ -140,16 +125,21 @@ nav a:hover{color:var(--text)}
 mark.add{background:rgba(79,255,176,.25);color:var(--pass);border-radius:2px}
 mark.del{background:rgba(255,92,92,.2);color:var(--fail);border-radius:2px;text-decoration:line-through}
 
-/* AI Summary */
-.ai-summary{background:var(--bg2);border:1px solid rgba(79,255,176,.2);border-radius:12px;padding:1.25rem;margin-bottom:1.2rem}
-.ai-summary-head{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem}
-.ai-tag{font-family:'DM Mono',monospace;font-size:.65rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);color:var(--accent);padding:.15rem .5rem;border-radius:4px}
-.ai-text{font-size:.88rem;color:var(--muted);line-height:1.75}
-.ai-text p+p{margin-top:.6rem}
+.summary-card{background:var(--bg2);border:1px solid rgba(79,255,176,.2);border-radius:12px;padding:1.25rem;margin-bottom:1.2rem}
+.summary-head{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:.85rem;display:flex;align-items:center;gap:.5rem}
+.engine-tag{font-family:'DM Mono',monospace;font-size:.65rem;background:rgba(0,255,255,.1);border:1px solid rgba(0,255,255,.3);color:var(--accent2);padding:.15rem .5rem;border-radius:4px}
+.summary-text{font-size:.88rem;color:var(--muted);line-height:1.75}
+.summary-text p+p{margin-top:.6rem}
 
 .shimmer{background:linear-gradient(90deg,var(--bg3) 25%,#22252e 50%,var(--bg3) 75%);background-size:400% 100%;animation:shimmer 1.4s infinite linear;border-radius:6px}
 
-/* Animations */
+/* Progress bar for analysis */
+.analysis-bar{display:none;margin-bottom:1.2rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem}
+.analysis-bar.show{display:block}
+.analysis-label{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--accent);margin-bottom:.5rem}
+.progress-track{background:var(--bg3);border-radius:999px;height:6px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:999px;transition:width .3s ease;width:0%}
+
 @keyframes shimmer{to{background-position:-400% 0}}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
@@ -171,23 +161,22 @@ footer a{color:var(--accent);text-decoration:none}
 </nav>
 
 <section class="hero">
-  <div class="hero-badge">✦ AI Document Reviewer</div>
+  <div class="hero-badge">✦ Smart Document Reviewer</div>
   <h1>Check Documents for<br><em>Accuracy & Consistency</em></h1>
-  <p class="hero-sub">Compare your original document against a system-generated version. Upload PDFs, Word docs, Excel sheets, or paste text — get a full Pass/Fail accuracy report powered by AI.</p>
+  <p class="hero-sub">Compare your original document against a system-generated version. Upload PDFs, Word docs, Excel sheets, or paste text — get a full Pass/Fail accuracy report with detailed rule-based analysis.</p>
   <div class="hero-pills">
     <span class="pill">📄 PDF</span>
     <span class="pill">📝 Word .docx</span>
     <span class="pill">📊 Excel .xlsx / .xls</span>
     <span class="pill">📋 Plain Text</span>
     <span class="pill">✅ Pass / Fail Checklist</span>
-    <span class="pill">⚡ AI-Powered</span>
+    <span class="pill">⚡ No API Required</span>
   </div>
 </section>
 
 <div class="main-wrap">
 
   <div class="upload-grid">
-
     <!-- ORIGINAL -->
     <div class="doc-card">
       <div class="doc-label"><span class="num">1</span> Original Document</div>
@@ -240,8 +229,7 @@ footer a{color:var(--accent);text-decoration:none}
         <span id="proc-generated-msg">Processing…</span>
       </div>
     </div>
-
-  </div><!-- /upload-grid -->
+  </div>
 
   <!-- CHECKLIST -->
   <div class="checklist-card">
@@ -260,9 +248,9 @@ footer a{color:var(--accent);text-decoration:none}
       <div id="overall-badge" class="score-badge score-pass">Overall: PASS</div>
     </div>
     <div class="stat-row" id="stat-row"></div>
-    <div class="ai-summary">
-      <div class="ai-summary-head"><span>◆ AI Summary</span><span class="ai-tag">AI</span></div>
-      <div class="ai-text" id="ai-text"></div>
+    <div class="summary-card">
+      <div class="summary-head"><span>◆ Analysis Summary</span><span class="engine-tag">Rule Engine</span></div>
+      <div class="summary-text" id="ai-text"></div>
     </div>
     <div class="diff-panel">
       <div class="diff-panel-head">📑 Side-by-Side Comparison</div>
@@ -280,38 +268,32 @@ footer a{color:var(--accent);text-decoration:none}
     </div>
   </div>
 
-</div><!-- /main-wrap -->
+</div>
 
 <footer>
   <a href="https://seotool.webmasterjamez.workers.dev/">← Back to RankSight SEO Auditor</a> &nbsp;·&nbsp;
-  DocCheck — AI Document Reviewer &nbsp;·&nbsp; Powered by Claude AI
+  DocCheck — Document Reviewer &nbsp;·&nbsp; Rule-Based Analysis Engine
 </footer>
 
 <script>
-// ── PDF.js worker ──
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ── State ──
-const S = {
-  original:  { text: '' },
-  generated: { text: '' }
-};
-
+const S = { original: { text: '' }, generated: { text: '' } };
 const PDF_EXTS   = ['pdf'];
 const WORD_EXTS  = ['docx','doc'];
 const EXCEL_EXTS = ['xlsx','xls'];
 
 const CHECKLIST_ITEMS = [
-  {id:'names',   label:'Names & People'},
-  {id:'dates',   label:'Dates & Timestamps'},
-  {id:'numbers', label:'Numbers & Amounts'},
-  {id:'addresses',label:'Addresses & Locations'},
-  {id:'ids',     label:'IDs / Reference Codes'},
-  {id:'structure',label:'Document Structure'},
-  {id:'grammar', label:'Grammar & Spelling'},
-  {id:'missing', label:'Missing Fields'},
-  {id:'extra',   label:'Extra / Added Info'},
-  {id:'format',  label:'Format Consistency'},
+  { id:'names',    label:'Names & People' },
+  { id:'dates',    label:'Dates & Timestamps' },
+  { id:'numbers',  label:'Numbers & Amounts' },
+  { id:'addresses',label:'Addresses & Locations' },
+  { id:'ids',      label:'IDs / Reference Codes' },
+  { id:'structure',label:'Document Structure' },
+  { id:'grammar',  label:'Grammar & Spelling' },
+  { id:'missing',  label:'Missing Fields' },
+  { id:'extra',    label:'Extra / Added Info' },
+  { id:'format',   label:'Format Consistency' },
 ];
 
 // Build checklist UI
@@ -328,21 +310,11 @@ CHECKLIST_ITEMS.forEach(item => {
   cl.appendChild(div);
 });
 
-function getExt(name){ return (name.split('.').pop() || '').toLowerCase(); }
+function getExt(name){ return (name.split('.').pop()||'').toLowerCase(); }
 function showProc(side, msg){ document.getElementById(`proc-${side}`).classList.add('show'); document.getElementById(`proc-${side}-msg`).textContent = msg; }
 function hideProc(side){ document.getElementById(`proc-${side}`).classList.remove('show'); }
-
-function setFileInfo(side, name){
-  document.getElementById(`fi-${side}`).style.display = 'flex';
-  document.getElementById(`fi-name-${side}`).textContent = name;
-}
-
-function clearFile(side){
-  S[side].text = '';
-  document.getElementById(`doc-${side}`).value = '';
-  document.getElementById(`fi-${side}`).style.display = 'none';
-  document.getElementById(`file-${side}`).value = '';
-}
+function setFileInfo(side, name){ document.getElementById(`fi-${side}`).style.display='flex'; document.getElementById(`fi-name-${side}`).textContent=name; }
+function clearFile(side){ S[side].text=''; document.getElementById(`doc-${side}`).value=''; document.getElementById(`fi-${side}`).style.display='none'; document.getElementById(`file-${side}`).value=''; }
 
 async function handleFile(file, side){
   const ext = getExt(file.name);
@@ -351,17 +323,10 @@ async function handleFile(file, side){
     if(PDF_EXTS.includes(ext))        await handlePDF(file, side);
     else if(WORD_EXTS.includes(ext))  await handleDocx(file, side);
     else if(EXCEL_EXTS.includes(ext)) await handleExcel(file, side);
-    else {
-      // Plain text / TXT
-      S[side].text = await file.text();
-      document.getElementById(`doc-${side}`).value = S[side].text;
-    }
+    else { S[side].text = await file.text(); document.getElementById(`doc-${side}`).value = S[side].text; }
     setFileInfo(side, file.name);
-  } catch(e){
-    alert(`Could not read "${file.name}": ${e.message}`);
-  } finally {
-    hideProc(side);
-  }
+  } catch(e){ alert(`Could not read "${file.name}": ${e.message}`); }
+  finally { hideProc(side); }
 }
 
 async function handlePDF(file, side){
@@ -369,10 +334,10 @@ async function handlePDF(file, side){
   const ab  = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data: ab }).promise;
   let txt = '';
-  for(let i = 1; i <= pdf.numPages; i++){
+  for(let i=1;i<=pdf.numPages;i++){
     const page    = await pdf.getPage(i);
     const content = await page.getTextContent();
-    txt += `[Page ${i}]\n` + content.items.map(s => s.str).join(' ') + '\n\n';
+    txt += `[Page ${i}]\n` + content.items.map(s=>s.str).join(' ') + '\n\n';
   }
   S[side].text = txt.trim();
   document.getElementById(`doc-${side}`).value = S[side].text;
@@ -389,146 +354,667 @@ async function handleDocx(file, side){
 async function handleExcel(file, side){
   showProc(side, 'Extracting Excel data…');
   const ab = await file.arrayBuffer();
-  const wb = XLSX.read(ab, { type: 'array' });
+  const wb = XLSX.read(ab, { type:'array' });
   let txt = '';
-  wb.SheetNames.forEach(name => {
-    txt += `=== Sheet: ${name} ===\n` + XLSX.utils.sheet_to_csv(wb.Sheets[name]) + '\n\n';
-  });
+  wb.SheetNames.forEach(name => { txt += `=== Sheet: ${name} ===\n` + XLSX.utils.sheet_to_csv(wb.Sheets[name]) + '\n\n'; });
   S[side].text = txt.trim();
   document.getElementById(`doc-${side}`).value = S[side].text;
 }
 
-// Wire up file inputs and drop zones
-['original', 'generated'].forEach(side => {
+['original','generated'].forEach(side => {
   const inp  = document.getElementById(`file-${side}`);
   const drop = document.getElementById(`drop-${side}`);
-
   inp.addEventListener('change', () => { if(inp.files[0]) handleFile(inp.files[0], side); });
-
   drop.addEventListener('dragover',  e => { e.preventDefault(); drop.classList.add('drag'); });
   drop.addEventListener('dragleave', ()  => drop.classList.remove('drag'));
-  drop.addEventListener('drop', e => {
-    e.preventDefault();
-    drop.classList.remove('drag');
-    if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], side);
-  });
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('drag'); if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], side); });
 });
 
-// ── Main review ──
 document.getElementById('btn-review').addEventListener('click', runReview);
 
-async function runReview(){
-  // Sync textarea values into state (covers manual paste)
+// ════════════════════════════════════════════════════
+//  RULE-BASED ANALYSIS ENGINE
+// ════════════════════════════════════════════════════
+
+// ── Utility helpers ──────────────────────────────────
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function trunc(s, n=60){ s=String(s||'').trim(); return s.length>n ? s.slice(0,n)+'…' : s; }
+
+function cosineSimilarity(a, b){
+  const freq = t => {
+    const m = {};
+    t.toLowerCase().split(/\W+/).filter(Boolean).forEach(w => { m[w]=(m[w]||0)+1; });
+    return m;
+  };
+  const fa = freq(a), fb = freq(b);
+  const allKeys = new Set([...Object.keys(fa), ...Object.keys(fb)]);
+  let dot=0, magA=0, magB=0;
+  allKeys.forEach(k => {
+    const va = fa[k]||0, vb = fb[k]||0;
+    dot += va*vb; magA += va*va; magB += vb*vb;
+  });
+  return (magA && magB) ? dot / (Math.sqrt(magA) * Math.sqrt(magB)) : 0;
+}
+
+function jaccardSimilarity(setA, setB){
+  const inter = [...setA].filter(x => setB.has(x)).length;
+  const union = new Set([...setA,...setB]).size;
+  return union ? inter/union : 1;
+}
+
+function levenshtein(a, b){
+  const m=a.length, n=b.length;
+  const dp = Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// ── Regex extractors ─────────────────────────────────
+
+const RE = {
+  // Names: sequences of 2-4 capitalized words (not all-caps abbreviations)
+  names: /\b([A-Z][a-z]{1,20}(?:\s+(?:van|de|del|la|le|von|bin|binti|Jr\.?|Sr\.?|II|III|IV)?\s*[A-Z][a-z]{1,20}){1,3})\b/g,
+
+  // Dates: many formats
+  dates: /\b(?:\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4}|\d{4}[\/\-\.]\d{1,2}[\/\-\.]\d{1,2}|(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s*\d{4}|\d{1,2}\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{4})\b/gi,
+
+  // Numbers with currency, percentages, decimals
+  numbers: /(?:[$€£₱¥])\s?\d[\d,]*(?:\.\d+)?|\b\d[\d,]*(?:\.\d+)?\s?(?:%|percent|kg|km|mi|lb|m\b|ft\b|hrs?|hours?|days?|months?|years?|USD|EUR|PHP|GBP)|\b\d{4,}(?:,\d{3})*(?:\.\d+)?\b|\b\d+\.\d+\b/gi,
+
+  // Addresses: street addresses, zip codes, PO boxes
+  addresses: /\b(?:P\.?O\.?\s*Box\s+\d+|\d+\s+[A-Za-z0-9\s,\.]+(?:Street|St|Avenue|Ave|Boulevard|Blvd|Road|Rd|Drive|Dr|Lane|Ln|Way|Court|Ct|Place|Pl|Floor|Fl|Suite|Ste|Unit|Apt|Building|Bldg)[^,\n]*(?:,\s*[A-Za-z\s]+)?)|\b[A-Z]{2}\s+\d{5}(?:-\d{4})?\b/gi,
+
+  // IDs: invoice numbers, order IDs, account numbers, codes
+  ids: /\b(?:(?:INV|ORD|REF|PO|SO|WO|TXN|REC|DOC|CASE|TICKET|REQ|ID|NO|NUM|#)[.\-\s]?\d[\w\-]*|\d{5,}(?:[\-\/]\d+)+|[A-Z]{2,6}[\-\/]?\d{4,}(?:[\-\/]\d+)*)\b/gi,
+
+  // Common field labels
+  fieldLabels: /^[ \t]*([A-Za-z][A-Za-z\s\/\-_]{1,35})\s*[:]\s*/gm,
+
+  // Sentences (rough split)
+  sentences: /[^.!?\n]+[.!?\n]+/g,
+};
+
+function extractMatches(text, regex){
+  const seen = new Set(), out = [];
+  const re = new RegExp(regex.source, regex.flags);
+  let m;
+  while((m=re.exec(text))!==null){
+    const v = m[0].trim().toLowerCase();
+    if(v.length>1 && !seen.has(v)){ seen.add(v); out.push(m[0].trim()); }
+  }
+  return out;
+}
+
+function extractFieldLabels(text){
+  const labels = new Map(); // label -> value
+  const lines = text.split('\n');
+  lines.forEach(line => {
+    const m = line.match(/^([A-Za-z][A-Za-z\s\/\-_]{1,35})\s*[:]\s*(.*)$/);
+    if(m) labels.set(m[1].trim().toLowerCase(), m[2].trim());
+  });
+  return labels;
+}
+
+// ── Check functions ──────────────────────────────────
+
+function checkNames(orig, gen, findings){
+  const oNames = extractMatches(orig, RE.names);
+  const gNames = extractMatches(gen,  RE.names);
+  const oSet   = new Set(oNames.map(n=>n.toLowerCase()));
+  const gSet   = new Set(gNames.map(n=>n.toLowerCase()));
+
+  oNames.forEach(name => {
+    if(!gSet.has(name.toLowerCase())){
+      // Check for partial/misspelled version
+      const fuzzy = gNames.find(g => levenshtein(name.toLowerCase(), g.toLowerCase()) <= 2);
+      findings.push({
+        category: fuzzy ? 'Mismatch' : 'Missing',
+        checkType:'Names & People',
+        description: fuzzy ? `Name may be misspelled: "${name}" vs "${fuzzy}"` : `Name missing in generated: "${name}"`,
+        original: name,
+        generated: fuzzy || '(not found)',
+        status: fuzzy ? 'WARNING' : 'FAIL'
+      });
+    }
+  });
+
+  gNames.forEach(name => {
+    if(!oSet.has(name.toLowerCase())){
+      findings.push({
+        category:'Extra',
+        checkType:'Names & People',
+        description:`Extra name in generated document: "${name}"`,
+        original:'(not present)',
+        generated: name,
+        status:'WARNING'
+      });
+    }
+  });
+
+  if(oNames.length>0 && findings.filter(f=>f.checkType==='Names & People').length===0){
+    findings.push({ category:'OK', checkType:'Names & People', description:`All ${oNames.length} name(s) match correctly`, original:'', generated:'', status:'PASS' });
+  }
+  if(oNames.length===0 && gNames.length===0){
+    findings.push({ category:'OK', checkType:'Names & People', description:'No names detected in either document', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkDates(orig, gen, findings){
+  const oDates = extractMatches(orig, RE.dates);
+  const gDates = extractMatches(gen,  RE.dates);
+
+  // Normalize date strings for comparison
+  function normDate(d){
+    d = d.toLowerCase().replace(/[,]/g,'').trim();
+    const months = {jan:1,january:1,feb:2,february:2,mar:3,march:3,apr:4,april:4,may:5,jun:6,june:6,jul:7,july:7,aug:8,august:8,sep:9,september:9,oct:10,october:10,nov:11,november:11,dec:12,december:12};
+    // Try to parse into YYYY-MM-DD canonical form
+    let m;
+    if((m=d.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})$/)))
+      return `${m[3].length===2?'20'+m[3]:m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    if((m=d.match(/^(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})$/)))
+      return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+    if((m=d.match(/^([a-z]+)\s+(\d{1,2})\s+(\d{4})$/)))
+      return `${m[3]}-${String(months[m[1]]||0).padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+    if((m=d.match(/^(\d{1,2})\s+([a-z]+)\s+(\d{4})$/)))
+      return `${m[3]}-${String(months[m[2]]||0).padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    return d;
+  }
+
+  const oNorm = new Map(oDates.map(d=>[normDate(d),d]));
+  const gNorm = new Map(gDates.map(d=>[normDate(d),d]));
+
+  oNorm.forEach((orig_d, key) => {
+    if(!gNorm.has(key)){
+      findings.push({ category:'Missing', checkType:'Dates & Timestamps', description:`Date missing in generated: "${orig_d}"`, original:orig_d, generated:'(not found)', status:'FAIL' });
+    }
+  });
+
+  gNorm.forEach((gen_d, key) => {
+    if(!oNorm.has(key)){
+      findings.push({ category:'Extra', checkType:'Dates & Timestamps', description:`Extra/changed date in generated: "${gen_d}"`, original:'(not present)', generated:gen_d, status:'WARNING' });
+    }
+  });
+
+  if(oDates.length>0 && findings.filter(f=>f.checkType==='Dates & Timestamps').length===0){
+    findings.push({ category:'OK', checkType:'Dates & Timestamps', description:`All ${oDates.length} date(s) match`, original:'', generated:'', status:'PASS' });
+  }
+  if(oDates.length===0 && gDates.length===0){
+    findings.push({ category:'OK', checkType:'Dates & Timestamps', description:'No dates detected in either document', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkNumbers(orig, gen, findings){
+  const oNums = extractMatches(orig, RE.numbers);
+  const gNums = extractMatches(gen,  RE.numbers);
+
+  function normNum(s){
+    return s.toLowerCase().replace(/[,\s]/g,'').replace(/[$€£₱¥]/g,'CURR:');
+  }
+
+  const oSet = new Map(oNums.map(n=>[normNum(n),n]));
+  const gSet = new Map(gNums.map(n=>[normNum(n),n]));
+
+  let mismatches = 0;
+  oSet.forEach((orig_n, key) => {
+    if(!gSet.has(key)){
+      mismatches++;
+      findings.push({ category:'Mismatch', checkType:'Numbers & Amounts', description:`Number/amount missing or changed: "${orig_n}"`, original:orig_n, generated:'(not found)', status:'FAIL' });
+    }
+  });
+
+  gSet.forEach((gen_n, key) => {
+    if(!oSet.has(key)){
+      findings.push({ category:'Extra', checkType:'Numbers & Amounts', description:`Extra number in generated: "${gen_n}"`, original:'(not present)', generated:gen_n, status:'WARNING' });
+    }
+  });
+
+  if(oNums.length>0 && mismatches===0 && findings.filter(f=>f.checkType==='Numbers & Amounts' && f.status!=='PASS').length===0){
+    findings.push({ category:'OK', checkType:'Numbers & Amounts', description:`All ${oNums.length} number(s)/amount(s) match`, original:'', generated:'', status:'PASS' });
+  }
+  if(oNums.length===0 && gNums.length===0){
+    findings.push({ category:'OK', checkType:'Numbers & Amounts', description:'No significant numbers detected', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkAddresses(orig, gen, findings){
+  const oAddr = extractMatches(orig, RE.addresses);
+  const gAddr = extractMatches(gen,  RE.addresses);
+  const oSet  = new Set(oAddr.map(a=>a.toLowerCase().replace(/\s+/g,' ')));
+  const gSet  = new Set(gAddr.map(a=>a.toLowerCase().replace(/\s+/g,' ')));
+
+  oAddr.forEach(addr => {
+    const key = addr.toLowerCase().replace(/\s+/g,' ');
+    if(!gSet.has(key)){
+      const fuzzy = gAddr.find(g=>levenshtein(key,g.toLowerCase().replace(/\s+/g,' '))<=5);
+      findings.push({ category:fuzzy?'Mismatch':'Missing', checkType:'Addresses & Locations', description:fuzzy?`Address differs: "${trunc(addr,50)}" vs "${trunc(fuzzy,50)}"`:`Address missing: "${trunc(addr,50)}"`, original:trunc(addr,55), generated:fuzzy?trunc(fuzzy,55):'(not found)', status:fuzzy?'WARNING':'FAIL' });
+    }
+  });
+
+  gAddr.forEach(addr => {
+    const key = addr.toLowerCase().replace(/\s+/g,' ');
+    if(!oSet.has(key) && !oAddr.find(o=>levenshtein(key,o.toLowerCase().replace(/\s+/g,' '))<=5)){
+      findings.push({ category:'Extra', checkType:'Addresses & Locations', description:`Extra address in generated: "${trunc(addr,50)}"`, original:'(not present)', generated:trunc(addr,55), status:'WARNING' });
+    }
+  });
+
+  if(oAddr.length>0 && findings.filter(f=>f.checkType==='Addresses & Locations').length===0){
+    findings.push({ category:'OK', checkType:'Addresses & Locations', description:`All ${oAddr.length} address(es) match`, original:'', generated:'', status:'PASS' });
+  }
+  if(oAddr.length===0 && gAddr.length===0){
+    findings.push({ category:'OK', checkType:'Addresses & Locations', description:'No addresses detected in either document', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkIDs(orig, gen, findings){
+  const oIDs = extractMatches(orig, RE.ids);
+  const gIDs = extractMatches(gen,  RE.ids);
+  const oSet = new Set(oIDs.map(i=>i.toUpperCase().replace(/[\s\-]/g,'')));
+  const gSet = new Set(gIDs.map(i=>i.toUpperCase().replace(/[\s\-]/g,'')));
+
+  oIDs.forEach(id => {
+    const key = id.toUpperCase().replace(/[\s\-]/g,'');
+    if(!gSet.has(key)){
+      findings.push({ category:'Missing', checkType:'IDs / Reference Codes', description:`Reference ID missing: "${id}"`, original:id, generated:'(not found)', status:'FAIL' });
+    }
+  });
+
+  gIDs.forEach(id => {
+    const key = id.toUpperCase().replace(/[\s\-]/g,'');
+    if(!oSet.has(key)){
+      findings.push({ category:'Extra', checkType:'IDs / Reference Codes', description:`Extra ID in generated: "${id}"`, original:'(not present)', generated:id, status:'WARNING' });
+    }
+  });
+
+  if(oIDs.length>0 && findings.filter(f=>f.checkType==='IDs / Reference Codes').length===0){
+    findings.push({ category:'OK', checkType:'IDs / Reference Codes', description:`All ${oIDs.length} ID(s)/code(s) match`, original:'', generated:'', status:'PASS' });
+  }
+  if(oIDs.length===0 && gIDs.length===0){
+    findings.push({ category:'OK', checkType:'IDs / Reference Codes', description:'No reference IDs detected', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkStructure(orig, gen, findings){
+  const oLines = orig.split('\n').filter(l=>l.trim());
+  const gLines = gen.split('\n').filter(l=>l.trim());
+
+  // Detect heading-like lines (ALL CAPS, Title Case at line start, short lines)
+  function extractHeadings(lines){
+    return lines.filter(l=>{
+      const t = l.trim();
+      return (t===t.toUpperCase() && t.length>3 && t.length<80 && /[A-Z]/.test(t)) ||
+             (t.length<80 && /^[A-Z][A-Za-z\s\-:]{2,}$/.test(t) && !t.includes('.'));
+    }).map(l=>l.trim().toLowerCase());
+  }
+
+  const oHeadings = extractHeadings(oLines);
+  const gHeadings = extractHeadings(gLines);
+  const oHSet = new Set(oHeadings);
+  const gHSet = new Set(gHeadings);
+
+  let structIssues = 0;
+  oHeadings.forEach(h => {
+    if(!gHSet.has(h)){
+      const fuzzy = gHeadings.find(g=>levenshtein(h,g)<=4);
+      if(!fuzzy){ structIssues++; findings.push({ category:'Missing', checkType:'Document Structure', description:`Section heading missing: "${trunc(h,55)}"`, original:trunc(h,55), generated:'(not found)', status:'FAIL' }); }
+    }
+  });
+
+  gHeadings.forEach(h => {
+    if(!oHSet.has(h) && !oHeadings.find(o=>levenshtein(h,o)<=4)){
+      findings.push({ category:'Extra', checkType:'Document Structure', description:`Extra section in generated: "${trunc(h,55)}"`, original:'(not present)', generated:trunc(h,55), status:'WARNING' });
+    }
+  });
+
+  // Paragraph count ratio
+  const oParagraphs = orig.split(/\n\s*\n/).filter(p=>p.trim().length>20).length;
+  const gParagraphs = gen.split(/\n\s*\n/).filter(p=>p.trim().length>20).length;
+  if(oParagraphs>0 && gParagraphs>0){
+    const ratio = Math.abs(oParagraphs - gParagraphs) / Math.max(oParagraphs, gParagraphs);
+    if(ratio > 0.3){
+      structIssues++;
+      findings.push({ category:'Mismatch', checkType:'Document Structure', description:`Paragraph count differs significantly: ${oParagraphs} in original vs ${gParagraphs} in generated`, original:`${oParagraphs} paragraphs`, generated:`${gParagraphs} paragraphs`, status:'WARNING' });
+    }
+  }
+
+  if(structIssues===0 && findings.filter(f=>f.checkType==='Document Structure').length===0){
+    findings.push({ category:'OK', checkType:'Document Structure', description:'Document structure is consistent', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkGrammar(orig, gen, findings){
+  // Common misspelling dictionary
+  const commonMisspellings = {
+    'recieve':'receive','occured':'occurred','seperate':'separate','definately':'definitely',
+    'accomodation':'accommodation','occurance':'occurrence','embarass':'embarrass',
+    'neccessary':'necessary','persue':'pursue','priviledge':'privilege',
+    'publically':'publicly','refered':'referred','religous':'religious',
+    'succesful':'successful','untill':'until','wierd':'weird','writting':'writing',
+    'accomodate':'accommodate','agressive':'aggressive','apparant':'apparent',
+    'arguement':'argument','beleive':'believe','calender':'calendar',
+    'collegue':'colleague','commitee':'committee','concious':'conscious',
+    'existance':'existence','foriegn':'foreign','goverment':'government',
+    'grammer':'grammar','gaurd':'guard','harrass':'harass',
+    'ignorence':'ignorance','independance':'independence','judgement':'judgment',
+    'knowlege':'knowledge','liason':'liaison','maintenence':'maintenance',
+    'mispell':'misspell','noticable':'noticeable','occassion':'occasion',
+    'performence':'performance','posession':'possession','reccommend':'recommend',
+    'relevent':'relevant','resistence':'resistance','sentance':'sentence',
+    'speach':'speech','studing':'studying','suprise':'surprise',
+    'tommorrow':'tomorrow','truely':'truly','unforseen':'unforeseen',
+    'vaccuum':'vacuum','visable':'visible','wether':'whether'
+  };
+
+  function checkSpelling(text, side){
+    const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g)||[];
+    const issues = [];
+    const seen = new Set();
+    words.forEach(w => {
+      if(!seen.has(w) && commonMisspellings[w]){ seen.add(w); issues.push({word:w, correct:commonMisspellings[w]}); }
+    });
+    return issues;
+  }
+
+  // Double spaces, broken punctuation
+  function checkPunctuation(text){
+    const issues = [];
+    if(/[a-z]\s{2,}[A-Z]/.test(text)) issues.push('Double spaces detected between sentences');
+    if(/\s[,\.;:]/.test(text)) issues.push('Space before punctuation detected');
+    if(/[,\.;:]{2,}/.test(text)) issues.push('Repeated punctuation marks detected');
+    return issues;
+  }
+
+  const oSpell = checkSpelling(orig, 'original');
+  const gSpell = checkSpelling(gen, 'generated');
+  const gPunct = checkPunctuation(gen);
+
+  // Report misspellings in generated that aren't in original (newly introduced errors)
+  const oMisspelled = new Set(oSpell.map(i=>i.word));
+  gSpell.forEach(issue => {
+    if(!oMisspelled.has(issue.word)){
+      findings.push({ category:'Mismatch', checkType:'Grammar & Spelling', description:`Possible misspelling introduced in generated: "${issue.word}" (should be "${issue.correct}")`, original:'(correct)', generated:issue.word, status:'WARNING' });
+    }
+  });
+
+  // Report misspellings fixed in generated (good!)
+  oSpell.forEach(issue => {
+    if(!gSpell.find(g=>g.word===issue.word)){
+      // Don't report as finding, just skip
+    }
+  });
+
+  gPunct.forEach(msg => {
+    findings.push({ category:'Mismatch', checkType:'Grammar & Spelling', description:msg, original:'', generated:'', status:'WARNING' });
+  });
+
+  // Sentence count comparison
+  const oSents = (orig.match(/[^.!?]+[.!?]+/g)||[]).length;
+  const gSents = (gen.match(/[^.!?]+[.!?]+/g)||[]).length;
+  if(oSents>5 && gSents>5){
+    const ratio = Math.abs(oSents-gSents)/Math.max(oSents,gSents);
+    if(ratio>0.25) findings.push({ category:'Mismatch', checkType:'Grammar & Spelling', description:`Sentence count differs: ${oSents} original vs ${gSents} generated`, original:`${oSents} sentences`, generated:`${gSents} sentences`, status:'WARNING' });
+  }
+
+  if(findings.filter(f=>f.checkType==='Grammar & Spelling').length===0){
+    findings.push({ category:'OK', checkType:'Grammar & Spelling', description:'No grammar or spelling issues detected', original:'', generated:'', status:'PASS' });
+  }
+}
+
+function checkMissingFields(orig, gen, findings){
+  const oFields = extractFieldLabels(orig);
+  const gFields = extractFieldLabels(gen);
+
+  oFields.forEach((val, label) => {
+    if(!gFields.has(label)){
+      findings.push({ category:'Missing', checkType:'Missing Fields', description:`Field "${label}" present in original but missing in generated`, original:`${label}: ${trunc(val,40)}`, generated:'(not found)', status:'FAIL' });
+    } else {
+      const gVal = gFields.get(label);
+      if(val && gVal && val.toLowerCase()!==gVal.toLowerCase() && levenshtein(val.toLowerCase(),gVal.toLowerCase())>3){
+        findings.push({ category:'Mismatch', checkType:'Missing Fields', description:`Field "${label}" has different value`, original:trunc(val,50), generated:trunc(gVal,50), status:'WARNING' });
+      }
+    }
+  });
+
+  if(findings.filter(f=>f.checkType==='Missing Fields').length===0){
+    if(oFields.size>0){
+      findings.push({ category:'OK', checkType:'Missing Fields', description:`All ${oFields.size} field(s) present in generated`, original:'', generated:'', status:'PASS' });
+    } else {
+      findings.push({ category:'OK', checkType:'Missing Fields', description:'No labeled fields detected', original:'', generated:'', status:'PASS' });
+    }
+  }
+}
+
+function checkExtra(orig, gen, findings){
+  // Find sentences/phrases in generated not present in original
+  const oWords = new Set(orig.toLowerCase().split(/\W+/).filter(w=>w.length>4));
+  const gSentences = (gen.match(/[^.!?\n]{30,}[.!?\n]/g)||[]);
+
+  let extraCount = 0;
+  const reported = new Set();
+  gSentences.forEach(sent => {
+    const sentWords = sent.toLowerCase().split(/\W+/).filter(w=>w.length>4);
+    if(sentWords.length<4) return;
+    const overlap = sentWords.filter(w=>oWords.has(w)).length / sentWords.length;
+    if(overlap < 0.3 && !reported.has(sent.trim().slice(0,40))){
+      extraCount++;
+      reported.add(sent.trim().slice(0,40));
+      if(extraCount<=3){ // Cap at 3 findings to avoid noise
+        findings.push({ category:'Extra', checkType:'Extra / Added Info', description:`Content in generated has low overlap with original`, original:'(not in original)', generated:trunc(sent,60), status:'WARNING' });
+      }
+    }
+  });
+
+  if(extraCount===0){
+    findings.push({ category:'OK', checkType:'Extra / Added Info', description:'No significant extra content detected in generated', original:'', generated:'', status:'PASS' });
+  } else if(extraCount>3){
+    findings.push({ category:'Extra', checkType:'Extra / Added Info', description:`${extraCount-3} more extra content block(s) detected (see above for samples)`, original:'', generated:'', status:'WARNING' });
+  }
+}
+
+function checkFormat(orig, gen, findings){
+  // Line ending consistency
+  const oCRLF = (orig.match(/\r\n/g)||[]).length;
+  const gCRLF = (gen.match(/\r\n/g)||[]).length;
+  if((oCRLF>0)!=(gCRLF>0)){
+    findings.push({ category:'Mismatch', checkType:'Format Consistency', description:'Line ending format differs (CRLF vs LF)', original:oCRLF>0?'CRLF':'LF', generated:gCRLF>0?'CRLF':'LF', status:'WARNING' });
+  }
+
+  // Whitespace / indentation patterns
+  const oIndented = (orig.match(/^\s{2,}/gm)||[]).length;
+  const gIndented = (gen.match(/^\s{2,}/gm)||[]).length;
+  const indentRatio = Math.max(oIndented,gIndented)>0 ? Math.abs(oIndented-gIndented)/Math.max(oIndented,gIndented) : 0;
+  if(indentRatio>0.5 && Math.max(oIndented,gIndented)>3){
+    findings.push({ category:'Mismatch', checkType:'Format Consistency', description:`Indentation/whitespace pattern differs (${oIndented} vs ${gIndented} indented lines)`, original:`${oIndented} indented`, generated:`${gIndented} indented`, status:'WARNING' });
+  }
+
+  // Character encoding issues
+  const gBadChars = (gen.match(/[^\x00-\x7F\u00C0-\u024F\u0600-\u06FF\u4E00-\u9FFF]/g)||[]).length;
+  if(gBadChars>5){
+    findings.push({ category:'Mismatch', checkType:'Format Consistency', description:`Unusual characters detected in generated (${gBadChars} instances) — possible encoding issue`, original:'', generated:`${gBadChars} unusual characters`, status:'WARNING' });
+  }
+
+  // List formatting
+  const oBullets = (orig.match(/^[\s]*[-•*►▸→]\s/gm)||[]).length;
+  const gBullets = (gen.match(/^[\s]*[-•*►▸→]\s/gm)||[]).length;
+  if(Math.abs(oBullets-gBullets)>2 && Math.max(oBullets,gBullets)>3){
+    findings.push({ category:'Mismatch', checkType:'Format Consistency', description:`Bullet/list item count differs: ${oBullets} in original vs ${gBullets} in generated`, original:`${oBullets} bullets`, generated:`${gBullets} bullets`, status:'WARNING' });
+  }
+
+  // Numbering patterns
+  const oNumbered = (orig.match(/^\s*\d+[.)]\s/gm)||[]).length;
+  const gNumbered = (gen.match(/^\s*\d+[.)]\s/gm)||[]).length;
+  if(Math.abs(oNumbered-gNumbered)>2 && Math.max(oNumbered,gNumbered)>3){
+    findings.push({ category:'Mismatch', checkType:'Format Consistency', description:`Numbered list items differ: ${oNumbered} in original vs ${gNumbered} in generated`, original:`${oNumbered} numbered items`, generated:`${gNumbered} numbered items`, status:'WARNING' });
+  }
+
+  if(findings.filter(f=>f.checkType==='Format Consistency').length===0){
+    findings.push({ category:'OK', checkType:'Format Consistency', description:'Formatting is consistent between both documents', original:'', generated:'', status:'PASS' });
+  }
+}
+
+// ── Overall similarity score ─────────────────────────
+
+function computeMatchScore(orig, gen, findings){
+  const totalFindings = findings.length;
+  const passes  = findings.filter(f=>f.status==='PASS').length;
+  const fails   = findings.filter(f=>f.status==='FAIL').length;
+  const warns   = findings.filter(f=>f.status==='WARNING').length;
+
+  // Base score from cosine similarity
+  const textSimilarity = cosineSimilarity(orig, gen);
+
+  // Penalty from findings
+  const penalty = (fails * 0.08) + (warns * 0.03);
+  const ruleScore = Math.max(0, 1 - penalty);
+
+  // Weighted blend: 60% text similarity, 40% rule score
+  const blended = (textSimilarity * 0.6) + (ruleScore * 0.4);
+  return Math.round(Math.min(100, blended * 100));
+}
+
+// ── Summary generator ────────────────────────────────
+
+function generateSummary(orig, gen, findings, score, activeChecks){
+  const fails  = findings.filter(f=>f.status==='FAIL').length;
+  const warns  = findings.filter(f=>f.status==='WARNING').length;
+  const passes = findings.filter(f=>f.status==='PASS').length;
+  const total  = findings.length;
+
+  const oLen = orig.split(/\s+/).length;
+  const gLen = gen.split(/\s+/).length;
+  const lenDiff = Math.abs(oLen - gLen);
+  const lenPct = oLen > 0 ? Math.round(lenDiff/oLen*100) : 0;
+
+  let parts = [];
+
+  parts.push(`The generated document scored <strong>${score}%</strong> match against the original across ${activeChecks.length} check categories.`);
+
+  if(fails===0 && warns===0){
+    parts.push(`All ${passes} checks <strong class="c-green">passed</strong> — the documents are consistent with each other.`);
+  } else {
+    const criticalTypes = [...new Set(findings.filter(f=>f.status==='FAIL').map(f=>f.checkType))];
+    const warnTypes     = [...new Set(findings.filter(f=>f.status==='WARNING').map(f=>f.checkType))];
+    if(fails>0) parts.push(`Found <strong class="c-red">${fails} critical issue(s)</strong> in: ${criticalTypes.join(', ')}.`);
+    if(warns>0) parts.push(`Found <strong class="c-warn">${warns} warning(s)</strong> in: ${warnTypes.join(', ')}.`);
+  }
+
+  if(lenDiff>10){
+    parts.push(`The original has <strong>${oLen.toLocaleString()}</strong> words vs <strong>${gLen.toLocaleString()}</strong> in the generated version (${lenPct}% length difference).`);
+  }
+
+  return parts.map(p=>`<p>${p}</p>`).join('');
+}
+
+// ── Main runner ──────────────────────────────────────
+
+function runReview(){
   const taO = document.getElementById('doc-original').value.trim();
   const taG = document.getElementById('doc-generated').value.trim();
-  if(!S.original.text  && taO) S.original.text  = taO;
-  if(!S.generated.text && taG) S.generated.text = taG;
+  if(!S.original.text  && taO)  S.original.text  = taO;
+  if(!S.generated.text && taG)  S.generated.text = taG;
 
   if(!S.original.text)  { alert('Please provide the original document (upload or paste).'); return; }
   if(!S.generated.text) { alert('Please provide the system-generated document (upload or paste).'); return; }
 
-  const activeChecks = [...document.querySelectorAll('.check-item.active')].map(d => d.dataset.id);
-  const checkLabels  = CHECKLIST_ITEMS.filter(i => activeChecks.includes(i.id)).map(i => i.label);
+  const activeChecks = [...document.querySelectorAll('.check-item.active')].map(d=>d.dataset.id);
+  if(!activeChecks.length){ alert('Please select at least one check item.'); return; }
 
   const btn = document.getElementById('btn-review');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin" style="display:inline-block">⚙</span> Analyzing…';
 
   document.getElementById('results').style.display = 'block';
-  document.getElementById('findings-list').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem">Running AI analysis…</div>';
+  document.getElementById('findings-list').innerHTML = '<div style="padding:2rem;text-align:center;color:var(--muted);font-size:.85rem">Running analysis…</div>';
   document.getElementById('ai-text').innerHTML = '<div class="shimmer" style="height:14px;width:90%;margin-bottom:.5rem"></div><div class="shimmer" style="height:14px;width:70%"></div>';
   document.getElementById('stat-row').innerHTML = '';
   document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
 
-  // Side-by-side diff
-  renderDiff(S.original.text, S.generated.text);
+  // Run in next tick to let UI update
+  setTimeout(() => {
+    try {
+      const orig = S.original.text;
+      const gen  = S.generated.text;
 
-  const prompt = `You are an expert document reviewer. Compare these two documents and check for the following: ${checkLabels.join(', ')}.
+      // Run selected checks
+      const findings = [];
+      const checkMap = {
+        names:    () => checkNames(orig, gen, findings),
+        dates:    () => checkDates(orig, gen, findings),
+        numbers:  () => checkNumbers(orig, gen, findings),
+        addresses:() => checkAddresses(orig, gen, findings),
+        ids:      () => checkIDs(orig, gen, findings),
+        structure:() => checkStructure(orig, gen, findings),
+        grammar:  () => checkGrammar(orig, gen, findings),
+        missing:  () => checkMissingFields(orig, gen, findings),
+        extra:    () => checkExtra(orig, gen, findings),
+        format:   () => checkFormat(orig, gen, findings),
+      };
 
-ORIGINAL DOCUMENT:
-"""
-${S.original.text.slice(0, 5000)}
-"""
+      activeChecks.forEach(id => { if(checkMap[id]) checkMap[id](); });
 
-SYSTEM-GENERATED VERSION:
-"""
-${S.generated.text.slice(0, 5000)}
-"""
+      // Number findings
+      findings.forEach((f,i) => { f.id = i+1; });
 
-Return ONLY valid JSON — no markdown fences, no preamble — in exactly this structure:
-{"overallStatus":"PASS"|"FAIL"|"WARNING","matchScore":<0-100>,"summary":"<2-3 sentence plain-English summary>","stats":{"totalChecks":<n>,"passed":<n>,"failed":<n>,"warnings":<n>},"findings":[{"id":<n>,"category":"Missing"|"Mismatch"|"Extra"|"OK","checkType":"<one of the checked items>","description":"<clear description>","original":"<relevant snippet max 60 chars>","generated":"<relevant snippet max 60 chars>","status":"PASS"|"FAIL"|"WARNING"}]}`;
+      const score = computeMatchScore(orig, gen, findings);
+      const fails   = findings.filter(f=>f.status==='FAIL').length;
+      const warns   = findings.filter(f=>f.status==='WARNING').length;
+      const passes  = findings.filter(f=>f.status==='PASS').length;
+      const overall = fails>0 ? 'FAIL' : warns>0 ? 'WARNING' : 'PASS';
 
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await resp.json();
-    if(data.error) throw new Error(data.error.message);
-    const raw   = (data.content || []).map(b => b.text || '').join('');
-    const clean = raw.replace(/```json|```/g, '').trim();
-    renderResults(JSON.parse(clean));
-  } catch(err){
-    document.getElementById('ai-text').innerHTML = `<span style="color:var(--fail)">Analysis failed: ${err.message}</span>`;
-    document.getElementById('findings-list').innerHTML = `<div style="padding:1.5rem;color:var(--fail);font-size:.85rem">Error: ${err.message}</div>`;
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '<span>🔍</span> Run Document Review';
-  }
+      // Render diff
+      renderDiff(orig, gen);
+
+      // Render results
+      const badge = document.getElementById('overall-badge');
+      badge.textContent = `Overall: ${overall}`;
+      badge.className = 'score-badge ' + (overall==='PASS'?'score-pass':overall==='FAIL'?'score-fail':'score-warn');
+
+      document.getElementById('stat-row').innerHTML = `
+        <div class="stat-card"><div class="stat-val ${overall==='PASS'?'c-green':overall==='FAIL'?'c-red':'c-warn'}">${score}%</div><div class="stat-lbl">Match Score</div></div>
+        <div class="stat-card"><div class="stat-val">${findings.length}</div><div class="stat-lbl">Total Checks</div></div>
+        <div class="stat-card"><div class="stat-val c-green">${passes}</div><div class="stat-lbl">Passed</div></div>
+        <div class="stat-card"><div class="stat-val c-red">${fails}</div><div class="stat-lbl">Failed</div></div>
+        <div class="stat-card"><div class="stat-val c-warn">${warns}</div><div class="stat-lbl">Warnings</div></div>`;
+
+      const activeCheckItems = CHECKLIST_ITEMS.filter(i=>activeChecks.includes(i.id));
+      document.getElementById('ai-text').innerHTML = generateSummary(orig, gen, findings, score, activeCheckItems);
+
+      const fl = document.getElementById('findings-list');
+      document.getElementById('findings-count').textContent = `${findings.length} finding${findings.length!==1?'s':''}`;
+
+      fl.innerHTML = findings.map((f,i) => {
+        const cc = f.category==='Missing'?'cat-missing':f.category==='Mismatch'?'cat-mismatch':f.category==='Extra'?'cat-extra':'cat-ok';
+        const sc = f.status==='PASS'?'s-pass':f.status==='FAIL'?'s-fail':'s-warn';
+        return `<div class="finding-row" style="animation-delay:${i*.04}s">
+          <div class="find-num">#${f.id}</div>
+          <div class="find-detail">
+            <strong>${esc(f.description)}</strong>
+            ${f.original  ? `<div class="orig">Original: ${esc(f.original)}</div>` : ''}
+            ${f.generated ? `<div class="orig" style="color:var(--accent2)">Generated: ${esc(f.generated)}</div>` : ''}
+          </div>
+          <span class="find-cat ${cc}">${f.category} · ${f.checkType}</span>
+          <span class="status-pill ${sc}">${f.status}</span>
+        </div>`;
+      }).join('');
+    } catch(err){
+      document.getElementById('ai-text').innerHTML = `<span style="color:var(--fail)">Analysis error: ${esc(err.message)}</span>`;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🔍</span> Run Document Review';
+    }
+  }, 50);
 }
-
-function renderResults(r){
-  const badge = document.getElementById('overall-badge');
-  badge.textContent = `Overall: ${r.overallStatus}`;
-  badge.className = 'score-badge ' + (r.overallStatus === 'PASS' ? 'score-pass' : r.overallStatus === 'FAIL' ? 'score-fail' : 'score-warn');
-
-  document.getElementById('stat-row').innerHTML = `
-    <div class="stat-card"><div class="stat-val ${r.overallStatus==='PASS'?'c-green':r.overallStatus==='FAIL'?'c-red':'c-warn'}">${r.matchScore}%</div><div class="stat-lbl">Match Score</div></div>
-    <div class="stat-card"><div class="stat-val">${r.stats.totalChecks}</div><div class="stat-lbl">Total Checks</div></div>
-    <div class="stat-card"><div class="stat-val c-green">${r.stats.passed}</div><div class="stat-lbl">Passed</div></div>
-    <div class="stat-card"><div class="stat-val c-red">${r.stats.failed}</div><div class="stat-lbl">Failed</div></div>
-    <div class="stat-card"><div class="stat-val c-warn">${r.stats.warnings}</div><div class="stat-lbl">Warnings</div></div>`;
-
-  document.getElementById('ai-text').innerHTML = `<p>${r.summary}</p>`;
-
-  const fl = document.getElementById('findings-list');
-  document.getElementById('findings-count').textContent = `${r.findings.length} finding${r.findings.length !== 1 ? 's' : ''}`;
-
-  if(!r.findings.length){
-    fl.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)">✅ No issues found — documents match perfectly.</div>';
-    return;
-  }
-
-  fl.innerHTML = r.findings.map((f, i) => {
-    const cc = f.category==='Missing'?'cat-missing':f.category==='Mismatch'?'cat-mismatch':f.category==='Extra'?'cat-extra':'cat-ok';
-    const sc = f.status==='PASS'?'s-pass':f.status==='FAIL'?'s-fail':'s-warn';
-    return `<div class="finding-row" style="animation-delay:${i * .05}s">
-      <div class="find-num">#${f.id}</div>
-      <div class="find-detail">
-        <strong>${esc(f.description)}</strong>
-        ${f.original  ? `<div class="orig">Original: ${esc(f.original)}</div>` : ''}
-        ${f.generated ? `<div class="orig" style="color:var(--accent2)">Generated: ${esc(f.generated)}</div>` : ''}
-      </div>
-      <span class="find-cat ${cc}">${f.category} · ${f.checkType}</span>
-      <span class="status-pill ${sc}">${f.status}</span>
-    </div>`;
-  }).join('');
-}
-
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 function renderDiff(orig, gen){
   const oW = orig.split(/(\s+)/);
   const gW = gen.split(/(\s+)/);
-  const oSet = new Set(oW.map(w => w.toLowerCase().replace(/\W/g, '')));
-  const gSet = new Set(gW.map(w => w.toLowerCase().replace(/\W/g, '')));
-  document.getElementById('diff-left-content').innerHTML  = oW.map(w => { const k = w.toLowerCase().replace(/\W/g,''); return k && !gSet.has(k) ? `<mark class="del">${esc(w)}</mark>` : esc(w); }).join('');
-  document.getElementById('diff-right-content').innerHTML = gW.map(w => { const k = w.toLowerCase().replace(/\W/g,''); return k && !oSet.has(k) ? `<mark class="add">${esc(w)}</mark>` : esc(w); }).join('');
+  const oSet = new Set(oW.map(w=>w.toLowerCase().replace(/\W/g,'')));
+  const gSet = new Set(gW.map(w=>w.toLowerCase().replace(/\W/g,'')));
+  document.getElementById('diff-left-content').innerHTML  = oW.map(w=>{ const k=w.toLowerCase().replace(/\W/g,''); return k&&!gSet.has(k)?`<mark class="del">${esc(w)}</mark>`:esc(w); }).join('');
+  document.getElementById('diff-right-content').innerHTML = gW.map(w=>{ const k=w.toLowerCase().replace(/\W/g,''); return k&&!oSet.has(k)?`<mark class="add">${esc(w)}</mark>`:esc(w); }).join('');
 }
 </script>
 </body>
