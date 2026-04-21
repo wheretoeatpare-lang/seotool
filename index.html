@@ -162,29 +162,36 @@ body {
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 1rem 2.5rem;
-  background: rgba(7,7,13,0.9);
+  padding: 0.85rem 2rem;
+  background: rgba(7,7,13,0.95);
   backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
+  gap: 1rem;
 }
 .logo {
-  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
   background: linear-gradient(135deg, var(--accent3), var(--cyan));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; letter-spacing: -0.02em;
+  text-decoration: none; flex-shrink: 0; white-space: nowrap;
 }
-.nav-links { display: flex; gap: 1.75rem; align-items: center; }
+.nav-links {
+  display: flex; gap: 0.1rem; align-items: center;
+}
 .nav-links a {
-  color: var(--muted); text-decoration: none; font-size: 0.88rem;
-  font-weight: 500; transition: color 0.2s;
+  color: var(--muted); text-decoration: none; font-size: 0.8rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.6rem; border-radius: 6px; white-space: nowrap;
 }
-.nav-links a:hover { color: var(--text); }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent2); }
 .nav-cta {
   background: linear-gradient(135deg, var(--accent), #5a4fcc);
-  color: white !important; padding: 0.45rem 1.1rem;
-  border-radius: 8px; font-size: 0.83rem !important;
+  color: white !important; padding: 0.4rem 0.9rem !important;
+  border-radius: 8px; font-size: 0.8rem !important; white-space: nowrap;
+  flex-shrink: 0;
 }
-.nav-cta:hover { opacity: 0.88; }
+.nav-cta:hover { opacity: 0.88; background: none !important; }
 
 /* ── HERO ── */
 .hero {
@@ -1032,6 +1039,7 @@ footer {
   border-top: 1px solid var(--border);
   padding: 3rem 2rem 2rem;
   margin-top: 4rem;
+  display: none;
 }
 .footer-inner {
   max-width: 1100px; margin: 0 auto;
@@ -1084,6 +1092,7 @@ footer .logo-f {
   padding: 4rem 2rem 3rem;
   border-top: 1px solid var(--border);
   margin-top: 2rem;
+  display: none;
 }
 .tools-hub-inner { max-width: 1100px; margin: 0 auto; }
 .tools-hub-title {
@@ -1289,14 +1298,14 @@ footer .logo-f {
   display: none;
   position: fixed;
   top: 57px; left: 0; right: 0;
-  background: rgba(7,7,13,0.97);
-  backdrop-filter: blur(20px);
+  background: rgba(7,7,13,0.98);
+  backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border2);
-  padding: 1.5rem 1.5rem 2rem;
+  padding: 1rem 1.5rem 1.5rem;
   z-index: 190;
   flex-direction: column;
-  gap: 0.25rem;
-  transform: translateY(-8px);
+  gap: 0;
+  transform: translateY(-6px);
   opacity: 0;
   transition: transform 0.25s ease, opacity 0.25s ease;
   pointer-events: none;
@@ -1309,33 +1318,39 @@ footer .logo-f {
 .nav-mobile-menu a {
   color: var(--muted);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.8rem 0.5rem;
+  padding: 0.9rem 0.5rem;
   border-bottom: 1px solid var(--border);
   transition: color 0.2s;
+  display: flex; align-items: center; gap: 0.5rem;
 }
 .nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent2); }
 .nav-mobile-menu a:last-child { border-bottom: none; }
 .nav-mobile-cta {
-  margin-top: 1rem !important;
+  margin-top: 0.75rem !important;
   background: linear-gradient(135deg, var(--accent), #5a4fcc) !important;
   color: white !important;
   text-align: center;
-  padding: 0.8rem 1rem !important;
+  justify-content: center !important;
+  padding: 0.85rem 1rem !important;
   border-radius: 10px !important;
   border-bottom: none !important;
   font-weight: 600 !important;
 }
 
+@media (max-width: 900px) {
+  nav { padding: 0.85rem 1.25rem; }
+  .nav-links { display: none; }
+  nav > .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
+}
 @media (max-width: 680px) {
   .preview-content { grid-template-columns: 1fr; }
   .preview-info-panel { border-left: none; border-top: 1px solid var(--border); }
   .preview-meta-grid { grid-template-columns: repeat(3, 1fr); }
-  nav { padding: 0.9rem 1.25rem; }
-  .nav-links { display: none; }
-  .nav-hamburger { display: flex; }
-  .nav-mobile-menu { display: flex; }
   .hero { padding: 7rem 1.25rem 3.5rem; }
   .audit-container { padding: 1.25rem; border-radius: 14px; }
   .url-row { flex-direction: column; }
@@ -1506,7 +1521,6 @@ footer .logo-f {
 .bl-signal-val { padding: 0.72rem 1rem; font-size: 0.82rem; font-weight: 600; flex: 1; }
 
 </style>
-<meta name="google-site-verification" content="SVG7eYuhzBCPw1AWCr6aL9GwNlOXEc87hAKY-gQAR6E" />
 </head>
 <body>
 
@@ -1518,19 +1532,20 @@ footer .logo-f {
     <a href="/ai-search.html">AI Search</a>
     <a href="/document-checker.html">Doc Checker</a>
     <a href="#features">Features</a>
-    <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   </div>
+  <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
 <div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
-  <a href="#features" onclick="closeMobileNav()">Features</a>
-  <a href="/competitor.html" onclick="closeMobileNav()">Competitor Analysis</a>
-  <a href="/keyword-volume.html" onclick="closeMobileNav()">Keyword Research</a>
-  <a href="/ai-search.html" onclick="closeMobileNav()">AI Search</a>
-  <a href="/document-checker.html" onclick="closeMobileNav()">Doc Checker</a>
-  <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Free Audit →</a>
+  <a href="/" onclick="closeMobileNav()">🔍 SEO Auditor</a>
+  <a href="/competitor.html" onclick="closeMobileNav()">⚔️ Competitor Analysis</a>
+  <a href="/keyword-volume.html" onclick="closeMobileNav()">📊 Keyword Research</a>
+  <a href="/ai-search.html" onclick="closeMobileNav()">🤖 AI Search Visibility</a>
+  <a href="/document-checker.html" onclick="closeMobileNav()">📄 Doc Checker</a>
+  <a href="#features" onclick="closeMobileNav()">✨ Features</a>
+  <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Run Free Audit →</a>
 </div>
 
 <!-- HERO -->
@@ -2094,6 +2109,7 @@ function resetAudit() {
   document.getElementById('hero').style.display = 'block';
   document.getElementById('features').style.display = 'block';
   document.querySelector('footer').style.display = 'block';
+  const th = document.getElementById('tools'); if (th) th.style.display = 'block';
 
   // Reset tab back to overview so next render starts clean
   switchTab('overview');
@@ -2189,6 +2205,7 @@ function tryRestoreFromHash() {
     document.getElementById('hero').style.display = 'none';
     document.getElementById('features').style.display = 'none';
     document.querySelector('footer').style.display = 'none';
+    const _th1 = document.getElementById('tools'); if (_th1) _th1.style.display = 'none';
     document.getElementById('loading-state').style.display = 'none';
 
     renderResults(payload.url, payload.audit, payload.cms, payload.page);
@@ -2448,6 +2465,7 @@ async function startAudit() {
   document.getElementById('hero').style.display = 'none';
   document.getElementById('features').style.display = 'none';
   document.querySelector('footer').style.display = 'none';
+  const _th2 = document.getElementById('tools'); if (_th2) _th2.style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('loading-url').textContent = url;
