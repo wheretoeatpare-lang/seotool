@@ -322,6 +322,32 @@
   .bulk-table-wrap { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
   .bulk-table-wrap table { width: 100%; font-size: 0.84rem; }
 
+  /* Top Rankings */
+  .rankings-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  .rankings-card h3 { font-size: 0.82rem; color: var(--text2); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  .rankings-loading { font-size: 0.85rem; color: var(--text3); padding: 0.5rem 0 1rem; display: flex; align-items: center; gap: 8px; }
+  .rankings-loading .mini-spin { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--bg4); border-top-color: var(--accent); animation: spin .7s linear infinite; flex-shrink: 0; }
+  .ranking-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    background: var(--bg4); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px;
+    text-decoration: none; transition: border-color .2s;
+    border: 1px solid transparent;
+  }
+  .ranking-item:hover { border-color: var(--border2); }
+  .ranking-pos {
+    font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
+    color: var(--text3); min-width: 22px; padding-top: 1px; flex-shrink: 0;
+  }
+  .ranking-body { flex: 1; min-width: 0; }
+  .ranking-url { font-size: 0.73rem; color: var(--green); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ranking-title { font-size: 0.92rem; color: var(--text); font-weight: 500; margin-bottom: 3px; }
+  .ranking-desc { font-size: 0.80rem; color: var(--text3); line-height: 1.5; }
+  .ranking-error { font-size: 0.84rem; color: var(--text3); padding: 0.5rem 0; }
+
   /* Content strategy / SERP replacement */
   .serp-card {
     background: var(--bg3); border: 1px solid var(--border);
@@ -549,6 +575,13 @@
       </thead>
       <tbody id="related-tbody"></tbody>
     </table>
+  </div>
+
+  <!-- Top 10 Ranking Websites -->
+  <div class="rankings-card">
+    <h3>Top 10 Ranking Websites <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0" id="rankings-src"></span></h3>
+    <div id="rankings-loading" class="rankings-loading"><span class="mini-spin"></span> Fetching live rankings from Google…</div>
+    <div id="rankings-list"></div>
   </div>
 
   <!-- Content Strategy (replaces fake SERP) -->
@@ -1079,6 +1112,9 @@ function renderResults(data, related) {
   // Content strategy (replaces fake SERP)
   renderContentStrategy(data);
 
+  // Fetch top 10 rankings
+  fetchTopRankings(data.kw, data.country);
+
   // Related loading state
   document.getElementById('related-loading').style.display = 'flex';
   document.getElementById('related-table').style.display = 'none';
@@ -1138,6 +1174,105 @@ function renderBulk(rows) {
     `;
     tbody.appendChild(tr);
   });
+}
+
+/* ── TOP 10 RANKINGS (via allorigins CORS proxy → Google) ── */
+async function fetchTopRankings(kw, country) {
+  document.getElementById('rankings-loading').style.display = 'flex';
+  document.getElementById('rankings-list').innerHTML = '';
+  document.getElementById('rankings-src').textContent = '';
+
+  const ddgUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(kw)}`;
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(ddgUrl)}`;
+
+  try {
+    const res = await Promise.race([
+      fetch(proxyUrl),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 10000))
+    ]);
+    if (!res.ok) throw new Error('proxy error');
+    const json = await res.json();
+    const html = json.contents || '';
+
+    // Parse DuckDuckGo HTML results
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    const results = [];
+
+    // DDG HTML version uses .result__body > .result__title + .result__snippet
+    const blocks = doc.querySelectorAll('.result, .results_links, .web-result');
+    blocks.forEach(block => {
+      if (results.length >= 10) return;
+      const titleEl = block.querySelector('.result__title, .result__a');
+      const linkEl  = block.querySelector('a.result__a, .result__title a');
+      const descEl  = block.querySelector('.result__snippet');
+      if (!titleEl || !linkEl) return;
+
+      // DDG encodes the real URL in href or data-href
+      let href = linkEl.getAttribute('href') || '';
+      // DDG sometimes uses redirect URLs like //duckduckgo.com/l/?uddg=...
+      if (href.includes('uddg=')) {
+        try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
+      }
+      if (!href.startsWith('http')) return;
+
+      const title = titleEl.textContent.trim();
+      const desc  = descEl ? descEl.textContent.trim() : '';
+      let domain = '';
+      try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
+      if (!title || !domain) return;
+      if (results.some(r => r.domain === domain)) return;
+      results.push({ title, url: href, domain, desc });
+    });
+
+    // Fallback: scrape all result links directly
+    if (results.length < 3) {
+      doc.querySelectorAll('a.result__a').forEach(a => {
+        if (results.length >= 10) return;
+        let href = a.getAttribute('href') || '';
+        if (href.includes('uddg=')) {
+          try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
+        }
+        if (!href.startsWith('http')) return;
+        const title = a.textContent.trim();
+        let domain = '';
+        try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
+        if (!title || !domain) return;
+        if (results.some(r => r.domain === domain)) return;
+        results.push({ title, url: href, domain, desc: '' });
+      });
+    }
+
+    document.getElementById('rankings-loading').style.display = 'none';
+
+    if (results.length === 0) {
+      document.getElementById('rankings-list').innerHTML = `<div class="ranking-error">⚠️ Could not parse results. Please try again.</div>`;
+      return;
+    }
+
+    document.getElementById('rankings-src').textContent = `(${results.length} results via DuckDuckGo)`;
+    const list = document.getElementById('rankings-list');
+    results.forEach((r, i) => {
+      const el = document.createElement('a');
+      el.className = 'ranking-item';
+      el.href = r.url;
+      el.target = '_blank';
+      el.rel = 'noopener noreferrer';
+      el.innerHTML = `
+        <div class="ranking-pos">#${i + 1}</div>
+        <div class="ranking-body">
+          <div class="ranking-url">${r.domain}</div>
+          <div class="ranking-title">${r.title}</div>
+          ${r.desc ? `<div class="ranking-desc">${r.desc.slice(0, 160)}${r.desc.length > 160 ? '…' : ''}</div>` : ''}
+        </div>`;
+      list.appendChild(el);
+    });
+
+  } catch(err) {
+    document.getElementById('rankings-loading').style.display = 'none';
+    document.getElementById('rankings-list').innerHTML = `<div class="ranking-error">⚠️ Could not fetch live rankings (${err.message}). Please try again.</div>`;
+  }
 }
 
 /* ── TREND CHART ── */
