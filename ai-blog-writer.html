@@ -67,6 +67,9 @@ textarea{min-height:90px;line-height:1.6}
 .model-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;position:relative}
 .model-card:hover{border-color:rgba(79,255,176,.35);background:rgba(79,255,176,.04)}
 .model-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-card.pro-locked{opacity:.45;cursor:not-allowed;pointer-events:none}
+.model-card.pro-locked:hover{border-color:var(--border);background:var(--bg3)}
+.pro-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(255,183,77,.12);color:var(--warn);border:1px solid rgba(255,183,77,.3);margin-left:.4rem;flex-shrink:0}
 .model-card input[type=radio]{display:none}
 .model-icon{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
 .model-info{flex:1;min-width:0}
@@ -202,36 +205,13 @@ select option{background:var(--bg2)}
   <div class="card">
     <label class="form-label">Choose AI Model</label>
     <div class="model-grid" id="model-grid">
+      <!-- Free models -->
       <label class="model-card selected">
-        <input type="radio" name="model" value="gpt-4o" checked>
-        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
-        <div class="model-info">
-          <div class="model-name">GPT-4o<span class="model-badge">Fast</span></div>
-          <div class="model-desc">OpenAI · Great quality</div>
-        </div>
-      </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="gemini-2.0-flash">
+        <input type="radio" name="model" value="gemini-2.0-flash" checked>
         <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
         <div class="model-info">
-          <div class="model-name">Gemini Flash<span class="model-badge">NEW</span></div>
+          <div class="model-name">Gemini Flash<span class="model-badge">Fast</span></div>
           <div class="model-desc">Google · High capability</div>
-        </div>
-      </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="claude-sonnet-4-5">
-        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
-        <div class="model-info">
-          <div class="model-name">Claude Sonnet<span class="model-badge">NEW</span></div>
-          <div class="model-desc">Anthropic · Creative</div>
-        </div>
-      </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="mistral-large-latest">
-        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
-        <div class="model-info">
-          <div class="model-name">Mistral Large</div>
-          <div class="model-desc">Mistral AI · Efficient</div>
         </div>
       </label>
       <label class="model-card">
@@ -248,6 +228,31 @@ select option{background:var(--bg2)}
         <div class="model-info">
           <div class="model-name">DeepSeek V3</div>
           <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+      <!-- Pro-only models (disabled) -->
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="gpt-4o" disabled>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div class="model-info">
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div class="model-info">
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div class="model-info">
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Mistral AI · Efficient</div>
         </div>
       </label>
     </div>
@@ -521,29 +526,53 @@ async function generateBlog() {
   }
 }
 
-// ─── AI Call via Cloudflare Worker proxy ────────────────────
+// ─── AI Call via OpenRouter (streaming, no user login needed) ────
+
+// In callAI(), change the fetch URL from:
+const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+    'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
+    'X-Title': 'RankSorcery AI Blog Writer',
+  },
+  body: JSON.stringify({ ... }),
+});
+
+// To just:
+const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ ... }),
+});
+
 const MODEL_MAP = {
-  'gpt-4o':                        'openai/gpt-4o',
-  'gemini-2.0-flash':              'google/gemini-2.0-flash-001',
-  'claude-sonnet-4-5':             'anthropic/claude-sonnet-4-5',
-  'mistral-large-latest':          'mistralai/mistral-large',
-  'meta-llama/llama-4-maverick':   'meta-llama/llama-4-maverick',
-  'deepseek-chat':                 'deepseek/deepseek-chat',
+  'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
+  'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'deepseek-chat':               'deepseek/deepseek-chat',
+  // Pro-only (disabled in UI)
+  'gpt-4o':                      'openai/gpt-4o',
+  'claude-sonnet-4-5':           'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':        'mistralai/mistral-large',
 };
 
 async function callAI(model, prompt) {
   const systemPrompt = 'You are an expert SEO content writer and digital marketing specialist. You write engaging, well-structured, and SEO-optimized blog posts in clean Markdown format. Your writing is always high-quality, original, and valuable to readers.';
 
-  const orModel = MODEL_MAP[model] || 'openai/gpt-4o';
+  const orModel = MODEL_MAP[model] || 'google/gemini-2.0-flash-001';
 
   const outputContent = document.getElementById('output-content');
   outputContent.innerHTML = '';
   document.getElementById('output-card').classList.add('show');
 
-  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+  const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+      'HTTP-Referer': 'https://ranksorcery.com/ai-blog-writer',
+      'X-Title': 'RankSorcery AI Blog Writer',
     },
     body: JSON.stringify({
       model: orModel,
