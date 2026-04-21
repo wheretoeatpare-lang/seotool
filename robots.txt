@@ -1,4 +1,17 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://seotool.webmasterjamez.workers.dev/sitemap.xml
+# Block utility/API paths from indexing
+Disallow: /api/
+Disallow: /?url=
+
+# Allow key tools
+Allow: /competitor
+Allow: /keyword-volume
+Allow: /ai-search
+Allow: /document-checker
+
+# Crawl-delay for polite bots
+Crawl-delay: 5
+
+Sitemap: https://ranksorcery.com/sitemap.xml

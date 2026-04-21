@@ -3,8 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RankSight — SEO Competitor Analysis</title>
-<meta name="description" content="Free SEO competitor analysis tool. Compare two websites side-by-side across 40+ on-page SEO signals — content, keywords, technical, schema, social and more.">
+<title>RankSorcery — Free SEO Competitor Analysis Tool</title>
+<meta name="description" content="Free SEO competitor analysis tool. Compare your website against any competitor across 40+ on-page SEO signals — content, keywords, technical, schema, social and more.">
+
+<link rel="canonical" href="https://ranksorcery.com/competitor">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/competitor">
+<meta property="og:title" content="RankSorcery — Free SEO Competitor Analysis Tool">
+<meta property="og:description" content="Compare your website vs any competitor across 40+ SEO signals. See exactly where you win, lose, and how to close the gap.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="RankSorcery — SEO Competitor Analysis">
+<meta name="twitter:description" content="Compare two websites side-by-side across 40+ SEO signals — free, instant, no account needed.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/competitor","url":"https://ranksorcery.com/competitor","name":"SEO Competitor Analysis Tool — RankSorcery","description":"Compare your website against any competitor across 40+ on-page SEO signals for free.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -560,21 +576,26 @@ h1 span {
 </head>
 <body>
 
-<nav>
-  <a href="/" class="logo">RankSight</a>
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">RankSorcery</a>
   <div class="nav-links">
-    <a href="/">SEO Audit</a>
+    <a href="/">SEO Auditor</a>
     <a href="/competitor.html" class="active">Competitor Analysis</a>
-	<a href="/ai-search.html">AI Search</a>
+    <a href="/keyword-volume.html">Keyword Research</a>
+    <a href="/ai-search.html">AI Search</a>
+    <a href="/document-checker.html">Doc Checker</a>
     <a href="/" class="nav-cta">Free Audit →</a>
   </div>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
     <span></span><span></span><span></span>
   </button>
 </nav>
-<div class="nav-mobile-menu" id="nav-mobile-menu">
-  <a href="/">SEO Audit</a>
-  <a href="/competitor.html" class="active">Competitor Analysis</a>
+<div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
+  <a href="/" onclick="closeMobileNav()">SEO Auditor</a>
+  <a href="/competitor.html" class="active" onclick="closeMobileNav()">Competitor Analysis</a>
+  <a href="/keyword-volume.html" onclick="closeMobileNav()">Keyword Research</a>
+  <a href="/ai-search.html" onclick="closeMobileNav()">AI Search</a>
+  <a href="/document-checker.html" onclick="closeMobileNav()">Doc Checker</a>
   <a href="/" class="nav-mobile-cta">Free Audit →</a>
 </div>
 
@@ -1525,5 +1546,31 @@ document.addEventListener('click', (e) => {
   }
 });
 </script>
+
+<footer style="border-top:1px solid rgba(255,255,255,0.06);padding:2.5rem 2rem 1.75rem;margin-top:3rem">
+  <div style="max-width:1100px;margin:0 auto;display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:space-between;margin-bottom:1.75rem">
+    <div style="max-width:270px">
+      <a href="https://ranksorcery.com/" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,#c4b5fd,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;text-decoration:none;margin-bottom:0.6rem">RankSorcery</a>
+      <p style="font-size:0.81rem;color:#8480aa;line-height:1.65">Free AI-powered SEO tools. No account needed.</p>
+    </div>
+    <nav aria-label="Footer tools" style="display:flex;gap:2.5rem;flex-wrap:wrap">
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:#6b6890;margin-bottom:0.8rem">Free SEO Tools</div>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem">
+          <li><a href="/" style="font-size:0.82rem;color:#8480aa;text-decoration:none">🔍 SEO Auditor</a></li>
+          <li><a href="/competitor.html" style="font-size:0.82rem;color:#8480aa;text-decoration:none">⚔️ Competitor Analysis</a></li>
+          <li><a href="/keyword-volume.html" style="font-size:0.82rem;color:#8480aa;text-decoration:none">📊 Keyword Research</a></li>
+          <li><a href="/ai-search.html" style="font-size:0.82rem;color:#8480aa;text-decoration:none">🤖 AI Search Visibility</a></li>
+          <li><a href="/document-checker.html" style="font-size:0.82rem;color:#8480aa;text-decoration:none">📄 Document Checker</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;font-size:0.77rem;color:#6b6890">
+    <span>© 2025 RankSorcery — Free AI SEO Tools</span>
+    <span style="opacity:0.4">·</span>
+    <a href="https://ranksorcery.com/sitemap.xml" style="color:#8480aa;text-decoration:none">Sitemap</a>
+  </div>
+</footer>
 </body>
 </html>
