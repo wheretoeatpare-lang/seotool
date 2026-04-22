@@ -2205,49 +2205,8 @@ function getBarClass(s) {
 }
 
 function resetAudit() {
-  // Cancel any running typewrite animation
-  if (typewriteInterval)  { clearInterval(typewriteInterval);  typewriteInterval  = null; }
-  // Cancel any running score count-up
-  if (scoreCountInterval) { clearInterval(scoreCountInterval); scoreCountInterval = null; }
-
-  // Invalidate any in-flight screenshot image callbacks
-  _previewGen++;
-
-  // Neutralize screenshot img handlers so no stale onerror/onload fires
-  const screenshotEl = document.getElementById('preview-screenshot');
-  if (screenshotEl) {
-    screenshotEl.onload  = null;
-    screenshotEl.onerror = null;
-    screenshotEl.src = '';
-  }
-
-  // Hide results, restore landing page
-  document.getElementById('results-section').style.display = 'none';
-  document.getElementById('hero').style.display = 'block';
-  document.getElementById('features').style.display = 'block';
-  document.querySelector('footer').style.display = 'block';
-  const th = document.getElementById('tools'); if (th) th.style.display = 'block';
-  const ctaSec = document.getElementById('cta-section'); if (ctaSec) ctaSec.style.display = 'block';
-  const revSec = document.getElementById('reviews-section'); if (revSec) revSec.style.display = 'block';
-
-  // Reset tab back to overview so next render starts clean
-  switchTab('overview');
-
-  // Reset panels that are conditionally shown
-  document.getElementById('quick-wins-bar').style.display = 'none';
-  document.getElementById('eeat-panel').style.display = 'none';
-  document.getElementById('share-banner').style.display = 'none';
-
-  // Clear AI summary text so typewriter doesn't see stale content
-  const summaryEl = document.getElementById('ai-summary-text');
-  if (summaryEl) summaryEl.textContent = '';
-
-  // Clear the URL hash if a shared report was loaded
-  if (window.location.hash.startsWith('#audit=')) {
-    history.replaceState(null, '', window.location.pathname);
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Reload the page for a clean slate
+  window.location.href = window.location.pathname;
 }
 
 function filterSuggestions(filter, el) {
@@ -2869,14 +2828,6 @@ function renderSitePreview(url, pageData, cmsData) {
 
 // ─── RENDER ───────────────────────────────────────────────────
 function renderResults(url, data, cmsData, pageData) {
-  // Always hide landing-page sections before showing results
-  document.getElementById('hero').style.display = 'none';
-  document.getElementById('features').style.display = 'none';
-  document.querySelector('footer').style.display = 'none';
-  const _th = document.getElementById('tools'); if (_th) _th.style.display = 'none';
-  const _cta = document.getElementById('cta-section'); if (_cta) _cta.style.display = 'none';
-  const _rev = document.getElementById('reviews-section'); if (_rev) _rev.style.display = 'none';
-
   // Render site preview first
   renderSitePreview(url, pageData, cmsData);
   // Score ring
