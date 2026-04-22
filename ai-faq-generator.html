@@ -482,6 +482,61 @@ function buildSchema(faqs) {
   document.getElementById('schema-block').textContent = JSON.stringify(schema, null, 2);
 }
 
+// ─── Call AI via OpenRouter proxy (same as blog writer) ───────
+async function callAI(prompt) {
+  const systemPrompt = 'You are an expert SEO content strategist. You generate high-quality, SEO-optimized FAQ question-and-answer pairs. You ALWAYS respond with valid JSON only — no markdown fences, no preamble, no explanation. Just raw JSON.';
+
+  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'google/gemini-2.0-flash-001',
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: prompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const apiMsg = err?.error?.message || `API error ${res.status}. Please try again.`;
+    throw new Error(apiMsg);
+  }
+
+  // Read SSE stream and accumulate full text
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+  let buffer = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed === 'data: [DONE]') continue;
+      if (!trimmed.startsWith('data: ')) continue;
+      try {
+        const json = JSON.parse(trimmed.slice(6));
+        const chunk = json?.choices?.[0]?.delta?.content ?? '';
+        if (chunk) fullText += chunk;
+      } catch (_) { /* skip malformed chunks */ }
+    }
+  }
+
+  if (!fullText || fullText.trim().length < 10) {
+    throw new Error('The AI returned an empty response. Please try again.');
+  }
+
+  return fullText;
+}
+
 // ─── Generate ─────────────────────────────────────────────────
 async function generateFAQ() {
   const title = document.getElementById('page-title').value.trim();
@@ -506,24 +561,7 @@ async function generateFAQ() {
 
   try {
     const prompt = buildPrompt();
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 4000,
-        system: 'You are an expert SEO content strategist. You generate high-quality, SEO-optimized FAQ question-and-answer pairs. You ALWAYS respond with valid JSON only — no markdown fences, no preamble, no explanation. Just raw JSON.',
-        messages: [{ role: 'user', content: prompt }],
-      }),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `API error ${response.status}.`);
-    }
-
-    const data = await response.json();
-    const raw = data.content?.[0]?.text || '';
+    const raw = await callAI(prompt);
 
     // Strip any accidental markdown fences
     const cleaned = raw.replace(/```json|```/g, '').trim();
