@@ -1924,7 +1924,7 @@ footer .logo-f {
   </div>
 </div>
 
-<section style="max-width:860px;margin:0 auto 4rem;padding:0 2rem;text-align:center;">
+<section id="cta-section" style="max-width:860px;margin:0 auto 4rem;padding:0 2rem;text-align:center;">
   <div style="
     background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.04));
     border: 1px solid rgba(232,184,75,0.2);
@@ -1975,7 +1975,7 @@ footer .logo-f {
 </section>
 
 <!-- REVIEWS / TESTIMONIALS -->
-<section style="max-width:1100px;margin:0 auto 5rem;padding:0 2rem;">
+<section id="reviews-section" style="max-width:1100px;margin:0 auto 5rem;padding:0 2rem;">
   <div style="display:flex;align-items:center;gap:0.75rem;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;">
     What Our Users Say
     <span style="flex:1;height:1px;background:rgba(10,191,188,0.25);display:block;"></span>
@@ -2227,6 +2227,8 @@ function resetAudit() {
   document.getElementById('features').style.display = 'block';
   document.querySelector('footer').style.display = 'block';
   const th = document.getElementById('tools'); if (th) th.style.display = 'block';
+  const ctaSec = document.getElementById('cta-section'); if (ctaSec) ctaSec.style.display = 'block';
+  const revSec = document.getElementById('reviews-section'); if (revSec) revSec.style.display = 'block';
 
   // Reset tab back to overview so next render starts clean
   switchTab('overview');
@@ -2323,6 +2325,8 @@ function tryRestoreFromHash() {
     document.getElementById('features').style.display = 'none';
     document.querySelector('footer').style.display = 'none';
     const _th1 = document.getElementById('tools'); if (_th1) _th1.style.display = 'none';
+    const _cta1 = document.getElementById('cta-section'); if (_cta1) _cta1.style.display = 'none';
+    const _rev1 = document.getElementById('reviews-section'); if (_rev1) _rev1.style.display = 'none';
     document.getElementById('loading-state').style.display = 'none';
 
     renderResults(payload.url, payload.audit, payload.cms, payload.page);
@@ -2583,6 +2587,8 @@ async function startAudit() {
   document.getElementById('features').style.display = 'none';
   document.querySelector('footer').style.display = 'none';
   const _th2 = document.getElementById('tools'); if (_th2) _th2.style.display = 'none';
+  const _cta = document.getElementById('cta-section'); if (_cta) _cta.style.display = 'none';
+  const _rev = document.getElementById('reviews-section'); if (_rev) _rev.style.display = 'none';
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('loading-state').style.display = 'block';
   document.getElementById('loading-url').textContent = url;
