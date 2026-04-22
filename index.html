@@ -1614,7 +1614,7 @@ footer .logo-f {
 <!-- TRUST BAR -->
 <div class="trust-bar">
   <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
-  <div class="trust-item"><div class="trust-dot"></div><span class="val">58,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val" id="audit-counter">50,000+</span>&nbsp; audits completed</div>
   <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
   <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
 </div>
@@ -2148,6 +2148,35 @@ let allSuggestions   = [];
 let typewriteInterval = null;
 let scoreCountInterval = null;
 
+// ─── AUDIT COUNTER ───────────────────────────────────────────
+const COUNTER_KEY = 'rs_audit_count';
+const COUNTER_BASE = 50000;
+
+function getAuditCount() {
+  return parseInt(localStorage.getItem(COUNTER_KEY) || COUNTER_BASE, 10);
+}
+
+function incrementAuditCount() {
+  const next = getAuditCount() + 1;
+  localStorage.setItem(COUNTER_KEY, next);
+  updateAuditCounterDisplay(next);
+}
+
+function formatAuditCount(n) {
+  if (n >= 1000) {
+    return (n / 1000).toFixed(n % 1000 === 0 ? 0 : 1).replace(/\.0$/, '') + 'k+';
+  }
+  return n.toLocaleString() + '+';
+}
+
+function updateAuditCounterDisplay(n) {
+  const el = document.getElementById('audit-counter');
+  if (el) el.textContent = formatAuditCount(n);
+}
+
+// Init counter display on page load
+updateAuditCounterDisplay(getAuditCount());
+
 // ─── UTILS ───────────────────────────────────────────────────
 function showToast(msg, color = 'var(--green)') {
   document.querySelectorAll('.toast').forEach(t => t.remove());
@@ -2205,7 +2234,6 @@ function getBarClass(s) {
 }
 
 function resetAudit() {
-  // Reload the page for a clean slate
   window.location.href = window.location.pathname;
 }
 
@@ -2960,6 +2988,7 @@ function renderResults(url, data, cmsData, pageData) {
   renderBrokenLinks(url);
 
   // Show results
+  incrementAuditCount();
   document.getElementById('results-section').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
