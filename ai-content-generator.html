@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Content Generator — Free AI Content Creation Tool | RankSorcery</title>
+<meta name="description" content="Free AI content generator — create blog posts, social media content, landing page copy, email sequences, product descriptions and more. No sign-up required.">
+<link rel="canonical" href="https://ranksorcery.com/ai-content-generator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/ai-content-generator">
+<meta property="og:title" content="AI Content Generator — Free AI Content Creation Tool | RankSorcery">
+<meta property="og:description" content="Generate blog posts, social media content, landing pages, email sequences and more with AI. Free, unlimited, no login.">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-content-generator","url":"https://ranksorcery.com/ai-content-generator","name":"AI Content Generator | RankSorcery","description":"Free AI content generator. Create blog posts, social media content, landing pages, email sequences and more — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-brand span{color:var(--text)}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
+.nav-cta:hover{background:rgba(79,255,176,.22)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.3rem;flex-direction:column;gap:5px}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:.2s}
+@media(max-width:720px){
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:1rem}
+  .nav-links.open{display:flex}
+  .nav-ham{display:flex}
+  .nav-cta{margin-left:0;width:100%}
+}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;animation:fadeDown .5s .1s ease both}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);max-width:600px;margin:1rem auto 0;line-height:1.7;font-size:.95rem;animation:fadeDown .5s .2s ease both}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
+.pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all .2s}
+.pill:hover{border-color:rgba(79,255,176,.4);color:var(--accent)}
+
+/* ── Layout ── */
+.main-wrap{max-width:960px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--card-shadow);margin-bottom:1.25rem;transition:border-color .2s}
+
+/* ── Form elements ── */
+.form-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;display:block}
+.form-label .req{color:var(--fail);margin-left:2px}
+textarea,input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s;resize:vertical}
+textarea:focus,input[type=text]:focus{border-color:rgba(79,255,176,.4);box-shadow:0 0 0 3px rgba(79,255,176,.06)}
+textarea::placeholder,input[type=text]::placeholder{color:var(--muted)}
+textarea{line-height:1.65}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fields-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:680px){.fields-grid,.fields-grid-3{grid-template-columns:1fr}}
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+select:focus{border-color:rgba(79,255,176,.4)}
+select option{background:var(--bg2)}
+
+/* ── Content type tabs ── */
+.content-type-tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem}
+.ct-tab{font-size:.78rem;padding:.35rem .8rem;border-radius:7px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .18s;user-select:none;display:flex;align-items:center;gap:.35rem;font-family:'DM Mono',monospace}
+.ct-tab:hover{border-color:rgba(79,255,176,.4);color:var(--text);background:rgba(79,255,176,.04)}
+.ct-tab.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+/* ── Model grid ── */
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-top:.3rem}
+.model-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;position:relative}
+.model-card:hover{border-color:rgba(79,255,176,.35);background:rgba(79,255,176,.04)}
+.model-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-card.pro-locked{opacity:.45;cursor:not-allowed}
+.model-card.pro-locked:hover{border-color:var(--border);background:var(--bg3)}
+.pro-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(255,183,77,.12);color:var(--warn);border:1px solid rgba(255,183,77,.3);margin-left:.4rem;flex-shrink:0}
+.model-card input[type=radio]{display:none}
+.model-icon{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.model-info{flex:1;min-width:0}
+.model-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-desc{font-size:.7rem;color:var(--muted);margin-top:1px}
+.model-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(79,255,176,.15);color:var(--accent);border:1px solid rgba(79,255,176,.25);margin-left:.4rem;flex-shrink:0}
+
+/* ── Tag chips ── */
+.tag-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.tag-chip{font-size:.78rem;font-family:'DM Mono',monospace;padding:.3rem .75rem;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.tag-chip:hover{border-color:rgba(79,255,176,.4);color:var(--text)}
+.tag-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+/* ── Topic input wrap ── */
+.topic-wrap{position:relative}
+.topic-wrap textarea{min-height:120px;font-size:.92rem;padding:1rem 1.1rem;padding-right:6rem}
+.topic-chars{position:absolute;bottom:.65rem;right:.85rem;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);pointer-events:none}
+
+/* ── Advanced options accordion ── */
+.adv-toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);padding:.5rem 0;user-select:none;transition:color .2s}
+.adv-toggle:hover{color:var(--text)}
+.adv-toggle .arrow{transition:transform .25s;display:inline-block}
+.adv-toggle.open .arrow{transform:rotate(90deg)}
+.adv-body{display:none;margin-top:.85rem}
+.adv-body.show{display:block}
+
+/* ── SEO keywords input ── */
+.keywords-wrap{position:relative}
+.keywords-hint{font-size:.7rem;color:var(--muted);margin-top:.4rem;font-family:'DM Mono',monospace}
+
+/* ── Generate button ── */
+.btn-generate{width:100%;padding:.9rem 2rem;background:linear-gradient(135deg,rgba(79,255,176,.2) 0%,rgba(0,255,255,.12) 100%);border:1.5px solid var(--accent);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.02em;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.7rem}
+.btn-generate:hover{background:linear-gradient(135deg,rgba(79,255,176,.3) 0%,rgba(0,255,255,.2) 100%);box-shadow:0 0 24px rgba(79,255,176,.15)}
+.btn-generate:active{transform:scale(.99)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Spinner ── */
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.spinner-wrap.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted)}
+.steps-bar{display:flex;flex-direction:column;gap:.3rem;margin-top:.5rem}
+.step-item{display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);opacity:.4;transition:opacity .3s}
+.step-item.active{opacity:1;color:var(--accent)}
+.step-item.done{opacity:.7;color:var(--muted)}
+.step-item.done::before{content:'✓ '}
+.step-item.active::before{content:'⟳ '}
+
+/* ── Error ── */
+.error-box{display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:8px;padding:.85rem 1rem;color:var(--fail);font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.error-box.show{display:block}
+
+/* ── Output ── */
+.output-card{display:none;margin-bottom:1.25rem}
+.output-card.show{display:block}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem}
+.output-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem}
+.output-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-action{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-action:hover{border-color:var(--accent);color:var(--accent)}
+.btn-action.primary{border-color:rgba(79,255,176,.35);background:var(--accent-dim);color:var(--accent)}
+.btn-action.primary:hover{background:rgba(79,255,176,.22)}
+
+/* ── Content output ── */
+.content-output{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.5rem 1.75rem;min-height:120px;font-size:.93rem;line-height:1.85;color:var(--text);white-space:pre-wrap;word-break:break-word;font-family:'Inter',sans-serif}
+.content-output.streaming::after{content:'▋';display:inline-block;color:var(--accent);animation:blink .7s steps(1) infinite;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.content-output h1,.content-output h2,.content-output h3,.content-output h4{font-family:'Syne',sans-serif;font-weight:700;margin:1.4rem 0 .6rem;color:var(--text)}
+.content-output h1{font-size:1.4rem;color:var(--accent)}
+.content-output h2{font-size:1.15rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+.content-output h3{font-size:1rem}
+.content-output p{margin-bottom:1rem}
+.content-output ul,.content-output ol{margin:.5rem 0 1rem 1.4rem}
+.content-output li{margin-bottom:.35rem}
+.content-output strong{color:var(--text);font-weight:600}
+.content-output em{color:var(--accent2);font-style:italic}
+.content-output code{font-family:'DM Mono',monospace;font-size:.82em;background:var(--bg);padding:.1em .35em;border-radius:4px;color:var(--accent2)}
+.content-output blockquote{border-left:3px solid var(--accent);padding-left:1rem;margin:1rem 0;color:var(--muted);font-style:italic}
+.content-output hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+
+/* ── Stats row ── */
+.stats-row{display:flex;flex-wrap:wrap;gap:1.25rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border)}
+.stats-row span{color:var(--text)}
+
+/* ── How it works ── */
+.how-section{margin-top:3rem;padding-top:2.5rem;border-top:1px solid var(--border)}
+.how-section h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;color:var(--text);text-align:center}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+.how-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center}
+.how-num{font-family:'DM Mono',monospace;font-size:1.5rem;color:var(--accent);font-weight:500;margin-bottom:.5rem}
+.how-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;margin-bottom:.4rem}
+.how-desc{font-size:.78rem;color:var(--muted);line-height:1.55}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--accent)}
+
+/* ── Animations ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-brand">Rank<span>Sorcery</span></a>
+  <button class="nav-ham" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor Analysis</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+    <a href="https://ranksorcery.com/ai-writer">✍️ AI Writer</a>
+    <a href="https://ranksorcery.com/ai-faq-generator">❓ FAQ Generator</a>
+    <a href="https://ranksorcery.com/ai-meta-description-generator">🏷️ Meta Generator</a>
+    <a href="https://ranksorcery.com/ai-write-anything">🪄 Write Anything</a>
+    <a href="https://ranksorcery.com/ai-content-generator" style="color:var(--accent)">📝 Content Generator</a>
+    <a href="https://ranksorcery.com/#" class="nav-cta">Run Free Audit →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ Powered by Real AI Models · Free · No Limits</div>
+  <h1>AI <em>Content Generator</em></h1>
+  <p class="hero-sub">Pick a content type, fill in the details, hit generate. Blog posts, social content, landing pages, email sequences, product pages — done in seconds.</p>
+  <div class="hero-pills">
+    <span class="pill" onclick="selectContentType('blog-post')">📝 Blog Post</span>
+    <span class="pill" onclick="selectContentType('social-media')">📱 Social Media</span>
+    <span class="pill" onclick="selectContentType('landing-page')">🚀 Landing Page</span>
+    <span class="pill" onclick="selectContentType('email-sequence')">📧 Email Sequence</span>
+    <span class="pill" onclick="selectContentType('product-page')">🛍️ Product Page</span>
+    <span class="pill" onclick="selectContentType('youtube-script')">🎬 YouTube Script</span>
+    <span class="pill" onclick="selectContentType('newsletter')">📰 Newsletter</span>
+    <span class="pill" onclick="selectContentType('case-study')">📊 Case Study</span>
+  </div>
+</section>
+
+<main class="main-wrap">
+
+  <div id="error-box" class="error-box"></div>
+
+  <!-- Step 1: Content Type -->
+  <div class="card">
+    <label class="form-label">Step 1 — Choose Content Type</label>
+    <div class="content-type-tabs" id="ct-tabs">
+      <span class="ct-tab active" data-type="blog-post" onclick="selectContentType('blog-post')">📝 Blog Post</span>
+      <span class="ct-tab" data-type="social-media" onclick="selectContentType('social-media')">📱 Social Media</span>
+      <span class="ct-tab" data-type="landing-page" onclick="selectContentType('landing-page')">🚀 Landing Page</span>
+      <span class="ct-tab" data-type="email-sequence" onclick="selectContentType('email-sequence')">📧 Email Sequence</span>
+      <span class="ct-tab" data-type="product-page" onclick="selectContentType('product-page')">🛍️ Product Page</span>
+      <span class="ct-tab" data-type="youtube-script" onclick="selectContentType('youtube-script')">🎬 YouTube Script</span>
+      <span class="ct-tab" data-type="newsletter" onclick="selectContentType('newsletter')">📰 Newsletter</span>
+      <span class="ct-tab" data-type="case-study" onclick="selectContentType('case-study')">📊 Case Study</span>
+      <span class="ct-tab" data-type="about-page" onclick="selectContentType('about-page')">👤 About Page</span>
+      <span class="ct-tab" data-type="faq-content" onclick="selectContentType('faq-content')">❓ FAQ Content</span>
+      <span class="ct-tab" data-type="press-release" onclick="selectContentType('press-release')">📣 Press Release</span>
+      <span class="ct-tab" data-type="linkedin-article" onclick="selectContentType('linkedin-article')">🔗 LinkedIn Article</span>
+    </div>
+  </div>
+
+  <!-- Step 2: Topic & Details -->
+  <div class="card">
+    <label class="form-label">Step 2 — Topic &amp; Details <span class="req">*</span></label>
+    <div class="topic-wrap">
+      <textarea
+        id="topic-input"
+        rows="5"
+        maxlength="2000"
+        oninput="updateTopicCount()"
+        placeholder="Describe your topic or paste key details here…"></textarea>
+      <span class="topic-chars" id="topic-chars">0 / 2000</span>
+    </div>
+    <p id="topic-hint" style="font-size:.75rem;color:var(--muted);margin-top:.5rem;font-family:'DM Mono',monospace;line-height:1.5"></p>
+
+    <!-- Dynamic fields based on content type -->
+    <div id="dynamic-fields" style="margin-top:1rem"></div>
+  </div>
+
+  <!-- Step 3: Style options -->
+  <div class="card">
+    <label class="form-label">Step 3 — Style &amp; Format</label>
+    <div class="fields-grid">
+      <div>
+        <label class="form-label" style="margin-bottom:.4rem">Tone of Voice</label>
+        <div class="tag-group" id="tone-group">
+          <span class="tag-chip active" data-val="default">AI Decides</span>
+          <span class="tag-chip" data-val="professional">Professional</span>
+          <span class="tag-chip" data-val="casual">Casual</span>
+          <span class="tag-chip" data-val="friendly">Friendly</span>
+          <span class="tag-chip" data-val="formal">Formal</span>
+          <span class="tag-chip" data-val="persuasive">Persuasive</span>
+          <span class="tag-chip" data-val="witty">Witty</span>
+          <span class="tag-chip" data-val="empathetic">Empathetic</span>
+          <span class="tag-chip" data-val="bold">Bold</span>
+          <span class="tag-chip" data-val="educational">Educational</span>
+          <span class="tag-chip" data-val="authoritative">Authoritative</span>
+        </div>
+      </div>
+      <div>
+        <label class="form-label" style="margin-bottom:.4rem">Output Length</label>
+        <div class="tag-group" id="length-group">
+          <span class="tag-chip" data-val="very-short">Very Short</span>
+          <span class="tag-chip active" data-val="default-length">AI Decides</span>
+          <span class="tag-chip" data-val="medium">Medium</span>
+          <span class="tag-chip" data-val="long">Long</span>
+          <span class="tag-chip" data-val="very-long">Very Long</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced options accordion -->
+    <div style="margin-top:1.25rem">
+      <div class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+        <span class="arrow">▶</span> Advanced Options
+      </div>
+      <div class="adv-body" id="adv-body">
+        <div class="fields-grid">
+          <div>
+            <label class="form-label">Target Audience</label>
+            <input type="text" id="audience-input" placeholder="e.g. Small business owners, marketing managers…" maxlength="200">
+          </div>
+          <div>
+            <label class="form-label">Brand / Business Name</label>
+            <input type="text" id="brand-input" placeholder="e.g. Acme Corp, My Blog…" maxlength="100">
+          </div>
+        </div>
+        <div style="margin-top:1rem">
+          <label class="form-label">SEO Keywords <small style="text-transform:none;letter-spacing:0;color:var(--muted)">— comma-separated, naturally woven in</small></label>
+          <input type="text" id="keywords-input" placeholder="e.g. content marketing, SEO strategy, digital growth…" maxlength="300">
+        </div>
+        <div style="margin-top:1rem">
+          <label class="form-label">Additional Instructions</label>
+          <textarea id="extra-input" rows="3" placeholder="Any specific angle, facts to include, sections to cover, things to avoid…" maxlength="500"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: Model -->
+  <div class="card">
+    <label class="form-label">Step 4 — Choose AI Model</label>
+    <div class="model-grid">
+      <label class="model-card selected" onclick="selectModel(this)">
+        <input type="radio" name="model" value="deepseek-chat" checked>
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div class="model-info">
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="meta-llama/llama-4-maverick">
+        <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
+        <div class="model-info">
+          <div class="model-name">Llama 4<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Meta · Open source</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="gemini-2.0-flash">
+        <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
+        <div class="model-info">
+          <div class="model-name">Gemini Flash<span class="model-badge">Fast</span></div>
+          <div class="model-desc">Google · High capability</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="gpt-4o" disabled>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div class="model-info">
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div class="model-info">
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div class="model-info">
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Mistral AI · Efficient</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="card" style="padding:1rem">
+    <button class="btn-generate" id="gen-btn" onclick="generateContent()">
+      <span id="gen-icon">✨</span>
+      <span id="gen-text">Generate Content</span>
+    </button>
+  </div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" id="spinner-wrap">
+    <div class="spinner"></div>
+    <div class="spinner-text" id="spinner-text">AI is generating your content…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Analyzing your topic</div>
+      <div class="step-item" id="step2">Structuring the content</div>
+      <div class="step-item" id="step3">Writing and expanding</div>
+      <div class="step-item" id="step4">Refining &amp; polishing</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-card card" id="output-card">
+    <div class="output-header">
+      <div class="output-title">
+        <span class="dot" id="output-dot"></span>
+        <span id="output-label">Generated Content</span>
+      </div>
+      <div class="export-btns">
+        <button class="btn-action" onclick="exportTxt()">⬇ TXT</button>
+        <button class="btn-action" onclick="toggleRender()" id="render-btn">👁 Preview</button>
+        <button class="btn-action primary" id="copy-btn" onclick="copyContent()">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="content-output" id="content-raw"></div>
+    <div class="content-output" id="content-rendered" style="display:none"></div>
+
+    <div class="stats-row">
+      Words: <span id="stat-words">—</span>
+      &nbsp;·&nbsp; Characters: <span id="stat-chars">—</span>
+      &nbsp;·&nbsp; Est. read time: <span id="stat-read">—</span>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="how-section">
+    <h2>How the AI Content Generator Works</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-title">Pick a Content Type</div>
+        <div class="how-desc">Choose from 12 content formats — blog posts, social content, landing pages, emails and more.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-title">Describe Your Topic</div>
+        <div class="how-desc">Tell the AI what you want to create. The more detail you give, the more tailored the output.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-title">Set Your Style</div>
+        <div class="how-desc">Choose tone, length, add SEO keywords, target audience and any specific instructions.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <div class="how-title">Generate &amp; Copy</div>
+        <div class="how-desc">Hit generate and get professional content in seconds. Preview, copy or download as TXT.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Part of <a href="https://ranksorcery.com/">RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p>
+</footer>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+let selectedTone        = 'default';
+let selectedLength      = 'default-length';
+let selectedContentType = 'blog-post';
+let lastContent         = '';
+let isRendered          = false;
+
+// ─── Model map ────────────────────────────────────────────────
+const MODEL_MAP = {
+  'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
+  'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'deepseek-chat':               'deepseek/deepseek-chat',
+  'gpt-4o':                      'openai/gpt-4o',
+  'claude-sonnet-4-5':           'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':        'mistralai/mistral-large',
+};
+
+// ─── Content type configs ─────────────────────────────────────
+const CONTENT_TYPES = {
+  'blog-post': {
+    label:       '📝 Blog Post',
+    hint:        'Tip: Include your main topic, target audience, and any key points you want covered.',
+    placeholder: 'e.g. Write a blog post about the benefits of email marketing for small e-commerce businesses. Cover list-building, open rates, automation and ROI. Target audience: small business owners who are new to email marketing.',
+    fields:      ['word-count', 'seo-focus', 'sections'],
+    systemNote:  'You are an expert content writer specializing in SEO-optimized blog posts. Write structured, engaging, well-researched blog posts with a clear intro, organized sections with H2/H3 headings, and a strong conclusion. Include practical examples and actionable advice.',
+  },
+  'social-media': {
+    label:       '📱 Social Media',
+    hint:        'Tip: Specify the platform (Instagram, LinkedIn, Twitter/X, Facebook, TikTok) for best results.',
+    placeholder: 'e.g. Write 5 Instagram post variations for a healthy meal prep service targeting busy professionals. Mix motivational, educational and promotional posts. Include hashtags.',
+    fields:      ['platform', 'post-count'],
+    systemNote:  'You are a social media content strategist. Write platform-native, engaging social media posts that drive engagement. Adapt tone and format to the specified platform. For Instagram include hashtag suggestions. For LinkedIn use professional tone. For Twitter/X keep it punchy. Always write content that feels authentic, not corporate.',
+  },
+  'landing-page': {
+    label:       '🚀 Landing Page',
+    hint:        'Tip: Include your product/service name, main benefit, and the action you want visitors to take.',
+    placeholder: 'e.g. Write a landing page for a project management SaaS called TaskFlow. Main benefit: helps remote teams stay aligned. Target: startup founders and team leads. CTA: Start free trial.',
+    fields:      ['sections', 'cta'],
+    systemNote:  'You are a conversion copywriter specializing in landing pages. Write high-converting landing page copy with a compelling headline, clear value proposition, feature/benefit sections, social proof elements, objection handling, and a strong CTA. Structure with clear sections (Hero, Features, Benefits, Social Proof, CTA). Write copy that speaks directly to the target customer\'s pain points.',
+  },
+  'email-sequence': {
+    label:       '📧 Email Sequence',
+    hint:        'Tip: Describe the goal of the sequence (welcome, nurture, sales, re-engagement) and how many emails you want.',
+    placeholder: 'e.g. Write a 5-email welcome sequence for a new subscriber to a personal finance newsletter. Goal: educate on budgeting basics, build trust, and ultimately convert to a paid course on debt elimination.',
+    fields:      ['email-count', 'sequence-goal'],
+    systemNote:  'You are an email marketing specialist. Write compelling email sequences with engaging subject lines, personable openers, valuable body content, and clear CTAs. Each email should build on the previous one. Format each email clearly with: Subject line, Preview text, Email body. Make emails feel personal, not automated.',
+  },
+  'product-page': {
+    label:       '🛍️ Product Page',
+    hint:        'Tip: Include product name, key features, who it\'s for, and what makes it different.',
+    placeholder: 'e.g. Write a product page for a standing desk converter called UpDesk Pro. Key features: height-adjustable (6 preset positions), fits any existing desk, cable management built-in. Target: office workers with back pain.',
+    fields:      ['seo-focus', 'sections'],
+    systemNote:  'You are an e-commerce copywriter. Write persuasive product pages that convert. Include a compelling headline, benefit-focused description, key features list, who it\'s for, specifications, and a clear buy CTA. Write copy that sells the outcome, not just the features. Use scannable formatting with clear sections.',
+  },
+  'youtube-script': {
+    label:       '🎬 YouTube Script',
+    hint:        'Tip: Include the video title/topic, target audience, video length, and your channel\'s style.',
+    placeholder: 'e.g. Write a YouTube script for a 10-minute video titled "How I Made $5,000 in One Month Freelancing as a Beginner". Conversational, honest tone. Show real steps, not vague advice. Target: college students and recent grads.',
+    fields:      ['video-length', 'sections'],
+    systemNote:  'You are a YouTube content creator and scriptwriter. Write engaging YouTube scripts with a strong hook in the first 15 seconds, clear chapter structure, conversational delivery, natural transitions, and a call to action at the end. Format with timestamps/sections. Include [B-ROLL] and [CUT TO] notes where relevant. Write how people actually talk, not how they write.',
+  },
+  'newsletter': {
+    label:       '📰 Newsletter',
+    hint:        'Tip: Include your newsletter name, audience, main topic, and any regular sections you want.',
+    placeholder: 'e.g. Write the weekly edition of a newsletter called "Growth Dispatch" for SaaS founders. Main topic this week: how to reduce churn. Include: intro, main deep-dive (400 words), 3 curated links with commentary, one actionable tip.',
+    fields:      ['sections', 'seo-focus'],
+    systemNote:  'You are a newsletter writer. Write engaging newsletter editions that readers look forward to. Start with a warm, personal intro. Deliver genuine value in the main content. Keep a consistent voice throughout. Format clearly with sections. Write like you\'re sending an email to a smart friend who values their time.',
+  },
+  'case-study': {
+    label:       '📊 Case Study',
+    hint:        'Tip: Include the client, the problem, your solution, and the results (even approximate).',
+    placeholder: 'e.g. Write a case study for a digital marketing agency. Client: an online tutoring platform. Problem: low paid ad ROI, high CPL. Solution: restructured Google Ads, added retargeting, A/B tested landing pages. Results: 40% lower CPL, 3x ROAS in 90 days.',
+    fields:      ['sections'],
+    systemNote:  'You are a B2B content writer specializing in case studies. Write compelling case studies following the Problem-Solution-Result framework. Include: Executive Summary, Client Background, The Challenge, The Solution, Implementation, Results, Key Takeaways. Use specific numbers and metrics where provided. Write in third person, professional but readable.',
+  },
+  'about-page': {
+    label:       '👤 About Page',
+    hint:        'Tip: Include your name or brand, what you do, your story, and who you serve.',
+    placeholder: 'e.g. Write an About page for a freelance UX designer named Priya Sharma. She\'s been designing mobile apps for 6 years, previously at Spotify and Monzo, now working independently with fintech startups. Warm, confident tone.',
+    fields:      ['seo-focus'],
+    systemNote:  'You are a brand copywriter. Write compelling About pages that build trust and connection. Tell the brand\'s story in a human way. Include: who they are, what they do, why they do it, who they serve, and what makes them different. Avoid generic corporate language. Make it feel real and relatable.',
+  },
+  'faq-content': {
+    label:       '❓ FAQ Content',
+    hint:        'Tip: Include the product/service/topic and list the key areas customers typically ask about.',
+    placeholder: 'e.g. Write FAQ content for a monthly pet food subscription service. Cover: cancellation policy, delivery times, food quality, customization, payment, and what happens if my pet doesn\'t like a product.',
+    fields:      ['post-count', 'seo-focus'],
+    systemNote:  'You are a content writer specializing in FAQ pages. Write clear, helpful FAQ sections that genuinely answer customer questions. Structure as Q&A pairs. Write questions the way customers actually phrase them. Give complete, honest answers. Optimize naturally for SEO by using the language customers use.',
+  },
+  'press-release': {
+    label:       '📣 Press Release',
+    hint:        'Tip: Include who, what, when, where, why, and one or two quotes from key people.',
+    placeholder: 'e.g. Write a press release announcing that a health tech startup called VitalAI has launched an AI-powered blood pressure monitoring app. It raised $3M seed funding led by HealthVentures. Include a quote from CEO Maria Santos and from the lead investor.',
+    fields:      ['sections'],
+    systemNote:  'You are a PR copywriter. Write professional press releases following AP style. Structure: headline, dateline, lead paragraph (who/what/when/where/why), body paragraphs with supporting detail, quotes from relevant people, boilerplate/About section, contact information placeholder. Keep the lead paragraph under 40 words. Use active voice. Be factual, not promotional.',
+  },
+  'linkedin-article': {
+    label:       '🔗 LinkedIn Article',
+    hint:        'Tip: LinkedIn articles work best when they share a personal perspective or professional insight with a clear takeaway.',
+    placeholder: 'e.g. Write a LinkedIn article about why most startup marketing fails in the first 6 months. Share 3 key mistakes (chasing vanity metrics, ignoring retention, copying tactics without strategy) and what to do instead. Author: a B2B marketing consultant.',
+    fields:      ['seo-focus', 'sections'],
+    systemNote:  'You are a LinkedIn content strategist. Write engaging LinkedIn articles with a strong personal hook, professional but approachable tone, clear structure with subheadings, specific insights or data, and a question or CTA at the end to drive comments. Write for professionals, not academics. Use short paragraphs and line breaks for readability.',
+  },
+};
+
+// ─── Dynamic fields HTML ──────────────────────────────────────
+const FIELD_TEMPLATES = {
+  'word-count': `
+    <div>
+      <label class="form-label">Approximate Word Count</label>
+      <select id="word-count-sel">
+        <option value="">AI Decides</option>
+        <option value="300–500 words">Short (~300–500 words)</option>
+        <option value="600–900 words">Medium (~600–900 words)</option>
+        <option value="1000–1500 words" selected>Standard (~1000–1500 words)</option>
+        <option value="1500–2500 words">Long (~1500–2500 words)</option>
+        <option value="2500+ words">Comprehensive (2500+ words)</option>
+      </select>
+    </div>`,
+  'seo-focus': `
+    <div>
+      <label class="form-label">SEO Optimization</label>
+      <select id="seo-focus-sel">
+        <option value="">No specific SEO focus</option>
+        <option value="Optimize this content for SEO. Use the primary keyword naturally in the title, first paragraph, at least 2 subheadings, and conclusion. Maintain a keyword density of around 1–2%.">SEO Optimized</option>
+        <option value="This is SEO-focused content. Use structured H2/H3 headings, include FAQ sections where relevant, target featured snippets by answering questions directly, and write for both humans and search engines.">SEO + Featured Snippets</option>
+      </select>
+    </div>`,
+  'sections': `
+    <div>
+      <label class="form-label">Section Structure</label>
+      <select id="sections-sel">
+        <option value="">AI Decides Structure</option>
+        <option value="Use a clean 3-section structure: Introduction, Main Body, Conclusion.">Simple (Intro / Body / Conclusion)</option>
+        <option value="Use a detailed structure with numbered sections, subsections, and clear headers throughout.">Detailed with Subsections</option>
+        <option value="Use a listicle format with numbered or bulleted main points, each with its own subheading and explanation.">Listicle Format</option>
+      </select>
+    </div>`,
+  'platform': `
+    <div>
+      <label class="form-label">Platform</label>
+      <select id="platform-sel">
+        <option value="">Any / All Platforms</option>
+        <option value="This content is for Instagram. Keep captions engaging, use line breaks for readability, and include relevant hashtag suggestions at the end.">Instagram</option>
+        <option value="This content is for LinkedIn. Use a professional but personal tone. Start with a hook, use short paragraphs, and end with a question to encourage comments.">LinkedIn</option>
+        <option value="This content is for Twitter/X. Keep each post under 280 characters unless writing a thread (in which case number each tweet clearly).">Twitter / X</option>
+        <option value="This content is for Facebook. Write conversational, community-friendly posts that encourage engagement and sharing.">Facebook</option>
+        <option value="This content is for TikTok captions. Keep it short, punchy, trend-aware, and include relevant hashtags.">TikTok</option>
+      </select>
+    </div>`,
+  'post-count': `
+    <div>
+      <label class="form-label">Number of Posts / Questions</label>
+      <select id="post-count-sel">
+        <option value="">AI Decides</option>
+        <option value="Write 3 variations.">3</option>
+        <option value="Write 5 variations.">5</option>
+        <option value="Write 7 variations.">7</option>
+        <option value="Write 10 variations.">10</option>
+      </select>
+    </div>`,
+  'cta': `
+    <div>
+      <label class="form-label">Primary CTA Goal</label>
+      <select id="cta-sel">
+        <option value="">AI Decides</option>
+        <option value="The primary CTA goal is to get the visitor to start a free trial. Write all CTAs around this action.">Start Free Trial</option>
+        <option value="The primary CTA goal is to get the visitor to book a demo. Write all CTAs around this action.">Book a Demo</option>
+        <option value="The primary CTA goal is to get the visitor to make a purchase. Write all CTAs around buying now.">Buy Now / Purchase</option>
+        <option value="The primary CTA goal is to get the visitor to sign up to an email list. Write all CTAs around subscribing.">Sign Up / Subscribe</option>
+        <option value="The primary CTA goal is to get the visitor to contact sales or the team. Write all CTAs around getting in touch.">Contact / Get in Touch</option>
+      </select>
+    </div>`,
+  'email-count': `
+    <div>
+      <label class="form-label">Number of Emails</label>
+      <select id="email-count-sel">
+        <option value="Write a 3-email sequence.">3 Emails</option>
+        <option value="Write a 5-email sequence." selected>5 Emails</option>
+        <option value="Write a 7-email sequence.">7 Emails</option>
+        <option value="Write a 10-email sequence.">10 Emails</option>
+      </select>
+    </div>`,
+  'sequence-goal': `
+    <div>
+      <label class="form-label">Sequence Goal</label>
+      <select id="sequence-goal-sel">
+        <option value="">AI Decides</option>
+        <option value="This is a welcome sequence. Focus on onboarding the new subscriber, delivering value, and building trust.">Welcome / Onboarding</option>
+        <option value="This is a nurture sequence. Focus on education, building authority, and warming up leads over time.">Lead Nurture</option>
+        <option value="This is a sales sequence. Focus on overcoming objections, highlighting benefits, and driving conversions with urgency.">Sales / Conversion</option>
+        <option value="This is a re-engagement sequence. Focus on reminding inactive subscribers why they signed up and giving them a reason to come back.">Re-engagement</option>
+        <option value="This is a post-purchase sequence. Focus on onboarding the customer, encouraging product use, and requesting a review.">Post-Purchase</option>
+      </select>
+    </div>`,
+  'video-length': `
+    <div>
+      <label class="form-label">Video Length</label>
+      <select id="video-length-sel">
+        <option value="">AI Decides</option>
+        <option value="Write a script for a short video (1–3 minutes). Keep it tight and focused.">Short (1–3 minutes)</option>
+        <option value="Write a script for a medium video (5–8 minutes). Include enough detail to be valuable." selected>Medium (5–8 minutes)</option>
+        <option value="Write a script for a long video (10–15 minutes). Go deep with examples and explanation.">Long (10–15 minutes)</option>
+        <option value="Write a script for a very long video (20+ minutes). This is an in-depth tutorial or deep-dive.">Very Long (20+ minutes)</option>
+      </select>
+    </div>`,
+};
+
+// ─── Select content type ──────────────────────────────────────
+function selectContentType(type) {
+  selectedContentType = type;
+
+  // Update tab UI
+  document.querySelectorAll('.ct-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.type === type);
+  });
+
+  const cfg = CONTENT_TYPES[type];
+  if (!cfg) return;
+
+  // Update placeholder and hint
+  document.getElementById('topic-input').placeholder = cfg.placeholder;
+  document.getElementById('topic-hint').textContent   = cfg.hint;
+
+  // Render dynamic fields
+  const container = document.getElementById('dynamic-fields');
+  if (cfg.fields && cfg.fields.length) {
+    const grid = document.createElement('div');
+    grid.className = cfg.fields.length >= 3 ? 'fields-grid' : 'fields-grid';
+    grid.style.gridTemplateColumns = cfg.fields.length === 1 ? '1fr' : '1fr 1fr';
+    grid.innerHTML = cfg.fields.map(f => FIELD_TEMPLATES[f] || '').join('');
+    container.innerHTML = '';
+    container.appendChild(grid);
+  } else {
+    container.innerHTML = '';
+  }
+
+  // Update gen button label
+  document.getElementById('gen-text').textContent = `Generate ${cfg.label.replace(/^[^\s]+\s/, '')}`;
+}
+
+// ─── Model selection ──────────────────────────────────────────
+function selectModel(card) {
+  if (card.classList.contains('pro-locked')) return;
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+
+// ─── Tone chips ───────────────────────────────────────────────
+document.querySelectorAll('#tone-group .tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#tone-group .tag-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedTone = chip.dataset.val;
+  });
+});
+
+// ─── Length chips ─────────────────────────────────────────────
+document.querySelectorAll('#length-group .tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#length-group .tag-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedLength = chip.dataset.val;
+  });
+});
+
+// ─── Char count ───────────────────────────────────────────────
+function updateTopicCount() {
+  const len = document.getElementById('topic-input').value.length;
+  document.getElementById('topic-chars').textContent = `${len} / 2000`;
+}
+
+// ─── Advanced toggle ──────────────────────────────────────────
+function toggleAdv() {
+  const toggle = document.getElementById('adv-toggle');
+  const body   = document.getElementById('adv-body');
+  toggle.classList.toggle('open');
+  body.classList.toggle('show');
+}
+
+// ─── Get dynamic field value ──────────────────────────────────
+function getDynFieldVal(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+// ─── Build system prompt ──────────────────────────────────────
+function buildSystemPrompt() {
+  const cfg = CONTENT_TYPES[selectedContentType] || {};
+  const base = cfg.systemNote || 'You are an expert content writer. Write high-quality, well-structured content that delivers genuine value.';
+  return base + ' Output only the finished content — no preamble like "Here is your..." or meta-commentary about what you\'re doing.';
+}
+
+// ─── Build user prompt ────────────────────────────────────────
+function buildUserPrompt() {
+  const topic    = document.getElementById('topic-input').value.trim();
+  const audience = document.getElementById('audience-input').value.trim();
+  const brand    = document.getElementById('brand-input').value.trim();
+  const keywords = document.getElementById('keywords-input').value.trim();
+  const extra    = document.getElementById('extra-input').value.trim();
+
+  const toneMap = {
+    'default':       '',
+    'professional':  'Use a professional tone.',
+    'casual':        'Use a casual, relaxed tone.',
+    'friendly':      'Use a warm and friendly tone.',
+    'formal':        'Use a formal, polished tone.',
+    'persuasive':    'Use a persuasive, compelling tone.',
+    'witty':         'Use a witty, clever tone with light humor.',
+    'empathetic':    'Use a warm, empathetic, emotionally aware tone.',
+    'bold':          'Use a bold, confident, high-energy tone.',
+    'educational':   'Use a clear, educational tone that explains things step by step.',
+    'authoritative': 'Use an authoritative, expert tone that builds trust and credibility.',
+  };
+
+  const lengthMap = {
+    'default-length': '',
+    'very-short':     'Keep the output very short — a few sentences at most.',
+    'medium':         'Aim for a medium length — several paragraphs, enough to be complete but not exhaustive.',
+    'long':           'Write a long, thorough piece — cover the topic in depth.',
+    'very-long':      'Write a very long, comprehensive piece with full detail and coverage.',
+  };
+
+  // Gather dynamic field values
+  const dynVals = [
+    getDynFieldVal('word-count-sel'),
+    getDynFieldVal('seo-focus-sel'),
+    getDynFieldVal('sections-sel'),
+    getDynFieldVal('platform-sel'),
+    getDynFieldVal('post-count-sel'),
+    getDynFieldVal('cta-sel'),
+    getDynFieldVal('email-count-sel'),
+    getDynFieldVal('sequence-goal-sel'),
+    getDynFieldVal('video-length-sel'),
+  ].filter(Boolean);
+
+  let prompt = topic;
+
+  const instructions = [];
+  if (brand)            instructions.push(`Brand/Business: ${brand}`);
+  if (audience)         instructions.push(`Target audience: ${audience}`);
+  if (keywords)         instructions.push(`Naturally include these SEO keywords: ${keywords}`);
+  dynVals.forEach(v =>  instructions.push(v));
+  const toneNote   = toneMap[selectedTone] || '';
+  const lengthNote = lengthMap[selectedLength] || '';
+  if (toneNote)         instructions.push(toneNote);
+  if (lengthNote)       instructions.push(lengthNote);
+  if (extra)            instructions.push(`Additional instructions: ${extra}`);
+
+  if (instructions.length) {
+    prompt += `\n\n[Content instructions:\n${instructions.map(i => `• ${i}`).join('\n')}\n]`;
+  }
+
+  return prompt;
+}
+
+// ─── Steps animation ─────────────────────────────────────────
+let stepTimeout;
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4'];
+  let i = 0;
+  function next() {
+    steps.forEach((s, idx) => {
+      const el = document.getElementById(s);
+      if (idx < i)        el.className = 'step-item done';
+      else if (idx === i) el.className = 'step-item active';
+      else                el.className = 'step-item';
+    });
+    if (i < steps.length - 1) { i++; stepTimeout = setTimeout(next, 1500); }
+  }
+  next();
+}
+
+// ─── callAI — SSE streaming ───────────────────────────────────
+async function callAI(model, systemPrompt, userPrompt) {
+  const orModel = MODEL_MAP[model] || 'deepseek/deepseek-chat';
+
+  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: orModel,
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: userPrompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const apiMsg = err?.error?.message || `API error ${res.status}. Please try again.`;
+    const regionHint = apiMsg.toLowerCase().includes('region') ? ' Please try a different AI model.' : '';
+    throw new Error(apiMsg + regionHint);
+  }
+
+  return res;
+}
+
+// ─── Markdown → HTML ──────────────────────────────────────────
+function mdToHtml(md) {
+  let html = md
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/^---+$/gm, '<hr>')
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^\s*[-*+] (.+)$/gm, '<li>$1</li>')
+    .replace(/^\s*\d+\. (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>[\s\S]+?<\/li>)(\s*(?!<li>))/g, '<ul>$1</ul>$2');
+  const blockTags = /^<(h[1-4]|ul|ol|li|blockquote|hr|pre)/;
+  html = html.split('\n').map(line => {
+    const t = line.trim();
+    if (!t) return '';
+    if (blockTags.test(t)) return t;
+    return `<p>${t}</p>`;
+  }).join('\n');
+  return html;
+}
+
+// ─── Stats ────────────────────────────────────────────────────
+function updateStats(text) {
+  const words   = text.trim().split(/\s+/).filter(Boolean).length;
+  const chars   = text.length;
+  const readMin = Math.max(1, Math.round(words / 230));
+  document.getElementById('stat-words').textContent = words.toLocaleString();
+  document.getElementById('stat-chars').textContent = chars.toLocaleString();
+  document.getElementById('stat-read').textContent  = `~${readMin} min`;
+}
+
+// ─── Toggle preview ───────────────────────────────────────────
+function toggleRender() {
+  isRendered = !isRendered;
+  const raw      = document.getElementById('content-raw');
+  const rendered = document.getElementById('content-rendered');
+  const btn      = document.getElementById('render-btn');
+  if (isRendered) {
+    rendered.innerHTML     = mdToHtml(lastContent);
+    raw.style.display      = 'none';
+    rendered.style.display = 'block';
+    btn.textContent        = '📝 Raw';
+  } else {
+    raw.style.display      = 'block';
+    rendered.style.display = 'none';
+    btn.textContent        = '👁 Preview';
+  }
+}
+
+// ─── Main generate ────────────────────────────────────────────
+async function generateContent() {
+  const topicVal = document.getElementById('topic-input').value.trim();
+  const errorBox = document.getElementById('error-box');
+  errorBox.className   = 'error-box';
+  errorBox.textContent = '';
+
+  if (!topicVal) {
+    errorBox.className   = 'error-box show';
+    errorBox.textContent = '⚠ Please describe your topic or content details before generating.';
+    document.getElementById('topic-input').focus();
+    return;
+  }
+
+  const model      = document.querySelector('input[name=model]:checked').value;
+  const sysPrompt  = buildSystemPrompt();
+  const userPrompt = buildUserPrompt();
+
+  // Reset
+  lastContent = '';
+  isRendered  = false;
+  const raw      = document.getElementById('content-raw');
+  const rendered = document.getElementById('content-rendered');
+  raw.textContent        = '';
+  raw.style.display      = 'block';
+  rendered.style.display = 'none';
+  document.getElementById('render-btn').textContent = '👁 Preview';
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').textContent = '⏳';
+  document.getElementById('gen-text').textContent = 'Generating…';
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('output-card').classList.remove('show');
+  animateSteps();
+
+  try {
+    const res    = await callAI(model, sysPrompt, userPrompt);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    document.getElementById('spinner-wrap').classList.remove('show');
+    document.getElementById('output-card').classList.add('show');
+    raw.classList.add('streaming');
+    document.getElementById('output-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4'].forEach(s => { document.getElementById(s).className = 'step-item'; });
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === 'data: [DONE]') continue;
+        if (!trimmed.startsWith('data: ')) continue;
+        try {
+          const json  = JSON.parse(trimmed.slice(6));
+          const chunk = json?.choices?.[0]?.delta?.content ?? '';
+          if (chunk) {
+            lastContent += chunk;
+            raw.textContent = lastContent;
+            updateStats(lastContent);
+          }
+        } catch (_) {}
+      }
+    }
+
+    raw.classList.remove('streaming');
+
+    if (!lastContent || lastContent.trim().length < 5) {
+      throw new Error('The AI returned an empty response. Please try a different model or rephrase your topic.');
+    }
+
+    document.getElementById('output-dot').style.animation  = 'none';
+    document.getElementById('output-dot').style.background = 'var(--pass)';
+    document.getElementById('output-label').textContent    = 'Generated Content ✓';
+
+  } catch (err) {
+    raw.classList.remove('streaming');
+    document.getElementById('output-card').classList.remove('show');
+    errorBox.className   = 'error-box show';
+    errorBox.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = '✨';
+    const cfg = CONTENT_TYPES[selectedContentType] || {};
+    document.getElementById('gen-text').textContent = `Generate ${(cfg.label || 'Content').replace(/^[^\s]+\s/, '')} Again`;
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4'].forEach(s => { document.getElementById(s).className = 'step-item'; });
+  }
+}
+
+// ─── Copy ─────────────────────────────────────────────────────
+function copyContent() {
+  navigator.clipboard.writeText(lastContent).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+// ─── Export TXT ───────────────────────────────────────────────
+function exportTxt() {
+  const blob = new Blob([lastContent], { type: 'text/plain' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'ai-content.txt';
+  a.click();
+}
+
+// ─── Init ─────────────────────────────────────────────────────
+selectContentType('blog-post');
+</script>
+</body>
+</html>
