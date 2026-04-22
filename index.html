@@ -2148,12 +2148,8 @@ let allSuggestions   = [];
 let typewriteInterval = null;
 let scoreCountInterval = null;
 
-// ─── AUDIT COUNTER (Global — counterapi.com) ─────────────────
-const COUNTER_NS     = 'ranksorcery.com';
-const COUNTER_ACTION = 'audit';
-const COUNTER_KEY    = 'website-audit';
-const COUNTER_START  = 50000;
-const COUNTER_API    = `https://counterapi.com/api/${COUNTER_NS}/${COUNTER_ACTION}/${COUNTER_KEY}`;
+// ─── AUDIT COUNTER (Global — kvdb.io) ────────────────────────
+const KVDB_URL = 'https://kvdb.io/14q2fcynsrZSfG1MafBMV/website-audit';
 
 function formatAuditCount(n) {
   return Number(n).toLocaleString() + '+';
@@ -2164,17 +2160,17 @@ function updateAuditCounterDisplay(n) {
   if (el) el.textContent = formatAuditCount(n);
 }
 
-// Fetch current count (read-only) and update display on page load
-fetch(`${COUNTER_API}?readOnly=true&startNumber=${COUNTER_START}`)
-  .then(r => r.json())
-  .then(d => { if (d && d.value != null) updateAuditCounterDisplay(d.value); })
+// Fetch current count on page load
+fetch(KVDB_URL)
+  .then(r => r.text())
+  .then(val => { if (val && !isNaN(val)) updateAuditCounterDisplay(val); })
   .catch(() => { /* silently keep the static fallback value */ });
 
 // Increment global counter and update display after each audit
 function incrementAuditCount() {
-  fetch(`${COUNTER_API}?startNumber=${COUNTER_START}`)
-    .then(r => r.json())
-    .then(d => { if (d && d.value != null) updateAuditCounterDisplay(d.value); })
+  fetch(KVDB_URL, { method: 'PATCH', body: '+1' })
+    .then(r => r.text())
+    .then(val => { if (val && !isNaN(val)) updateAuditCounterDisplay(val); })
     .catch(() => { /* silently ignore network errors */ });
 }
 
