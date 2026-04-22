@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI FAQ Generator — Free Page Title FAQ Generator | RankSorcery</title>
+<meta name="description" content="Free AI FAQ generator — generate SEO-optimized FAQ sections for any page title or topic in seconds. No sign-up required.">
+<link rel="canonical" href="https://ranksorcery.com/faq-generator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/faq-generator">
+<meta property="og:title" content="AI FAQ Generator — Free Page Title FAQ Generator | RankSorcery">
+<meta property="og:description" content="Generate high-quality, SEO-optimized FAQ sections instantly with AI. Free, unlimited, no login required.">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/faq-generator","url":"https://ranksorcery.com/faq-generator","name":"AI FAQ Generator | RankSorcery","description":"Free AI-powered FAQ generator. Generate SEO-optimized FAQ sections instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
+
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-brand span{color:var(--text)}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
+.nav-cta:hover{background:rgba(79,255,176,.22)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.3rem;flex-direction:column;gap:5px}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:.2s}
+@media(max-width:720px){
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:1rem}
+  .nav-links.open{display:flex}
+  .nav-ham{display:flex}
+  .nav-cta{margin-left:0;width:100%}
+}
+
+.hero{text-align:center;padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;animation:fadeDown .5s .1s ease both}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);max-width:580px;margin:1rem auto 0;line-height:1.7;font-size:.95rem;animation:fadeDown .5s .2s ease both}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
+.pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted)}
+
+.main-wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem 5rem}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--card-shadow);margin-bottom:1.25rem;transition:border-color .2s}
+
+.form-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;display:block}
+.form-label .req{color:var(--fail);margin-left:2px}
+
+textarea,input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s;resize:vertical}
+textarea:focus,input[type=text]:focus{border-color:rgba(79,255,176,.4);box-shadow:0 0 0 3px rgba(79,255,176,.06)}
+textarea::placeholder,input[type=text]::placeholder{color:var(--muted)}
+textarea{min-height:90px;line-height:1.6}
+
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.fields-grid{grid-template-columns:1fr}}
+
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+select:focus{border-color:rgba(79,255,176,.4)}
+select option{background:var(--bg2)}
+
+/* Number stepper */
+.number-stepper{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.35rem .5rem;width:fit-content}
+.stepper-btn{width:28px;height:28px;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:5px;cursor:pointer;font-size:1rem;display:grid;place-items:center;transition:all .15s;user-select:none}
+.stepper-btn:hover{border-color:var(--accent);color:var(--accent)}
+.stepper-val{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text);min-width:28px;text-align:center}
+
+/* Tag chips for FAQ type */
+.tag-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.tag-chip{font-size:.78rem;font-family:'DM Mono',monospace;padding:.3rem .75rem;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.tag-chip:hover{border-color:rgba(79,255,176,.4);color:var(--text)}
+.tag-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+.btn-generate{width:100%;padding:.9rem 2rem;background:linear-gradient(135deg,rgba(79,255,176,.2) 0%,rgba(0,255,255,.12) 100%);border:1.5px solid var(--accent);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.02em;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:.25rem}
+.btn-generate:hover{background:linear-gradient(135deg,rgba(79,255,176,.3) 0%,rgba(0,255,255,.2) 100%);box-shadow:0 0 24px rgba(79,255,176,.15)}
+.btn-generate:active{transform:scale(.99)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* Output */
+.output-card{display:none;margin-bottom:1.25rem}
+.output-card.show{display:block}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem}
+.output-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem}
+.output-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-export{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;gap:.3rem}
+.btn-export:hover{border-color:var(--accent);color:var(--accent)}
+.btn-copy{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid rgba(79,255,176,.35);background:var(--accent-dim);color:var(--accent);cursor:pointer;transition:all .15s}
+.btn-copy:hover{background:rgba(79,255,176,.22)}
+
+/* FAQ accordion output */
+.faq-list{display:flex;flex-direction:column;gap:.6rem}
+.faq-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:rgba(79,255,176,.25)}
+.faq-item.open{border-color:rgba(79,255,176,.4)}
+.faq-question{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1rem 1.2rem;cursor:pointer;user-select:none}
+.faq-q-text{font-family:'Syne',sans-serif;font-size:.92rem;font-weight:700;color:var(--text);line-height:1.4}
+.faq-q-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--accent);opacity:.7;flex-shrink:0;margin-top:2px}
+.faq-chevron{flex-shrink:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:.65rem;color:var(--muted);transition:all .25s}
+.faq-item.open .faq-chevron{border-color:var(--accent);color:var(--accent);transform:rotate(180deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .25s ease}
+.faq-item.open .faq-answer{max-height:600px}
+.faq-answer-inner{padding:0 1.2rem 1.1rem;color:var(--muted);font-size:.9rem;line-height:1.75;border-top:1px solid var(--border)}
+.faq-answer-inner p{margin-top:.85rem}
+
+/* Schema block */
+.schema-block{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;font-family:'DM Mono',monospace;font-size:.72rem;color:#9ca3af;white-space:pre-wrap;word-break:break-all;line-height:1.7;overflow-x:auto}
+.schema-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem}
+.schema-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.schema-toggle{display:none}
+.schema-wrap.show .schema-toggle{display:block}
+.schema-wrap{display:none}
+.schema-wrap.show{display:block}
+.btn-schema-toggle{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid rgba(0,255,255,.3);background:rgba(0,255,255,.06);color:var(--accent2);cursor:pointer;transition:all .15s}
+.btn-schema-toggle:hover{background:rgba(0,255,255,.12)}
+
+.faq-count-bar{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.75rem;display:flex;gap:1.2rem}
+.faq-count-bar span{color:var(--text)}
+
+/* Spinner */
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.spinner-wrap.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted)}
+.steps-bar{display:flex;flex-direction:column;gap:.3rem;margin-top:.5rem}
+.step-item{display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);opacity:.4;transition:opacity .3s}
+.step-item.active{opacity:1;color:var(--accent)}
+.step-item.done{opacity:.7;color:var(--muted)}
+.step-item.done::before{content:'✓ '}
+.step-item.active::before{content:'⟳ '}
+
+.error-box{display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:8px;padding:.85rem 1rem;color:var(--fail);font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.error-box.show{display:block}
+
+.char-count{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);float:right;margin-top:.35rem}
+.random-btn{font-size:.72rem;font-family:'DM Mono',monospace;padding:.25rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.random-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* Info tip */
+.tip-row{display:flex;align-items:flex-start;gap:.6rem;background:rgba(79,255,176,.05);border:1px solid rgba(79,255,176,.15);border-radius:8px;padding:.7rem 1rem;font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:1rem}
+.tip-icon{color:var(--accent);flex-shrink:0;font-size:1rem;margin-top:1px}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.faq-item{animation:fadeIn .35s ease both}
+
+.footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-brand">Rank<span>Sorcery</span></a>
+  <button class="nav-ham" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor Analysis</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+    <a href="https://ranksorcery.com/document-checker.html">📄 Doc Checker</a>
+    <a href="https://ranksorcery.com/ai-blog-writer">✍️ Blog Writer</a>
+    <a href="https://ranksorcery.com/faq-generator" style="color:var(--accent)">❓ FAQ Generator</a>
+    <a href="https://ranksorcery.com/#" class="nav-cta">Run Free Audit →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ SEO-Optimized · Schema Ready · Free · No Login</div>
+  <h1>AI FAQ <em>Generator</em></h1>
+  <p class="hero-sub">Instantly generate SEO-ready FAQ sections for any page title or topic. Get question &amp; answer pairs plus JSON-LD schema markup — ready to paste.</p>
+  <div class="hero-pills">
+    <span class="pill">❓ Smart Q&amp;A Pairs</span>
+    <span class="pill">🔑 SEO Optimized</span>
+    <span class="pill">📋 Schema Markup</span>
+    <span class="pill">🎨 Custom Style</span>
+    <span class="pill">📤 Copy &amp; Export</span>
+  </div>
+</section>
+
+<main class="main-wrap">
+
+  <div id="error-box" class="error-box"></div>
+
+  <!-- Page Title / Topic -->
+  <div class="card">
+    <label class="form-label" for="page-title">Page Title or Topic <span class="req">*</span>
+      <button class="random-btn" onclick="setRandomTitle()" title="Try a random example">🎲 Example</button>
+    </label>
+    <input type="text" id="page-title" placeholder="e.g. Best Running Shoes for Flat Feet in 2025" maxlength="300" oninput="updateCharCount(this,'title-chars',300)" />
+    <div class="char-count"><span id="title-chars">0</span> / 300</div>
+  </div>
+
+  <!-- Options row -->
+  <div class="card">
+    <div class="fields-grid">
+      <div>
+        <label class="form-label">Number of FAQs</label>
+        <div class="number-stepper">
+          <button class="stepper-btn" onclick="adjustCount(-1)" aria-label="Decrease">−</button>
+          <span class="stepper-val" id="faq-count-display">8</span>
+          <button class="stepper-btn" onclick="adjustCount(1)" aria-label="Increase">+</button>
+        </div>
+        <input type="hidden" id="faq-count" value="8">
+      </div>
+      <div>
+        <label class="form-label">Answer Length</label>
+        <select id="answer-length">
+          <option value="short">Short (1–2 sentences)</option>
+          <option value="medium" selected>Medium (2–4 sentences)</option>
+          <option value="detailed">Detailed (4–6 sentences)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem">
+      <label class="form-label">FAQ Style / Focus</label>
+      <div class="tag-group" id="faq-style-group">
+        <span class="tag-chip active" data-val="general">General</span>
+        <span class="tag-chip" data-val="buyers">Buyer's Questions</span>
+        <span class="tag-chip" data-val="how-to">How-To</span>
+        <span class="tag-chip" data-val="comparison">Comparison</span>
+        <span class="tag-chip" data-val="technical">Technical</span>
+        <span class="tag-chip" data-val="troubleshooting">Troubleshooting</span>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem">
+      <label class="form-label">Target Audience <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+      <input type="text" id="audience" placeholder="e.g. beginners, small business owners, runners over 40" />
+    </div>
+  </div>
+
+  <!-- Generate button -->
+  <div class="card" style="padding:1rem">
+    <button class="btn-generate" id="gen-btn" onclick="generateFAQ()">
+      <span id="gen-icon">❓</span>
+      <span id="gen-text">Generate FAQs</span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="spinner-wrap" id="spinner-wrap">
+    <div class="spinner"></div>
+    <div class="spinner-text">Generating your FAQs…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Analyzing your topic</div>
+      <div class="step-item" id="step2">Researching common questions</div>
+      <div class="step-item" id="step3">Crafting SEO-friendly answers</div>
+      <div class="step-item" id="step4">Structuring FAQ pairs</div>
+      <div class="step-item" id="step5">Building schema markup</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-card card" id="output-card">
+    <div class="output-header">
+      <div class="output-title">
+        <span class="dot"></span>
+        FAQ Results
+      </div>
+      <div class="export-btns">
+        <button class="btn-export" onclick="exportTxt()">📄 TXT</button>
+        <button class="btn-export" onclick="exportHtml()">🌐 HTML</button>
+        <button class="btn-copy" onclick="copyOutput()">📋 Copy All</button>
+      </div>
+    </div>
+
+    <div class="tip-row" id="schema-tip" style="display:none">
+      <span class="tip-icon">💡</span>
+      <span>Add the JSON-LD schema below to your <code style="color:var(--accent2);background:var(--bg);padding:.1em .3em;border-radius:3px;font-family:'DM Mono',monospace;font-size:.8em">&lt;head&gt;</code> tag to qualify for Google's FAQ rich results in search.</span>
+    </div>
+
+    <!-- FAQ accordion -->
+    <div class="faq-list" id="faq-list"></div>
+
+    <div class="faq-count-bar" id="faq-count-bar"></div>
+
+    <!-- Schema markup -->
+    <div class="schema-wrap" id="schema-wrap">
+      <div class="divider"></div>
+      <div class="schema-header">
+        <span class="schema-label">📋 JSON-LD Schema Markup</span>
+        <button class="btn-schema-toggle" onclick="copySchema()">📋 Copy Schema</button>
+      </div>
+      <div class="schema-block" id="schema-block"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools · No login required</p>
+</footer>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+let faqCount = 8;
+let lastFAQs = [];
+let selectedStyle = 'general';
+
+// ─── FAQ count stepper ────────────────────────────────────────
+function adjustCount(delta) {
+  faqCount = Math.min(20, Math.max(3, faqCount + delta));
+  document.getElementById('faq-count').value = faqCount;
+  document.getElementById('faq-count-display').textContent = faqCount;
+}
+
+// ─── Style chips ─────────────────────────────────────────────
+document.querySelectorAll('.tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#faq-style-group .tag-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedStyle = chip.dataset.val;
+  });
+});
+
+// ─── Char counter ─────────────────────────────────────────────
+function updateCharCount(el, countId, max) {
+  document.getElementById(countId).textContent = el.value.length;
+}
+
+// ─── Random examples ─────────────────────────────────────────
+const randomTitles = [
+  "Best Running Shoes for Flat Feet",
+  "How to Start a Dropshipping Business in 2025",
+  "Complete Guide to LASIK Eye Surgery",
+  "WordPress vs Shopify for E-commerce",
+  "Intermittent Fasting for Weight Loss",
+  "Best Credit Cards for Travel Rewards",
+  "How to Learn Python Programming as a Beginner",
+  "Home Solar Panel Installation Cost and Benefits",
+  "SEO for Small Businesses: A Practical Guide",
+  "Keto Diet: Benefits, Risks and Getting Started",
+];
+function setRandomTitle() {
+  const t = randomTitles[Math.floor(Math.random() * randomTitles.length)];
+  const el = document.getElementById('page-title');
+  el.value = t;
+  updateCharCount(el, 'title-chars', 300);
+}
+
+// ─── Build prompt ─────────────────────────────────────────────
+function buildPrompt() {
+  const title = document.getElementById('page-title').value.trim();
+  const count = faqCount;
+  const answerLength = document.getElementById('answer-length').value;
+  const audience = document.getElementById('audience').value.trim();
+
+  const styleMap = {
+    general: 'general questions someone would have about this topic',
+    'buyers': 'buying intent and purchase decision questions',
+    'how-to': 'how-to and step-by-step process questions',
+    comparison: 'comparison and "vs" style questions',
+    technical: 'technical and detailed specification questions',
+    troubleshooting: 'troubleshooting and problem-solving questions',
+  };
+
+  const lengthMap = {
+    short: '1–2 sentences per answer',
+    medium: '2–4 sentences per answer, covering the key points clearly',
+    detailed: '4–6 sentences per answer with thorough explanation',
+  };
+
+  let prompt = `Generate exactly ${count} FAQ question-and-answer pairs for a web page titled: "${title}"\n\n`;
+  prompt += `Focus on: ${styleMap[selectedStyle] || 'general questions'}.\n`;
+  prompt += `Answer length: ${lengthMap[answerLength]}.\n`;
+  if (audience) prompt += `Target audience: ${audience}.\n`;
+  prompt += `\nRequirements:\n`;
+  prompt += `- Questions should be natural, conversational, and SEO-friendly (include relevant keywords).\n`;
+  prompt += `- Answers should be accurate, helpful, and direct — no fluff.\n`;
+  prompt += `- Cover diverse angles: beginner questions, practical concerns, comparisons, tips.\n`;
+  prompt += `- Do NOT repeat similar questions.\n\n`;
+  prompt += `Return ONLY valid JSON in this exact format (no markdown, no preamble, no explanation):\n`;
+  prompt += `{"faqs":[{"q":"Question text here","a":"Answer text here"},...]}\n`;
+  prompt += `\nGenerate exactly ${count} FAQ items in the JSON array.`;
+
+  return prompt;
+}
+
+// ─── Steps animation ─────────────────────────────────────────
+let stepTimeout;
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4','step5'];
+  let i = 0;
+  function next() {
+    steps.forEach((s, idx) => {
+      const el = document.getElementById(s);
+      if (idx < i) el.className = 'step-item done';
+      else if (idx === i) el.className = 'step-item active';
+      else el.className = 'step-item';
+    });
+    if (i < steps.length - 1) { i++; stepTimeout = setTimeout(next, 1800); }
+  }
+  next();
+}
+
+// ─── Render FAQ accordion ─────────────────────────────────────
+function renderFAQs(faqs) {
+  lastFAQs = faqs;
+  const list = document.getElementById('faq-list');
+  list.innerHTML = '';
+
+  faqs.forEach((faq, i) => {
+    const item = document.createElement('div');
+    item.className = 'faq-item';
+    item.style.animationDelay = `${i * 0.05}s`;
+    item.innerHTML = `
+      <div class="faq-question" onclick="toggleFaq(this.parentElement)">
+        <span class="faq-q-num">Q${String(i+1).padStart(2,'0')}</span>
+        <span class="faq-q-text">${escHtml(faq.q)}</span>
+        <span class="faq-chevron">▼</span>
+      </div>
+      <div class="faq-answer">
+        <div class="faq-answer-inner"><p>${escHtml(faq.a)}</p></div>
+      </div>
+    `;
+    list.appendChild(item);
+  });
+
+  // Auto-open first item
+  if (list.firstChild) toggleFaq(list.firstChild);
+
+  document.getElementById('faq-count-bar').innerHTML =
+    `FAQs generated: <span>${faqs.length}</span> &nbsp;·&nbsp; Schema: <span>JSON-LD ready</span>`;
+
+  // Schema
+  buildSchema(faqs);
+
+  document.getElementById('schema-tip').style.display = 'flex';
+  document.getElementById('schema-wrap').classList.add('show');
+  document.getElementById('output-card').classList.add('show');
+  document.getElementById('output-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleFaq(item) {
+  const isOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ─── Build JSON-LD schema ─────────────────────────────────────
+function buildSchema(faqs) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(f => ({
+      "@type": "Question",
+      "name": f.q,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": f.a
+      }
+    }))
+  };
+  document.getElementById('schema-block').textContent = JSON.stringify(schema, null, 2);
+}
+
+// ─── Generate ─────────────────────────────────────────────────
+async function generateFAQ() {
+  const title = document.getElementById('page-title').value.trim();
+  const errorBox = document.getElementById('error-box');
+  errorBox.className = 'error-box';
+  errorBox.textContent = '';
+
+  if (!title) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = '⚠ Please enter a page title or topic to get started.';
+    document.getElementById('page-title').focus();
+    return;
+  }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').textContent = '⏳';
+  document.getElementById('gen-text').textContent = 'Generating…';
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('output-card').classList.remove('show');
+  animateSteps();
+
+  try {
+    const prompt = buildPrompt();
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        system: 'You are an expert SEO content strategist. You generate high-quality, SEO-optimized FAQ question-and-answer pairs. You ALWAYS respond with valid JSON only — no markdown fences, no preamble, no explanation. Just raw JSON.',
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `API error ${response.status}.`);
+    }
+
+    const data = await response.json();
+    const raw = data.content?.[0]?.text || '';
+
+    // Strip any accidental markdown fences
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (e) {
+      // Try to extract JSON object if extra text slipped in
+      const match = cleaned.match(/\{[\s\S]*\}/);
+      if (match) parsed = JSON.parse(match[0]);
+      else throw new Error('The AI returned an unexpected format. Please try again.');
+    }
+
+    const faqs = parsed.faqs || parsed.FAQ || parsed.questions || [];
+    if (!faqs.length) throw new Error('No FAQs were returned. Please try again.');
+
+    renderFAQs(faqs);
+  } catch (err) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = '❓';
+    document.getElementById('gen-text').textContent = 'Regenerate FAQs';
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5'].forEach(s => {
+      document.getElementById(s).className = 'step-item';
+    });
+  }
+}
+
+// ─── Copy All ─────────────────────────────────────────────────
+function copyOutput() {
+  const text = lastFAQs.map((f, i) => `Q${i+1}: ${f.q}\nA: ${f.a}`).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+  });
+}
+
+// ─── Copy Schema ──────────────────────────────────────────────
+function copySchema() {
+  const text = document.getElementById('schema-block').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-schema-toggle');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Schema', 2000);
+  });
+}
+
+// ─── Export TXT ──────────────────────────────────────────────
+function exportTxt() {
+  const title = document.getElementById('page-title').value.trim();
+  const text = `FAQ: ${title}\n${'='.repeat(60)}\n\n` +
+    lastFAQs.map((f, i) => `Q${i+1}: ${f.q}\nA: ${f.a}`).join('\n\n');
+  downloadFile(text, 'faqs.txt', 'text/plain');
+}
+
+// ─── Export HTML ─────────────────────────────────────────────
+function exportHtml() {
+  const title = document.getElementById('page-title').value.trim();
+  const schemaJson = document.getElementById('schema-block').textContent;
+  const faqHtml = lastFAQs.map((f, i) => `
+  <div class="faq-item">
+    <h3 class="faq-question">${escHtml(f.q)}</h3>
+    <div class="faq-answer"><p>${escHtml(f.a)}</p></div>
+  </div>`).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ: ${escHtml(title)}</title>
+<script type="application/ld+json">${schemaJson}<\/script>
+<style>
+body{font-family:Arial,sans-serif;max-width:760px;margin:2rem auto;padding:0 1.5rem;line-height:1.7;color:#1a1a1a}
+h1{font-size:1.6rem;margin-bottom:1.5rem}
+.faq-item{border:1px solid #e0e0e0;border-radius:8px;margin-bottom:.75rem;overflow:hidden}
+.faq-question{padding:1rem 1.2rem;margin:0;font-size:1rem;cursor:pointer;background:#f9f9f9}
+.faq-answer{padding:0 1.2rem 1rem;color:#555}
+</style>
+</head>
+<body>
+<h1>FAQ: ${escHtml(title)}</h1>
+<div class="faq-list">${faqHtml}
+</div>
+</body>
+</html>`;
+  downloadFile(html, 'faqs.html', 'text/html');
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+</script>
+</body>
+</html>
