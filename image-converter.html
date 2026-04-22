@@ -562,12 +562,200 @@
     }
     #drop-zone.has-files .drop-added-msg { display: flex; }
 
+    /* ══════════════════════════════
+       HAMBURGER + MOBILE MENU
+    ══════════════════════════════ */
+    .nav-mobile-right {
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-mobile-cta {
+      background: var(--accent); color: #fff;
+      padding: 7px 13px; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600;
+      text-decoration: none;
+    }
+    .hamburger {
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 4px; border-radius: 6px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text2); border-radius: 2px;
+      transition: all .25s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 8px 0 12px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--text2); text-decoration: none;
+      padding: 12px 20px; font-size: 0.88rem; font-weight: 500;
+      border-bottom: 1px solid var(--border);
+      transition: all .15s;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover, .mobile-menu a.active {
+      color: var(--accent); background: rgba(124,92,252,0.06);
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-mobile-right { display: flex; }
+    }
+
     /* Pulse animation for active items */
     @keyframes pulse-border {
       0%, 100% { border-color: rgba(124,92,252,0.3); }
       50% { border-color: rgba(124,92,252,0.7); }
     }
     .file-item.converting { animation: pulse-border 1.2s ease infinite; }
+
+    /* ══════════════════════════════
+       MOBILE — 768px and below
+    ══════════════════════════════ */
+    @media (max-width: 768px) {
+
+      /* Nav — hide links, keep logo + CTA */
+      .nav-links a:not(.nav-cta) { display: none; }
+      .nav-cta {
+        padding: 7px 13px !important;
+        font-size: 0.8rem !important;
+      }
+      nav { padding: 0 16px; }
+
+      /* Hero */
+      .hero { padding: 40px 16px 32px; }
+      h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+      h1 br { display: none; }
+      .hero-sub { font-size: 0.9rem; }
+      .hero-tags { gap: 6px; }
+      .tag { font-size: 0.68rem; padding: 3px 9px; }
+
+      /* Container */
+      .container { padding: 0 12px 60px; }
+
+      /* Stats strip — 2x2 grid on mobile */
+      .stats-strip {
+        grid-template-columns: 1fr 1fr;
+      }
+      .stat-num { font-size: 1.3rem; }
+      .stat-cell { padding: 14px 12px; }
+
+      /* Cards */
+      .card { padding: 16px; border-radius: 14px; margin-bottom: 14px; }
+      .card-title { font-size: 0.72rem; margin-bottom: 14px; }
+
+      /* Drop zone */
+      #drop-zone { padding: 36px 16px; }
+      .drop-title { font-size: 0.95rem; }
+      .drop-sub { font-size: 0.8rem; margin-bottom: 14px; }
+      .btn-browse { padding: 10px 20px; font-size: 0.85rem; width: 100%; justify-content: center; }
+      .format-chips { gap: 5px; margin-top: 14px; }
+      .format-chip { font-size: 0.65rem; padding: 3px 8px; }
+
+      /* Drop zone compact state */
+      #drop-zone.has-files { padding: 14px 16px; }
+      .drop-added-msg { flex-wrap: wrap; gap: 8px; font-size: 0.8rem; }
+      .drop-added-msg .btn-browse { width: auto; padding: 6px 14px; font-size: 0.78rem; }
+
+      /* Queue card title row */
+      #file-list-section .card > .card-title {
+        flex-wrap: wrap; gap: 8px;
+      }
+
+      /* Thumbnail grid — 3 columns on mobile */
+      #file-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+      }
+
+      /* Thumb remove always visible on mobile (no hover) */
+      .thumb-remove { display: flex !important; }
+
+      /* Settings grid — single column */
+      .settings-grid { grid-template-columns: 1fr; gap: 14px; }
+      .inp-row { gap: 6px; }
+
+      /* Preview grid — stack vertically */
+      .preview-grid { grid-template-columns: 1fr; gap: 12px; }
+
+      /* Button row — stack vertically */
+      .btn-row { flex-direction: column; gap: 10px; }
+      .btn-primary { min-width: unset; width: 100%; padding: 14px 20px; font-size: 0.9rem; }
+      .btn-secondary { width: 100%; text-align: center; padding: 12px 20px; }
+
+      /* How-it-works — 2 col */
+      .how-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .how-step { padding: 16px 12px; }
+      .how-num { font-size: 1.6rem; margin-bottom: 8px; }
+      .how-title { font-size: 0.82rem; }
+      .how-desc { font-size: 0.75rem; }
+
+      /* Format table — hide Notes column */
+      .format-table th:last-child,
+      .format-table td:last-child { display: none; }
+      .format-table th, .format-table td { padding: 9px 10px; font-size: 0.78rem; }
+
+      /* FAQ */
+      .faq-q { font-size: 0.85rem; }
+      .faq-a p { font-size: 0.8rem; }
+
+      /* Section headings */
+      .section-head { font-size: 1.15rem; }
+      .section-sub { font-size: 0.82rem; }
+
+      /* Modal */
+      #modal-img { max-width: 96vw; max-height: 80vh; }
+      #modal-close { top: 12px; right: 12px; width: 32px; height: 32px; font-size: 0.9rem; }
+
+      /* HEIC notice */
+      .heic-notice { font-size: 0.76rem; padding: 10px 12px; }
+
+      /* Footer */
+      footer { padding: 28px 16px; }
+      .footer-links { gap: 14px; }
+      .footer-links a { font-size: 0.78rem; }
+    }
+
+    /* ══════════════════════════════
+       SMALL PHONES — 420px and below
+    ══════════════════════════════ */
+    @media (max-width: 420px) {
+      h1 { font-size: 1.5rem; }
+      .hero { padding: 32px 12px 24px; }
+      .hero-badge { font-size: 0.68rem; padding: 4px 11px; }
+
+      /* Stats — single row of 4 tiny cells */
+      .stats-strip { grid-template-columns: repeat(4, 1fr); }
+      .stat-num { font-size: 1rem; }
+      .stat-label { font-size: 0.6rem; }
+      .stat-cell { padding: 10px 6px; }
+
+      /* Thumbnails — 2 columns on very small screens */
+      #file-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+      /* How — single column */
+      .how-grid { grid-template-columns: 1fr; }
+
+      /* Drop zone */
+      #drop-zone { padding: 28px 12px; }
+      .drop-icon { font-size: 2rem; }
+      .drop-title { font-size: 0.88rem; }
+
+      .card { padding: 14px 12px; }
+      .container { padding: 0 10px 50px; }
+    }
   </style>
 </head>
 <body>
@@ -585,6 +773,22 @@
       <a href="https://ranksorcery.com/image-converter.html" class="active">Image Tool</a>
       <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
     </div>
+    <!-- Mobile: CTA + hamburger -->
+    <div class="nav-mobile-right">
+      <a href="https://ranksorcery.com/" class="nav-cta nav-mobile-cta">Audit →</a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile drawer -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="https://ranksorcery.com/" onclick="closeMenu()">🔍 SEO Auditor</a>
+    <a href="https://ranksorcery.com/competitor.html" onclick="closeMenu()">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html" onclick="closeMenu()">📊 Keywords</a>
+    <a href="https://ranksorcery.com/ai-search.html" onclick="closeMenu()">🤖 AI Search</a>
+    <a href="https://ranksorcery.com/document-checker.html" onclick="closeMenu()">📄 Doc Checker</a>
+    <a href="https://ranksorcery.com/image-converter.html" class="active" onclick="closeMenu()">🖼️ Image Tool</a>
   </div>
 </nav>
 
@@ -1307,6 +1511,18 @@
     document.getElementById('modal-overlay').classList.remove('show');
   }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ── HAMBURGER MENU ──
+  function toggleMenu() {
+    const btn = document.getElementById('hamburger');
+    const menu = document.getElementById('mobile-menu');
+    btn.classList.toggle('open');
+    menu.classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobile-menu').classList.remove('open');
+  }
 
   // ── FAQ ──
   function toggleFaq(btn) {
