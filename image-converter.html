@@ -476,6 +476,92 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── THUMBNAIL GRID ── */
+    .file-thumb-card {
+      position: relative;
+      background: var(--bg3);
+      border: 2px solid var(--border2);
+      border-radius: 10px;
+      overflow: hidden;
+      aspect-ratio: 1/1;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .file-thumb-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .file-thumb-card.done { border-color: var(--success); }
+    .file-thumb-card.error { border-color: var(--danger); }
+    .file-thumb-card.converting { border-color: var(--accent); animation: pulse-border 1.2s ease infinite; }
+    .file-thumb-card img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .file-thumb-card .thumb-placeholder {
+      width: 100%; height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 6px;
+    }
+    .file-thumb-card .thumb-placeholder span { font-size: 2rem; }
+    .file-thumb-card .thumb-placeholder small { font-size: 0.65rem; color: var(--text3); font-weight: 700; letter-spacing: .04em; }
+    .thumb-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(5,6,10,0.92));
+      padding: 20px 8px 8px;
+    }
+    .thumb-name {
+      font-size: 0.65rem; color: var(--text); font-weight: 500;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: block;
+    }
+    .thumb-size { font-size: 0.6rem; color: var(--text3); display: block; margin-top: 1px; }
+    .thumb-status-badge {
+      position: absolute; top: 7px; right: 7px;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 800;
+    }
+    .thumb-status-badge.done { background: var(--success); color: #000; }
+    .thumb-status-badge.error { background: var(--danger); color: #fff; }
+    .thumb-status-badge.converting { background: var(--accent); color: #fff; }
+    .thumb-remove {
+      position: absolute; top: 7px; left: 7px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(10,11,15,0.75); border: 1px solid var(--border2);
+      color: var(--text2); font-size: 0.6rem; cursor: pointer;
+      display: none; align-items: center; justify-content: center;
+      transition: all .15s; line-height: 1;
+    }
+    .file-thumb-card:hover .thumb-remove { display: flex; }
+    .thumb-remove:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+    .thumb-saving {
+      position: absolute; top: 7px; left: 7px;
+      background: var(--success); color: #000;
+      font-size: 0.6rem; font-weight: 800;
+      padding: 2px 6px; border-radius: 100px;
+    }
+
+    /* Upload success flash */
+    @keyframes thumbIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .file-thumb-card { animation: thumbIn .25s ease forwards; }
+
+    /* Drop zone uploaded state */
+    #drop-zone.has-files {
+      padding: 20px 24px;
+      border-style: solid;
+      border-color: rgba(124,92,252,0.4);
+      background: rgba(124,92,252,0.05);
+    }
+    #drop-zone.has-files .drop-icon,
+    #drop-zone.has-files .drop-title,
+    #drop-zone.has-files .drop-sub { display: none; }
+    #drop-zone.has-files .btn-browse { display: none; }
+    #drop-zone.has-files .format-chips { margin-top: 0; }
+    .drop-added-msg {
+      display: none; align-items: center; justify-content: center;
+      gap: 10px; font-size: .85rem; color: var(--text2);
+    }
+    #drop-zone.has-files .drop-added-msg { display: flex; }
+
     /* Pulse animation for active items */
     @keyframes pulse-border {
       0%, 100% { border-color: rgba(124,92,252,0.3); }
@@ -549,6 +635,11 @@
       <div class="drop-title">Drop images here or click to browse</div>
       <div class="drop-sub">Or paste from clipboard (Ctrl / ⌘ + V)</div>
       <button class="btn-browse" onclick="document.getElementById('file-input').click()">Browse Files</button>
+      <div class="drop-added-msg">
+        <span style="font-size:1.3rem">🖼️</span>
+        <span id="drop-added-text">Images loaded — see queue below</span>
+        <button class="btn-browse" style="padding:7px 16px;font-size:.8rem" onclick="document.getElementById('file-input').click()">+ Add More</button>
+      </div>
       <div class="format-chips">
         <span class="format-chip special">HEIC</span>
         <span class="format-chip special">HEIF</span>
@@ -568,6 +659,56 @@
   <div class="heic-notice" id="heic-notice">
     <span>ℹ️</span>
     <div><strong>HEIC/HEIF detected</strong> — These files will be decoded using the heic2any library automatically. Conversion may take a moment for large files.</div>
+  </div>
+
+  <!-- File List — ABOVE settings -->
+  <div id="file-list-section" style="display:none">
+    <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px rgba(124,92,252,0.15);">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <span style="display:flex;align-items:center;gap:8px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--success);border-radius:50%;font-size:.7rem;color:#000;font-weight:800">✓</span>
+          <span style="color:var(--text);font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em"><span id="queue-count">0</span> Images Ready</span>
+        </span>
+        <button class="btn-secondary" style="padding:6px 14px;font-size:.78rem" onclick="clearAll()">✕ Clear All</button>
+      </div>
+
+      <!-- Thumbnail Grid -->
+      <div id="file-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-bottom:20px"></div>
+
+      <!-- Detailed List (shown when >4 files) -->
+      <div id="file-list"></div>
+
+      <!-- Progress -->
+      <div class="progress-bar-wrap" id="progress-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <!-- Preview (single image) -->
+      <div id="preview-section">
+        <div style="font-size:.75rem;color:var(--text3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px">Live Preview</div>
+        <div class="preview-grid">
+          <div class="preview-box">
+            <div class="preview-label">Original</div>
+            <div class="preview-img-wrap"><img id="preview-before" src="" alt="Original preview" onclick="openModal(this.src)" /></div>
+            <div class="preview-size" id="preview-before-size"></div>
+          </div>
+          <div class="preview-box">
+            <div class="preview-label">After Conversion</div>
+            <div class="preview-img-wrap"><img id="preview-after" src="" alt="Converted preview" onclick="openModal(this.src)" /></div>
+            <div class="preview-size" id="preview-after-size"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-row" style="margin-top:20px">
+        <button class="btn-primary" id="convert-btn" onclick="convertAll()">
+          <span class="spinner" id="spinner"></span>
+          <span id="convert-label">⚡ Convert & Download All</span>
+        </button>
+        <button class="btn-secondary" onclick="document.getElementById('file-input').click()">+ Add More</button>
+      </div>
+    </div>
   </div>
 
   <!-- Settings -->
@@ -644,48 +785,6 @@
         <label>Suffix / Append</label>
         <input class="inp" type="text" id="rename-suffix" placeholder="e.g. -compressed (default)" />
         <div class="hint">Suffix added after original filename.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- File List -->
-  <div id="file-list-section" style="display:none">
-    <div class="card">
-      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-        <span>📋 Queue (<span id="queue-count">0</span> files)</span>
-        <button class="btn-secondary" style="padding:6px 14px;font-size:.78rem" onclick="clearAll()">✕ Clear All</button>
-      </div>
-      <div id="file-list"></div>
-
-      <!-- Progress -->
-      <div class="progress-bar-wrap" id="progress-wrap">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-
-      <!-- Preview (single image) -->
-      <div id="preview-section">
-        <div style="font-size:.75rem;color:var(--text3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:12px">Live Preview</div>
-        <div class="preview-grid">
-          <div class="preview-box">
-            <div class="preview-label">Original</div>
-            <div class="preview-img-wrap"><img id="preview-before" src="" alt="Original preview" onclick="openModal(this.src)" /></div>
-            <div class="preview-size" id="preview-before-size"></div>
-          </div>
-          <div class="preview-box">
-            <div class="preview-label">After Conversion</div>
-            <div class="preview-img-wrap"><img id="preview-after" src="" alt="Converted preview" onclick="openModal(this.src)" /></div>
-            <div class="preview-size" id="preview-after-size"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="btn-row" style="margin-top:20px">
-        <button class="btn-primary" id="convert-btn" onclick="convertAll()">
-          <span class="spinner" id="spinner"></span>
-          <span id="convert-label">⚡ Convert & Download All</span>
-        </button>
-        <button class="btn-secondary" onclick="document.getElementById('file-input').click()">+ Add More</button>
       </div>
     </div>
   </div>
@@ -915,35 +1014,61 @@
   function renderFileList() {
     fileListSection.style.display = files.length ? 'block' : 'none';
     document.getElementById('queue-count').textContent = files.length;
-    fileListEl.innerHTML = '';
+
+    // Drop zone compact state when files loaded
+    if (files.length > 0) {
+      dropZone.classList.add('has-files');
+      document.getElementById('drop-added-text').textContent =
+        files.length === 1 ? '1 image loaded — see queue below' : files.length + ' images loaded — see queue below';
+    } else {
+      dropZone.classList.remove('has-files');
+    }
+
+    // Rebuild thumbnail grid
+    const grid = document.getElementById('file-grid');
+    grid.innerHTML = '';
     files.forEach((entry, idx) => {
-      const div = document.createElement('div');
-      div.className = `file-item ${entry.status}`;
-      div.id = `file-item-${idx}`;
+      const card = document.createElement('div');
+      card.className = 'file-thumb-card ' + entry.status;
+      card.id = 'thumb-card-' + idx;
       const ext = entry.file.name.split('.').pop().toUpperCase();
-      const isImg = entry.file.type.startsWith('image/');
-      const savings = entry.outputSize ? `<div class="file-savings">↓ ${calcSaving(entry.originalSize, entry.outputSize)}% smaller · ${formatSize(entry.outputSize)}</div>` : '';
-      div.innerHTML = `
-        <div class="file-thumb-placeholder" id="thumb-${idx}">${ext === 'HEIC' || ext === 'HEIF' ? '📱' : '🖼️'}</div>
-        <div class="file-info">
-          <div class="file-name">${entry.file.name}</div>
-          <div class="file-meta">${formatSize(entry.originalSize)} · ${ext}</div>
-          ${savings}
-        </div>
-        <span class="file-status ${entry.status}">${{pending:'Pending',converting:'Converting…',done:'Done ✓',error:'Error ✗'}[entry.status]}</span>
-        <button class="file-remove" onclick="removeFile(${idx})">✕</button>
-      `;
-      fileListEl.appendChild(div);
-      // load thumb async
-      if (isImg || isHeic(entry.file)) {
-        getDataUrl(entry).then(url => {
-          const img = document.createElement('img');
-          img.src = url; img.className = 'file-thumb';
-          img.alt = entry.file.name;
-          const placeholder = document.getElementById(`thumb-${idx}`);
-          if (placeholder) placeholder.replaceWith(img);
-        }).catch(()=>{});
-      }
+
+      const savingBadge = (entry.status === 'done' && entry.outputSize)
+        ? '<span class="thumb-saving">↓' + calcSaving(entry.originalSize, entry.outputSize) + '%</span>' : '';
+      const statusBadge = entry.status === 'done'
+        ? '<span class="thumb-status-badge done">✓</span>'
+        : entry.status === 'error'
+        ? '<span class="thumb-status-badge error">✕</span>'
+        : entry.status === 'converting'
+        ? '<span class="thumb-status-badge converting">…</span>' : '';
+
+      const sizeText = entry.outputSize
+        ? formatSize(entry.originalSize) + ' → ' + formatSize(entry.outputSize)
+        : formatSize(entry.originalSize);
+
+      card.innerHTML =
+        '<div class="thumb-placeholder" id="thumb-ph-' + idx + '">' +
+          '<span>' + (ext === 'HEIC' || ext === 'HEIF' ? '📱' : '🖼️') + '</span>' +
+          '<small>' + ext + '</small>' +
+        '</div>' +
+        '<div class="thumb-overlay">' +
+          '<span class="thumb-name">' + entry.file.name + '</span>' +
+          '<span class="thumb-size">' + sizeText + '</span>' +
+        '</div>' +
+        savingBadge + statusBadge +
+        '<button class="thumb-remove" onclick="event.stopPropagation();removeFile(' + idx + ')" title="Remove">✕</button>';
+
+      card.addEventListener('click', function() { if (entry.dataUrl) openModal(entry.dataUrl); });
+      grid.appendChild(card);
+
+      // Load actual image thumbnail async
+      getDataUrl(entry).then(function(url) {
+        const ph = document.getElementById('thumb-ph-' + idx);
+        if (!ph) return;
+        const img = document.createElement('img');
+        img.src = url; img.alt = entry.file.name;
+        ph.replaceWith(img);
+      }).catch(function() {});
     });
   }
 
@@ -1090,19 +1215,37 @@
   function setFileStatus(idx, status, outputSize) {
     files[idx].status = status;
     if (outputSize !== undefined) files[idx].outputSize = outputSize;
-    const item = document.getElementById(`file-item-${idx}`);
-    if (!item) return;
-    item.className = `file-item ${status}`;
-    const statusEl = item.querySelector('.file-status');
-    if (statusEl) {
-      statusEl.className = `file-status ${status}`;
-      statusEl.textContent = { pending:'Pending', converting:'Converting…', done:'Done ✓', error:'Error ✗' }[status];
-    }
-    if (status === 'done' && outputSize) {
-      const infoEl = item.querySelector('.file-info');
-      let savingsEl = infoEl.querySelector('.file-savings');
-      if (!savingsEl) { savingsEl = document.createElement('div'); savingsEl.className = 'file-savings'; infoEl.appendChild(savingsEl); }
-      savingsEl.textContent = `↓ ${calcSaving(files[idx].originalSize, outputSize)}% smaller · ${formatSize(outputSize)}`;
+
+    // Update thumbnail card
+    const card = document.getElementById('thumb-card-' + idx);
+    if (!card) return;
+    card.className = 'file-thumb-card ' + status;
+
+    // Remove old badges
+    card.querySelectorAll('.thumb-status-badge, .thumb-saving').forEach(el => el.remove());
+
+    // Add new badge
+    if (status === 'done') {
+      const b = document.createElement('span');
+      b.className = 'thumb-status-badge done'; b.textContent = '✓';
+      card.appendChild(b);
+      if (outputSize) {
+        const s = document.createElement('span');
+        s.className = 'thumb-saving';
+        s.textContent = '↓' + calcSaving(files[idx].originalSize, outputSize) + '%';
+        card.appendChild(s);
+        // Update size text in overlay
+        const sizeEl = card.querySelector('.thumb-size');
+        if (sizeEl) sizeEl.textContent = formatSize(files[idx].originalSize) + ' → ' + formatSize(outputSize);
+      }
+    } else if (status === 'error') {
+      const b = document.createElement('span');
+      b.className = 'thumb-status-badge error'; b.textContent = '✕';
+      card.appendChild(b);
+    } else if (status === 'converting') {
+      const b = document.createElement('span');
+      b.className = 'thumb-status-badge converting'; b.textContent = '…';
+      card.appendChild(b);
     }
   }
 
