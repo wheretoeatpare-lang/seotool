@@ -2869,6 +2869,14 @@ function renderSitePreview(url, pageData, cmsData) {
 
 // ─── RENDER ───────────────────────────────────────────────────
 function renderResults(url, data, cmsData, pageData) {
+  // Always hide landing-page sections before showing results
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('features').style.display = 'none';
+  document.querySelector('footer').style.display = 'none';
+  const _th = document.getElementById('tools'); if (_th) _th.style.display = 'none';
+  const _cta = document.getElementById('cta-section'); if (_cta) _cta.style.display = 'none';
+  const _rev = document.getElementById('reviews-section'); if (_rev) _rev.style.display = 'none';
+
   // Render site preview first
   renderSitePreview(url, pageData, cmsData);
   // Score ring
