@@ -240,6 +240,15 @@ select option{background:var(--bg2)}
   <div class="card">
     <label class="form-label">Choose AI Model</label>
     <div class="model-grid">
+		<label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="deepseek-chat">
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div class="model-info">
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+	
       <label class="model-card selected" onclick="selectModel(this)">
         <input type="radio" name="model" value="gemini-2.0-flash" checked>
         <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
@@ -248,6 +257,7 @@ select option{background:var(--bg2)}
           <div class="model-desc">Google · High capability</div>
         </div>
       </label>
+	  
       <label class="model-card" onclick="selectModel(this)">
         <input type="radio" name="model" value="meta-llama/llama-4-maverick">
         <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
@@ -256,14 +266,7 @@ select option{background:var(--bg2)}
           <div class="model-desc">Meta · Open source</div>
         </div>
       </label>
-      <label class="model-card" onclick="selectModel(this)">
-        <input type="radio" name="model" value="deepseek-chat">
-        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
-        <div class="model-info">
-          <div class="model-name">DeepSeek V3</div>
-          <div class="model-desc">DeepSeek · High speed</div>
-        </div>
-      </label>
+      
       <label class="model-card pro-locked" title="Available for Pro users only">
         <input type="radio" name="model" value="gpt-4o" disabled>
         <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
