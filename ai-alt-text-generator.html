@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Alt Text Generator — Free Image Alt Text Generator | RankSorcery</title>
+<meta name="description" content="Free AI alt text generator — generate SEO-optimized, accessible alt text for any image in seconds. No sign-up required.">
+<link rel="canonical" href="https://ranksorcery.com/ai-alt-text-generator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/ai-alt-text-generator">
+<meta property="og:title" content="AI Alt Text Generator — Free Image Alt Text Generator | RankSorcery">
+<meta property="og:description" content="Generate SEO-optimized, accessible alt text for images instantly with AI. Free, unlimited, no login required.">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-alt-text-generator","url":"https://ranksorcery.com/ai-alt-text-generator","name":"AI Alt Text Generator | RankSorcery","description":"Free AI-powered alt text generator. Generate SEO-optimized, accessible image alt text instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-brand span{color:var(--text)}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
+.nav-cta:hover{background:rgba(79,255,176,.22)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.3rem;flex-direction:column;gap:5px}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:.2s}
+@media(max-width:720px){
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:1rem}
+  .nav-links.open{display:flex}
+  .nav-ham{display:flex}
+  .nav-cta{margin-left:0;width:100%}
+}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;animation:fadeDown .5s .1s ease both}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);max-width:580px;margin:1rem auto 0;line-height:1.7;font-size:.95rem;animation:fadeDown .5s .2s ease both}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
+.pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted)}
+
+/* ── Layout ── */
+.main-wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--card-shadow);margin-bottom:1.25rem}
+
+/* ── Form ── */
+.form-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;display:block}
+.form-label .req{color:var(--fail);margin-left:2px}
+textarea,input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s;resize:vertical}
+textarea:focus,input[type=text]:focus{border-color:rgba(79,255,176,.4);box-shadow:0 0 0 3px rgba(79,255,176,.06)}
+textarea::placeholder,input[type=text]::placeholder{color:var(--muted)}
+textarea{min-height:80px;line-height:1.6}
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+select:focus{border-color:rgba(79,255,176,.4)}
+select option{background:var(--bg2)}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.fields-grid{grid-template-columns:1fr}}
+
+/* ── Input mode tabs ── */
+.mode-tabs{display:flex;gap:.5rem;margin-bottom:1.2rem}
+.mode-tab{font-size:.8rem;font-family:'DM Mono',monospace;padding:.4rem 1rem;border-radius:7px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.mode-tab:hover{border-color:rgba(79,255,176,.35);color:var(--text)}
+.mode-tab.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+.mode-panel{display:none}
+.mode-panel.active{display:block}
+
+/* ── Image upload / drop zone ── */
+.drop-zone{border:2px dashed var(--border);border-radius:10px;background:var(--bg3);padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .25s;position:relative}
+.drop-zone:hover,.drop-zone.drag-over{border-color:rgba(79,255,176,.5);background:rgba(79,255,176,.04)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:2rem;margin-bottom:.6rem;display:block}
+.drop-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:.3rem}
+.drop-sub{font-size:.78rem;color:var(--muted)}
+.drop-sub span{color:var(--accent);cursor:pointer}
+
+/* ── Image preview ── */
+.img-preview-wrap{display:none;margin-top:1rem;position:relative}
+.img-preview-wrap.show{display:block}
+.img-preview{width:100%;max-height:260px;object-fit:contain;border-radius:8px;border:1px solid var(--border);background:var(--bg3);display:block}
+.img-clear{position:absolute;top:.5rem;right:.5rem;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.7);border:1px solid var(--border);color:var(--muted);font-size:.8rem;display:grid;place-items:center;cursor:pointer;transition:all .15s}
+.img-clear:hover{border-color:var(--fail);color:var(--fail)}
+.img-name{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.5rem;text-align:center}
+
+/* ── Batch counter ── */
+.number-stepper{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.35rem .5rem;width:fit-content}
+.stepper-btn{width:28px;height:28px;border:1px solid var(--border);background:var(--bg2);color:var(--text);border-radius:5px;cursor:pointer;font-size:1rem;display:grid;place-items:center;transition:all .15s;user-select:none}
+.stepper-btn:hover{border-color:var(--accent);color:var(--accent)}
+.stepper-val{font-family:'DM Mono',monospace;font-size:.9rem;color:var(--text);min-width:28px;text-align:center}
+
+/* ── Style chips ── */
+.tag-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.tag-chip{font-size:.78rem;font-family:'DM Mono',monospace;padding:.3rem .75rem;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.tag-chip:hover{border-color:rgba(79,255,176,.4);color:var(--text)}
+.tag-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+/* ── Model grid ── */
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-top:.3rem}
+.model-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.model-card:hover{border-color:rgba(79,255,176,.35);background:rgba(79,255,176,.04)}
+.model-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-card.pro-locked{opacity:.45;cursor:not-allowed}
+.model-card.pro-locked:hover{border-color:var(--border);background:var(--bg3)}
+.model-card input[type=radio]{display:none}
+.model-icon{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.model-info{flex:1;min-width:0}
+.model-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-desc{font-size:.7rem;color:var(--muted);margin-top:1px}
+.model-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(79,255,176,.15);color:var(--accent);border:1px solid rgba(79,255,176,.25);margin-left:.4rem;flex-shrink:0}
+.pro-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(255,183,77,.12);color:var(--warn);border:1px solid rgba(255,183,77,.3);margin-left:.4rem;flex-shrink:0}
+
+/* ── Advanced toggle ── */
+.adv-toggle{display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.85rem;color:var(--muted);font-weight:500;user-select:none;padding:.5rem 0;transition:color .2s}
+.adv-toggle:hover{color:var(--text)}
+.adv-toggle .chevron{transition:transform .25s;font-size:.75rem}
+.adv-toggle.open .chevron{transform:rotate(180deg)}
+.adv-body{display:none;padding-top:1rem}
+.adv-body.open{display:block}
+
+/* ── Generate button ── */
+.btn-generate{width:100%;padding:.9rem 2rem;background:linear-gradient(135deg,rgba(79,255,176,.2) 0%,rgba(0,255,255,.12) 100%);border:1.5px solid var(--accent);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.02em;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.7rem}
+.btn-generate:hover{background:linear-gradient(135deg,rgba(79,255,176,.3) 0%,rgba(0,255,255,.2) 100%);box-shadow:0 0 24px rgba(79,255,176,.15)}
+.btn-generate:active{transform:scale(.99)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Output card ── */
+.output-card{display:none;margin-bottom:1.25rem}
+.output-card.show{display:block}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem}
+.output-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem}
+.output-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-export{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-export:hover{border-color:var(--accent);color:var(--accent)}
+.btn-copy{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid rgba(79,255,176,.35);background:var(--accent-dim);color:var(--accent);cursor:pointer;transition:all .15s}
+.btn-copy:hover{background:rgba(79,255,176,.22)}
+
+/* ── Alt text result cards ── */
+.alt-results{display:flex;flex-direction:column;gap:.75rem}
+.alt-item{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;animation:fadeIn .35s ease both;transition:border-color .2s}
+.alt-item:hover{border-color:rgba(79,255,176,.25)}
+.alt-item-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;gap:.75rem}
+.alt-item-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.08em;color:var(--accent);text-transform:uppercase;display:flex;align-items:center;gap:.5rem}
+.alt-item-badge{font-size:.6rem;padding:.15rem .45rem;border-radius:4px;font-family:'DM Mono',monospace}
+.badge-seo{background:rgba(79,255,176,.12);color:var(--accent);border:1px solid rgba(79,255,176,.25)}
+.badge-acc{background:rgba(0,255,255,.1);color:var(--accent2);border:1px solid rgba(0,255,255,.2)}
+.badge-short{background:rgba(255,183,77,.1);color:var(--warn);border:1px solid rgba(255,183,77,.25)}
+.alt-text{font-size:.92rem;color:var(--text);line-height:1.6;flex:1}
+.btn-copy-single{font-size:.7rem;font-family:'DM Mono',monospace;padding:.25rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all .15s;flex-shrink:0}
+.btn-copy-single:hover{border-color:var(--accent);color:var(--accent)}
+.alt-chars{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);margin-top:.4rem}
+.alt-chars.warn{color:var(--warn)}
+.alt-chars.good{color:var(--accent)}
+
+/* ── Stats bar ── */
+.output-stats{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.85rem;display:flex;gap:1.2rem;flex-wrap:wrap}
+.output-stats span{color:var(--text)}
+
+/* ── Spinner ── */
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.spinner-wrap.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted)}
+.steps-bar{display:flex;flex-direction:column;gap:.3rem;margin-top:.5rem}
+.step-item{display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);opacity:.4;transition:opacity .3s}
+.step-item.active{opacity:1;color:var(--accent)}
+.step-item.done{opacity:.7;color:var(--muted)}
+.step-item.done::before{content:'✓ '}
+.step-item.active::before{content:'⟳ '}
+
+/* ── Error ── */
+.error-box{display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:8px;padding:.85rem 1rem;color:var(--fail);font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.error-box.show{display:block}
+
+/* ── Misc ── */
+.char-count{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);float:right;margin-top:.35rem}
+.random-btn{font-size:.72rem;font-family:'DM Mono',monospace;padding:.25rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.random-btn:hover{border-color:var(--accent);color:var(--accent)}
+.divider{height:1px;background:var(--border);margin:1.25rem 0}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--accent)}
+
+/* ── Animations ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-brand">Rank<span>Sorcery</span></a>
+  <button class="nav-ham" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor Analysis</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+    <a href="https://ranksorcery.com/ai-blog-writer">✍️ Blog Writer</a>
+    <a href="https://ranksorcery.com/ai-faq-generator">❓ FAQ Generator</a>
+    <a href="https://ranksorcery.com/ai-alt-text-generator" style="color:var(--accent)">🖼️ Alt Text</a>
+    <a href="https://ranksorcery.com/#" class="nav-cta">Run Free Audit →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ SEO &amp; Accessibility · Powered by AI · Free · No Login</div>
+  <h1>AI Alt Text <em>Generator</em></h1>
+  <p class="hero-sub">Generate SEO-optimized, accessible alt text for any image instantly. Describe your image or paste a URL — get multiple variations ready to copy.</p>
+  <div class="hero-pills">
+    <span class="pill">🖼️ Any Image Type</span>
+    <span class="pill">🔑 SEO Optimized</span>
+    <span class="pill">♿ WCAG Accessible</span>
+    <span class="pill">✏️ Multiple Variants</span>
+    <span class="pill">📤 Copy &amp; Export</span>
+  </div>
+</section>
+
+<main class="main-wrap">
+
+  <div id="error-box" class="error-box"></div>
+
+  <!-- Input mode tabs + image input -->
+  <div class="card">
+    <label class="form-label">Image Input <span class="req">*</span></label>
+
+    <div class="mode-tabs">
+      <div class="mode-tab active" data-mode="describe" onclick="switchMode('describe')">✏️ Describe Image</div>
+      <div class="mode-tab" data-mode="url" onclick="switchMode('url')">🔗 Image URL</div>
+      <div class="mode-tab" data-mode="upload" onclick="switchMode('upload')">📁 Upload Image</div>
+    </div>
+
+    <!-- Describe mode -->
+    <div class="mode-panel active" id="panel-describe">
+      <textarea id="img-description" placeholder="Describe your image in detail — e.g. 'A woman in a red blazer presenting to a team in a modern office boardroom'" maxlength="600" oninput="updateCharCount(this,'desc-chars',600)"></textarea>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.35rem">
+        <button class="random-btn" onclick="setRandomDesc()">🎲 Example</button>
+        <span class="char-count" style="float:none"><span id="desc-chars">0</span> / 600</span>
+      </div>
+    </div>
+
+    <!-- URL mode -->
+    <div class="mode-panel" id="panel-url">
+      <input type="text" id="img-url" placeholder="https://example.com/images/product-photo.jpg" />
+      <p style="font-size:.78rem;color:var(--muted);margin-top:.5rem;line-height:1.5">⚠️ The AI will generate alt text based on the URL filename and any context you add below — it cannot fetch the image directly.</p>
+    </div>
+
+    <!-- Upload mode -->
+    <div class="mode-panel" id="panel-upload">
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" id="img-upload" accept="image/*" onchange="handleFileUpload(this.files[0])">
+        <span class="drop-icon">🖼️</span>
+        <div class="drop-title">Drop image here or <span>browse</span></div>
+        <div class="drop-sub">PNG, JPG, WebP, GIF · Max 5MB</div>
+      </div>
+      <div class="img-preview-wrap" id="img-preview-wrap">
+        <img id="img-preview" class="img-preview" src="" alt="Preview">
+        <div class="img-clear" onclick="clearUpload()" title="Remove image">✕</div>
+        <div class="img-name" id="img-name"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Options -->
+  <div class="card">
+    <div class="fields-grid">
+      <div>
+        <label class="form-label">Number of Variants</label>
+        <div class="number-stepper">
+          <button class="stepper-btn" onclick="adjustCount(-1)">−</button>
+          <span class="stepper-val" id="variant-count-display">3</span>
+          <button class="stepper-btn" onclick="adjustCount(1)">+</button>
+        </div>
+      </div>
+      <div>
+        <label class="form-label">Alt Text Style</label>
+        <select id="alt-style">
+          <option value="balanced" selected>Balanced (SEO + Accessibility)</option>
+          <option value="seo">SEO-Focused (keyword-rich)</option>
+          <option value="accessibility">Accessibility-First (descriptive)</option>
+          <option value="concise">Concise (under 60 chars)</option>
+          <option value="ecommerce">E-commerce (product-focused)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1rem">
+      <label class="form-label">Image Type</label>
+      <div class="tag-group" id="img-type-group">
+        <span class="tag-chip active" data-val="general">General</span>
+        <span class="tag-chip" data-val="product">Product</span>
+        <span class="tag-chip" data-val="person">Person / Portrait</span>
+        <span class="tag-chip" data-val="infographic">Infographic</span>
+        <span class="tag-chip" data-val="screenshot">Screenshot / UI</span>
+        <span class="tag-chip" data-val="banner">Banner / Hero</span>
+        <span class="tag-chip" data-val="logo">Logo / Icon</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Model -->
+  <div class="card">
+    <label class="form-label">Choose AI Model</label>
+    <div class="model-grid">
+      <label class="model-card selected" onclick="selectModel(this)">
+        <input type="radio" name="model" value="deepseek-chat" checked>
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div class="model-info">
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="meta-llama/llama-4-maverick">
+        <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
+        <div class="model-info">
+          <div class="model-name">Llama 4<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Meta · Open source</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="gemini-2.0-flash">
+        <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
+        <div class="model-info">
+          <div class="model-name">Gemini Flash<span class="model-badge">Fast</span></div>
+          <div class="model-desc">Google · High capability</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="gpt-4o" disabled>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div class="model-info">
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div class="model-info">
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div class="model-info">
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Mistral AI · Efficient</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Advanced Options -->
+  <div class="card">
+    <div class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+      ⚙️ Advanced Options
+      <span class="chevron">▼</span>
+    </div>
+    <div class="adv-body" id="adv-body">
+      <div class="fields-grid">
+        <div>
+          <label class="form-label" for="focus-keyword">Focus Keyword <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="focus-keyword" placeholder="e.g. running shoes, office furniture" />
+        </div>
+        <div>
+          <label class="form-label" for="page-context">Page Context <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="page-context" placeholder="e.g. product page, blog post about fitness" />
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <label class="form-label" for="extra-notes">Additional Notes <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+        <textarea id="extra-notes" placeholder="e.g. Brand name is AcmeCo, avoid mentioning competitor names, keep under 100 characters…" style="min-height:70px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="card" style="padding:1rem">
+    <button class="btn-generate" id="gen-btn" onclick="generateAltText()">
+      <span id="gen-icon">✨</span>
+      <span id="gen-text">Generate Alt Text</span>
+    </button>
+  </div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" id="spinner-wrap">
+    <div class="spinner"></div>
+    <div class="spinner-text">AI is crafting your alt text…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Analyzing image context</div>
+      <div class="step-item" id="step2">Identifying key elements</div>
+      <div class="step-item" id="step3">Optimizing for SEO</div>
+      <div class="step-item" id="step4">Checking accessibility</div>
+      <div class="step-item" id="step5">Generating variants</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-card card" id="output-card">
+    <div class="output-header">
+      <div class="output-title">
+        <span class="dot"></span>
+        Alt Text Results
+      </div>
+      <div class="export-btns">
+        <button class="btn-export" onclick="exportTxt()">⬇ TXT</button>
+        <button class="btn-copy" onclick="copyAll()">📋 Copy All</button>
+      </div>
+    </div>
+
+    <div class="alt-results" id="alt-results"></div>
+    <div class="output-stats" id="output-stats"></div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Part of <a href="https://ranksorcery.com/">RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p>
+</footer>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+let variantCount = 3;
+let selectedImgType = 'general';
+let currentMode = 'describe';
+let uploadedImageBase64 = null;
+let uploadedFileName = '';
+let lastResults = [];
+
+// ─── Model map (same as faq-generator) ───────────────────────
+const MODEL_MAP = {
+  'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
+  'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'deepseek-chat':               'deepseek/deepseek-chat',
+  'gpt-4o':                      'openai/gpt-4o',
+  'claude-sonnet-4-5':           'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':        'mistralai/mistral-large',
+};
+
+// ─── Mode tabs ────────────────────────────────────────────────
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.mode-tab[data-mode="${mode}"]`).classList.add('active');
+  document.getElementById(`panel-${mode}`).classList.add('active');
+}
+
+// ─── Model selection ──────────────────────────────────────────
+function selectModel(card) {
+  if (card.classList.contains('pro-locked')) return;
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+
+// ─── Variant stepper ─────────────────────────────────────────
+function adjustCount(delta) {
+  variantCount = Math.min(6, Math.max(1, variantCount + delta));
+  document.getElementById('variant-count-display').textContent = variantCount;
+}
+
+// ─── Image type chips ─────────────────────────────────────────
+document.querySelectorAll('#img-type-group .tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#img-type-group .tag-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedImgType = chip.dataset.val;
+  });
+});
+
+// ─── Advanced toggle ──────────────────────────────────────────
+function toggleAdv() {
+  document.getElementById('adv-toggle').classList.toggle('open');
+  document.getElementById('adv-body').classList.toggle('open');
+}
+
+// ─── Char counter ─────────────────────────────────────────────
+function updateCharCount(el, countId, max) {
+  document.getElementById(countId).textContent = el.value.length;
+}
+
+// ─── File upload ──────────────────────────────────────────────
+function handleFileUpload(file) {
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showError('Image must be under 5MB.');
+    return;
+  }
+  uploadedFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = e => {
+    uploadedImageBase64 = e.target.result; // full data URL
+    const preview = document.getElementById('img-preview');
+    preview.src = uploadedImageBase64;
+    document.getElementById('img-preview-wrap').classList.add('show');
+    document.getElementById('img-name').textContent = file.name;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearUpload() {
+  uploadedImageBase64 = null;
+  uploadedFileName = '';
+  document.getElementById('img-upload').value = '';
+  document.getElementById('img-preview-wrap').classList.remove('show');
+  document.getElementById('img-preview').src = '';
+  document.getElementById('img-name').textContent = '';
+}
+
+// Drag & drop
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault();
+  dz.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleFileUpload(file);
+});
+
+// ─── Random examples ─────────────────────────────────────────
+const randomDescs = [
+  "A woman in a red blazer presenting slides to a team in a modern office boardroom",
+  "A close-up of white Nike running shoes on a wooden floor",
+  "An aerial drone shot of a tropical beach with turquoise water and white sand",
+  "A flat lay of a developer's desk with a MacBook, coffee mug, and notebook",
+  "A golden retriever puppy playing in autumn leaves in a park",
+  "A bowl of colorful acai smoothie bowl topped with granola, berries, and banana slices",
+  "A comparison infographic showing the features of two project management tools",
+  "A mobile app screenshot showing a fitness tracking dashboard with workout stats",
+  "A couple walking hand in hand on a snowy mountain trail at sunset",
+  "A dark-themed code editor with JavaScript code and syntax highlighting",
+];
+function setRandomDesc() {
+  const el = document.getElementById('img-description');
+  el.value = randomDescs[Math.floor(Math.random() * randomDescs.length)];
+  updateCharCount(el, 'desc-chars', 600);
+}
+
+// ─── Build prompt ─────────────────────────────────────────────
+function buildPrompt() {
+  const altStyle   = document.getElementById('alt-style').value;
+  const keyword    = document.getElementById('focus-keyword').value.trim();
+  const pageCtx    = document.getElementById('page-context').value.trim();
+  const notes      = document.getElementById('extra-notes').value.trim();
+
+  const styleGuide = {
+    balanced:      'Balance SEO keyword usage with clear descriptive accessibility language.',
+    seo:           'Prioritize SEO — naturally include keywords, be descriptive but keyword-rich.',
+    accessibility: 'Prioritize accessibility — be highly descriptive so screen reader users can fully understand the image.',
+    concise:       'Keep each alt text under 60 characters — short, punchy, and accurate.',
+    ecommerce:     'Focus on product details: material, color, style, brand if known, and use case.',
+  };
+
+  let imageContext = '';
+  if (currentMode === 'describe') {
+    imageContext = document.getElementById('img-description').value.trim();
+  } else if (currentMode === 'url') {
+    const url = document.getElementById('img-url').value.trim();
+    imageContext = `Image URL: ${url}`;
+  } else if (currentMode === 'upload') {
+    imageContext = uploadedFileName
+      ? `Uploaded image filename: "${uploadedFileName}"`
+      : 'An uploaded image (no description provided)';
+  }
+
+  let prompt = `Generate exactly ${variantCount} alt text variant(s) for the following image.\n\n`;
+  prompt += `Image info: ${imageContext}\n`;
+  prompt += `Image type: ${selectedImgType}\n`;
+  prompt += `Style guide: ${styleGuide[altStyle] || styleGuide.balanced}\n`;
+  if (keyword) prompt += `Focus keyword to include naturally: "${keyword}"\n`;
+  if (pageCtx) prompt += `Page context where this image appears: ${pageCtx}\n`;
+  if (notes)   prompt += `Additional instructions: ${notes}\n`;
+  prompt += `\nRules:\n`;
+  prompt += `- Do NOT start alt text with "image of", "photo of", or "picture of".\n`;
+  prompt += `- Be specific and descriptive — avoid vague words like "nice" or "beautiful".\n`;
+  prompt += `- Each variant should offer a meaningfully different angle or phrasing.\n`;
+  prompt += `- Label variants clearly: one as SEO-focused, one as accessibility-focused, etc.\n\n`;
+  prompt += `IMPORTANT: Return ONLY raw valid JSON — no markdown fences, no explanation.\n`;
+  prompt += `Format exactly: {"results":[{"label":"SEO-Focused","alt":"alt text here"},...]}\n`;
+  prompt += `Generate exactly ${variantCount} items in the results array.`;
+
+  return prompt;
+}
+
+// ─── Steps animation ─────────────────────────────────────────
+let stepTimeout;
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4','step5'];
+  let i = 0;
+  function next() {
+    steps.forEach((s, idx) => {
+      const el = document.getElementById(s);
+      if (idx < i)       el.className = 'step-item done';
+      else if (idx === i) el.className = 'step-item active';
+      else                el.className = 'step-item';
+    });
+    if (i < steps.length - 1) { i++; stepTimeout = setTimeout(next, 1400); }
+  }
+  next();
+}
+
+// ─── callAI — exact same pattern as ai-faq-generator ─────────
+async function callAI(model, prompt) {
+  const systemPrompt = 'You are an expert SEO and accessibility specialist who writes high-quality image alt text. You ALWAYS respond with valid raw JSON only — absolutely no markdown fences, no preamble, no explanation. Output only the JSON object.';
+
+  const orModel = MODEL_MAP[model] || 'deepseek/deepseek-chat';
+
+  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: orModel,
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: prompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const apiMsg = err?.error?.message || `API error ${res.status}. Please try again.`;
+    const regionHint = apiMsg.toLowerCase().includes('region') ? ' Please try a different AI model.' : '';
+    throw new Error(apiMsg + regionHint);
+  }
+
+  // Read SSE stream — exact same logic as ai-faq-generator
+  const reader  = res.body.getReader();
+  const decoder = new TextDecoder();
+  let fullText = '';
+  let buffer   = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop(); // keep incomplete line for next chunk
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed === 'data: [DONE]') continue;
+      if (!trimmed.startsWith('data: ')) continue;
+      try {
+        const json  = JSON.parse(trimmed.slice(6));
+        const chunk = json?.choices?.[0]?.delta?.content ?? '';
+        if (chunk) fullText += chunk;
+      } catch (_) { /* skip malformed chunks */ }
+    }
+  }
+
+  if (!fullText || fullText.trim().length < 10) {
+    throw new Error('The AI returned an empty response. Please try a different model.');
+  }
+
+  return fullText;
+}
+
+// ─── Parse response → results array ──────────────────────────
+function parseResults(raw) {
+  let cleaned = raw.replace(/```json|```/g, '').trim();
+  let parsed;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch (_) {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) parsed = JSON.parse(match[0]);
+    else throw new Error('The AI returned an unexpected format. Please try again or switch model.');
+  }
+  return parsed.results || parsed.variants || parsed.alt_texts || [];
+}
+
+// ─── Badge helper ─────────────────────────────────────────────
+function getBadge(label) {
+  const l = (label || '').toLowerCase();
+  if (l.includes('seo'))           return '<span class="alt-item-badge badge-seo">SEO</span>';
+  if (l.includes('access'))        return '<span class="alt-item-badge badge-acc">A11Y</span>';
+  if (l.includes('concise') || l.includes('short')) return '<span class="alt-item-badge badge-short">Short</span>';
+  return '';
+}
+
+// ─── Render results ───────────────────────────────────────────
+function renderResults(results) {
+  lastResults = results;
+  const container = document.getElementById('alt-results');
+  container.innerHTML = '';
+
+  results.forEach((r, i) => {
+    const altText = r.alt || r.text || r.value || '';
+    const label   = r.label || `Variant ${i + 1}`;
+    const chars   = altText.length;
+    const charClass = chars > 125 ? 'warn' : chars >= 50 ? 'good' : '';
+    const charNote  = chars > 125 ? '⚠ Too long (125+ chars)' : chars < 20 ? '⚡ Very short' : `✓ Good length`;
+
+    const item = document.createElement('div');
+    item.className = 'alt-item';
+    item.style.animationDelay = `${i * 0.06}s`;
+    item.innerHTML = `
+      <div class="alt-item-header">
+        <span class="alt-item-label">${escHtml(label)} ${getBadge(label)}</span>
+        <button class="btn-copy-single" onclick="copySingle(this, '${escAttr(altText)}')">📋 Copy</button>
+      </div>
+      <div class="alt-text">${escHtml(altText)}</div>
+      <div class="alt-chars ${charClass}">${chars} chars · ${charNote}</div>`;
+    container.appendChild(item);
+  });
+
+  document.getElementById('output-stats').innerHTML =
+    `Variants generated: <span>${results.length}</span> &nbsp;·&nbsp; Best length: <span>50–125 chars</span>`;
+
+  document.getElementById('output-card').classList.add('show');
+  document.getElementById('output-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Main generate ────────────────────────────────────────────
+async function generateAltText() {
+  const errorBox = document.getElementById('error-box');
+  errorBox.className = 'error-box';
+  errorBox.textContent = '';
+
+  // Validate input
+  let hasInput = false;
+  if (currentMode === 'describe' && document.getElementById('img-description').value.trim()) hasInput = true;
+  if (currentMode === 'url'      && document.getElementById('img-url').value.trim())          hasInput = true;
+  if (currentMode === 'upload'   && uploadedImageBase64)                                       hasInput = true;
+
+  if (!hasInput) {
+    const modeMsg = {
+      describe: '⚠ Please describe your image to get started.',
+      url:      '⚠ Please enter an image URL to get started.',
+      upload:   '⚠ Please upload an image to get started.',
+    };
+    showError(modeMsg[currentMode] || '⚠ Please provide image information.');
+    return;
+  }
+
+  const model  = document.querySelector('input[name=model]:checked').value;
+  const prompt = buildPrompt();
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').textContent = '⏳';
+  document.getElementById('gen-text').textContent = 'Generating…';
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('output-card').classList.remove('show');
+  animateSteps();
+
+  try {
+    const raw     = await callAI(model, prompt);
+    const results = parseResults(raw);
+    if (!results.length) throw new Error('No results were returned. Please try again or switch model.');
+    renderResults(results);
+  } catch (err) {
+    showError(`⚠ ${err.message || 'Something went wrong. Please try again.'}`);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = '✨';
+    document.getElementById('gen-text').textContent = 'Regenerate Alt Text';
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5'].forEach(s => {
+      document.getElementById(s).className = 'step-item';
+    });
+  }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────
+function showError(msg) {
+  const box = document.getElementById('error-box');
+  box.className = 'error-box show';
+  box.textContent = msg;
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function escAttr(str) {
+  return String(str).replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+function copySingle(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+function copyAll() {
+  const text = lastResults.map((r, i) => {
+    const alt   = r.alt || r.text || r.value || '';
+    const label = r.label || `Variant ${i + 1}`;
+    return `${label}:\n${alt}`;
+  }).join('\n\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy All', 2000);
+  });
+}
+
+function exportTxt() {
+  const text = lastResults.map((r, i) => {
+    const alt   = r.alt || r.text || r.value || '';
+    const label = r.label || `Variant ${i + 1}`;
+    return `${label} (${alt.length} chars):\n${alt}`;
+  }).join('\n\n');
+  const blob = new Blob([text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'alt-text.txt';
+  a.click();
+}
+</script>
+</body>
+</html>
