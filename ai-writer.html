@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Writer — Free AI Content Writer | RankSorcery</title>
+<meta name="description" content="Free AI content writer — generate SEO-optimized blog posts, articles, and web copy in seconds. No sign-up required.">
+<link rel="canonical" href="https://ranksorcery.com/ai-writer">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/ai-writer">
+<meta property="og:title" content="AI Writer — Free AI Content Writer | RankSorcery">
+<meta property="og:description" content="Generate long-form, SEO-optimized content instantly with AI. Free, unlimited, no login required.">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-writer","url":"https://ranksorcery.com/ai-writer","name":"AI Writer | RankSorcery","description":"Free AI-powered content writer. Generate SEO-optimized articles, blog posts and web copy instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;min-height:100vh;overflow-x:hidden}
+
+/* ── Nav ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;gap:2rem;height:56px}
+.nav-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-brand span{color:var(--text)}
+nav a{color:var(--muted);text-decoration:none;font-size:.85rem;font-weight:500;transition:color .2s}
+nav a:hover{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:1.5rem}
+.nav-cta{margin-left:auto;background:var(--accent-dim);border:1px solid var(--accent);color:var(--accent)!important;padding:.35rem .9rem;border-radius:6px;font-size:.8rem!important;transition:background .2s!important}
+.nav-cta:hover{background:rgba(79,255,176,.22)!important}
+.nav-ham{display:none;background:none;border:none;cursor:pointer;padding:.3rem;flex-direction:column;gap:5px}
+.nav-ham span{display:block;width:22px;height:2px;background:var(--muted);border-radius:2px;transition:.2s}
+@media(max-width:720px){
+  .nav-links{display:none;position:absolute;top:56px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);flex-direction:column;align-items:flex-start;padding:1rem 2rem;gap:1rem}
+  .nav-links.open{display:flex}
+  .nav-ham{display:flex}
+  .nav-cta{margin-left:0;width:100%}
+}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:4rem 2rem 2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(79,255,176,.08) 0%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:var(--accent-dim);border:1px solid rgba(79,255,176,.3);border-radius:999px;padding:.3rem .9rem;font-size:.75rem;font-family:'DM Mono',monospace;color:var(--accent);letter-spacing:.05em;margin-bottom:1.5rem;animation:fadeDown .5s ease both}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(1.9rem,5vw,3rem);font-weight:800;line-height:1.1;letter-spacing:-.03em;animation:fadeDown .5s .1s ease both}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero-sub{color:var(--muted);max-width:580px;margin:1rem auto 0;line-height:1.7;font-size:.95rem;animation:fadeDown .5s .2s ease both}
+.hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;margin-top:1.5rem;animation:fadeDown .5s .3s ease both}
+.pill{font-size:.75rem;padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);background:var(--bg2);color:var(--muted)}
+
+/* ── Layout ── */
+.main-wrap{max-width:900px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--card-shadow);margin-bottom:1.25rem;transition:border-color .2s}
+
+/* ── Form elements ── */
+.form-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.1em;color:var(--accent);text-transform:uppercase;margin-bottom:.55rem;display:block}
+.form-label .req{color:var(--fail);margin-left:2px}
+textarea,input[type=text]{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;padding:.75rem 1rem;outline:none;transition:border-color .2s;resize:vertical}
+textarea:focus,input[type=text]:focus{border-color:rgba(79,255,176,.4);box-shadow:0 0 0 3px rgba(79,255,176,.06)}
+textarea::placeholder,input[type=text]::placeholder{color:var(--muted)}
+textarea{min-height:90px;line-height:1.6}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fields-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:640px){.fields-grid,.fields-grid-3{grid-template-columns:1fr}}
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:.7rem 1rem;outline:none;transition:border-color .2s;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .85rem center}
+select:focus{border-color:rgba(79,255,176,.4)}
+select option{background:var(--bg2)}
+
+/* ── Model grid ── */
+.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-top:.3rem}
+.model-card{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;background:var(--bg3);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;position:relative}
+.model-card:hover{border-color:rgba(79,255,176,.35);background:rgba(79,255,176,.04)}
+.model-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.model-card.pro-locked{opacity:.45;cursor:not-allowed}
+.model-card.pro-locked:hover{border-color:var(--border);background:var(--bg3)}
+.pro-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(255,183,77,.12);color:var(--warn);border:1px solid rgba(255,183,77,.3);margin-left:.4rem;flex-shrink:0}
+.model-card input[type=radio]{display:none}
+.model-icon{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+.model-info{flex:1;min-width:0}
+.model-name{font-size:.82rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-desc{font-size:.7rem;color:var(--muted);margin-top:1px}
+.model-badge{font-size:.6rem;font-family:'DM Mono',monospace;padding:.1rem .35rem;border-radius:4px;background:rgba(79,255,176,.15);color:var(--accent);border:1px solid rgba(79,255,176,.25);margin-left:.4rem;flex-shrink:0}
+
+/* ── Tag chips ── */
+.tag-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.3rem}
+.tag-chip{font-size:.78rem;font-family:'DM Mono',monospace;padding:.3rem .75rem;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.tag-chip:hover{border-color:rgba(79,255,176,.4);color:var(--text)}
+.tag-chip.active{border-color:var(--accent);background:var(--accent-dim);color:var(--accent)}
+
+/* ── Advanced toggle ── */
+.adv-toggle{display:flex;align-items:center;gap:.6rem;cursor:pointer;font-size:.85rem;color:var(--muted);font-weight:500;user-select:none;padding:.5rem 0;transition:color .2s}
+.adv-toggle:hover{color:var(--text)}
+.adv-toggle .chevron{transition:transform .25s;font-size:.75rem}
+.adv-toggle.open .chevron{transform:rotate(180deg)}
+.adv-body{display:none;padding-top:1rem}
+.adv-body.open{display:block}
+
+/* ── Generate button ── */
+.btn-generate{width:100%;padding:.9rem 2rem;background:linear-gradient(135deg,rgba(79,255,176,.2) 0%,rgba(0,255,255,.12) 100%);border:1.5px solid var(--accent);border-radius:10px;color:var(--accent);font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.02em;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:.25rem}
+.btn-generate:hover{background:linear-gradient(135deg,rgba(79,255,176,.3) 0%,rgba(0,255,255,.2) 100%);box-shadow:0 0 24px rgba(79,255,176,.15)}
+.btn-generate:active{transform:scale(.99)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Spinner ── */
+.spinner-wrap{display:none;flex-direction:column;align-items:center;gap:1rem;padding:3rem 2rem;text-align:center}
+.spinner-wrap.show{display:flex}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spinner-text{font-family:'DM Mono',monospace;font-size:.8rem;color:var(--muted)}
+.steps-bar{display:flex;flex-direction:column;gap:.3rem;margin-top:.5rem}
+.step-item{display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);opacity:.4;transition:opacity .3s}
+.step-item.active{opacity:1;color:var(--accent)}
+.step-item.done{opacity:.7;color:var(--muted)}
+.step-item.done::before{content:'✓ '}
+.step-item.active::before{content:'⟳ '}
+
+/* ── Error ── */
+.error-box{display:none;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:8px;padding:.85rem 1rem;color:var(--fail);font-size:.85rem;margin-bottom:.8rem;line-height:1.5}
+.error-box.show{display:block}
+
+/* ── Misc ── */
+.random-btn{font-size:.72rem;font-family:'DM Mono',monospace;padding:.25rem .6rem;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s;margin-left:.5rem}
+.random-btn:hover{border-color:var(--accent);color:var(--accent)}
+.char-count{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);float:right;margin-top:.35rem}
+.divider{height:1px;background:var(--border);margin:1.25rem 0}
+.tip-row{display:flex;align-items:flex-start;gap:.6rem;background:rgba(79,255,176,.05);border:1px solid rgba(79,255,176,.15);border-radius:8px;padding:.7rem 1rem;font-size:.82rem;color:var(--muted);line-height:1.5;margin-bottom:1rem}
+.tip-icon{color:var(--accent);flex-shrink:0;font-size:1rem;margin-top:1px}
+
+/* ── Output ── */
+.output-card{display:none;margin-bottom:1.25rem}
+.output-card.show{display:block}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem}
+.output-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem}
+.output-title .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
+.export-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.btn-action{font-size:.75rem;font-family:'DM Mono',monospace;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-action:hover{border-color:var(--accent);color:var(--accent)}
+.btn-action.primary{border-color:rgba(79,255,176,.35);background:var(--accent-dim);color:var(--accent)}
+.btn-action.primary:hover{background:rgba(79,255,176,.22)}
+
+/* ── Content output area ── */
+.content-output{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.5rem 1.75rem;min-height:200px;font-size:.93rem;line-height:1.85;color:var(--text);white-space:pre-wrap;word-break:break-word;font-family:'Inter',sans-serif;position:relative}
+.content-output.streaming::after{content:'▋';display:inline-block;color:var(--accent);animation:blink .7s steps(1) infinite;margin-left:2px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── Content rendering ── */
+.content-output h1,.content-output h2,.content-output h3,.content-output h4{font-family:'Syne',sans-serif;font-weight:700;margin:1.4rem 0 .6rem;color:var(--text)}
+.content-output h1{font-size:1.4rem;color:var(--accent)}
+.content-output h2{font-size:1.15rem;border-bottom:1px solid var(--border);padding-bottom:.4rem}
+.content-output h3{font-size:1rem}
+.content-output p{margin-bottom:1rem}
+.content-output ul,.content-output ol{margin:.5rem 0 1rem 1.4rem}
+.content-output li{margin-bottom:.35rem}
+.content-output strong{color:var(--text);font-weight:600}
+.content-output em{color:var(--accent2);font-style:italic}
+.content-output code{font-family:'DM Mono',monospace;font-size:.82em;background:var(--bg);padding:.1em .35em;border-radius:4px;color:var(--accent2)}
+.content-output blockquote{border-left:3px solid var(--accent);padding-left:1rem;margin:1rem 0;color:var(--muted);font-style:italic}
+.content-output hr{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+
+/* ── Stats row ── */
+.stats-row{display:flex;flex-wrap:wrap;gap:1.25rem;font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted);margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--border)}
+.stats-row span{color:var(--text)}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:2.5rem 1.5rem;border-top:1px solid var(--border);color:var(--muted);font-size:.8rem}
+.footer a{color:var(--muted);text-decoration:none}
+.footer a:hover{color:var(--accent)}
+
+/* ── Animations ── */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ranksorcery.com/" class="nav-brand">Rank<span>Sorcery</span></a>
+  <button class="nav-ham" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor Analysis</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+    <a href="https://ranksorcery.com/document-checker.html">📄 Doc Checker</a>
+    <a href="https://ranksorcery.com/ai-writer" style="color:var(--accent)">✍️ AI Writer</a>
+    <a href="https://ranksorcery.com/ai-faq-generator">❓ FAQ Generator</a>
+    <a href="https://ranksorcery.com/ai-meta-description-generator">🏷️ Meta Generator</a>
+    <a href="https://ranksorcery.com/#" class="nav-cta">Run Free Audit →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">✦ Powered by Real AI Models · Free · Long-Form Ready</div>
+  <h1>AI Content <em>Writer</em></h1>
+  <p class="hero-sub">Generate long-form, SEO-optimized blog posts, articles, and web copy in seconds. Choose your tone, structure, and target keyword — the AI does the rest.</p>
+  <div class="hero-pills">
+    <span class="pill">✍️ Long-Form Content</span>
+    <span class="pill">🔑 SEO Optimized</span>
+    <span class="pill">📐 Custom Structure</span>
+    <span class="pill">🎨 Tone Control</span>
+    <span class="pill">⚡ Live Streaming</span>
+    <span class="pill">📤 Copy &amp; Export</span>
+  </div>
+</section>
+
+<main class="main-wrap">
+
+  <div id="error-box" class="error-box"></div>
+
+  <!-- Topic & Keyword -->
+  <div class="card">
+    <label class="form-label" for="topic">
+      Topic / Title <span class="req">*</span>
+      <button class="random-btn" onclick="setRandomTopic()">🎲 Example</button>
+    </label>
+    <input type="text" id="topic" placeholder="e.g. The Complete Guide to Intermittent Fasting for Beginners" maxlength="250" oninput="updateCharCount(this,'topic-chars',250)" />
+    <div class="char-count"><span id="topic-chars">0</span> / 250</div>
+
+    <div style="margin-top:1.1rem">
+      <label class="form-label" for="keyword">Primary Keyword <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional but recommended)</small></label>
+      <input type="text" id="keyword" placeholder="e.g. intermittent fasting for beginners" maxlength="120" />
+    </div>
+
+    <div style="margin-top:1.1rem">
+      <label class="form-label" for="secondary-keywords">Secondary Keywords <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional, comma-separated)</small></label>
+      <input type="text" id="secondary-keywords" placeholder="e.g. 16:8 fasting, weight loss, fasting schedule" maxlength="300" />
+    </div>
+  </div>
+
+  <!-- AI Model -->
+  <div class="card">
+    <label class="form-label">Choose AI Model</label>
+    <div class="model-grid">
+      <label class="model-card selected" onclick="selectModel(this)">
+        <input type="radio" name="model" value="deepseek-chat" checked>
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div class="model-info">
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="meta-llama/llama-4-maverick">
+        <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
+        <div class="model-info">
+          <div class="model-name">Llama 4<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Meta · Open source</div>
+        </div>
+      </label>
+      <label class="model-card" onclick="selectModel(this)">
+        <input type="radio" name="model" value="gemini-2.0-flash">
+        <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
+        <div class="model-info">
+          <div class="model-name">Gemini Flash<span class="model-badge">Fast</span></div>
+          <div class="model-desc">Google · High capability</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="gpt-4o" disabled>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div class="model-info">
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div class="model-info">
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div class="model-info">
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Mistral AI · Efficient</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Content Settings -->
+  <div class="card">
+    <div class="fields-grid-3">
+      <div>
+        <label class="form-label">Content Type</label>
+        <select id="content-type">
+          <option value="blog-post">Blog Post</option>
+          <option value="article">News / Article</option>
+          <option value="guide">How-To Guide</option>
+          <option value="listicle">Listicle</option>
+          <option value="product-review">Product Review</option>
+          <option value="comparison">Comparison Post</option>
+          <option value="landing-page">Landing Page Copy</option>
+          <option value="pillar">Pillar / Cornerstone</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Content Length</label>
+        <select id="content-length">
+          <option value="short">Short (~500 words)</option>
+          <option value="medium" selected>Medium (~900 words)</option>
+          <option value="long">Long (~1,500 words)</option>
+          <option value="xl">Extra Long (~2,500 words)</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Tone of Voice</label>
+        <select id="tone">
+          <option value="informative" selected>Informative</option>
+          <option value="professional">Professional</option>
+          <option value="casual">Casual &amp; Conversational</option>
+          <option value="friendly">Friendly</option>
+          <option value="authoritative">Authoritative</option>
+          <option value="enthusiastic">Enthusiastic</option>
+          <option value="empathetic">Empathetic</option>
+          <option value="humorous">Humorous</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem">
+      <label class="form-label">Content Structure</label>
+      <div class="tag-group" id="structure-group">
+        <span class="tag-chip active" data-val="auto">Auto</span>
+        <span class="tag-chip" data-val="intro-sections-conclusion">Intro → Sections → Conclusion</span>
+        <span class="tag-chip" data-val="problem-solution">Problem → Solution</span>
+        <span class="tag-chip" data-val="listicle">Numbered List</span>
+        <span class="tag-chip" data-val="step-by-step">Step-by-Step</span>
+        <span class="tag-chip" data-val="pros-cons">Pros &amp; Cons</span>
+        <span class="tag-chip" data-val="faq-style">FAQ-Style</span>
+      </div>
+    </div>
+
+    <div style="margin-top:1.1rem">
+      <label class="form-label">SEO &amp; Writing Style</label>
+      <div class="tag-group" id="seo-group">
+        <span class="tag-chip active" data-val="include-headings" data-group="seo">H2/H3 Headings</span>
+        <span class="tag-chip active" data-val="include-intro" data-group="seo">Hook Intro</span>
+        <span class="tag-chip active" data-val="include-conclusion" data-group="seo">Conclusion + CTA</span>
+        <span class="tag-chip" data-val="include-faq" data-group="seo">FAQ Section</span>
+        <span class="tag-chip" data-val="include-stats" data-group="seo">Include Stats</span>
+        <span class="tag-chip" data-val="no-fluff" data-group="seo">No Filler / Fluff</span>
+        <span class="tag-chip" data-val="bold-key-terms" data-group="seo">Bold Key Terms</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced -->
+  <div class="card">
+    <div class="adv-toggle" id="adv-toggle" onclick="toggleAdv()">
+      ⚙️ Advanced Options
+      <span class="chevron">▼</span>
+    </div>
+    <div class="adv-body" id="adv-body">
+      <div class="fields-grid">
+        <div>
+          <label class="form-label" for="audience">Target Audience <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="audience" placeholder="e.g. beginner fitness enthusiasts, busy professionals" />
+        </div>
+        <div>
+          <label class="form-label" for="brand-name">Brand / Author Name <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+          <input type="text" id="brand-name" placeholder="e.g. RankSorcery" />
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <label class="form-label" for="outline">Custom Outline / Sections <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+        <textarea id="outline" placeholder="e.g.&#10;1. What is intermittent fasting?&#10;2. The 16:8 method explained&#10;3. Benefits for weight loss&#10;4. How to get started&#10;5. Common mistakes to avoid" style="min-height:90px"></textarea>
+      </div>
+      <div style="margin-top:1rem">
+        <label class="form-label" for="notes">Additional Instructions <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
+        <textarea id="notes" placeholder="e.g. Mention that results vary per individual, avoid making medical claims, reference the NHS guidelines…" style="min-height:70px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generate -->
+  <div class="card" style="padding:1rem">
+    <button class="btn-generate" id="gen-btn" onclick="generateContent()">
+      <span id="gen-icon">✨</span>
+      <span id="gen-text">Generate Content</span>
+    </button>
+  </div>
+
+  <!-- Spinner -->
+  <div class="spinner-wrap" id="spinner-wrap">
+    <div class="spinner"></div>
+    <div class="spinner-text">AI is writing your content…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Analyzing topic &amp; intent</div>
+      <div class="step-item" id="step2">Planning content structure</div>
+      <div class="step-item" id="step3">Writing introduction</div>
+      <div class="step-item" id="step4">Developing main sections</div>
+      <div class="step-item" id="step5">Adding SEO optimizations</div>
+      <div class="step-item" id="step6">Finalizing &amp; polishing</div>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="output-card card" id="output-card">
+    <div class="output-header">
+      <div class="output-title">
+        <span class="dot" id="output-dot"></span>
+        <span id="output-label">Generated Content</span>
+      </div>
+      <div class="export-btns">
+        <button class="btn-action" onclick="exportTxt()">⬇ TXT</button>
+        <button class="btn-action" onclick="exportHtml()">⬇ HTML</button>
+        <button class="btn-action" onclick="toggleRender()" id="render-btn">👁 Preview</button>
+        <button class="btn-action primary" id="copy-btn" onclick="copyContent()">📋 Copy</button>
+      </div>
+    </div>
+
+    <div class="tip-row">
+      <span class="tip-icon">💡</span>
+      <span>Content streams in live as it's generated. Use <strong>Preview</strong> to toggle between rendered HTML and raw markdown. Copy or export when done.</span>
+    </div>
+
+    <!-- Raw (markdown-style) view -->
+    <div class="content-output" id="content-raw"></div>
+
+    <!-- Rendered HTML view (hidden by default) -->
+    <div class="content-output" id="content-rendered" style="display:none"></div>
+
+    <div class="stats-row" id="stats-row">
+      Words: <span id="stat-words">—</span>
+      &nbsp;·&nbsp; Characters: <span id="stat-chars">—</span>
+      &nbsp;·&nbsp; Est. read time: <span id="stat-read">—</span>
+      &nbsp;·&nbsp; Keyword density: <span id="stat-density">—</span>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>Part of <a href="https://ranksorcery.com/">RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p>
+</footer>
+
+<script>
+// ─── State ────────────────────────────────────────────────────
+let selectedStructure = 'auto';
+let activeOptions = new Set(['include-headings','include-intro','include-conclusion']);
+let lastContent = '';
+let isRendered = false;
+
+// ─── Model map ────────────────────────────────────────────────
+const MODEL_MAP = {
+  'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
+  'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'deepseek-chat':               'deepseek/deepseek-chat',
+  'gpt-4o':                      'openai/gpt-4o',
+  'claude-sonnet-4-5':           'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':        'mistralai/mistral-large',
+};
+
+// ─── Length map ───────────────────────────────────────────────
+const LENGTH_MAP = {
+  short:  'approximately 500 words',
+  medium: 'approximately 900 words',
+  long:   'approximately 1,500 words',
+  xl:     'approximately 2,500 words',
+};
+
+// ─── Model selection ──────────────────────────────────────────
+function selectModel(card) {
+  if (card.classList.contains('pro-locked')) return;
+  document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+}
+
+// ─── Structure chips (single-select) ─────────────────────────
+document.querySelectorAll('#structure-group .tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('#structure-group .tag-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedStructure = chip.dataset.val;
+  });
+});
+
+// ─── SEO option chips (multi-select) ─────────────────────────
+document.querySelectorAll('#seo-group .tag-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    chip.classList.toggle('active');
+    const val = chip.dataset.val;
+    if (activeOptions.has(val)) activeOptions.delete(val);
+    else activeOptions.add(val);
+  });
+});
+
+// ─── Advanced toggle ──────────────────────────────────────────
+function toggleAdv() {
+  document.getElementById('adv-toggle').classList.toggle('open');
+  document.getElementById('adv-body').classList.toggle('open');
+}
+
+// ─── Char counter ─────────────────────────────────────────────
+function updateCharCount(el, countId, max) {
+  document.getElementById(countId).textContent = el.value.length;
+}
+
+// ─── Random examples ─────────────────────────────────────────
+const randomTopics = [
+  { topic: 'The Complete Guide to Intermittent Fasting for Beginners', keyword: 'intermittent fasting for beginners', secondary: '16:8 fasting, weight loss benefits, fasting schedule' },
+  { topic: '10 Proven SEO Strategies to Rank #1 on Google in 2025', keyword: 'SEO strategies 2025', secondary: 'on-page SEO, backlinks, Google ranking factors' },
+  { topic: 'How to Start a Dropshipping Business With $0 Upfront', keyword: 'start dropshipping business', secondary: 'dropshipping suppliers, Shopify dropshipping, profitable niches' },
+  { topic: 'Best Running Shoes for Flat Feet: Expert Picks 2025', keyword: 'running shoes flat feet', secondary: 'overpronation shoes, arch support running shoes, flat feet tips' },
+  { topic: 'Home Solar Panel Installation: A Complete Cost Guide', keyword: 'solar panel installation cost', secondary: 'solar panel ROI, government solar incentives, home energy savings' },
+  { topic: 'WordPress vs Shopify: Which Is Better for Your Store?', keyword: 'WordPress vs Shopify', secondary: 'ecommerce platform comparison, WooCommerce, online store setup' },
+  { topic: 'How to Write a Business Plan That Actually Gets Funded', keyword: 'how to write a business plan', secondary: 'business plan template, startup funding, investor pitch' },
+];
+
+function setRandomTopic() {
+  const ex = randomTopics[Math.floor(Math.random() * randomTopics.length)];
+  document.getElementById('topic').value = ex.topic;
+  document.getElementById('keyword').value = ex.keyword;
+  document.getElementById('secondary-keywords').value = ex.secondary;
+  updateCharCount(document.getElementById('topic'), 'topic-chars', 250);
+}
+
+// ─── Build prompt ─────────────────────────────────────────────
+function buildPrompt() {
+  const topic      = document.getElementById('topic').value.trim();
+  const keyword    = document.getElementById('keyword').value.trim();
+  const secondary  = document.getElementById('secondary-keywords').value.trim();
+  const type       = document.getElementById('content-type').value;
+  const length     = document.getElementById('content-length').value;
+  const tone       = document.getElementById('tone').value;
+  const audience   = document.getElementById('audience').value.trim();
+  const brand      = document.getElementById('brand-name').value.trim();
+  const outline    = document.getElementById('outline').value.trim();
+  const notes      = document.getElementById('notes').value.trim();
+
+  const typeMap = {
+    'blog-post':      'blog post',
+    'article':        'news article',
+    'guide':          'how-to guide',
+    'listicle':       'listicle (numbered list article)',
+    'product-review': 'product review',
+    'comparison':     'comparison article',
+    'landing-page':   'landing page copy',
+    'pillar':         'pillar / cornerstone content page',
+  };
+
+  const structureMap = {
+    'auto':                    'use the most appropriate structure for this content type',
+    'intro-sections-conclusion': 'Introduction → Main Sections → Conclusion',
+    'problem-solution':         'Problem framing → Solution → Benefits → Call to Action',
+    'listicle':                 'Numbered list format with a brief intro and outro',
+    'step-by-step':             'Step-by-step format with numbered steps',
+    'pros-cons':                'Pros and Cons format with a balanced verdict',
+    'faq-style':                'FAQ-style with questions and detailed answers',
+  };
+
+  let prompt = `Write a ${typeMap[type] || 'blog post'} about: "${topic}"\n\n`;
+  prompt += `Target length: ${LENGTH_MAP[length] || '900 words'}.\n`;
+  prompt += `Tone: ${tone}.\n`;
+  if (keyword)   prompt += `Primary keyword to include naturally: "${keyword}"\n`;
+  if (secondary) prompt += `Secondary keywords to weave in: ${secondary}\n`;
+  prompt += `Structure: ${structureMap[selectedStructure] || structureMap.auto}\n`;
+  if (audience)  prompt += `Target audience: ${audience}\n`;
+  if (brand)     prompt += `Brand / author name: ${brand}\n`;
+
+  // SEO options
+  const opts = [];
+  if (activeOptions.has('include-headings'))   opts.push('Use H2 and H3 markdown headings (##, ###) to organize sections');
+  if (activeOptions.has('include-intro'))       opts.push('Start with a compelling hook introduction that immediately engages the reader');
+  if (activeOptions.has('include-conclusion'))  opts.push('End with a strong conclusion paragraph and a clear call-to-action');
+  if (activeOptions.has('include-faq'))         opts.push('Add a short FAQ section at the end (3–5 questions)');
+  if (activeOptions.has('include-stats'))       opts.push('Reference realistic statistics, studies, or data points where relevant (mark estimated stats clearly)');
+  if (activeOptions.has('no-fluff'))            opts.push('Eliminate all filler sentences and padding — every sentence must deliver value');
+  if (activeOptions.has('bold-key-terms'))      opts.push('Bold key terms and important phrases using **bold** markdown');
+  if (opts.length) prompt += `\nWriting requirements:\n${opts.map(o => `- ${o}`).join('\n')}\n`;
+
+  if (outline) prompt += `\nFollow this outline / section structure:\n${outline}\n`;
+  if (notes)   prompt += `\nAdditional instructions: ${notes}\n`;
+
+  prompt += `\nWrite the full content now. Use markdown formatting (## headings, **bold**, bullet points where appropriate). Do NOT add a preamble or say "Here is the article" — start directly with the content.`;
+
+  return prompt;
+}
+
+// ─── Steps animation ─────────────────────────────────────────
+let stepTimeout;
+function animateSteps() {
+  const steps = ['step1','step2','step3','step4','step5','step6'];
+  let i = 0;
+  function next() {
+    steps.forEach((s, idx) => {
+      const el = document.getElementById(s);
+      if (idx < i)       el.className = 'step-item done';
+      else if (idx === i) el.className = 'step-item active';
+      else                el.className = 'step-item';
+    });
+    if (i < steps.length - 1) { i++; stepTimeout = setTimeout(next, 1800); }
+  }
+  next();
+}
+
+// ─── callAI — streaming, same pattern ────────────────────────
+async function callAI(model, prompt) {
+  const systemPrompt = 'You are an expert SEO content writer and strategist. You write high-quality, engaging, long-form content that ranks well on Google and genuinely helps readers. You use markdown formatting with proper headings, and write in a natural, human tone. Start content immediately — never include a preamble or say "Here is your article".';
+
+  const orModel = MODEL_MAP[model] || 'deepseek/deepseek-chat';
+
+  const res = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: orModel,
+      stream: true,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user',   content: prompt },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const apiMsg = err?.error?.message || `API error ${res.status}. Please try again.`;
+    const regionHint = apiMsg.toLowerCase().includes('region') ? ' Please try a different AI model.' : '';
+    throw new Error(apiMsg + regionHint);
+  }
+
+  return res; // return raw response for streaming
+}
+
+// ─── Markdown → HTML (lightweight) ───────────────────────────
+function mdToHtml(md) {
+  let html = md
+    // Headings
+    .replace(/^#### (.+)$/gm, '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // HR
+    .replace(/^---+$/gm, '<hr>')
+    // Bold + italic
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Inline code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Blockquote
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    // Unordered list items
+    .replace(/^\s*[-*+] (.+)$/gm, '<li>$1</li>')
+    // Ordered list items
+    .replace(/^\s*\d+\. (.+)$/gm, '<li>$1</li>');
+
+  // Wrap consecutive <li> in <ul>
+  html = html.replace(/(<li>[\s\S]+?<\/li>)(\s*(?!<li>))/g, '<ul>$1</ul>$2');
+
+  // Paragraphs: wrap lines not already in a block tag
+  const blockTags = /^<(h[1-4]|ul|ol|li|blockquote|hr|pre)/;
+  html = html.split('\n').map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    if (blockTags.test(trimmed)) return trimmed;
+    return `<p>${trimmed}</p>`;
+  }).join('\n');
+
+  return html;
+}
+
+// ─── Stats ────────────────────────────────────────────────────
+function updateStats(text) {
+  const words   = text.trim().split(/\s+/).filter(Boolean).length;
+  const chars   = text.length;
+  const readMin = Math.max(1, Math.round(words / 230));
+  const keyword = document.getElementById('keyword').value.trim().toLowerCase();
+  let density   = '—';
+  if (keyword) {
+    const kWords  = keyword.split(/\s+/).length;
+    const textLow = text.toLowerCase();
+    let count = 0;
+    let pos   = 0;
+    while ((pos = textLow.indexOf(keyword, pos)) !== -1) { count++; pos += keyword.length; }
+    const pct = words > 0 ? ((count * kWords / words) * 100).toFixed(1) : 0;
+    density = `${count}× (${pct}%)`;
+  }
+  document.getElementById('stat-words').textContent  = words.toLocaleString();
+  document.getElementById('stat-chars').textContent  = chars.toLocaleString();
+  document.getElementById('stat-read').textContent   = `~${readMin} min`;
+  document.getElementById('stat-density').textContent = density;
+}
+
+// ─── Toggle rendered preview ──────────────────────────────────
+function toggleRender() {
+  isRendered = !isRendered;
+  const raw      = document.getElementById('content-raw');
+  const rendered = document.getElementById('content-rendered');
+  const btn      = document.getElementById('render-btn');
+  if (isRendered) {
+    rendered.innerHTML = mdToHtml(lastContent);
+    raw.style.display      = 'none';
+    rendered.style.display = 'block';
+    btn.textContent = '📝 Raw';
+  } else {
+    raw.style.display      = 'block';
+    rendered.style.display = 'none';
+    btn.textContent = '👁 Preview';
+  }
+}
+
+// ─── Main generate ────────────────────────────────────────────
+async function generateContent() {
+  const topic    = document.getElementById('topic').value.trim();
+  const errorBox = document.getElementById('error-box');
+  errorBox.className = 'error-box';
+  errorBox.textContent = '';
+
+  if (!topic) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = '⚠ Please enter a topic or title to get started.';
+    document.getElementById('topic').focus();
+    return;
+  }
+
+  const model  = document.querySelector('input[name=model]:checked').value;
+  const prompt = buildPrompt();
+
+  // Reset
+  lastContent  = '';
+  isRendered   = false;
+  const raw      = document.getElementById('content-raw');
+  const rendered = document.getElementById('content-rendered');
+  raw.textContent        = '';
+  raw.style.display      = 'block';
+  rendered.style.display = 'none';
+  document.getElementById('render-btn').textContent = '👁 Preview';
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').textContent = '⏳';
+  document.getElementById('gen-text').textContent = 'Generating…';
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('output-card').classList.remove('show');
+  animateSteps();
+
+  try {
+    const res    = await callAI(model, prompt);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    // Show output card immediately so user sees streaming
+    document.getElementById('spinner-wrap').classList.remove('show');
+    document.getElementById('output-card').classList.add('show');
+    raw.classList.add('streaming');
+    document.getElementById('output-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5','step6'].forEach(s => {
+      document.getElementById(s).className = 'step-item';
+    });
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop();
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === 'data: [DONE]') continue;
+        if (!trimmed.startsWith('data: ')) continue;
+        try {
+          const json  = JSON.parse(trimmed.slice(6));
+          const chunk = json?.choices?.[0]?.delta?.content ?? '';
+          if (chunk) {
+            lastContent += chunk;
+            raw.textContent = lastContent;
+            updateStats(lastContent);
+          }
+        } catch (_) { /* skip */ }
+      }
+    }
+
+    raw.classList.remove('streaming');
+
+    if (!lastContent || lastContent.trim().length < 20) {
+      throw new Error('The AI returned an empty response. Please try a different model or topic.');
+    }
+
+    document.getElementById('output-dot').style.animation = 'none';
+    document.getElementById('output-dot').style.background = 'var(--pass)';
+    document.getElementById('output-label').textContent = 'Generated Content ✓';
+
+  } catch (err) {
+    raw.classList.remove('streaming');
+    document.getElementById('output-card').classList.remove('show');
+    errorBox.className = 'error-box show';
+    errorBox.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = '✨';
+    document.getElementById('gen-text').textContent = 'Regenerate Content';
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5','step6'].forEach(s => {
+      document.getElementById(s).className = 'step-item';
+    });
+  }
+}
+
+// ─── Copy ─────────────────────────────────────────────────────
+function copyContent() {
+  navigator.clipboard.writeText(lastContent).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+  });
+}
+
+// ─── Export TXT ───────────────────────────────────────────────
+function exportTxt() {
+  const topic = document.getElementById('topic').value.trim();
+  const text  = `${topic}\n${'='.repeat(60)}\n\n${lastContent}`;
+  const blob  = new Blob([text], { type: 'text/plain' });
+  const a     = document.createElement('a');
+  a.href      = URL.createObjectURL(blob);
+  a.download  = 'content.txt';
+  a.click();
+}
+
+// ─── Export HTML ──────────────────────────────────────────────
+function exportHtml() {
+  const topic    = document.getElementById('topic').value.trim();
+  const bodyHtml = mdToHtml(lastContent);
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escHtml(topic)}</title>
+<style>
+body{font-family:Georgia,serif;max-width:780px;margin:2.5rem auto;padding:0 1.5rem;line-height:1.8;color:#1a1a1a}
+h1{font-size:2rem;margin-bottom:.5rem;line-height:1.2}
+h2{font-size:1.35rem;margin:2rem 0 .6rem;border-bottom:2px solid #eee;padding-bottom:.3rem}
+h3{font-size:1.1rem;margin:1.5rem 0 .4rem}
+p{margin-bottom:1.1rem}
+ul,ol{margin:.5rem 0 1.1rem 1.5rem}
+li{margin-bottom:.3rem}
+strong{color:#111}
+em{color:#555}
+code{font-family:monospace;background:#f4f4f4;padding:.1em .35em;border-radius:3px;font-size:.88em}
+blockquote{border-left:3px solid #ccc;padding-left:1rem;color:#666;font-style:italic;margin:1rem 0}
+hr{border:none;border-top:1px solid #eee;margin:2rem 0}
+</style>
+</head>
+<body>
+${bodyHtml}
+</body>
+</html>`;
+  const blob = new Blob([html], { type: 'text/html' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'content.html';
+  a.click();
+}
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
