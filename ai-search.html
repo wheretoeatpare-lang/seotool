@@ -161,9 +161,9 @@ nav {
 .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* mobile menu overlay */
-.nav-mobile-menu {
-  display: none !important;
+/* mobile menu overlay — hidden by default at ALL widths */
+#nav-mobile-menu {
+  display: none;
   position: fixed;
   top: 64px; left: 0; right: 0;
   background: rgba(13,17,23,0.98);
@@ -176,8 +176,12 @@ nav {
   gap: 0;
   pointer-events: none;
 }
-.nav-mobile-menu.open {
-  pointer-events: all;
+/* Only show when JS adds open class AND viewport is mobile */
+@media (max-width: 900px) {
+  #nav-mobile-menu.open {
+    display: flex;
+    pointer-events: all;
+  }
 }
 .nav-mobile-menu a {
   color: var(--muted);
@@ -210,10 +214,9 @@ nav {
   .nav-links { display: none; }
   nav > .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
-  .nav-mobile-menu.open { display: flex !important; }
 }
 @media (min-width: 901px) {
-  .nav-mobile-menu { display: none !important; }
+  #nav-mobile-menu { display: none !important; }
   .nav-hamburger { display: none !important; }
 }
 
@@ -724,7 +727,7 @@ h1 span {
   <div style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);font-weight:500"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div>No account needed</div>
 </div>
 
-<div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
+<div class="nav-mobile-menu" id="nav-mobile-menu" style="display:none" aria-label="Mobile navigation">
   <a href="/" onclick="closeMobileNav()">🔍 SEO Auditor</a>
   <a href="/competitor.html" onclick="closeMobileNav()">⚔️ Competitor Analysis</a>
   <a href="/keyword-volume.html" onclick="closeMobileNav()">📊 Keyword Research</a>
@@ -1368,13 +1371,20 @@ function toggleMobileNav() {
   const btn = document.getElementById('nav-hamburger');
   const menu = document.getElementById('nav-mobile-menu');
   const isOpen = btn.classList.toggle('open');
-  menu.classList.toggle('open', isOpen);
-  menu.style.display = isOpen ? 'flex' : 'none';
-  document.body.style.overflow = isOpen ? 'hidden' : '';
+  if (isOpen) {
+    menu.classList.add('open');
+    menu.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  } else {
+    menu.classList.remove('open');
+    menu.style.display = 'none';
+    document.body.style.overflow = '';
+  }
 }
 function closeMobileNav() {
-  document.getElementById('nav-hamburger').classList.remove('open');
+  const btn = document.getElementById('nav-hamburger');
   const menu = document.getElementById('nav-mobile-menu');
+  btn.classList.remove('open');
   menu.classList.remove('open');
   menu.style.display = 'none';
   document.body.style.overflow = '';
