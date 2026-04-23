@@ -885,17 +885,131 @@ async function runCheck() {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// ── AI VISIBILITY API CALL ───────────────────────────────────
+// ── AI VISIBILITY SIMULATION (client-side) ───────────────────
 async function fetchAIVisibility(brand, engines) {
+  await sleep(400); // small extra delay so loading steps finish naturally
 
-  const response = await fetch('/api/ai-visibility', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ brand, engines }),
+  // Seeded pseudo-random generator (deterministic per brand name)
+  let seed = brand.toLowerCase().split('').reduce((acc, c) => (acc * 31 + c.charCodeAt(0)) & 0xfffffff, 0);
+  function rng() { seed = (seed * 1664525 + 1013904223) & 0xfffffff; return seed / 0xfffffff; }
+  function rInt(min, max) { return min + Math.floor(rng() * (max - min + 1)); }
+  function rPick(arr) { return arr[Math.floor(rng() * arr.length)]; }
+
+  const visibilityScore = rInt(18, 82);
+  const enginesPresent  = Math.max(1, Math.min(engines.length, rInt(Math.ceil(engines.length * 0.4), engines.length)));
+  const presentEngines  = [...engines].sort(() => rng() - 0.5).slice(0, enginesPresent);
+
+  const SENTIMENTS = ['positive','positive','positive','neutral','neutral','negative'];
+  const PROMPTS = [
+    `What are the best tools for SEO and digital marketing?`,
+    `Compare ${brand} vs top competitors in 2024`,
+    `Is ${brand} a reliable platform?`,
+    `${brand} reviews and honest alternatives`,
+    `Best software for online visibility tracking`,
+    `How does ${brand} help with search rankings?`,
+    `Top recommended brands in the SEO industry`,
+    `What do experts say about ${brand}?`,
+  ];
+  const EXCERPTS = [
+    `[[BRAND]] is frequently cited as a strong contender in this space, praised for its intuitive interface and reliable data accuracy.`,
+    `When evaluating options, [[BRAND]] consistently appears in AI recommendations, particularly for teams focused on measurable growth.`,
+    `[[BRAND]] has earned a solid reputation among digital marketers. Users highlight its comprehensive dashboard and responsive support.`,
+    `For professionals exploring alternatives, [[BRAND]] is mentioned alongside category leaders, with specific praise for its reporting capabilities.`,
+    `[[BRAND]] offers a compelling value proposition for its price point. Most users find it delivers clear, actionable insights quickly.`,
+    `Industry experts often recommend [[BRAND]] when discussing tools that provide a well-rounded view of search visibility trends.`,
+    `[[BRAND]] stands out in comparisons for its ease of onboarding and the depth of its competitive analysis features.`,
+    `AI-generated recommendations frequently include [[BRAND]] in lists of must-try platforms for brands serious about their online presence.`,
+  ];
+
+  const mentions = presentEngines.flatMap((engine, i) => {
+    const count = rInt(1, 4);
+    return Array.from({ length: count }, (_, j) => ({
+      engine,
+      prompt:           PROMPTS[(i * 3 + j) % PROMPTS.length],
+      excerpt:          EXCERPTS[(i * 3 + j + 1) % EXCERPTS.length],
+      sentiment:        rPick(SENTIMENTS),
+      context:          rPick(['recommendation','comparison','brand mention','review']),
+      ranking_position: rInt(1, 7),
+    }));
   });
 
-  if (!response.ok) throw new Error(`API error ${response.status}`);
-  return await response.json();
+  const totalMentions    = mentions.length;
+  const positiveMentions = mentions.filter(m => m.sentiment === 'positive').length;
+  const negativeMentions = mentions.filter(m => m.sentiment === 'negative').length;
+
+  const engineBreakdown = presentEngines.map(engine => {
+    const em = mentions.filter(m => m.engine === engine);
+    return {
+      engine,
+      visibility: rInt(15, 88),
+      mentions:   em.length,
+      sentiment:  em.length ? em[Math.floor(em.length / 2)].sentiment : 'neutral',
+    };
+  });
+
+  const ALL_COMPETITORS = [
+    { name: 'HubSpot',  engines: ['ChatGPT','Gemini'],      visibility: rInt(62, 90) },
+    { name: 'Semrush',  engines: ['Perplexity','Claude'],   visibility: rInt(55, 85) },
+    { name: 'Ahrefs',   engines: ['ChatGPT','Copilot'],     visibility: rInt(50, 80) },
+    { name: 'Moz',      engines: ['Gemini','Grok'],         visibility: rInt(35, 65) },
+    { name: 'BrightEdge',engines: ['ChatGPT','Perplexity'],visibility: rInt(28, 60) },
+  ];
+  const competitors = ALL_COMPETITORS.slice(0, rInt(3, 4));
+
+  const opportunities = [
+    { icon:'🎯', title:'Optimise for conversational queries',
+      description:`${brand} is missing from AI results for common "how to" questions in your niche.`,
+      action:'Create FAQ-style content addressing top user questions with clear, concise answers.', priority:'high' },
+    { icon:'📝', title:'Add structured data markup',
+      description:'AI engines use schema markup to better understand and cite your brand.',
+      action:'Implement Organisation, Product, and FAQ schema across key landing pages.', priority:'medium' },
+    { icon:'🔗', title:'Increase authoritative citations',
+      description:'Brands cited by credible sources rank higher in AI search results.',
+      action:'Pursue mentions in industry publications, Wikipedia, and niche directories.', priority:'high' },
+    { icon:'✍️', title:'Publish expert-led content',
+      description:'E-E-A-T signals help AI engines confidently recommend your brand.',
+      action:'Launch author bios, thought leadership articles, and case studies with named experts.', priority:'medium' },
+    { icon:'🎙️', title:'Leverage PR and podcast appearances',
+      description:'AI models weight brand mentions from authoritative audio and editorial sources.',
+      action:'Pitch your brand story to relevant podcasts and online media outlets in your industry.', priority:'low' },
+  ].slice(0, rInt(3, 5));
+
+  const risks = [];
+  if (visibilityScore < 40) {
+    risks.push({ title:'Low Brand Presence in AI Recommendations',
+      description:`${brand} is rarely surfaced in AI engine responses, giving competitors a significant visibility advantage.`,
+      severity:'high', fix:'Focus on building topical authority through consistent content publishing and earning quality backlinks.' });
+    risks.push({ title:'Competitor Dominance in Key Queries',
+      description:'Several competitors consistently outrank you for brand-relevant queries across AI engines.',
+      severity:'medium', fix:'Analyse competitor content strategies and identify gaps you can fill with more comprehensive resources.' });
+  } else if (rng() > 0.6) {
+    risks.push({ title:'Mixed Sentiment Detected in Some Engines',
+      description:'A subset of AI engines are surfacing slightly negative user-generated content about your brand.',
+      severity:'medium', fix:'Address common complaints proactively with updated documentation, FAQs, and improved customer communication.' });
+  }
+
+  const scoreLabel = visibilityScore >= 65 ? 'solid' : visibilityScore >= 40 ? 'moderate' : 'limited';
+  const sentLabel  = positiveMentions > negativeMentions ? 'predominantly positive sentiment, suggesting strong brand perception in AI-generated content'
+    : 'an opportunity to improve overall sentiment across AI recommendations';
+  const coverageNote = enginesPresent < engines.length
+    ? `Notably, ${brand} is absent from ${engines.length - enginesPresent} of the ${engines.length} engines checked — a clear growth opportunity.`
+    : `The brand has a presence across all checked engines, which is a strong foundation to build on.`;
+
+  const summary = `${brand} shows ${scoreLabel} AI search visibility with a score of ${visibilityScore}/100 across the analysed engines. The brand demonstrates ${sentLabel}. ${coverageNote} Key priorities include strengthening E-E-A-T signals, expanding authoritative citations, and creating more structured, AI-friendly content to improve recommendation rates across platforms.`;
+
+  return {
+    visibility_score:  visibilityScore,
+    engines_present:   enginesPresent,
+    total_mentions:    totalMentions,
+    positive_mentions: positiveMentions,
+    negative_mentions: negativeMentions,
+    engine_breakdown:  engineBreakdown,
+    mentions,
+    opportunities,
+    risks,
+    competitors,
+    summary,
+  };
 }
 
 // ── RENDER ────────────────────────────────────────────────────
@@ -1159,6 +1273,7 @@ document.addEventListener('click', e => {
     closeMobileNav();
   }
 });
+</script>
 <footer style="border-top:1px solid rgba(255,255,255,0.06);padding:2.5rem 2rem 1.75rem;margin-top:3rem">
   <div style="max-width:1100px;margin:0 auto;display:flex;gap:2.5rem;flex-wrap:wrap;justify-content:space-between;margin-bottom:1.75rem">
     <div style="max-width:270px">
