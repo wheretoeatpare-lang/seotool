@@ -24,6 +24,7 @@ Keep responses concise — 2-4 sentences for simple questions, slightly more for
     "How do I improve my Core Web Vitals?",
     "What is E-E-A-T?",
     "Run a free SEO audit",
+	"Chat to a real person?",
   ];
 
   // ─── Proxy URL (Cloudflare Worker) ────────────────────────────────────────
