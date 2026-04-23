@@ -28,7 +28,7 @@ Keep responses concise — 2-4 sentences for simple questions, slightly more for
 
   // ─── Proxy URL (Cloudflare Worker) ────────────────────────────────────────
   // Replace this with your Cloudflare Worker URL after deploying it
-  const PROXY_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/';
+  const PROXY_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
 
   // ─── Styles ───────────────────────────────────────────────────────────────
   const css = `
