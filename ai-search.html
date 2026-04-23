@@ -85,7 +85,7 @@ body::before {
 }
 
 /* ── NAV ── */
-nav {
+nav.main-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 2rem;
@@ -210,9 +210,9 @@ nav {
 }
 
 @media (max-width: 900px) {
-  nav { padding: 0.85rem 1.25rem; }
+  nav.main-nav { padding: 0.85rem 1.25rem; }
   .nav-links { display: none; }
-  nav > .nav-cta { display: none; }
+  nav.main-nav > .nav-cta { display: none; }
   .nav-hamburger { display: flex; }
 }
 @media (min-width: 901px) {
@@ -698,7 +698,7 @@ h1 span {
 <body>
 
 <!-- ── NAV ── -->
-<nav aria-label="Main navigation">
+<nav class="main-nav" aria-label="Main navigation">
   <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
     <div class="logo-icon">✦</div>
     RankSorcery
