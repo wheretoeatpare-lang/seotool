@@ -455,7 +455,7 @@ Always present all options and encourage them to reach out — the owner is happ
     </button>
     <div id="rs-chat-window" role="dialog" aria-label="RankSorcery AI Chat">
       <div id="rs-chat-header">
-        <div class="rs-logo">✦</div>
+        <div class="rs-logo">🧙‍♂️</div>
         <div class="rs-header-info">
           <div class="rs-name">RankSorcery AI</div>
           <div class="rs-status"><span class="rs-status-dot"></span>Online · Full Stack Digital Expert</div>
