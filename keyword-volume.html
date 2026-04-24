@@ -1067,11 +1067,23 @@ function renderContentStrategy(data) {
 /* ── LOADER ── */
 function animateLoader() {
   const steps = ['step1','step2','step3','step4','step5']; let i = 0;
-  steps.forEach(id => { const el=document.getElementById(id); el.className=''; el.querySelector('.step-icon').textContent='○'; });
+  steps.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.className = '';
+    const icon = el.querySelector('.step-icon');
+    if (icon) icon.textContent = '○';
+  });
   const iv = setInterval(() => {
-    if (i>0) { const p=document.getElementById(steps[i-1]); p.className='done'; p.querySelector('.step-icon').textContent='✓'; }
-    if (i<steps.length) { const c=document.getElementById(steps[i]); c.className='active'; c.querySelector('.step-icon').textContent='◉'; i++; }
-    else clearInterval(iv);
+    if (i > 0) {
+      const p = document.getElementById(steps[i-1]);
+      if (p) { p.className = 'done'; const ic = p.querySelector('.step-icon'); if (ic) ic.textContent = '✓'; }
+    }
+    if (i < steps.length) {
+      const c = document.getElementById(steps[i]);
+      if (c) { c.className = 'active'; const ic = c.querySelector('.step-icon'); if (ic) ic.textContent = '◉'; }
+      i++;
+    } else clearInterval(iv);
   }, 420);
 }
 
@@ -1083,27 +1095,34 @@ function getLast12Months() {
 
 /* ── MAIN CHECK ── */
 async function runCheck() {
-  const kwRaw=document.getElementById('kw-input').value.trim();
-  const country=document.getElementById('country-sel').value;
-  const bulkText=document.getElementById('bulk-area').value.trim();
-  hideAll(); document.getElementById('error-msg').style.display='none';
-  if (bulkMode&&bulkText) {
-    const kws=bulkText.split('\n').map(k=>k.trim()).filter(Boolean).slice(0,10);
-    if (!kws.length){showError('Please enter at least one keyword.');return;}
-    await runBulk(kws,country); return;
+  try {
+    const kwRaw=document.getElementById('kw-input').value.trim();
+    const country=document.getElementById('country-sel').value;
+    const bulkText=document.getElementById('bulk-area').value.trim();
+    hideAll(); document.getElementById('error-msg').style.display='none';
+    if (bulkMode&&bulkText) {
+      const kws=bulkText.split('\n').map(k=>k.trim()).filter(Boolean).slice(0,10);
+      if (!kws.length){showError('Please enter at least one keyword.');return;}
+      await runBulk(kws,country); return;
+    }
+    if (!kwRaw){showError('Please enter a keyword to analyze.');return;}
+    document.getElementById('check-btn').disabled=true;
+    document.getElementById('loading').style.display='block';
+    animateLoader(); await delay(2000);
+    const data=analyzeKeyword(kwRaw,country); currentData={data,related:[]};
+    renderResults(data,[]);
+    fetchAutocomplete(kwRaw,country,function(suggestions){
+      const kwList=suggestions||fallbackRelatedKeywords(kwRaw);
+      const related=buildRelated(kwList,country);
+      currentData.related=related; renderRelated(related);
+    });
+    document.getElementById('check-btn').disabled=false;
+  } catch(err) {
+    console.error('runCheck error:', err);
+    document.getElementById('check-btn').disabled=false;
+    document.getElementById('loading').style.display='none';
+    showError('Something went wrong: ' + err.message + '. Please try again.');
   }
-  if (!kwRaw){showError('Please enter a keyword to analyze.');return;}
-  document.getElementById('check-btn').disabled=true;
-  document.getElementById('loading').style.display='block';
-  animateLoader(); await delay(2000);
-  const data=analyzeKeyword(kwRaw,country); currentData={data,related:[]};
-  renderResults(data,[]);
-  fetchAutocomplete(kwRaw,country,function(suggestions){
-    const kwList=suggestions||fallbackRelatedKeywords(kwRaw);
-    const related=buildRelated(kwList,country);
-    currentData.related=related; renderRelated(related);
-  });
-  document.getElementById('check-btn').disabled=false;
 }
 
 async function runBulk(kws,country) {
