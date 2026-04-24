@@ -445,7 +445,7 @@ Always present all options and encourage them to reach out — the owner is happ
   document.head.appendChild(style);
 
   // ─── Build HTML ───────────────────────────────────────────────────────────
-  const chatIcon  = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.5 L4 18.5 H20 Z"/><path d="M2 19.5 C6 17 18 17 22 19.5 C18 22 6 22 2 19.5 Z"/><polygon points="12,6 12.6,7.8 14.5,7.8 13,8.9 13.6,10.7 12,9.6 10.4,10.7 11,8.9 9.5,7.8 11.4,7.8"/></svg>`;
+  const chatIcon  = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.5 L6 10 H18 Z"/><rect x="5" y="10" width="14" height="2" rx="1"/><circle cx="12" cy="14" r="2.5"/><path d="M9.5 16.2 C8 17 5.5 19 5 23 H19 C18.5 19 16 17 14.5 16.2 C13 17.5 11 17.5 9.5 16.2 Z"/><path d="M17 16 L20.5 21 L22 20 L18.5 15 Z"/><polygon points="21,13 21.5,14.5 23,14.5 21.8,15.4 22.3,16.9 21,16 19.7,16.9 20.2,15.4 19,14.5 20.5,14.5"/></svg>`;
   const closeIcon = `<svg class="rs-icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
   const sendIcon  = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
 
