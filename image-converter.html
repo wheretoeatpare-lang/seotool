@@ -52,21 +52,36 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0a0b0f;
-      --bg2: #111318;
-      --bg3: #181b23;
-      --border: #252830;
-      --border2: #2e3140;
-      --accent: #7c5cfc;
-      --accent2: #5b8df8;
-      --accent-glow: rgba(124,92,252,0.18);
-      --text: #e8eaf0;
-      --text2: #8b91a8;
-      --text3: #555d78;
-      --success: #2dd4a0;
-      --warn: #f5a623;
-      --danger: #f06060;
-      --radius: 12px;
+      --bg:    #0D1117;
+      --bg2:   #141B2D;
+      --bg3:   #1E2740;
+      --bg4:   #243050;
+      --border:  rgba(232,184,75,0.13);
+      --border2: rgba(232,184,75,0.22);
+      --border3: rgba(232,184,75,0.35);
+      --accent:  #E8B84B;
+      --accent2: #F5D98A;
+      --accent3: #C9902A;
+      --accent-glow: rgba(232,184,75,0.18);
+      --glow:    rgba(232,184,75,0.15);
+      --teal:    #0ABFBC;
+      --teal2:   rgba(10,191,188,0.12);
+      --text: #E8EAF0;
+      --text2: #8A93A8;
+      --text3: #6A748A;
+      --muted: #8A93A8;
+      --muted2:#6A748A;
+      --success: #34d399;
+      --green:  #34d399;
+      --green2: rgba(52,211,153,0.12);
+      --red:    #f87171;
+      --red2:   rgba(248,113,113,0.12);
+      --amber:  #fbbf24;
+      --warn: #fbbf24;
+      --danger: #f87171;
+      --blue:   #60a5fa;
+      --pink:   #f472b6;
+      --radius: 14px;
       --radius-lg: 20px;
     }
 
@@ -78,63 +93,108 @@
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
+      overflow-x: hidden;
+      padding-top: 64px;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 0; opacity: .45;
     }
 
     /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(10,11,15,0.85);
-      backdrop-filter: blur(16px);
+    nav.main-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(13,17,23,0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px;
+      gap: 1rem;
     }
     .nav-inner {
-      max-width: 1140px; margin: 0 auto;
+      max-width: 1140px; margin: 0 auto; width: 100%;
       display: flex; align-items: center; justify-content: space-between;
-      height: 58px;
+      height: 64px; gap: 1rem;
     }
     .nav-logo {
       font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.15rem;
-      color: var(--text); text-decoration: none; letter-spacing: -0.02em;
+      color: var(--accent); text-decoration: none; letter-spacing: -0.02em;
+      display: flex; align-items: center; gap: 9px; flex-shrink: 0;
     }
-    .nav-logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 6px; align-items: center; }
+    .nav-logo-icon {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--teal));
+      border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 0.1rem; align-items: center; }
     .nav-links a {
       color: var(--text2); text-decoration: none; font-size: 0.82rem;
-      padding: 6px 12px; border-radius: 8px; transition: all .2s;
+      font-weight: 500; transition: color 0.2s, background 0.2s;
+      padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
     }
-    .nav-links a:hover { color: var(--text); background: var(--bg3); }
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
     .nav-links a.active { color: var(--accent); }
     .nav-cta {
-      background: var(--accent); color: #fff !important;
-      padding: 7px 16px !important; border-radius: 8px !important;
-      font-weight: 500 !important;
+      background: var(--accent) !important;
+      color: var(--bg) !important;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700 !important;
+      padding: 0.45rem 1.1rem !important;
+      border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap;
+      flex-shrink: 0; letter-spacing: 0.02em;
+      transition: background 0.2s, transform 0.15s !important;
+      text-decoration: none;
     }
-    .nav-cta:hover { background: #6a4ce0 !important; }
+    .nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
 
     /* ── HERO ── */
     .hero {
       text-align: center;
-      padding: 72px 24px 48px;
-      background: radial-gradient(ellipse 900px 500px at 50% -80px, rgba(124,92,252,0.14) 0%, transparent 70%);
+      padding: 5rem 24px 3.5rem;
+      background: radial-gradient(ellipse 900px 500px at 50% -80px, rgba(232,184,75,0.09) 0%, transparent 70%);
+      position: relative; overflow: hidden; z-index: 1;
+    }
+    .hero::after {
+      content: ''; position: absolute;
+      width: 500px; height: 400px;
+      background: radial-gradient(circle, rgba(10,191,188,.06) 0%, transparent 70%);
+      bottom: -60px; right: 5%; pointer-events: none;
     }
     .hero-badge {
       display: inline-flex; align-items: center; gap: 7px;
-      background: rgba(124,92,252,0.12); border: 1px solid rgba(124,92,252,0.28);
-      padding: 5px 14px; border-radius: 100px;
-      font-size: 0.75rem; color: #a78bfa; font-weight: 500; margin-bottom: 22px;
-      letter-spacing: 0.03em;
+      background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3);
+      color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px;
+      font-size: 0.75rem; font-weight: 600; margin-bottom: 22px;
+      letter-spacing: 0.06em; text-transform: uppercase;
     }
-    .hero-badge::before { content:'✦'; font-size: 0.65rem; }
+    .hero-badge .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--teal); animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .4; transform: scale(1.4); }
+    }
     h1 {
       font-family: 'Syne', sans-serif; font-weight: 800;
       font-size: clamp(2rem, 5vw, 3.2rem);
-      line-height: 1.12; letter-spacing: -0.03em;
+      line-height: 1.1; letter-spacing: -0.03em;
       margin-bottom: 16px;
     }
-    h1 em { font-style: normal; color: var(--accent); }
+    h1 em, h1 span {
+      font-style: normal;
+      background: linear-gradient(120deg, var(--accent), var(--teal));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .hero-sub {
-      color: var(--text2); font-size: 1rem; max-width: 560px; margin: 0 auto 28px;
+      color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 28px; line-height: 1.75;
     }
     .hero-tags {
       display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
@@ -145,10 +205,10 @@
       color: var(--text2); font-size: 0.72rem; padding: 4px 11px;
       border-radius: 100px; font-weight: 500;
     }
-    .tag.hi { color: var(--success); border-color: rgba(45,212,160,0.3); background: rgba(45,212,160,0.07); }
+    .tag.hi { color: var(--green); border-color: rgba(52,212,160,0.3); background: rgba(52,212,160,0.07); }
 
     /* ── MAIN CARD ── */
-    .container { max-width: 980px; margin: 0 auto; padding: 0 20px 80px; }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 20px 80px; position: relative; z-index: 1; }
 
     .card {
       background: var(--bg2);
@@ -160,7 +220,7 @@
     .card-title {
       font-family: 'Syne', sans-serif; font-weight: 700;
       font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--text3); margin-bottom: 20px;
+      color: var(--muted2); margin-bottom: 20px;
     }
 
     /* ── DROP ZONE ── */
@@ -176,8 +236,8 @@
     }
     #drop-zone:hover, #drop-zone.drag-over {
       border-color: var(--accent);
-      background: rgba(124,92,252,0.06);
-      box-shadow: inset 0 0 0 1px rgba(124,92,252,0.18);
+      background: rgba(232,184,75,0.05);
+      box-shadow: inset 0 0 0 1px rgba(232,184,75,0.15);
     }
     #drop-zone input { display: none; }
     .drop-icon {
@@ -191,12 +251,13 @@
     .drop-sub { color: var(--text2); font-size: 0.85rem; margin-bottom: 18px; }
     .btn-browse {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent); color: #fff;
+      background: linear-gradient(135deg, var(--accent), var(--accent3)); color: var(--bg);
       padding: 10px 22px; border-radius: 9px;
-      font-size: 0.88rem; font-weight: 600; border: none; cursor: pointer;
+      font-size: 0.88rem; font-weight: 700; border: none; cursor: pointer;
       transition: all .2s; font-family: 'DM Sans', sans-serif;
+      box-shadow: 0 4px 16px rgba(232,184,75,0.3);
     }
-    .btn-browse:hover { background: #6a4ce0; transform: translateY(-1px); }
+    .btn-browse:hover { opacity: 0.9; transform: translateY(-1px); }
     .format-chips {
       display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 18px;
     }
@@ -205,7 +266,7 @@
       color: var(--text3); font-size: 0.68rem; font-weight: 600;
       padding: 3px 9px; border-radius: 6px; letter-spacing: 0.04em;
     }
-    .format-chip.special { color: var(--accent2); border-color: rgba(91,141,248,0.3); }
+    .format-chip.special { color: var(--teal); border-color: rgba(10,191,188,0.3); background: rgba(10,191,188,0.07); }
 
     /* ── SETTINGS GRID ── */
     .settings-grid {
@@ -241,10 +302,10 @@
     input[type=range]::-webkit-slider-thumb {
       appearance: none; width: 18px; height: 18px;
       background: var(--accent); border-radius: 50%; cursor: pointer;
-      box-shadow: 0 0 0 3px rgba(124,92,252,0.2);
+      box-shadow: 0 0 0 3px rgba(232,184,75,0.2);
       transition: box-shadow .2s;
     }
-    input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 6px rgba(124,92,252,0.25); }
+    input[type=range]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 6px rgba(232,184,75,0.25); }
     .quality-val {
       min-width: 40px; text-align: center;
       background: var(--bg3); border: 1px solid var(--border2);
@@ -266,7 +327,7 @@
       width: 16px; height: 16px; border-radius: 50%;
       background: var(--text3); transition: all .2s;
     }
-    .toggle-switch input:checked + .toggle-slider { background: rgba(124,92,252,0.25); border-color: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider { background: rgba(232,184,75,0.2); border-color: var(--accent); }
     .toggle-switch input:checked + .toggle-slider::after { transform: translateX(20px); background: var(--accent); }
 
     /* ── FILE LIST ── */
@@ -298,7 +359,7 @@
       padding: 3px 9px; border-radius: 100px;
     }
     .file-status.pending { background: var(--bg2); color: var(--text3); border: 1px solid var(--border); }
-    .file-status.converting { background: rgba(124,92,252,0.12); color: var(--accent); border: 1px solid rgba(124,92,252,0.25); }
+    .file-status.converting { background: rgba(232,184,75,0.12); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
     .file-status.done { background: rgba(45,212,160,0.1); color: var(--success); border: 1px solid rgba(45,212,160,0.25); }
     .file-status.error { background: rgba(240,96,96,0.1); color: var(--danger); border: 1px solid rgba(240,96,96,0.25); }
     .file-savings { font-size: 0.72rem; color: var(--success); margin-top: 2px; font-weight: 500; }
@@ -313,7 +374,7 @@
       height: 3px; background: var(--border); border-radius: 10px;
       margin-bottom: 20px; overflow: hidden; display: none;
     }
-    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 10px; transition: width .3s; width: 0%; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 10px; transition: width .3s; width: 0%; }
 
     /* ── PREVIEW ── */
     #preview-section { display: none; }
@@ -332,15 +393,15 @@
     .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
     .btn-primary {
       flex: 1; min-width: 200px;
-      background: linear-gradient(135deg, var(--accent), #5b3dd4);
-      color: #fff; border: none; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent), var(--accent3));
+      color: var(--bg); border: none; border-radius: var(--radius);
       padding: 14px 28px; font-size: 0.95rem; font-weight: 700;
       cursor: pointer; transition: all .25s;
       font-family: 'Syne', sans-serif; letter-spacing: 0.01em;
-      box-shadow: 0 4px 20px rgba(124,92,252,0.3);
+      box-shadow: 0 4px 20px rgba(232,184,75,0.3);
       display: flex; align-items: center; justify-content: center; gap: 9px;
     }
-    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,92,252,0.4); }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(232,184,75,0.4); }
     .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
     .btn-secondary {
       background: var(--bg3); border: 1px solid var(--border2);
@@ -377,7 +438,7 @@
       border-radius: var(--radius); padding: 24px; text-align: center;
       transition: border-color .2s;
     }
-    .how-step:hover { border-color: var(--accent); }
+    .how-step:hover { border-color: var(--border3); box-shadow: 0 0 0 3px rgba(232,184,75,0.07); }
     .how-num {
       font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
       color: var(--accent); opacity: 0.4; line-height: 1; margin-bottom: 12px;
@@ -399,7 +460,7 @@
     .badge { display: inline-block; padding: 2px 8px; border-radius: 100px; font-size: 0.68rem; font-weight: 700; }
     .badge.input { background: rgba(91,141,248,0.12); color: var(--accent2); border: 1px solid rgba(91,141,248,0.25); }
     .badge.output { background: rgba(45,212,160,0.1); color: var(--success); border: 1px solid rgba(45,212,160,0.25); }
-    .badge.both { background: rgba(124,92,252,0.1); color: var(--accent); border: 1px solid rgba(124,92,252,0.25); }
+    .badge.both { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
 
     /* ── FAQ ── */
     .faq-list { margin-top: 16px; }
@@ -554,8 +615,8 @@
     #drop-zone.has-files {
       padding: 20px 24px;
       border-style: solid;
-      border-color: rgba(124,92,252,0.4);
-      background: rgba(124,92,252,0.05);
+      border-color: rgba(232,184,75,0.4);
+      background: rgba(232,184,75,0.05);
     }
     #drop-zone.has-files .drop-icon,
     #drop-zone.has-files .drop-title,
@@ -576,54 +637,40 @@
       align-items: center;
       gap: 10px;
     }
-    .nav-mobile-cta {
-      background: var(--accent); color: #fff;
-      padding: 7px 13px; border-radius: 8px;
-      font-size: 0.8rem; font-weight: 600;
-      text-decoration: none;
-    }
-    .hamburger {
+    .nav-hamburger {
       background: none; border: none; cursor: pointer;
-      display: flex; flex-direction: column; gap: 5px;
-      padding: 4px; border-radius: 6px;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 5px; padding: 6px; border-radius: 8px;
+      transition: background 0.2s; z-index: 300;
     }
-    .hamburger span {
+    .nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+    .nav-hamburger span {
       display: block; width: 22px; height: 2px;
-      background: var(--text2); border-radius: 2px;
-      transition: all .25s;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+      transform-origin: center;
     }
-    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     .mobile-menu {
-      display: none;
-      flex-direction: column;
-      background: var(--bg2);
-      border-top: 1px solid var(--border);
-      padding: 8px 0 12px;
+      display: none !important;
     }
-    .mobile-menu.open { display: flex; }
-    .mobile-menu a {
-      color: var(--text2); text-decoration: none;
-      padding: 12px 20px; font-size: 0.88rem; font-weight: 500;
-      border-bottom: 1px solid var(--border);
-      transition: all .15s;
-    }
-    .mobile-menu a:last-child { border-bottom: none; }
-    .mobile-menu a:hover, .mobile-menu a.active {
-      color: var(--accent); background: rgba(124,92,252,0.06);
-    }
+    .mobile-menu.open { display: flex !important; }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .nav-links { display: none; }
       .nav-mobile-right { display: flex; }
+    }
+    @media (min-width: 901px) {
+      .nav-hamburger { display: none !important; }
     }
 
     /* Pulse animation for active items */
     @keyframes pulse-border {
-      0%, 100% { border-color: rgba(124,92,252,0.3); }
-      50% { border-color: rgba(124,92,252,0.7); }
+      0%, 100% { border-color: rgba(232,184,75,0.3); }
+      50% { border-color: rgba(232,184,75,0.7); }
     }
     .file-item.converting { animation: pulse-border 1.2s ease infinite; }
 
@@ -638,7 +685,7 @@
         padding: 7px 13px !important;
         font-size: 0.8rem !important;
       }
-      nav { padding: 0 16px; }
+      nav.main-nav { padding: 0 16px; }
 
       /* Hero */
       .hero { padding: 40px 16px 32px; }
@@ -767,9 +814,12 @@
 <body>
 
 <!-- NAV -->
-<nav>
+<nav class="main-nav">
   <div class="nav-inner">
-    <a href="https://ranksorcery.com/" class="nav-logo">Rank<span>Sorcery</span></a>
+    <a href="https://ranksorcery.com/" class="nav-logo" aria-label="RankSorcery — Home">
+      <div class="nav-logo-icon">✦</div>
+      RankSorcery
+    </a>
     <div class="nav-links">
       <a href="https://ranksorcery.com/">SEO Auditor</a>
       <a href="https://ranksorcery.com/competitor.html">Competitor</a>
@@ -777,30 +827,41 @@
       <a href="https://ranksorcery.com/ai-search.html">AI Search</a>
       <a href="https://ranksorcery.com/document-checker.html">Doc Checker</a>
       <a href="https://ranksorcery.com/image-converter.html" class="active">Image Tool</a>
+      <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
       <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
     </div>
     <!-- Mobile: CTA + hamburger -->
-    <div class="nav-mobile-right">
-      <a href="https://ranksorcery.com/" class="nav-cta nav-mobile-cta">Audit →</a>
-      <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <div class="nav-mobile-right" style="display:flex;align-items:center;gap:0.5rem">
+      <a href="https://ranksorcery.com/" class="nav-cta" style="display:none" id="mobile-audit-cta">Audit →</a>
+      <button class="nav-hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
-  <!-- Mobile drawer -->
-  <div class="mobile-menu" id="mobile-menu">
-    <a href="https://ranksorcery.com/" onclick="closeMenu()">🔍 SEO Auditor</a>
-    <a href="https://ranksorcery.com/competitor.html" onclick="closeMenu()">⚔️ Competitor</a>
-    <a href="https://ranksorcery.com/keyword-volume.html" onclick="closeMenu()">📊 Keywords</a>
-    <a href="https://ranksorcery.com/ai-search.html" onclick="closeMenu()">🤖 AI Search</a>
-    <a href="https://ranksorcery.com/document-checker.html" onclick="closeMenu()">📄 Doc Checker</a>
-    <a href="https://ranksorcery.com/image-converter.html" class="active" onclick="closeMenu()">🖼️ Image Tool</a>
-  </div>
 </nav>
+
+<!-- TRUST BAR -->
+<div class="trust-bar" style="background:linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07));border-bottom:1px solid var(--border);padding:10px 5vw;display:flex;gap:32px;justify-content:center;align-items:center;flex-wrap:wrap;position:relative;z-index:1">
+  <div class="trust-item" style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);font-weight:500"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div>100% Private · No Uploads</div>
+  <div class="trust-item" style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);font-weight:500"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div>Client-Side Processing</div>
+  <div class="trust-item" style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);font-weight:500"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div><span style="color:var(--accent);font-weight:700;font-family:'Syne',sans-serif">HEIC · WebP · AVIF · PNG · JPG</span></div>
+  <div class="trust-item" style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted);font-weight:500"><div style="width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0"></div>No Account Needed</div>
+</div>
+
+<!-- Mobile Drawer -->
+<div class="mobile-menu" id="mobile-menu" style="display:none;position:fixed;top:64px;left:0;right:0;background:rgba(13,17,23,0.98);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:1rem 1.5rem 1.5rem;z-index:190;flex-direction:column;gap:0">
+  <a href="https://ranksorcery.com/" onclick="closeMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">🔍 SEO Auditor</a>
+  <a href="https://ranksorcery.com/competitor.html" onclick="closeMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">⚔️ Competitor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html" onclick="closeMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">📊 Keywords</a>
+  <a href="https://ranksorcery.com/ai-search.html" onclick="closeMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">🤖 AI Search</a>
+  <a href="https://ranksorcery.com/document-checker.html" onclick="closeMenu()" style="color:var(--muted);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">📄 Doc Checker</a>
+  <a href="https://ranksorcery.com/image-converter.html" class="active" onclick="closeMenu()" style="color:var(--accent);text-decoration:none;font-size:.95rem;font-weight:500;padding:.9rem 0.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem">🖼️ Image Tool</a>
+  <a href="https://ranksorcery.com/" style="margin-top:.75rem;background:var(--accent);color:var(--bg);text-align:center;justify-content:center;padding:.85rem 1rem;border-radius:10px;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center">Run Free Audit →</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge">Free · Private · No Uploads Required</div>
+  <div class="hero-badge"><span class="dot"></span>Free · Private · No Uploads Required</div>
   <h1>Image <em>Converter</em> &<br>Compressor</h1>
   <p class="hero-sub">Convert, compress, resize and bulk-process images right in your browser. Supports HEIC/HEIF, JPG, PNG, WebP, AVIF, GIF and more.</p>
   <div class="hero-tags">
@@ -873,7 +934,7 @@
 
   <!-- File List — ABOVE settings -->
   <div id="file-list-section" style="display:none">
-    <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px rgba(124,92,252,0.15);">
+    <div class="card" style="border-color:var(--accent);box-shadow:0 0 0 1px rgba(232,184,75,0.12);">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
         <span style="display:flex;align-items:center;gap:8px">
           <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--success);border-radius:50%;font-size:.7rem;color:#000;font-weight:800">✓</span>
@@ -1088,18 +1149,32 @@
 </div>
 
 <!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-logo">Rank<span>Sorcery</span></div>
-    <div class="footer-links">
-      <a href="https://ranksorcery.com/">SEO Auditor</a>
-      <a href="https://ranksorcery.com/competitor.html">Competitor Analysis</a>
-      <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a>
-      <a href="https://ranksorcery.com/ai-search.html">AI Search</a>
-      <a href="https://ranksorcery.com/document-checker.html">Doc Checker</a>
-      <a href="https://ranksorcery.com/image-converter.html">Image Converter</a>
+<footer style="border-top:1px solid var(--border);padding:3rem 2rem 2rem;margin-top:4rem">
+  <div style="max-width:1100px;margin:0 auto;display:flex;gap:3rem;flex-wrap:wrap;justify-content:space-between;margin-bottom:2rem">
+    <div style="max-width:280px">
+      <a href="https://ranksorcery.com/" style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--accent);margin-bottom:.75rem;display:inline-block;text-decoration:none;letter-spacing:-0.02em">RankSorcery</a>
+      <p style="font-size:.82rem;color:var(--muted);line-height:1.65">Free AI-powered SEO &amp; image tools. No account needed. No watermarks. 100% private.</p>
     </div>
-    <div class="footer-copy">© 2025 RankSorcery — Free AI SEO &amp; Image Tools · No account needed · No watermarks · 100% private</div>
+    <div class="footer-nav" style="display:flex;gap:3rem;flex-wrap:wrap" aria-label="Footer navigation">
+      <div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--muted2);margin-bottom:.9rem">SEO Tools</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:.55rem">
+          <li><a href="https://ranksorcery.com/" style="font-size:.83rem;color:var(--muted);text-decoration:none">🔍 SEO Auditor</a></li>
+          <li><a href="/competitor.html" style="font-size:.83rem;color:var(--muted);text-decoration:none">⚔️ Competitor Analysis</a></li>
+          <li><a href="/keyword-volume.html" style="font-size:.83rem;color:var(--muted);text-decoration:none">📊 Keyword Research</a></li>
+          <li><a href="/ai-search.html" style="font-size:.83rem;color:var(--muted);text-decoration:none">🤖 AI Search Visibility</a></li>
+          <li><a href="/document-checker.html" style="font-size:.83rem;color:var(--muted);text-decoration:none">📄 Document SEO Checker</a></li>
+          <li><a href="/image-converter.html" style="font-size:.83rem;color:var(--accent);text-decoration:none">🖼️ Image Converter</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;font-size:.78rem;color:var(--muted2)">
+    <span>© 2025 RankSorcery — Free AI SEO &amp; Image Tools</span>
+    <span style="opacity:.4">·</span>
+    <a href="https://ranksorcery.com/sitemap.xml" style="color:var(--muted);text-decoration:none">Sitemap</a>
+    <span style="opacity:.4">·</span>
+    <span>No account needed · No watermarks · 100% private</span>
   </div>
 </footer>
 
@@ -1524,10 +1599,14 @@
     const menu = document.getElementById('mobile-menu');
     btn.classList.toggle('open');
     menu.classList.toggle('open');
+    menu.style.display = menu.classList.contains('open') ? 'flex' : 'none';
   }
   function closeMenu() {
-    document.getElementById('hamburger').classList.remove('open');
-    document.getElementById('mobile-menu').classList.remove('open');
+    const btn = document.getElementById('hamburger');
+    const menu = document.getElementById('mobile-menu');
+    btn.classList.remove('open');
+    menu.classList.remove('open');
+    menu.style.display = 'none';
   }
 
   // ── FAQ ──
