@@ -58,6 +58,9 @@ Always present both options and encourage them to reach out — the owner is hap
   // Replace this with your Cloudflare Worker URL after deploying it
   const PROXY_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
 
+  // ─── Max history to keep (prevents token overflow with Groq) ──────────────
+  const MAX_HISTORY = 10; // keep last 10 messages (5 user + 5 assistant)
+
   // ─── Styles ───────────────────────────────────────────────────────────────
   const css = `
     #rs-chat-fab {
@@ -294,7 +297,7 @@ Always present both options and encourage them to reach out — the owner is hap
     if (el) el.remove();
   }
 
-  // ─── Send message (OpenRouter via Cloudflare Worker proxy) ────────────────
+  // ─── Send message (Groq via Cloudflare Worker proxy) ──────────────────────
   async function sendMessage() {
     const input = document.getElementById('rs-user-input');
     const text = input.value.trim();
@@ -303,11 +306,18 @@ Always present both options and encourage them to reach out — the owner is hap
     input.style.height = 'auto';
     addMessage('user', text);
     history.push({ role: 'user', content: text });
+
+    // ── Trim history to prevent token overflow ────────────────────────────
+    // Keeps only the most recent MAX_HISTORY messages before sending to Groq
+    if (history.length > MAX_HISTORY) {
+      history.splice(0, history.length - MAX_HISTORY);
+    }
+
     isTyping = true;
     showTyping();
 
     try {
-      // Build OpenAI-compatible messages array (used by OpenRouter)
+      // Build OpenAI-compatible messages array
       const messages = [
         { role: 'system', content: SYSTEM_PROMPT },
         ...history.map(m => ({ role: m.role, content: m.content })),
@@ -326,7 +336,9 @@ Always present both options and encourage them to reach out — the owner is hap
         history.push({ role: 'assistant', content: reply });
         addMessage('bot', reply);
       } else {
-        addMessage('bot', 'Something went wrong on my end — please try again!');
+        // Show actual error from Groq/Worker if available
+        const errMsg = data?.error?.message || 'Something went wrong on my end — please try again!';
+        addMessage('bot', errMsg);
       }
     } catch {
       removeTyping();
