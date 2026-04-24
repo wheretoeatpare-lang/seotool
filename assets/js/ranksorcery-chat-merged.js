@@ -35,7 +35,7 @@ Social Media Marketing
 - Paid ads management (Facebook, Instagram, Google, etc.)
 - Brand growth and audience engagement
 
-Your personality: You talk like a friendly caveman — use simple words, short sentences, caveman-style speech (e.g. "Me help you!", "UGH! Big problem!", "Me know SEO! Me make site strong!"), and fun cave-dweller expressions. Still be helpful and knowledgeable, but always communicate in caveman style. Use cave-themed metaphors when possible (e.g. "Google cave", "ranking rock", "website tribe"). Always tie advice back to RankSorcery's services when relevant. When users ask about auditing their site, mention they can paste their URL directly at ranksorcery.com to get a free AI-powered audit in seconds.
+Your personality: expert but approachable, like a knowledgeable friend who happens to be a digital wizard. Use clear language, avoid unnecessary jargon, and always tie advice back to RankSorcery's services when relevant. When users ask about auditing their site, mention they can paste their URL directly at ranksorcery.com to get a free AI-powered audit in seconds.
 
 Keep responses concise — 2-4 sentences for simple questions, slightly more for complex ones. Never use bullet lists unless the user specifically asks for a breakdown.
 
@@ -46,7 +46,7 @@ If a user wants to contact the owner, speak to a real person, or needs direct he
 
 Always present all options and encourage them to reach out — the owner is happy to help!`;
 
-  const WELCOME_MSG = "UGH! Me RankSorcery AI! ✦ Me help with SEO, rankings, Core Web Vitals, schema, web building, AI magic and make Google love you! What you need today? Me ready!";
+  const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, rankings, Core Web Vitals, schema markup, web development, ai automation and anything else to boost your Google visibility. What would you like to tackle?";
 
   const QUICK_CHIPS = [
     "How can ranksorcery.com help me with my website?",
@@ -59,9 +59,9 @@ Always present all options and encourage them to reach out — the owner is happ
   const PROXY_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
 
   // ─── Owner contact details ────────────────────────────────────────────────
-  const OWNER_EMAIL    = 'webmasterjamez@gmail.com';
-  const OWNER_WHATSAPP = 'https://wa.me/639190047872';
-  const OWNER_LINKEDIN = 'https://www.linkedin.com/in/james-carla-966abb2a9/';
+  const OWNER_EMAIL      = 'webmasterjamez@gmail.com';
+  const OWNER_WHATSAPP   = 'https://wa.me/639190047872';
+  const OWNER_LINKEDIN   = 'https://www.linkedin.com/in/james-carla-966abb2a9/';
 
   // ─── Max history to keep (prevents token overflow) ────────────────────────
   const MAX_HISTORY = 10;
@@ -81,7 +81,10 @@ Always present all options and encourage them to reach out — the owner is happ
     /\bspeak\s+to\s+(a\s+)?(human|person|real|owner|jamez)\b/i,
     /\btalk\s+to\s+(a\s+)?(human|person|real|owner|jamez)\b/i,
     /\bchat\s+to\s+(a\s+)?(real\s+)?person\b/i,
-    /^(contact|help|human|jamez|owner)$/i,
+    /^(contact|help|human|jamez|owner|founder)$/i,
+    /\b(talk|speak|chat|message|contact)\s*(to|with)?\s*(the\s+)?(owner|founder)\b/i,
+    /\bi\s+wanna\s+(talk|speak|chat)\s*(to|with)?\s*(the\s+)?(owner|founder)\b/i,
+    /\bi\s+want\s+to\s+(talk|speak|chat)\s*(to|with)?\s*(the\s+)?(owner|founder)\b/i,
   ];
 
   function isContactIntent(text) {
@@ -93,108 +96,108 @@ Always present all options and encourage them to reach out — the owner is happ
   // =========================================================
   // ─── LOCAL FALLBACK BRAIN (rule-based) ───────────────────
   // =========================================================
-  const CONTACT_HTML = `Ugh! You want real cave chief? Me connect you!<br>
+  const CONTACT_HTML = `Feel free to reach out anytime!<br>
 📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a><br>
 💬 <a href="${OWNER_WHATSAPP}" target="_blank">WhatsApp Jamez here</a><br>
-💼 <a href="${OWNER_LINKEDIN}" target="_blank">Find Jamez on LinkedIn</a> — Jamez happy help!`;
+💼 <a href="${OWNER_LINKEDIN}" target="_blank">LinkedIn</a> — Jamez is happy to help!`;
 
-  const AUDIT_MSG = `Me say: paste URL at <a href="https://ranksorcery.com" target="_blank">ranksorcery.com</a> — get FREE AI SEO audit FAST! Check 60+ things: Core Web Vitals, schema rocks, E-E-A-T score. Very powerful magic!`;
+  const AUDIT_MSG = `You can get a free AI-powered SEO audit in seconds — just paste your URL directly at <a href="https://ranksorcery.com" target="_blank">ranksorcery.com</a>! It checks 60+ SEO factors including Core Web Vitals, schema markup, and E-E-A-T scoring.`;
 
   const localRules = [
     {
       patterns: [/\bhello\b/i, /\bhi\b/i, /\bhey\b/i, /\bgreetings\b/i, /\bgood (morning|afternoon|evening)\b/i, /\bwassup\b/i, /\bsup\b/i],
       responses: [
-        "UGH! Hello friend! 👋 Me RankSorcery helper! Me know SEO, web building, AI magic, social media — all the things! What me help you with today?",
-        "OOH OOH! Welcome to RankSorcery cave! Me here to make your website strong and Google happy. What you want fix — SEO rock, website, or other thing?"
+        "Hey there! 👋 I'm your RankSorcery assistant. Whether you need help with SEO, web development, AI automation, or social media — I've got you covered. What can I help you with today?",
+        "Hi! Welcome to RankSorcery! I'm here to help you grow your online presence. What are you looking to improve — SEO, your website, or something else?"
       ]
     },
     {
       patterns: [/\bseo\b/i, /\bsearch engine\b/i, /\brank(ing)?\b/i, /\bgoogle rank/i, /\boptimiz/i, /\borganic traffic\b/i, /\bkeyword(s)?\b/i],
       responses: [
-        `SEO where magic happen! 🔮 RankSorcery do AI SEO audit — check 60+ things! Core Web Vitals, schema rock, E-E-A-T score, competitor cave, ALL of it! ${AUDIT_MSG}`,
-        `Ugh, good question! RankSorcery fix technical problems, find good keywords, make content strong. Best first step? ${AUDIT_MSG}`
+        `SEO is where the magic happens! 🔮 RankSorcery offers AI-powered SEO audits that analyze 60+ factors — from Core Web Vitals and schema markup to E-E-A-T scoring and competitor analysis. ${AUDIT_MSG}`,
+        `Great question! Our SEO services cover everything from technical fixes to keyword research and content optimization. The best first step? ${AUDIT_MSG}`
       ]
     },
     {
       patterns: [/\baudit\b/i, /\bcheck my site\b/i, /\banalyze my\b/i, /\bsite report\b/i, /\bwebsite report\b/i],
       responses: [
         AUDIT_MSG,
-        `Want see what make site weak? ${AUDIT_MSG}`
+        `Want to see exactly what's holding your site back? ${AUDIT_MSG}`
       ]
     },
     {
       patterns: [/\bcore web vitals\b/i, /\blcp\b/i, /\bfid\b/i, /\bcls\b/i, /\bpage speed\b/i, /\bsite speed\b/i, /\btechnical seo\b/i, /\bcrawl\b/i, /\bindex\b/i],
       responses: [
-        "UGH! Core Web Vitals VERY important for Google cave ranking! Me check LCP, FID, CLS — also crawl speed, index problems, site speed. Run free audit at ranksorcery.com — see where YOU stand RIGHT NOW!"
+        "Core Web Vitals can make or break your Google rankings! We analyze LCP, FID, and CLS as part of our technical SEO service — plus crawlability, indexing, and site speed. Run a free audit at ranksorcery.com to see where you stand instantly!"
       ]
     },
     {
       patterns: [/\bschema\b/i, /\bstructured data\b/i, /\be-e-a-t\b/i, /\beat\b/i, /\bauthority\b/i, /\btrust\b/i],
       responses: [
-        "Schema markup and E-E-A-T — most sites ignore these big ranking rocks! 🔍 RankSorcery look at both and give clear steps to make Google trust YOU more. Me make you look like big chief!"
+        "Schema markup and E-E-A-T signals are huge ranking factors that most sites overlook. RankSorcery analyzes both and gives you clear implementation steps to boost your authority in Google's eyes. 🔍"
       ]
     },
     {
       patterns: [/\bweb dev\b/i, /\bwebsite design\b/i, /\bbuild.*(website|site)\b/i, /\b(website|site).*(build|create|make)\b/i, /\bnew website\b/i, /\bresponsive\b/i, /\bmobile.*(friendly|first)\b/i, /\bcms\b/i, /\bwordpress\b/i, /\bshopify\b/i, /\bwix\b/i, /\bwebflow\b/i, /\bsquarespace\b/i],
       responses: [
-        "Need website that make visitors say UGH YES! 💻 RankSorcery build fast, strong, mobile-friendly sites! WordPress, Shopify, Wix, Webflow — me know all cave tools. Me handle everything from drawing to launching!",
-        "Me build custom websites — fast, SEO-ready, make visitors click and buy! Simple business cave or big e-commerce tribe — me got you covered. Want talk about your project?"
+        "Need a website that actually converts? 💻 RankSorcery builds fast, responsive, mobile-friendly websites with CMS integration (WordPress, Shopify, Wix, Webflow — you name it). We handle everything from design to hosting setup.",
+        "We create custom websites built for speed, SEO, and conversions. Whether you need a simple business site or a full e-commerce solution, we've got you covered. Want to discuss your project?"
       ]
     },
     {
       patterns: [/\bweb app\b/i, /\bapplication\b/i, /\bdashboard\b/i, /\bportal\b/i, /\bsaas\b/i, /\bbackend\b/i, /\bdatabase\b/i, /\bapi\b/i, /\bfull.?stack\b/i],
       responses: [
-        "Me build custom web apps from scratch — dashboards, portals, SaaS tools, ALL things! Full stack: database design, APIs, big backend systems. You have idea? Me bring to life! 🚀"
+        "We build custom web applications from the ground up — dashboards, client portals, SaaS tools, you name it. Our full stack solutions include database design, APIs, and scalable backend systems. Got an idea? Let's bring it to life! 🚀"
       ]
     },
     {
       patterns: [/\bai\b/i, /\bchatbot\b/i, /\bautomation\b/i, /\bworkflow\b/i, /\bartificial intelligence\b/i, /\bai tool\b/i, /\bautomate\b/i],
       responses: [
-        "AI change EVERYTHING! 🤖 RankSorcery make smart chatbots for websites, AI workflow automation save time and shiny rocks (money!), and custom AI tools for YOUR tribe. Sounds like you want this?",
-        "OOH AI automation — me specialty! Me build chatbots, automate boring cave tasks, plug AI tools into your business. Want explore what possible?"
+        "AI is changing the game! 🤖 RankSorcery builds intelligent chatbots for websites and apps, AI-powered workflow automation to save you time and money, and custom AI tools tailored to your business needs. Sounds like something you'd be interested in?",
+        "Great timing — AI automation is one of our specialties! We can build custom chatbots, automate repetitive workflows, and integrate AI tools directly into your business. Want to explore what's possible?"
       ]
     },
     {
       patterns: [/\bsocial media\b/i, /\bfacebook\b/i, /\binstagram\b/i, /\btiktok\b/i, /\bads\b/i, /\bpaid ads\b/i, /\bbrand\b/i, /\bcontent plan\b/i, /\bengagement\b/i, /\baudience\b/i, /\bmarketing\b/i],
       responses: [
-        "Social media done RIGHT make tribe grow FAST! 📱 Me handle strategy, content plan, paid ads (Facebook, Instagram, Google cave, more!), and audience engagement. Me grow your brand while you run business!",
-        "From organic posts to big paid ad battles, RankSorcery social media service cover ALL — strategy, doing the work, getting results. Want know how me grow YOUR brand?"
+        "Social media done right can seriously accelerate your growth! 📱 We handle strategy, content planning, paid ads (Facebook, Instagram, Google, and more), and audience engagement. We grow your brand while you focus on running your business.",
+        "From organic content to paid ad campaigns, RankSorcery's social media marketing service covers it all — strategy, execution, and results. Want to know how we can grow your brand?"
       ]
     },
     {
       patterns: [/\bprice\b/i, /\bpric(ing|es)\b/i, /\bcost\b/i, /\bhow much\b/i, /\brate(s)?\b/i, /\bpackage(s)?\b/i, /\bplan(s)?\b/i, /\bquote\b/i, /\bbudget\b/i],
       responses: [
-        `Price depend on what YOU need — every tribe different! Best way get real number: talk to Jamez directly. Me connect you now!<br><br>${CONTACT_HTML}`,
-        `UGH good question! Price is custom — based on your goals and project size. Let talk and find best fit for your shiny rocks budget.<br><br>${CONTACT_HTML}`
+        `Pricing depends on the scope of your project — every business is different! The best way to get an accurate quote is to reach out directly so we can understand exactly what you need.<br><br>${CONTACT_HTML}`,
+        `Great question! Our pricing is customized based on your goals and project size. Let's chat and figure out the best solution for your budget.<br><br>${CONTACT_HTML}`
       ]
     },
     {
       patterns: [/\bthank(s| you)\b/i, /\bthanks\b/i, /\bbye\b/i, /\bgoodbye\b/i, /\bsee you\b/i, /\btake care\b/i, /\bcheers\b/i],
       responses: [
-        "UGH you welcome! Come back cave anytime. Good luck on your digital journey! 🔮",
-        "Thanks for visiting RankSorcery cave! Need SEO help, new website, or anything digital — me always here. Take care! 👋"
+        "You're welcome! Feel free to come back anytime. Best of luck with your digital journey! 🔮",
+        "Thanks for stopping by! If you ever need SEO help, a new website, or anything digital — RankSorcery is here. Take care! 👋"
       ]
     },
     {
       patterns: [/\bawesome\b/i, /\bamazing\b/i, /\bgreat\b/i, /\bnice\b/i, /\bcool\b/i, /\bimpressive\b/i, /\bwow\b/i, /\bexcellent\b/i],
       responses: [
-        "UGH thank you! 😊 Me glad you like! Anything else me help with?",
-        "Ugh ugh! Me put lots of effort in everything me do. Anything else on your mind?"
+        "Thank you so much! 😊 That means a lot. Is there anything else I can help you with?",
+        "Glad you think so! We put a lot of care into everything we do. Anything else on your mind?"
       ]
     },
     {
       patterns: [/\bservices?\b/i, /\bwhat (do|can) you\b/i, /\bwhat (do|does) ranksorcery\b/i, /\bwhat you offer\b/i, /\bofferings?\b/i, /\bhelp me with\b/i],
       responses: [
-        "RankSorcery — ALL-IN-ONE digital growth cave! 🧙 Me do SEO, web building, full stack apps, AI automation & chatbots, AND social media tribe growth. Which area you want explore?",
-        "Me do everything — SEO audits, custom websites, web apps, AI tools, social media magic. What BIGGEST problem your business have right now?"
+        "RankSorcery is your all-in-one digital growth partner! 🧙 We specialize in SEO, web development, full stack web apps, AI automation & chatbots, and social media marketing. Which area would you like to explore?",
+        "We do it all — SEO audits, custom websites, web apps, AI tools, and social media marketing. What's the biggest challenge your business is facing right now?"
       ]
     }
   ];
 
   const localFallbacks = [
-    `Ugh... me not sure about that — but me built for ALL things digital! Try ask about SEO, website building, AI tools, or social media. Or if you want speak with Jamez directly:<br><br>${CONTACT_HTML}`,
-    `That outside me spell book! 🔮 For tricky questions, best move is reach out to big chief directly:<br><br>${CONTACT_HTML}`,
-    `Me not have that answer, but Jamez DEFINITELY does! Feel free reach out:<br><br>${CONTACT_HTML}`
+    `Hmm, I'm not sure about that specific topic — but I'm built for all things digital! Try asking me about SEO, website development, AI tools, or social media. Or if you'd like to speak with Jamez directly:<br><br>${CONTACT_HTML}`,
+    `That's a bit outside my spell book! 🔮 For detailed questions, the best move is to reach out directly:<br><br>${CONTACT_HTML}`,
+    `I may not have that answer, but Jamez definitely does! Feel free to reach out:<br><br>${CONTACT_HTML}`
   ];
 
   function pickRandom(arr) {
@@ -241,13 +244,13 @@ Always present all options and encourage them to reach out — the owner is happ
     navigator.clipboard.writeText(fullMsg)
       .then(() => {
         addMessage('bot',
-          '✅ <strong>UGH! Chat transcript copied to clipboard!</strong><br><br>' +
-          'Me opening Jamez LinkedIn now — just <strong>paste (Ctrl+V)</strong> into message to Jamez and he get back to you FAST! 🚀'
+          '✅ <strong>Chat transcript copied to your clipboard!</strong><br><br>' +
+          'Opening LinkedIn now — just send Jamez a message and paste (Ctrl+V) the transcript so he has the full context. He\'ll get right back to you! 🚀'
         );
       })
       .catch(() => {
         addMessage('bot',
-          '💼 Opening Jamez LinkedIn now! Tell Jamez you were chatting on ranksorcery.com. He happy help! 😊'
+          '💼 Opening LinkedIn now! Please let Jamez know you were chatting on ranksorcery.com. He\'s happy to help! 😊'
         );
       });
 
@@ -257,11 +260,11 @@ Always present all options and encourage them to reach out — the owner is happ
   // ─── Show contact card with LinkedIn forward button ───────────────────────
   function showContactCard() {
     const html =
-      `UGH! You want real cave chief? 😊 Here how you reach <strong>Jamez</strong>:<br><br>` +
+      `Sure thing! 😊 Here's how you can reach <strong>Jamez</strong> directly:<br><br>` +
       `📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a><br>` +
       `💬 <a href="${OWNER_WHATSAPP}" target="_blank">WhatsApp Jamez</a><br>` +
-      `💼 <a href="${OWNER_LINKEDIN}" target="_blank">LinkedIn — Find Jamez here!</a><br><br>` +
-      `<em>Want me forward this chat conversation to Jamez on LinkedIn?</em>`;
+      `💼 <a href="${OWNER_LINKEDIN}" target="_blank">LinkedIn</a><br><br>` +
+      `<em>Would you like me to forward this chat conversation directly to Jamez on LinkedIn?</em>`;
 
     addMessage('bot', html, null, [
       { label: '💼 Yes, forward my chat to Jamez', action: 'forward-linkedin' },
@@ -392,7 +395,7 @@ Always present all options and encourage them to reach out — the owner is happ
     }
     .rs-action-btn:active { transform: scale(0.97); }
     .rs-action-btn[data-action="forward-linkedin"] {
-      background: #0a66c2; color: #ffffff;
+      background: #0a66c2; color: #fff;
     }
     .rs-action-btn[data-action="forward-linkedin"]:hover { opacity: 0.88; }
     .rs-action-btn[data-action="no-forward"] {
@@ -571,7 +574,7 @@ Always present all options and encourage them to reach out — the owner is happ
       forwardToLinkedIn();
     } else if (action === 'no-forward') {
       addMessage('bot',
-        'No problem! Me still here if you need more help. Come back to cave anytime! 😊'
+        'No problem! Feel free to reach out anytime you\'re ready. I\'m always here if you need more help. 😊'
       );
     }
   });
