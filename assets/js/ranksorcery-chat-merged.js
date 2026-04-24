@@ -656,7 +656,7 @@ Always present all options and encourage them to reach out — the owner is happ
     const fab = document.getElementById('rs-chat-fab');
     win.style.display = 'flex';
     requestAnimationFrame(() => win.classList.add('rs-open'));
-    fab.querySelector('svg:not(.rs-icon-close)').style.display = 'none';
+    fab.querySelector('span').style.display = 'none';
     fab.querySelector('.rs-icon-close').style.display = 'block';
     if (!initialized) {
       initialized = true;
@@ -670,7 +670,7 @@ Always present all options and encourage them to reach out — the owner is happ
     const win = document.getElementById('rs-chat-window');
     const fab = document.getElementById('rs-chat-fab');
     win.classList.remove('rs-open');
-    fab.querySelector('svg:not(.rs-icon-close)').style.display = '';
+    fab.querySelector('span').style.display = '';
     fab.querySelector('.rs-icon-close').style.display = 'none';
     setTimeout(() => { win.style.display = 'none'; }, 260);
   }
