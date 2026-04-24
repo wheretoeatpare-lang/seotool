@@ -45,13 +45,17 @@ If a user wants to contact the owner, speak to a real person, or needs direct he
 
 Always present both options and encourage them to reach out — the owner is happy to help!`;
 
+
+
+
+
+
   const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, rankings, Core Web Vitals, schema markup, and anything else to boost your Google visibility. What would you like to tackle?";
 
   const QUICK_CHIPS = [
 	"How can ranksorcery.com help me with my website?",
     "How do I improve my Core Web Vitals?",
-	"I need a website built",
-    "I want RankSorcery.com manage my SEO",	
+    "What is E-E-A-T?",	
 	"Chat to a real person?",
   ];
 
