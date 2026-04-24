@@ -56,11 +56,9 @@ Always present both options and encourage them to reach out — the owner is hap
   const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, rankings, Core Web Vitals, schema markup, and anything else to boost your Google visibility. What would you like to tackle?";
 
   const QUICK_CHIPS = [
-	"I want RankSorcery to help me with my business",
-	"I need a SEO Tools built",
-	"I need a Website Application built",
-	"I need a website built",
-	"Tell me about AI chatbots",
+	"How can ranksorcery.com help me with my website?",
+    "How do I improve my Core Web Vitals?",
+    "What is E-E-A-T?",
 	"Chat to a real person?",
   ];
 
