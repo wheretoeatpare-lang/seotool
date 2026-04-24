@@ -1246,6 +1246,9 @@ async function runBulk(kws,country) {
   hideInlineStatus();
   bulkData=kws.map(k=>analyzeKeyword(k,country)); renderBulk(bulkData);
   setButtonLoading(false, 'Check All →');
+  setTimeout(() => {
+    document.getElementById('bulk-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 
 /* ── RENDER ── */
@@ -1297,7 +1300,9 @@ function renderResults(data,related) {
   document.getElementById('related-loading').style.display='flex';
   document.getElementById('related-table').style.display='none';
   document.getElementById('related-count').textContent='';
-  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(() => {
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
 }
 
 function renderRelated(related) {
