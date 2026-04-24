@@ -56,8 +56,7 @@ Always present both options and encourage them to reach out — the owner is hap
 	"How can ranksorcery.com help me with my website?",
     "How do I improve my Core Web Vitals?",
 	"I need a website built",
-	"I need ranksorcery.com manage my SEO",
-    "What is E-E-A-T?",	
+	"I need ranksorcery.com manage my SEO",    	
 	"Chat to a real person?",
   ];
 
