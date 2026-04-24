@@ -270,12 +270,54 @@ h1 span {
   color: var(--bg); border: none; padding: 0.9rem 1.6rem;
   border-radius: 10px; font-family: 'Syne', sans-serif;
   font-size: 0.92rem; font-weight: 700; cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s; white-space: nowrap;
+  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s; white-space: nowrap;
   box-shadow: 0 4px 20px rgba(232,184,75,0.3);
+  display: inline-flex; align-items: center; gap: 8px; position: relative;
 }
 #check-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 #check-btn:active { transform: scale(0.98); }
-#check-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+#check-btn:disabled { opacity: 0.75; cursor: not-allowed; transform: none; }
+#check-btn.loading { box-shadow: 0 4px 28px rgba(232,184,75,0.55); }
+.btn-spinner {
+  width: 15px; height: 15px; border-radius: 50%;
+  border: 2px solid rgba(13,17,23,0.35); border-top-color: var(--bg);
+  animation: spin 0.7s linear infinite; display: none; flex-shrink: 0;
+}
+#check-btn.loading .btn-spinner { display: block; }
+
+/* pulse border on audit-container when loading */
+.audit-container.is-loading {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--glow), 0 8px 48px rgba(0,0,0,.35);
+  animation: borderPulse 1.4s ease-in-out infinite;
+}
+@keyframes borderPulse {
+  0%, 100% { box-shadow: 0 0 0 3px var(--glow), 0 8px 48px rgba(0,0,0,.35); }
+  50%       { box-shadow: 0 0 0 6px rgba(232,184,75,0.08), 0 8px 48px rgba(0,0,0,.35); }
+}
+
+/* inline status bar inside audit-container */
+#inline-status {
+  display: none; align-items: center; gap: 10px;
+  margin-top: 0.85rem; padding: 0.7rem 1rem;
+  background: rgba(232,184,75,0.06); border: 1px solid rgba(232,184,75,0.18);
+  border-radius: 10px; font-size: 0.83rem; color: var(--muted);
+}
+#inline-status.visible { display: flex; }
+.inline-spin {
+  width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border2); border-top-color: var(--accent);
+  animation: spin 0.7s linear infinite;
+}
+#inline-status-text { flex: 1; }
+.inline-steps { display: flex; gap: 6px; flex-wrap: wrap; }
+.inline-step {
+  font-size: 0.72rem; padding: 0.18rem 0.55rem; border-radius: 999px;
+  background: var(--bg3); border: 1px solid var(--border); color: var(--muted2);
+  transition: all 0.3s; white-space: nowrap;
+}
+.inline-step.active { background: rgba(232,184,75,0.12); border-color: rgba(232,184,75,0.35); color: var(--accent); }
+.inline-step.done   { background: rgba(52,211,153,0.1);  border-color: rgba(52,211,153,0.3);  color: var(--green); }
 
 .bulk-hint { font-size: 0.78rem; color: var(--muted2); margin-top: 0.5rem; text-align: center; }
 .bulk-hint a { color: var(--muted); cursor: pointer; text-decoration: underline; transition: color 0.2s; }
@@ -678,11 +720,26 @@ footer { border-top: 1px solid var(--border); padding: 3rem 2rem 2rem; margin-to
           <option value="SG">🇸🇬 SG</option>
           <option value="global">🌐 Global</option>
         </select>
-        <button id="check-btn" onclick="runCheck()">Check Volume →</button>
+        <button id="check-btn" onclick="runCheck()"><span class="btn-spinner"></span><span id="btn-label">Check Volume →</span></button>
       </div>
     </div>
     <p class="bulk-hint">Need multiple keywords? <a onclick="toggleBulk()">Switch to bulk mode</a></p>
     <textarea id="bulk-area" rows="6" placeholder="Enter up to 10 keywords, one per line:&#10;seo tools&#10;keyword research&#10;backlink checker&#10;…"></textarea>
+
+    <!-- Inline status — visible immediately on click -->
+    <div id="inline-status">
+      <span class="inline-spin"></span>
+      <div style="flex:1">
+        <div id="inline-status-text" style="margin-bottom:5px;font-weight:500;color:var(--text)">Analyzing keyword…</div>
+        <div class="inline-steps">
+          <span class="inline-step" id="istep1">📊 Volume</span>
+          <span class="inline-step" id="istep2">🏆 Difficulty</span>
+          <span class="inline-step" id="istep3">🎯 Intent</span>
+          <span class="inline-step" id="istep4">🔗 Related</span>
+          <span class="inline-step" id="istep5">◆ Strategy</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -936,16 +993,15 @@ let bulkMode = false, currentData = null, bulkData = [], chartInstance = null;
 function toggleBulk() {
   bulkMode = !bulkMode;
   const area = document.getElementById('bulk-area');
-  const btn  = document.getElementById('check-btn');
   const inp  = document.getElementById('kw-input');
   if (bulkMode) {
     area.style.display = 'block';
     inp.placeholder = 'Optional: single keyword to highlight';
-    btn.textContent = 'Check All →';
+    document.getElementById('btn-label').textContent = 'Check All →';
   } else {
     area.style.display = 'none';
     inp.placeholder = 'e.g. best seo tools 2025, wordpress speed optimization…';
-    btn.textContent = 'Check Volume →';
+    document.getElementById('btn-label').textContent = 'Check Volume →';
   }
 }
 
@@ -1093,6 +1149,44 @@ function getLast12Months() {
   return months;
 }
 
+/* ── INLINE STATUS HELPERS ── */
+const iSteps = ['istep1','istep2','istep3','istep4','istep5'];
+let iStepInterval = null;
+
+function showInlineStatus(kw) {
+  document.getElementById('inline-status').classList.add('visible');
+  document.getElementById('inline-status-text').textContent = 'Analyzing "' + kw + '"…';
+  iSteps.forEach(id => { document.getElementById(id).className = 'inline-step'; });
+  let i = 0;
+  if (iStepInterval) clearInterval(iStepInterval);
+  iStepInterval = setInterval(() => {
+    if (i > 0) document.getElementById(iSteps[i-1]).className = 'inline-step done';
+    if (i < iSteps.length) { document.getElementById(iSteps[i]).className = 'inline-step active'; i++; }
+    else clearInterval(iStepInterval);
+  }, 380);
+}
+
+function hideInlineStatus() {
+  if (iStepInterval) { clearInterval(iStepInterval); iStepInterval = null; }
+  document.getElementById('inline-status').classList.remove('visible');
+  iSteps.forEach(id => { document.getElementById(id).className = 'inline-step'; });
+}
+
+function setButtonLoading(on, label) {
+  const btn = document.getElementById('check-btn');
+  const lbl = document.getElementById('btn-label');
+  btn.disabled = on;
+  if (on) {
+    btn.classList.add('loading');
+    lbl.textContent = 'Analyzing…';
+    document.querySelector('.audit-container').classList.add('is-loading');
+  } else {
+    btn.classList.remove('loading');
+    lbl.textContent = label || 'Check Volume →';
+    document.querySelector('.audit-container').classList.remove('is-loading');
+  }
+}
+
 /* ── MAIN CHECK ── */
 async function runCheck() {
   try {
@@ -1100,37 +1194,58 @@ async function runCheck() {
     const country=document.getElementById('country-sel').value;
     const bulkText=document.getElementById('bulk-area').value.trim();
     hideAll(); document.getElementById('error-msg').style.display='none';
+
     if (bulkMode&&bulkText) {
       const kws=bulkText.split('\n').map(k=>k.trim()).filter(Boolean).slice(0,10);
       if (!kws.length){showError('Please enter at least one keyword.');return;}
       await runBulk(kws,country); return;
     }
     if (!kwRaw){showError('Please enter a keyword to analyze.');return;}
-    document.getElementById('check-btn').disabled=true;
+
+    // ── Immediately show feedback ──
+    setButtonLoading(true);
+    showInlineStatus(kwRaw);
+
+    // Scroll just past the hero so the user sees the loading state
     document.getElementById('loading').style.display='block';
-    animateLoader(); await delay(2000);
+    setTimeout(() => {
+      document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 80);
+
+    animateLoader();
+    await delay(2000);
+
     const data=analyzeKeyword(kwRaw,country); currentData={data,related:[]};
+    hideInlineStatus();
     renderResults(data,[]);
+
     fetchAutocomplete(kwRaw,country,function(suggestions){
       const kwList=suggestions||fallbackRelatedKeywords(kwRaw);
       const related=buildRelated(kwList,country);
       currentData.related=related; renderRelated(related);
     });
-    document.getElementById('check-btn').disabled=false;
+
+    setButtonLoading(false, bulkMode ? 'Check All →' : 'Check Volume →');
   } catch(err) {
     console.error('runCheck error:', err);
-    document.getElementById('check-btn').disabled=false;
+    hideInlineStatus();
+    setButtonLoading(false, bulkMode ? 'Check All →' : 'Check Volume →');
     document.getElementById('loading').style.display='none';
     showError('Something went wrong: ' + err.message + '. Please try again.');
   }
 }
 
 async function runBulk(kws,country) {
-  document.getElementById('check-btn').disabled=true;
+  setButtonLoading(true);
+  showInlineStatus(kws.length + ' keywords');
   document.getElementById('loading').style.display='block';
+  setTimeout(() => {
+    document.getElementById('loading').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 80);
   animateLoader(); await delay(2200);
+  hideInlineStatus();
   bulkData=kws.map(k=>analyzeKeyword(k,country)); renderBulk(bulkData);
-  document.getElementById('check-btn').disabled=false;
+  setButtonLoading(false, 'Check All →');
 }
 
 /* ── RENDER ── */
@@ -1289,7 +1404,7 @@ function capitalizeFirst(s){return s.charAt(0).toUpperCase()+s.slice(1);}
 function delay(ms){return new Promise(r=>setTimeout(r,ms));}
 function hideAll(){document.getElementById('results').style.display='none';document.getElementById('bulk-results').style.display='none';document.getElementById('loading').style.display='none';}
 function showError(msg){const el=document.getElementById('error-msg');el.textContent=msg;el.style.display='block';}
-function newSearch(){hideAll();document.getElementById('kw-input').value='';document.getElementById('kw-input').focus();window.scrollTo({top:0,behavior:'smooth'});}
+function newSearch(){hideAll();hideInlineStatus();setButtonLoading(false,'Check Volume →');document.getElementById('kw-input').value='';document.getElementById('kw-input').focus();window.scrollTo({top:0,behavior:'smooth'});}
 function quickCheck(kw){document.getElementById('kw-input').value=kw;bulkMode=false;document.getElementById('bulk-area').style.display='none';document.getElementById('check-btn').textContent='Check Volume →';window.scrollTo({top:0,behavior:'smooth'});runCheck();}
 function switchToSingle(kw){bulkMode=false;document.getElementById('bulk-area').style.display='none';document.getElementById('check-btn').textContent='Check Volume →';document.getElementById('kw-input').value=kw;runCheck();}
 
