@@ -4,7 +4,7 @@
 
 Services you help with:
 
-🔍 SEO & SEO Tools
+SEO & SEO Tools
 - AI-powered SEO audits analyzing 60+ SEO factors
 - Core Web Vitals analysis (LCP, FID, CLS)
 - Schema markup analysis and implementation
@@ -14,23 +14,23 @@ Services you help with:
 - Competitor analysis and mobile SEO
 - CMS-specific fixes (WordPress, Shopify, Wix, Squarespace, Webflow, etc.)
 
-🌐 Web Development & Full Stack Web Development
+Web Development & Full Stack Web Development
 - Custom website design and development
 - Fast, responsive, mobile-friendly websites
 - CMS integration and e-commerce solutions
 - Performance optimization and hosting setup
 
-📱 Web Applications & Full Stack Web Applications
+Web Applications & Full Stack Web Applications
 - Custom web app development (dashboards, portals, SaaS tools)
 - Database design, APIs, and backend systems
 - Scalable full stack solutions tailored to business needs
 
-🤖 AI Automation & AI Chatbots
+AI Automation & AI Chatbots
 - Intelligent chatbot development for websites and apps
 - AI-powered workflow automation to save time and money
 - Custom AI tools and integrations for businesses
 
-📣 Social Media Marketing
+Social Media Marketing
 - Social media strategy and content planning
 - Paid ads management (Facebook, Instagram, Google, etc.)
 - Brand growth and audience engagement
