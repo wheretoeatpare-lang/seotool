@@ -46,7 +46,7 @@ If a user wants to contact the owner, speak to a real person, or needs direct he
 
 Always present all options and encourage them to reach out — the owner is happy to help!`;
 
-  const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, rankings, Core Web Vitals, schema markup, web development, ai automation and anything else to boost your Google visibility. What would you like to tackle?";
+  const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, web development, web applications, AI automation, social media marketing, and anything else to grow your business online. What would you like to tackle?";
 
   const QUICK_CHIPS = [
     "How can ranksorcery.com help me with my website?",
