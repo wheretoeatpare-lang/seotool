@@ -55,6 +55,7 @@ Always present both options and encourage them to reach out — the owner is hap
   const QUICK_CHIPS = [
 	"How can ranksorcery.com help me with my website?",
     "How do I improve my Core Web Vitals?",
+	"I need a website build",
     "What is E-E-A-T?",	
 	"Chat to a real person?",
   ];
