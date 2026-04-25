@@ -292,6 +292,64 @@ nav {
 }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .nav-links a.active { color: var(--accent); }
+
+/* ── NAV DROPDOWN ── */
+.nav-dropdown {
+  position: relative;
+}
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px;
+  cursor: pointer; white-space: nowrap; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-dropdown-toggle:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron {
+  width: 12px; height: 12px; flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+
+.nav-dropdown-menu {
+  display: none;
+  position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 230px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 0.6rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+  z-index: 300;
+  animation: dropIn 0.18s ease;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-dropdown-menu.open { display: block; }
+
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  text-decoration: none; color: var(--text);
+  transition: background 0.15s, color 0.15s;
+  font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider {
+  height: 1px; background: var(--border); margin: 0.4rem 0.5rem;
+}
 .nav-cta {
   background: var(--accent) !important;
   color: var(--bg) !important;
@@ -1614,6 +1672,45 @@ footer .logo-f {
   font-weight: 700 !important;
 }
 
+/* Mobile accordion group */
+.nav-mobile-group-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--muted); font-size: 0.95rem; font-weight: 600;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border);
+  cursor: pointer; user-select: none;
+  transition: color 0.2s; background: none; border-top: none;
+  border-left: none; border-right: none;
+  font-family: 'DM Sans', sans-serif; width: 100%; text-align: left;
+}
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron {
+  width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0;
+}
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+
+.nav-mobile-submenu {
+  display: none; flex-direction: column;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 10px 10px;
+  padding: 0.3rem 0;
+}
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a {
+  border-bottom: none !important;
+  padding: 0.7rem 1.25rem !important;
+  font-size: 0.88rem !important;
+  gap: 0.65rem !important;
+}
+.nav-mobile-submenu a:last-child { border-bottom: none !important; }
+.nav-mobile-sub-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; flex-shrink: 0;
+}
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
 @media (max-width: 900px) {
   nav { padding: 0.85rem 1.25rem; }
   .nav-links { display: none; }
@@ -1808,13 +1905,56 @@ footer .logo-f {
     RankSorcery
   </a>
   <div class="nav-links">
-    <a href="/competitor.html">Competitor Analysis</a>
-    <a href="/keyword-volume.html">Keyword Research</a>
-    <a href="/ai-search.html">AI Search</a>
-    <a href="/document-checker.html">Doc Checker</a>
+    <!-- SEO Tools dropdown -->
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+          <div class="nav-dropdown-item-body">
+            <div class="nav-dropdown-item-name">SEO Auditor</div>
+            <div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div>
+          </div>
+        </a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+          <div class="nav-dropdown-item-body">
+            <div class="nav-dropdown-item-name">Keyword Research</div>
+            <div class="nav-dropdown-item-desc">Volume, difficulty & trends</div>
+          </div>
+        </a>
+        <a href="/competitor.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+          <div class="nav-dropdown-item-body">
+            <div class="nav-dropdown-item-name">Competitor Analysis</div>
+            <div class="nav-dropdown-item-desc">Side-by-side gap report</div>
+          </div>
+        </a>
+        <a href="/ai-search.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+          <div class="nav-dropdown-item-body">
+            <div class="nav-dropdown-item-name">AI Search Visibility</div>
+            <div class="nav-dropdown-item-desc">Track AI overview presence</div>
+          </div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/document-checker.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+          <div class="nav-dropdown-item-body">
+            <div class="nav-dropdown-item-name">Doc Checker</div>
+            <div class="nav-dropdown-item-desc">SEO-check any document</div>
+          </div>
+        </a>
+      </div>
+    </div>
     <a href="ai-writer-tools.html">AI Writer Tools</a>
-	<a href="image-converter.html">Image Tool</a>	
-	<a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+    <a href="image-converter.html">Image Tool</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
   </div>
   <a href="#" class="nav-cta" onclick="scrollToAudit(); return false;">Free Audit →</a>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
@@ -1830,12 +1970,40 @@ footer .logo-f {
   <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
 </div>
 <div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
-  <a href="/" onclick="closeMobileNav()">🔍 SEO Auditor</a>
-  <a href="/competitor.html" onclick="closeMobileNav()">⚔️ Competitor Analysis</a>
-  <a href="/keyword-volume.html" onclick="closeMobileNav()">📊 Keyword Research</a>
-  <a href="/ai-search.html" onclick="closeMobileNav()">🤖 AI Search Visibility</a>
-  <a href="/document-checker.html" onclick="closeMobileNav()">📄 Doc Checker</a>
-  <a href="#features" onclick="closeMobileNav()">✨ Features</a>
+
+  <!-- SEO Tools accordion -->
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">
+    🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()">
+      <div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+      <div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div>
+    </a>
+    <a href="/keyword-volume.html" onclick="closeMobileNav()">
+      <div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+      <div><div>Keyword Research</div><div class="nav-mobile-sub-desc">Volume, difficulty & trends</div></div>
+    </a>
+    <a href="/competitor.html" onclick="closeMobileNav()">
+      <div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+      <div><div>Competitor Analysis</div><div class="nav-mobile-sub-desc">Side-by-side gap report</div></div>
+    </a>
+    <a href="/ai-search.html" onclick="closeMobileNav()">
+      <div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+      <div><div>AI Search Visibility</div><div class="nav-mobile-sub-desc">Track AI overview presence</div></div>
+    </a>
+    <a href="/document-checker.html" onclick="closeMobileNav()">
+      <div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+      <div><div>Doc Checker</div><div class="nav-mobile-sub-desc">SEO-check any document</div></div>
+    </a>
+  </div>
+
+  <a href="ai-writer-tools.html" onclick="closeMobileNav()">✍️ AI Writer Tools</a>
+  <a href="image-converter.html" onclick="closeMobileNav()">🖼 Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
   <a href="#" class="nav-mobile-cta" onclick="scrollToAudit(); closeMobileNav(); return false;">Run Free Audit →</a>
 </div>
 
@@ -2736,6 +2904,28 @@ function showToast(msg, color = 'var(--green)') {
 function scrollToAudit() {
   document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+// ── NAV DROPDOWN ──
+function toggleNavDropdown(id) {
+  const wrapper = document.getElementById(id);
+  const menu = wrapper.querySelector('.nav-dropdown-menu');
+  const toggle = wrapper.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  // Close all dropdowns first
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  if (!isOpen) {
+    menu.classList.add('open');
+    toggle.classList.add('open');
+  }
+}
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  }
+});
 
 function filterTools(cat, btn) {
   document.querySelectorAll('.tools-tab').forEach(t => t.classList.remove('active'));
@@ -4124,6 +4314,16 @@ function closeMobileNav() {
   document.getElementById('nav-hamburger').classList.remove('open');
   document.getElementById('nav-mobile-menu').classList.remove('open');
   document.body.style.overflow = '';
+  // also close any open mobile groups
+  document.querySelectorAll('.nav-mobile-submenu').forEach(s => s.classList.remove('open'));
+  document.querySelectorAll('.nav-mobile-group-toggle').forEach(t => t.classList.remove('open'));
+}
+function toggleMobileGroup(id) {
+  const toggle = document.getElementById(id + '-toggle');
+  const submenu = document.getElementById(id + '-submenu');
+  const isOpen = submenu.classList.contains('open');
+  submenu.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
 }
 document.addEventListener('click', (e) => {
   const menu = document.getElementById('nav-mobile-menu');
