@@ -322,6 +322,9 @@ select option { background: var(--bg2); }
 .model-name { font-size: 0.82rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 .model-desc { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
 .model-badge { font-size: 0.6rem; padding: 0.1rem 0.35rem; border-radius: 4px; background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); flex-shrink: 0; }
+.pro-badge { font-size: 0.6rem; padding: 0.1rem 0.35rem; border-radius: 4px; background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); flex-shrink: 0; }
+.model-card.pro-locked { opacity: 0.45; cursor: not-allowed; }
+.model-card.pro-locked:hover { border-color: var(--border); background: var(--bg3); }
 
 /* ── ERROR BOX ── */
 .error-box { display: none; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.85rem 1rem; color: var(--red); font-size: 0.85rem; margin-bottom: 0.8rem; line-height: 1.5; }
@@ -626,27 +629,27 @@ footer a:hover { color: var(--accent); }
           <div class="model-desc">DeepSeek · High speed</div>
         </div>
       </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="gpt-4o">
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="gpt-4o" disabled>
         <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
         <div class="model-info">
-          <div class="model-name">GPT-4o</div>
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
           <div class="model-desc">OpenAI · Great quality</div>
         </div>
       </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="claude-sonnet-4-5">
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
         <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
         <div class="model-info">
-          <div class="model-name">Claude Sonnet</div>
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
           <div class="model-desc">Anthropic · Creative</div>
         </div>
       </label>
-      <label class="model-card">
-        <input type="radio" name="model" value="mistral-large-latest">
+      <label class="model-card pro-locked" title="Available for Pro users only">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
         <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
         <div class="model-info">
-          <div class="model-name">Mistral Large</div>
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
           <div class="model-desc">Mistral AI · Efficient</div>
         </div>
       </label>
@@ -797,7 +800,8 @@ document.querySelectorAll('.pagetype-btn').forEach(b => {
 
 // ── Model card selection ───────────────────────────────────────
 document.querySelectorAll('.model-card').forEach(card => {
-  card.addEventListener('click', () => {
+  card.addEventListener('click', (e) => {
+    if (card.classList.contains('pro-locked')) { e.preventDefault(); return; }
     document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
     card.classList.add('selected');
     card.querySelector('input[type=radio]').checked = true;
