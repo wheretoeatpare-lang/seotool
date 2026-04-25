@@ -1118,6 +1118,140 @@ h1 span {
 }
 .signal-item::before { content: '✓'; color: var(--green); font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
 
+/* ── HOMEPAGE TOOLS HUB ── */
+.homepage-tools {
+  max-width: 1160px; margin: 0 auto 5rem; padding: 0 2rem;
+  position: relative; z-index: 1;
+}
+.homepage-tools-header {
+  text-align: center; margin-bottom: 2.5rem;
+}
+.homepage-tools-header .section-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--teal); font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+.homepage-tools-header .section-eyebrow::before,
+.homepage-tools-header .section-eyebrow::after {
+  content: ''; width: 40px; height: 1px; background: rgba(10,191,188,0.3);
+}
+.homepage-tools-header h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800; letter-spacing: -0.025em;
+  line-height: 1.15; margin-bottom: 0.85rem;
+}
+.homepage-tools-header h2 span {
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.homepage-tools-header p {
+  color: var(--muted); font-size: 0.95rem; max-width: 520px;
+  margin: 0 auto; line-height: 1.75;
+}
+
+/* Category filter tabs */
+.tools-filter-tabs {
+  display: flex; gap: 0.45rem; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 2.25rem;
+}
+.tools-tab {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.38rem 1rem;
+  font-size: 0.78rem; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; user-select: none; font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+}
+.tools-tab:hover { color: var(--text); border-color: var(--border2); }
+.tools-tab.active {
+  background: rgba(232,184,75,0.1); border-color: rgba(232,184,75,0.45);
+  color: var(--accent); font-weight: 600;
+}
+
+/* Category group */
+.tools-category-group { margin-bottom: 2.5rem; }
+.tools-category-label {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700;
+  color: var(--text); margin-bottom: 1.1rem;
+}
+.tools-category-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem; flex-shrink: 0;
+}
+.tools-category-count {
+  margin-left: auto; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.15rem 0.65rem;
+  font-size: 0.7rem; font-weight: 700; color: var(--muted);
+}
+.tools-category-divider {
+  flex: 1; height: 1px; background: var(--border);
+}
+
+/* Tool cards grid */
+.tools-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+.tool-card {
+  display: flex; align-items: center; gap: 0.9rem;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.1rem 1.2rem;
+  text-decoration: none; color: var(--text);
+  transition: border-color 0.2s, transform 0.2s, background 0.2s, box-shadow 0.2s;
+  position: relative; overflow: hidden;
+}
+.tool-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  opacity: 0; transition: opacity 0.2s;
+}
+.tool-card:hover {
+  border-color: rgba(232,184,75,0.35);
+  background: var(--bg3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+}
+.tool-card:hover::before { opacity: 1; }
+.tool-card-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.tool-card-body { flex: 1; min-width: 0; }
+.tool-card-name {
+  font-family: 'Syne', sans-serif; font-size: 0.83rem;
+  font-weight: 700; margin-bottom: 0.2rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tool-card-tag {
+  font-size: 0.68rem; color: var(--muted); font-weight: 500;
+}
+.tool-card-new {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(10,191,188,0.15); border: 1px solid rgba(10,191,188,0.35);
+  color: var(--teal); font-size: 0.6rem; font-weight: 700;
+  padding: 0.1rem 0.45rem; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tool-card-arrow {
+  color: var(--muted2); font-size: 0.9rem; flex-shrink: 0;
+  transition: color 0.2s, transform 0.2s; margin-left: auto;
+}
+.tool-card:hover .tool-card-arrow { color: var(--accent); transform: translateX(3px); }
+
+@media (max-width: 640px) {
+  .tools-cards-grid { grid-template-columns: 1fr 1fr; }
+  .tool-card-name { font-size: 0.78rem; }
+}
+@media (max-width: 400px) {
+  .tools-cards-grid { grid-template-columns: 1fr; }
+}
+
 /* ── FEATURES SECTION ── */
 .features { max-width: 1100px; margin: 5rem auto; padding: 0 2rem; position: relative; z-index: 1; }
 .section-label {
@@ -1710,10 +1844,10 @@ footer .logo-f {
 <section class="hero" id="hero">
   <div class="hero-badge">
     <span class="dot"></span>
-    🆓 Free SEO Audit Tool · 60+ SEO Factors · No Login Required
+    🆓 Free SEO &amp; AI Tools · 25+ Tools · No Login Required
   </div>
-  <h1>Free AI-Powered <br>SEO Audit Tool — <br>Rank #1 on <span>Google</span></h1>
-  <h2>Instantly run a free website SEO audit in 30 seconds. <br>Get AI-powered, CMS-specific fixes for Core Web Vitals, E-E-A-T signals, schema markup &amp; 60+ Google ranking factors — no account needed.</h2>
+  <h1>Free AI &amp; SEO Tools — <br>Rank Higher, <span>Create Faster</span></h1>
+  <h2>Your all-in-one toolkit: free SEO audits, AI writing tools, keyword research, competitor analysis &amp; more — all AI-powered, no account needed.</h2>
 
   <div class="audit-container" id="audit-box">
     <div class="url-row">
@@ -1738,6 +1872,302 @@ footer .logo-f {
     <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Audit Categories</div></div>
     <div class="stat-item"><div class="stat-num">CMS</div><div class="stat-label">Aware Fixes</div></div>
     <div class="stat-item"><div class="stat-num">AI</div><div class="stat-label">Powered</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOMEPAGE TOOLS HUB
+     ═══════════════════════════════════════════════════════════ -->
+<section class="homepage-tools" id="tools-hub-section">
+  <div class="homepage-tools-header">
+    <div class="section-eyebrow">
+      <span></span> All Tools <span></span>
+    </div>
+    <h2>Your Full <span>AI & SEO Toolkit</span></h2>
+    <p>Everything you need to grow organic traffic, outrank competitors, and create content that converts — all free, all in one place.</p>
+  </div>
+
+  <!-- Category filter tabs -->
+  <div class="tools-filter-tabs" id="tools-filter-tabs">
+    <button class="tools-tab active" onclick="filterTools('all', this)">All Tools</button>
+    <button class="tools-tab" onclick="filterTools('seo', this)">🔍 SEO</button>
+    <button class="tools-tab" onclick="filterTools('ai-writing', this)">✍️ AI Writing</button>
+    <button class="tools-tab" onclick="filterTools('analysis', this)">📊 Analysis</button>
+    <button class="tools-tab" onclick="filterTools('media', this)">🖼 Media</button>
+  </div>
+
+  <!-- SEO Tools Group -->
+  <div class="tools-category-group" data-cat="seo">
+    <div class="tools-category-label">
+      <div class="tools-category-icon" style="background:rgba(232,184,75,0.12);">🔍</div>
+      SEO Tools
+      <div class="tools-category-divider"></div>
+      <div class="tools-category-count">6 tools</div>
+    </div>
+    <div class="tools-cards-grid">
+      <a href="/" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">SEO Auditor</div>
+          <div class="tool-card-tag">60+ factors · AI-powered</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/competitor.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Competitor Analysis</div>
+          <div class="tool-card-tag">Side-by-side gap report</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/keyword-volume.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Keyword Research</div>
+          <div class="tool-card-tag">Volume · difficulty · trends</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-search.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Search Visibility</div>
+          <div class="tool-card-tag">Track AI overview presence</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/document-checker.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Doc Checker</div>
+          <div class="tool-card-tag">SEO-check any document</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/broken-link-checker.html" class="tool-card" style="display:none" id="blc-card">
+        <div class="tool-card-icon" style="background:rgba(248,113,113,0.1);">🔗</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Broken Link Checker</div>
+          <div class="tool-card-tag">Find &amp; fix 404s instantly</div>
+        </div>
+        <span class="tool-card-new">New</span>
+        <div class="tool-card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- AI Writing Tools Group -->
+  <div class="tools-category-group" data-cat="ai-writing">
+    <div class="tools-category-label">
+      <div class="tools-category-icon" style="background:rgba(10,191,188,0.12);">✍️</div>
+      AI Writing Tools
+      <div class="tools-category-divider"></div>
+      <div class="tools-category-count">18 tools</div>
+    </div>
+    <div class="tools-cards-grid">
+      <a href="/ai-writer-tools.html#blog-writer" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.1);">📰</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Blog Writer</div>
+          <div class="tool-card-tag">Long-form SEO articles</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#ai-writer" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">✏️</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Writer</div>
+          <div class="tool-card-tag">Write anything, instantly</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#content-gen" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(52,211,153,0.1);">⚡</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Content Generator</div>
+          <div class="tool-card-tag">Bulk content in seconds</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#paragraph-gen" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.1);">🔢</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Paragraph Generator</div>
+          <div class="tool-card-tag">Expand ideas fast</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#paragraph-exp" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(96,165,250,0.1);">📝</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Paragraph Expander</div>
+          <div class="tool-card-tag">Flesh out thin content</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#article-writer" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">📋</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Article Writer</div>
+          <div class="tool-card-tag">Full articles on demand</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#social-post" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(244,114,182,0.1);">📱</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Social Media Post Gen</div>
+          <div class="tool-card-tag">All platforms covered</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#instagram" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(244,114,182,0.1);">📸</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Instagram Caption</div>
+          <div class="tool-card-tag">Engaging captions + hashtags</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#twitter-bio" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(96,165,250,0.1);">🐦</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Twitter Bio Generator</div>
+          <div class="tool-card-tag">Stand out in 160 chars</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#text-gen" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(52,211,153,0.1);">🤖</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Text Generator</div>
+          <div class="tool-card-tag">Any text, any format</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#outline" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(251,191,36,0.1);">📌</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Blog Outline Generator</div>
+          <div class="tool-card-tag">Structure posts perfectly</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#intro" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.1);">🚀</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Blog Intro Generator</div>
+          <div class="tool-card-tag">Hook readers from line one</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#copywriter" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(248,113,113,0.1);">💼</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Copy-Writer</div>
+          <div class="tool-card-tag">Conversion-focused copy</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#faq" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">❓</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">FAQ Generator</div>
+          <div class="tool-card-tag">Rank for People Also Ask</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#intro-para" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(52,211,153,0.1);">🎯</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Introduction Paragraph</div>
+          <div class="tool-card-tag">Strong openers every time</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#news" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(96,165,250,0.1);">📡</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">News Article Generator</div>
+          <div class="tool-card-tag">Journalistic AI writing</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html#newsletter" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">💌</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Newsletter Writer</div>
+          <div class="tool-card-tag">Emails your list will open</div>
+        </div>
+        <span class="tool-card-new">New</span>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-writer-tools.html" class="tool-card" style="border-style:dashed;background:transparent;">
+        <div class="tool-card-icon" style="background:rgba(232,184,75,0.06);">➕</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name" style="color:var(--muted);">View All Writing Tools</div>
+          <div class="tool-card-tag">18 tools total</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Analysis / Research Group -->
+  <div class="tools-category-group" data-cat="analysis">
+    <div class="tools-category-label">
+      <div class="tools-category-icon" style="background:rgba(96,165,250,0.12);">📊</div>
+      Analysis &amp; Research
+      <div class="tools-category-divider"></div>
+      <div class="tools-category-count">3 tools</div>
+    </div>
+    <div class="tools-cards-grid">
+      <a href="/competitor.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Competitor Analysis</div>
+          <div class="tool-card-tag">Gap analysis vs rivals</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/keyword-volume.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Keyword Research</div>
+          <div class="tool-card-tag">Search volume &amp; difficulty</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+      <a href="/ai-search.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">AI Search Visibility</div>
+          <div class="tool-card-tag">GEO for AI overviews</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Media / Other Group -->
+  <div class="tools-category-group" data-cat="media">
+    <div class="tools-category-label">
+      <div class="tools-category-icon" style="background:rgba(52,211,153,0.12);">🖼</div>
+      Media &amp; Other
+      <div class="tools-category-divider"></div>
+      <div class="tools-category-count">1 tool</div>
+    </div>
+    <div class="tools-cards-grid">
+      <a href="/image-converter.html" class="tool-card">
+        <div class="tool-card-icon" style="background:rgba(52,211,153,0.1);">🖼</div>
+        <div class="tool-card-body">
+          <div class="tool-card-name">Image Tool</div>
+          <div class="tool-card-tag">Convert &amp; optimize images</div>
+        </div>
+        <div class="tool-card-arrow">→</div>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -2307,6 +2737,13 @@ function scrollToAudit() {
   document.getElementById('audit-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+function filterTools(cat, btn) {
+  document.querySelectorAll('.tools-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tools-category-group').forEach(group => {
+    group.style.display = (cat === 'all' || group.dataset.cat === cat) ? '' : 'none';
+  });
+}
 function toggleChip(el) { el.classList.toggle('active'); }
 
 function switchTab(name) {
