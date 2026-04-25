@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Media Post Generator — Free AI Tool | RankSorcery</title>
+<meta name="description" content="Generate scroll-stopping social media posts for Instagram, LinkedIn, Twitter, TikTok and more. Free AI-powered — no login required.">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --teal-dim:#065F5E;
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --red2:   rgba(248,113,113,0.12);
+  --amber:  #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
+  --blue:   #60a5fa;
+  --blue2:  rgba(96,165,250,0.12);
+  --pink:   #f472b6;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border); gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+
+/* dropdown */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px;
+  cursor: pointer; white-space: nowrap; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  display: none; position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 230px; background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300;
+  animation: dropIn 0.18s ease;
+}
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  text-decoration: none; color: var(--text); transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.02em; transition: background 0.2s, transform 0.15s !important;
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; color: var(--bg) !important; }
+
+/* hamburger */
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px; background: none; border: none;
+  cursor: pointer; padding: 4px; flex-shrink: 0;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--muted); border-radius: 2px; transition: all 0.25s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* mobile menu */
+.nav-mobile-menu {
+  display: none; flex-direction: column;
+  position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+  background: var(--bg2); border-top: 1px solid var(--border);
+  z-index: 199; overflow-y: auto; padding: 0.75rem 0;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.9rem 1.5rem; color: var(--text); text-decoration: none;
+  font-size: 0.92rem; font-weight: 500; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.nav-mobile-menu a:hover { background: rgba(232,184,75,0.06); }
+.nav-mobile-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-weight: 700 !important; font-family: 'Syne', sans-serif;
+  justify-content: center; border-bottom: none !important;
+  margin: 0.75rem 1.5rem; border-radius: 10px; padding: 0.9rem 1.5rem !important;
+}
+.nav-mobile-group-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.5rem; color: var(--muted); background: none; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.92rem; font-weight: 500;
+  border-bottom: 1px solid var(--border); cursor: pointer; width: 100%;
+}
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; }
+.nav-mobile-submenu { display: none; background: var(--bg3); }
+.nav-mobile-submenu.open { display: block; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) { nav { padding: 0.85rem 1.25rem; } .nav-links { display: none; } nav > .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .nav-mobile-menu:not(.open) { display: none; } }
+@media (min-width: 901px) { .nav-mobile-menu { display: none !important; } .nav-hamburger { display: none !important; } }
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: linear-gradient(90deg, rgba(10,191,188,.07), rgba(232,184,75,.07));
+  border-bottom: 1px solid var(--border);
+  padding: 10px 5vw; display: flex; gap: 32px;
+  justify-content: center; align-items: center; flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero {
+  padding: 4.5rem 2rem 3.5rem; text-align: center;
+  position: relative; overflow: hidden; z-index: 1;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(232,184,75,0.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: ''; position: absolute; width: 500px; height: 400px;
+  background: radial-gradient(circle, rgba(10,191,188,.06) 0%, transparent 70%);
+  bottom: -60px; right: 5%; pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3);
+  color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; margin-bottom: 1.5rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(1.4);} }
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; line-height: 1.08;
+  letter-spacing: -0.035em; margin-bottom: 1rem;
+}
+.hero h1 span {
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p { color: var(--muted); font-size: 1rem; max-width: 540px; margin: 0 auto 2rem; line-height: 1.75; }
+.hero-pills { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; }
+.hero-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.28rem 0.85rem;
+  font-size: 0.75rem; color: var(--muted); font-weight: 500;
+}
+
+/* ── MAIN WRAPPER ── */
+.main-wrap { max-width: 880px; margin: 0 auto; padding: 2rem 1.5rem 6rem; position: relative; z-index: 1; }
+
+/* ── SECTION HEADING ── */
+.section-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 0.85rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: var(--border2); }
+
+/* ── PLATFORM GRID ── */
+.platform-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.6rem; }
+.platform-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.5rem; padding: 0.9rem 0.5rem;
+  background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  font-size: 0.76rem; font-weight: 600; color: var(--muted);
+  transition: all 0.2s; text-align: center;
+}
+.platform-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(232,184,75,0.06); }
+.platform-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,184,75,0.09); box-shadow: 0 0 0 1px var(--accent); }
+.platform-icon { font-size: 1.3rem; line-height: 1; }
+
+/* ── FORM ── */
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+.field-label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--muted); margin-bottom: 0.45rem; letter-spacing: 0.02em;
+}
+.field-label .req { color: var(--accent); }
+textarea, input[type="text"], select {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.75rem 1rem;
+  border-radius: 10px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  resize: vertical; appearance: none; -webkit-appearance: none;
+}
+textarea:focus, input[type="text"]:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+textarea::placeholder, input::placeholder { color: var(--muted2); }
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A93A8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 34px; cursor: pointer;
+}
+select option { background: var(--bg2); }
+.char-count { text-align: right; font-size: 0.7rem; color: var(--muted2); margin-top: 0.3rem; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.85rem; }
+
+/* ── ADVANCED TOGGLE ── */
+.adv-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.8rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif;
+  padding: 0.85rem 0 0.2rem; transition: color 0.2s;
+}
+.adv-toggle:hover { color: var(--text); }
+.adv-arrow { transition: transform 0.2s; display: inline-block; }
+.adv-toggle.open .adv-arrow { transform: rotate(180deg); }
+.adv-body { display: none; border-top: 1px solid var(--border); margin-top: 0.85rem; padding-top: 1rem; }
+.adv-body.open { display: block; }
+
+/* ── MODEL GRID ── */
+.model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 0.6rem; }
+.model-btn {
+  display: flex; flex-direction: column; gap: 0.25rem;
+  padding: 0.85rem 1rem; background: var(--bg3); border: 1.5px solid var(--border);
+  border-radius: 10px; cursor: pointer; text-align: left;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.model-btn:hover { border-color: var(--border2); background: var(--bg4); }
+.model-btn.active { border-color: var(--accent); background: rgba(232,184,75,0.07); box-shadow: 0 0 0 1px var(--accent); }
+.model-btn.locked { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+.model-name { font-size: 0.82rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; line-height: 1.3; }
+.model-meta { font-size: 0.7rem; color: var(--muted); }
+.badge-new {
+  font-size: 0.6rem; background: rgba(52,211,153,0.15); color: var(--green);
+  border: 1px solid rgba(52,211,153,0.3); border-radius: 4px; padding: 1px 5px; font-weight: 700;
+}
+.badge-pro {
+  font-size: 0.6rem; background: var(--amber2); color: var(--amber);
+  border: 1px solid rgba(251,191,36,0.3); border-radius: 4px; padding: 1px 5px; font-weight: 700;
+}
+
+/* ── GENERATE BTN ── */
+.generate-btn {
+  width: 100%; padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  color: var(--bg); border: none; border-radius: var(--radius);
+  font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: opacity 0.2s, transform 0.1s; letter-spacing: 0.02em; margin-top: 0.5rem;
+  box-shadow: 0 4px 20px rgba(232,184,75,0.3);
+}
+.generate-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.generate-btn:active { transform: scale(0.98); }
+.generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(13,17,23,0.3); border-top-color: var(--bg); border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+/* ── LOADING ── */
+.loading-wrap { display: none; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem 2rem; margin-top: 1rem; text-align: center; }
+.loading-wrap.visible { display: block; }
+.spinner-wrap { position: relative; width: 60px; height: 60px; margin: 0 auto 1.5rem; }
+.spinner-ring { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--border2); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+.spinner-inner { position: absolute; inset: 10px; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--teal); animation: spin 1.3s linear infinite reverse; }
+.loading-steps { list-style: none; text-align: left; display: inline-block; min-width: 260px; }
+.loading-steps li { display: flex; align-items: center; gap: 0.75rem; color: var(--muted); font-size: 0.86rem; padding: 0.3rem 0; transition: color 0.4s; }
+.loading-steps li.done { color: var(--green); }
+.loading-steps li.active { color: var(--text); }
+.step-icon { width: 18px; text-align: center; }
+
+/* ── OUTPUT ── */
+.output-wrap { display: none; margin-top: 1rem; }
+.output-wrap.visible { display: block; }
+
+.output-card { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 0.75rem;
+  background: var(--bg3);
+}
+.output-title { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.out-green-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 6px rgba(52,211,153,0.6); }
+.output-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.action-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 0.38rem 0.85rem; background: var(--bg4); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--muted2); font-size: 0.76rem; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
+}
+.action-btn:hover { color: var(--text); border-color: var(--accent); }
+
+/* tabs */
+.post-tab-bar {
+  display: flex; background: var(--bg3); border-bottom: 1px solid var(--border);
+  overflow-x: auto; scrollbar-width: none; padding: 0 0.75rem;
+}
+.post-tab-bar::-webkit-scrollbar { display: none; }
+.post-tab {
+  flex-shrink: 0; padding: 0.65rem 1.1rem; font-size: 0.8rem; font-weight: 600;
+  color: var(--muted); cursor: pointer; border: none; background: none;
+  font-family: 'DM Sans', sans-serif; border-bottom: 2px solid transparent;
+  white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+}
+.post-tab:hover { color: var(--text); }
+.post-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.post-panel { display: none; padding: 1.5rem; }
+.post-panel.active { display: block; }
+.post-text { font-size: 0.9rem; line-height: 1.85; color: var(--text); white-space: pre-wrap; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 2rem; text-align: center;
+  font-size: 0.78rem; color: var(--muted); position: relative; z-index: 1;
+}
+footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--accent); }
+.footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--accent); }
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .platform-grid { grid-template-columns: repeat(4, 1fr); }
+  .main-wrap { padding: 1.5rem 1rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleDd('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+          <div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div>
+        </a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+          <div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div>
+        </a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+          <div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div>
+        </a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+          <div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+          <div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div>
+        </a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/ai-writer-tools.html" class="active">AI Writer Tools</a>
+    <a href="https://ranksorcery.com/image-converter.html">Image Tool</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-seo')">
+    🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="https://ranksorcery.com/"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div></a>
+    <a href="https://ranksorcery.com/keyword-volume.html"><div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div>Keyword Research</div><div class="nav-mobile-sub-desc">Volume, difficulty &amp; trends</div></div></a>
+    <a href="https://ranksorcery.com/competitor.html"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div>Competitor Analysis</div></div></a>
+    <a href="https://ranksorcery.com/ai-search.html"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div>AI Search Visibility</div></div></a>
+  </div>
+  <a href="https://ranksorcery.com/ai-writer-tools.html">✍️ AI Writer Tools</a>
+  <a href="https://ranksorcery.com/image-converter.html">🖼 Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">60+</span>&nbsp; free AI writing tools</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>✦ Powered by Real AI Models · Free · Streaming</div>
+  <h1>Social Media<br><span>Post Generator</span></h1>
+  <p>Create scroll-stopping posts for any platform in seconds. Pick your platform, tone &amp; goal — let AI craft the perfect caption.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">📱 All Platforms</span>
+    <span class="hero-pill">#️⃣ Auto Hashtags</span>
+    <span class="hero-pill">🎨 Tone of Voice</span>
+    <span class="hero-pill">✍️ Multiple Variants</span>
+    <span class="hero-pill">📤 Export TXT / HTML</span>
+    <span class="hero-pill">🆓 No Login Needed</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main-wrap">
+
+  <!-- PLATFORM -->
+  <div class="card">
+    <div class="section-label">Select Platform</div>
+    <div class="platform-grid" id="platformGrid">
+      <button class="platform-btn active" data-p="Instagram"><span class="platform-icon">📸</span>Instagram</button>
+      <button class="platform-btn" data-p="Twitter / X"><span class="platform-icon">𝕏</span>Twitter / X</button>
+      <button class="platform-btn" data-p="Facebook"><span class="platform-icon">📘</span>Facebook</button>
+      <button class="platform-btn" data-p="LinkedIn"><span class="platform-icon">💼</span>LinkedIn</button>
+      <button class="platform-btn" data-p="TikTok"><span class="platform-icon">🎵</span>TikTok</button>
+      <button class="platform-btn" data-p="YouTube"><span class="platform-icon">▶️</span>YouTube</button>
+      <button class="platform-btn" data-p="Pinterest"><span class="platform-icon">📌</span>Pinterest</button>
+      <button class="platform-btn" data-p="Threads"><span class="platform-icon">🧵</span>Threads</button>
+    </div>
+  </div>
+
+  <!-- TOPIC + OPTIONS -->
+  <div class="card">
+    <div class="field">
+      <label class="field-label">Topic / Product / Idea <span class="req">*</span></label>
+      <textarea id="topicInput" rows="3" maxlength="500" placeholder="e.g. New coffee blend launch for our café, 20% off this weekend…"></textarea>
+      <div class="char-count"><span id="cc">0</span> / 500</div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label class="field-label">Goal</label>
+        <select id="goalSelect">
+          <option value="">None (AI decides)</option>
+          <option>Drive sales / conversions</option>
+          <option>Boost engagement</option>
+          <option>Build brand awareness</option>
+          <option>Announce a launch</option>
+          <option>Share a tip or insight</option>
+          <option>Promote an event</option>
+          <option>Tell a story</option>
+          <option>Drive website traffic</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Tone of Voice</label>
+        <select id="toneSelect">
+          <option value="">None (AI decides)</option>
+          <option>Friendly</option><option>Professional</option><option>Casual</option>
+          <option>Humorous</option><option>Inspirational</option><option>Persuasive</option>
+          <option>Authoritative</option><option>Empathetic</option><option>Bold</option>
+          <option>Witty</option><option>Motivational</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="adv-toggle" id="advToggle">⚙️ Advanced Options <span class="adv-arrow">▼</span></button>
+    <div class="adv-body" id="advBody">
+      <div class="grid-3" style="margin-bottom:0.85rem;">
+        <div class="field">
+          <label class="field-label">Variants</label>
+          <select id="varSel"><option value="1">1 post</option><option value="2">2 variants</option><option value="3" selected>3 variants</option></select>
+        </div>
+        <div class="field">
+          <label class="field-label">Include Hashtags</label>
+          <select id="hashSel"><option value="yes" selected>Yes</option><option value="no">No</option></select>
+        </div>
+        <div class="field">
+          <label class="field-label">Include Emojis</label>
+          <select id="emojiSel"><option value="yes" selected>Yes</option><option value="no">No</option></select>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-bottom:0.85rem;">
+        <div class="field">
+          <label class="field-label">Target Audience (optional)</label>
+          <input type="text" id="audInp" placeholder="e.g. small business owners, fitness lovers" />
+        </div>
+        <div class="field">
+          <label class="field-label">Brand / Business Name (optional)</label>
+          <input type="text" id="brandInp" placeholder="e.g. BrewHouse Café" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Additional Notes (optional)</label>
+        <textarea id="extraInp" rows="2" placeholder="e.g. Include a CTA to DM us, mention promo code SAVE20…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODEL -->
+  <div class="card">
+    <div class="section-label">Choose AI Model</div>
+    <div class="model-grid">
+      <button class="model-btn active" data-m="google/gemini-2.0-flash-exp:free">
+        <span class="model-name">✦ Gemini Flash <span style="color:var(--teal);font-size:0.65rem;font-weight:500;">Fast</span></span>
+        <span class="model-meta">Google · High capability</span>
+      </button>
+      <button class="model-btn" data-m="meta-llama/llama-4-scout:free">
+        <span class="model-name">🦙 Llama 4 <span class="badge-new">NEW</span></span>
+        <span class="model-meta">Meta · Open source</span>
+      </button>
+      <button class="model-btn" data-m="deepseek/deepseek-chat:free">
+        <span class="model-name">🔍 DeepSeek V3</span>
+        <span class="model-meta">DeepSeek · High speed</span>
+      </button>
+      <button class="model-btn locked">
+        <span class="model-name">🤖 GPT-4o <span class="badge-pro">🔒 Pro</span></span>
+        <span class="model-meta">OpenAI · Great quality</span>
+      </button>
+      <button class="model-btn locked">
+        <span class="model-name">♦ Claude Sonnet <span class="badge-pro">🔒 Pro</span></span>
+        <span class="model-meta">Anthropic · Creative</span>
+      </button>
+      <button class="model-btn locked">
+        <span class="model-name">⚡ Mistral Large <span class="badge-pro">🔒 Pro</span></span>
+        <span class="model-meta">Mistral AI · Efficient</span>
+      </button>
+    </div>
+  </div>
+
+  <button class="generate-btn" id="genBtn">
+    <span id="btnIcon">✨</span>
+    <span id="btnTxt">Generate Social Posts</span>
+  </button>
+
+  <!-- LOADING -->
+  <div class="loading-wrap" id="loadWrap">
+    <div class="spinner-wrap"><div class="spinner-ring"></div><div class="spinner-inner"></div></div>
+    <ul class="loading-steps">
+      <li id="s0"><span class="step-icon">○</span>Analyzing your topic and platform</li>
+      <li id="s1"><span class="step-icon">○</span>Crafting hook and opening lines</li>
+      <li id="s2"><span class="step-icon">○</span>Writing post variants</li>
+      <li id="s3"><span class="step-icon">○</span>Adding hashtags and emojis</li>
+      <li id="s4"><span class="step-icon">○</span>Finalizing posts</li>
+    </ul>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-wrap" id="outWrap">
+    <div class="output-card">
+      <div class="output-header">
+        <div class="output-title"><span class="out-green-dot"></span>Posts Generated</div>
+        <div class="output-actions">
+          <button class="action-btn" id="copyBtn">📋 Copy All</button>
+          <button class="action-btn" id="txtBtn">⬇ TXT</button>
+          <button class="action-btn" id="htmlBtn">⬇ HTML</button>
+        </div>
+      </div>
+      <div class="post-tab-bar" id="tabBar"></div>
+      <div id="panels"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Part of <a href="https://ranksorcery.com/" class="footer-logo">✦ RankSorcery</a> — Free AI SEO Tools Suite · No account needed<br>
+  <span style="margin-top:6px;display:inline-block;font-size:0.73rem;color:var(--muted2);">© 2025–2026 RankSorcery · <a href="https://ranksorcery.com/sitemap.xml">Sitemap</a> · <a href="mailto:webmasterjamez@gmail.com">Contact Us</a></span>
+</footer>
+
+<script>
+// ── State ──
+let platform = 'Instagram', model = 'google/gemini-2.0-flash-exp:free', posts = [], stimer = null;
+
+// ── Nav ──
+function toggleDd(id) {
+  const dd = document.getElementById(id);
+  const menu = document.getElementById(id + '-menu');
+  const toggle = dd.querySelector('.nav-dropdown-toggle');
+  const open = menu.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  if (open) { document.addEventListener('click', function closeDd(e) { if (!dd.contains(e.target)) { menu.classList.remove('open'); toggle.classList.remove('open'); document.removeEventListener('click', closeDd); } }); }
+}
+function toggleMobile() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function toggleMobileGroup(id) {
+  document.getElementById(id + '-submenu').classList.toggle('open');
+}
+
+// ── Platform ──
+document.querySelectorAll('.platform-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.platform-btn').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); platform = b.dataset.p;
+}));
+
+// ── Model ──
+document.querySelectorAll('.model-btn:not(.locked)').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.model-btn:not(.locked)').forEach(x => x.classList.remove('active'));
+  b.classList.add('active'); model = b.dataset.m;
+}));
+
+// ── Char count ──
+const topicEl = document.getElementById('topicInput');
+topicEl.addEventListener('input', () => { document.getElementById('cc').textContent = topicEl.value.length; });
+
+// ── Advanced ──
+const advToggle = document.getElementById('advToggle');
+advToggle.addEventListener('click', () => {
+  advToggle.classList.toggle('open');
+  document.getElementById('advBody').classList.toggle('open');
+  advToggle.querySelector('.adv-arrow').textContent = advToggle.classList.contains('open') ? '▲' : '▼';
+});
+
+// ── Loading steps ──
+const stepIcons = ['○','○','○','○','○'];
+function startSteps() {
+  const items = [...document.querySelectorAll('.loading-steps li')];
+  items.forEach((li, i) => { li.className = ''; li.querySelector('.step-icon').textContent = stepIcons[i]; });
+  let i = 0;
+  items[0].classList.add('active'); items[0].querySelector('.step-icon').textContent = '→';
+  stimer = setInterval(() => {
+    if (i < items.length - 1) {
+      items[i].classList.remove('active'); items[i].classList.add('done'); items[i].querySelector('.step-icon').textContent = '✓';
+      i++; items[i].classList.add('active'); items[i].querySelector('.step-icon').textContent = '→';
+    }
+  }, 1900);
+}
+function stopSteps() {
+  clearInterval(stimer);
+  document.querySelectorAll('.loading-steps li').forEach(li => { li.classList.remove('active'); li.classList.add('done'); li.querySelector('.step-icon').textContent = '✓'; });
+}
+
+// ── Prompt ──
+function buildPrompt() {
+  const t = topicEl.value.trim();
+  const goal = document.getElementById('goalSelect').value;
+  const tone = document.getElementById('toneSelect').value;
+  const v = parseInt(document.getElementById('varSel').value);
+  const hash = document.getElementById('hashSel').value;
+  const emoji = document.getElementById('emojiSel').value;
+  const aud = document.getElementById('audInp').value.trim();
+  const brand = document.getElementById('brandInp').value.trim();
+  const extra = document.getElementById('extraInp').value.trim();
+  let p = `You are an expert social media copywriter. Generate ${v} unique, high-performing ${platform} post${v>1?'s':''} about:\n\nTOPIC: ${t}\n`;
+  if (goal) p += `GOAL: ${goal}\n`;
+  if (tone) p += `TONE: ${tone}\n`;
+  if (aud) p += `TARGET AUDIENCE: ${aud}\n`;
+  if (brand) p += `BRAND NAME: ${brand}\n`;
+  p += `HASHTAGS: ${hash==='yes'?'Yes — include relevant hashtags at the end':'No'}\n`;
+  p += `EMOJIS: ${emoji==='yes'?'Yes — use strategically throughout':'No'}\n`;
+  if (extra) p += `EXTRA INSTRUCTIONS: ${extra}\n`;
+  p += `\nFORMATTING RULES:\n- Separate each post with exactly: ---POST_BREAK---\n- Do NOT add labels like "Post 1:" or "Variant 1:"\n- Output ONLY the post content, nothing else before or after\n- Optimize for ${platform}'s algorithm, character limits, and best practices\n`;
+  if (v>1) p += `- Make each variant meaningfully different in hook, angle, or structure\n`;
+  return p;
+}
+
+// ── Render output ──
+function renderOutput(text) {
+  const parts = text.split('---POST_BREAK---').map(p => p.trim()).filter(Boolean);
+  posts = parts;
+  const tb = document.getElementById('tabBar'), pls = document.getElementById('panels');
+  tb.innerHTML = ''; pls.innerHTML = '';
+  parts.forEach((post, i) => {
+    const tab = document.createElement('button');
+    tab.className = 'post-tab' + (i===0?' active':'');
+    tab.textContent = parts.length > 1 ? `Variant ${i+1}` : 'Your Post';
+    tab.onclick = () => {
+      document.querySelectorAll('.post-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.post-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('pp'+i).classList.add('active');
+    };
+    tb.appendChild(tab);
+    const panel = document.createElement('div');
+    panel.className = 'post-panel' + (i===0?' active':'');
+    panel.id = 'pp'+i;
+    panel.innerHTML = `<div class="post-text">${post.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+    pls.appendChild(panel);
+  });
+  document.getElementById('outWrap').classList.add('visible');
+}
+
+// ── Generate ──
+document.getElementById('genBtn').addEventListener('click', async () => {
+  const t = topicEl.value.trim();
+  if (!t) {
+    topicEl.style.borderColor = 'var(--red)';
+    topicEl.style.boxShadow = '0 0 0 3px rgba(248,113,113,0.15)';
+    topicEl.focus();
+    setTimeout(() => { topicEl.style.borderColor = ''; topicEl.style.boxShadow = ''; }, 2500);
+    return;
+  }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('btnIcon').innerHTML = '<span class="spin"></span>';
+  document.getElementById('btnTxt').textContent = 'Generating…';
+  document.getElementById('loadWrap').classList.add('visible');
+  document.getElementById('outWrap').classList.remove('visible');
+  startSteps();
+
+  try {
+    const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer YOUR_OPENROUTER_API_KEY_HERE',
+        'HTTP-Referer': 'https://ranksorcery.com',
+        'X-Title': 'RankSorcery Social Post Generator'
+      },
+      body: JSON.stringify({ model, messages: [{ role: 'user', content: buildPrompt() }] })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'API error ' + res.status);
+    const text = data.choices?.[0]?.message?.content;
+    if (!text) throw new Error('No content returned from AI');
+    stopSteps();
+    document.getElementById('loadWrap').classList.remove('visible');
+    renderOutput(text);
+  } catch(err) {
+    stopSteps();
+    document.getElementById('loadWrap').classList.remove('visible');
+    alert('Error: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('btnIcon').textContent = '✨';
+    document.getElementById('btnTxt').textContent = 'Generate Social Posts';
+  }
+});
+
+// ── Export ──
+document.getElementById('copyBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(posts.join('\n\n---\n\n')).then(() => {
+    const b = document.getElementById('copyBtn');
+    b.textContent = '✅ Copied!';
+    setTimeout(() => { b.textContent = '📋 Copy All'; }, 2000);
+  });
+});
+document.getElementById('txtBtn').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([posts.join('\n\n---\n\n')], { type: 'text/plain' }));
+  a.download = `social-posts-${platform.toLowerCase().replace(/[\s\/]+/g,'-')}.txt`;
+  a.click();
+});
+document.getElementById('htmlBtn').addEventListener('click', () => {
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Social Posts — ${platform} | RankSorcery</title><style>body{font-family:'DM Sans',sans-serif;max-width:700px;margin:40px auto;padding:20px;background:#0D1117;color:#E8EAF0}h1{font-family:'Syne',sans-serif;font-size:1.4rem;margin-bottom:20px;color:#E8B84B}article{background:#141B2D;border:1px solid rgba(232,184,75,0.13);border-radius:14px;padding:22px;margin-bottom:14px;white-space:pre-wrap;line-height:1.85;font-size:.9rem}h3{font-size:.7rem;color:#6A748A;margin-bottom:10px;text-transform:uppercase;letter-spacing:.1em}footer{text-align:center;font-size:.75rem;color:#6A748A;margin-top:24px}a{color:#E8B84B}</style></head><body><h1>Social Media Posts — ${platform}</h1>${posts.map((p,i)=>`<article><h3>${posts.length>1?`Variant ${i+1}`:'Your Post'}</h3>${p.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</article>`).join('')}<footer>Generated by <a href="https://ranksorcery.com">RankSorcery</a> — Free AI Tools</footer></body></html>`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  a.download = `social-posts-${platform.toLowerCase().replace(/[\s\/]+/g,'-')}.html`;
+  a.click();
+});
+</script>
+</body>
+</html>
