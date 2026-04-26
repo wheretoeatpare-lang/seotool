@@ -152,7 +152,11 @@ nav.main-nav {
   border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem;
   box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300;
   animation: dropIn 0.18s ease;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
 }
+.nav-dropdown-menu::-webkit-scrollbar { width: 4px; }
+.nav-dropdown-menu::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
 @keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 .nav-dropdown-menu.open { display: block; }
 
@@ -843,6 +847,144 @@ footer {
           </div>
         </div>
 
+        <!-- Rewriting & Editing sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-rewrite">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-rewrite')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(96,165,250,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">🔄</span>
+              <span style="font-weight:600;font-size:0.82rem;">Rewriting &amp; Editing</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🛡️</span>Plagiarism Remover</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🔁</span>Sentence Rewriter</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📝</span>Paragraph Rewriter</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">✏️</span>Essay Rewriter</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📎</span>AI Summarizer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">↔️</span>AI Text Expander</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🔃</span>AI Paraphraser</a>
+          </div>
+        </div>
+
+        <!-- Story & Book Writer sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-story">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-story')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(168,85,247,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">📖</span>
+              <span style="font-weight:600;font-size:0.82rem;">Story &amp; Book Writer</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📖</span>AI Story Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📚</span>AI Book Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🧙</span>Story Character Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🗺️</span>Plot Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🐉</span>Fantasy Story Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🌀</span>Plot Twist Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">💭</span>Story Prompt Generator</a>
+          </div>
+        </div>
+
+        <!-- Email & Letter Writing sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-email">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-email')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(251,191,36,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">✉️</span>
+              <span style="font-weight:600;font-size:0.82rem;">Email &amp; Letter Writing</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📧</span>Email Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">↩️</span>Email Response Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🖋️</span>AI Letter Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📁</span>Cover Letter Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📩</span>Application Letter Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">💼</span>Sales Email Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎯</span>Cold Outreach Email</a>
+          </div>
+        </div>
+
+        <!-- Poem & Lyrics Writer sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-poem">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-poem')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(244,114,182,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">🎵</span>
+              <span style="font-weight:600;font-size:0.82rem;">Poem &amp; Lyrics Writer</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🌸</span>AI Poem Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">❤️</span>Love Poem Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎶</span>Rhyme Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🍃</span>Haiku Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎤</span>Rap Lyrics Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎸</span>Lyrics Generator</a>
+          </div>
+        </div>
+
+        <!-- Business & Professional sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-business">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-business')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(232,184,75,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">💼</span>
+              <span style="font-weight:600;font-size:0.82rem;">Business &amp; Professional</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎙️</span>AI Script Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🛍️</span>Product Description</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🧑‍💼</span>Job Description</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🔵</span>LinkedIn Summary</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎤</span>Speech Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🏢</span>About Us Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">💡</span>Website Tagline</a>
+          </div>
+        </div>
+
+        <!-- Education & Study Tools sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-education">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-education')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(52,211,153,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">🎓</span>
+              <span style="font-weight:600;font-size:0.82rem;">Education &amp; Study Tools</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📝</span>AI Essay Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎓</span>Thesis Statement Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📚</span>Homework Helper</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🗒️</span>AI Notes Maker</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📐</span>Assignment Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🔬</span>Research Paper Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">⚖️</span>Legal Document Generator</a>
+          </div>
+        </div>
+
+        <!-- Creative & Fun sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-fun">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-fun')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(248,113,113,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">🎉</span>
+              <span style="font-weight:600;font-size:0.82rem;">Creative &amp; Fun</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">😏</span>Pick-Up Line Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🍳</span>AI Recipe Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🔥</span>Roast Comeback Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎵</span>TikTok Comment Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">😂</span>Incorrect Quote Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🎭</span>Roleplay Scenario</a>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -915,6 +1057,109 @@ footer {
       <a href="ai-alt-text-generator.html" onclick="closeMobileNav()">🖼️ Alt Text Generator</a>
       <a href="schema-markup-writer.html" onclick="closeMobileNav()">🧩 Schema Markup Writer</a>
       <a href="#" onclick="closeMobileNav()">📋 SEO Content Brief</a>
+    </div>
+
+    <!-- Rewriting & Editing nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-rewrite')">
+      🔄 Rewriting &amp; Editing
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-rewrite-subgroup">
+      <a href="#" onclick="closeMobileNav()">🛡️ Plagiarism Remover</a>
+      <a href="#" onclick="closeMobileNav()">🔁 Sentence Rewriter</a>
+      <a href="#" onclick="closeMobileNav()">📝 Paragraph Rewriter</a>
+      <a href="#" onclick="closeMobileNav()">✏️ Essay Rewriter</a>
+      <a href="#" onclick="closeMobileNav()">📎 AI Summarizer</a>
+      <a href="#" onclick="closeMobileNav()">↔️ AI Text Expander</a>
+      <a href="#" onclick="closeMobileNav()">🔃 AI Paraphraser</a>
+    </div>
+
+    <!-- Story & Book Writer nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-story')">
+      📖 Story &amp; Book Writer
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-story-subgroup">
+      <a href="#" onclick="closeMobileNav()">📖 AI Story Generator</a>
+      <a href="#" onclick="closeMobileNav()">📚 AI Book Writer</a>
+      <a href="#" onclick="closeMobileNav()">🧙 Story Character Generator</a>
+      <a href="#" onclick="closeMobileNav()">🗺️ Plot Generator</a>
+      <a href="#" onclick="closeMobileNav()">🐉 Fantasy Story Generator</a>
+      <a href="#" onclick="closeMobileNav()">🌀 Plot Twist Generator</a>
+      <a href="#" onclick="closeMobileNav()">💭 Story Prompt Generator</a>
+    </div>
+
+    <!-- Email & Letter Writing nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-email')">
+      ✉️ Email &amp; Letter Writing
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-email-subgroup">
+      <a href="#" onclick="closeMobileNav()">📧 Email Writer</a>
+      <a href="#" onclick="closeMobileNav()">↩️ Email Response Generator</a>
+      <a href="#" onclick="closeMobileNav()">🖋️ AI Letter Writer</a>
+      <a href="#" onclick="closeMobileNav()">📁 Cover Letter Generator</a>
+      <a href="#" onclick="closeMobileNav()">📩 Application Letter Generator</a>
+      <a href="#" onclick="closeMobileNav()">💼 Sales Email Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎯 Cold Outreach Email</a>
+    </div>
+
+    <!-- Poem & Lyrics Writer nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-poem')">
+      🎵 Poem &amp; Lyrics Writer
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-poem-subgroup">
+      <a href="#" onclick="closeMobileNav()">🌸 AI Poem Generator</a>
+      <a href="#" onclick="closeMobileNav()">❤️ Love Poem Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎶 Rhyme Generator</a>
+      <a href="#" onclick="closeMobileNav()">🍃 Haiku Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎤 Rap Lyrics Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎸 Lyrics Generator</a>
+    </div>
+
+    <!-- Business & Professional nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-business')">
+      💼 Business &amp; Professional
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-business-subgroup">
+      <a href="#" onclick="closeMobileNav()">🎙️ AI Script Generator</a>
+      <a href="#" onclick="closeMobileNav()">🛍️ Product Description</a>
+      <a href="#" onclick="closeMobileNav()">🧑‍💼 Job Description</a>
+      <a href="#" onclick="closeMobileNav()">🔵 LinkedIn Summary</a>
+      <a href="#" onclick="closeMobileNav()">🎤 Speech Writer</a>
+      <a href="#" onclick="closeMobileNav()">🏢 About Us Generator</a>
+      <a href="#" onclick="closeMobileNav()">💡 Website Tagline</a>
+    </div>
+
+    <!-- Education & Study Tools nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-education')">
+      🎓 Education &amp; Study Tools
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-education-subgroup">
+      <a href="#" onclick="closeMobileNav()">📝 AI Essay Writer</a>
+      <a href="#" onclick="closeMobileNav()">🎓 Thesis Statement Generator</a>
+      <a href="#" onclick="closeMobileNav()">📚 Homework Helper</a>
+      <a href="#" onclick="closeMobileNav()">🗒️ AI Notes Maker</a>
+      <a href="#" onclick="closeMobileNav()">📐 Assignment Writer</a>
+      <a href="#" onclick="closeMobileNav()">🔬 Research Paper Writer</a>
+      <a href="#" onclick="closeMobileNav()">⚖️ Legal Document Generator</a>
+    </div>
+
+    <!-- Creative & Fun nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-fun')">
+      🎉 Creative &amp; Fun
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-fun-subgroup">
+      <a href="#" onclick="closeMobileNav()">😏 Pick-Up Line Generator</a>
+      <a href="#" onclick="closeMobileNav()">🍳 AI Recipe Generator</a>
+      <a href="#" onclick="closeMobileNav()">🔥 Roast Comeback Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎵 TikTok Comment Generator</a>
+      <a href="#" onclick="closeMobileNav()">😂 Incorrect Quote Generator</a>
+      <a href="#" onclick="closeMobileNav()">🎭 Roleplay Scenario</a>
     </div>
   </div>
 
