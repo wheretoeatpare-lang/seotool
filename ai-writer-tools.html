@@ -100,37 +100,29 @@ body::before {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   NAV  (exact match to index.html)
+   NAV
 ═══════════════════════════════════════════════════════════ */
 nav.main-nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem;
-  height: 64px;
+  padding: 0 2rem; height: 64px;
   background: rgba(13,17,23,0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-  gap: 1rem;
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border); gap: 1rem;
 }
 .logo {
   font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
-  color: var(--accent);
-  text-decoration: none; flex-shrink: 0; white-space: nowrap;
-  letter-spacing: -0.02em;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  white-space: nowrap; letter-spacing: -0.02em;
   display: flex; align-items: center; gap: 9px;
 }
 .logo-icon {
   width: 30px; height: 30px;
   background: linear-gradient(135deg, var(--accent), var(--teal));
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem;
-  flex-shrink: 0;
+  border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; font-size: 0.85rem; flex-shrink: 0;
 }
-.nav-links {
-  display: flex; gap: 0.1rem; align-items: center;
-}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
 .nav-links a {
   color: var(--muted); text-decoration: none; font-size: 0.82rem;
   font-weight: 500; transition: color 0.2s, background 0.2s;
@@ -138,18 +130,88 @@ nav.main-nav {
 }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .nav-links a.active { color: var(--accent); }
-.nav-cta {
-  background: var(--accent) !important;
-  color: var(--bg) !important;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700 !important;
-  padding: 0.45rem 1.1rem !important;
-  border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap;
-  flex-shrink: 0; letter-spacing: 0.02em;
-  text-decoration: none;
-  transition: background 0.2s, transform 0.15s !important;
+
+/* ── Dropdown ── */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); font-size: 0.82rem; font-weight: 500;
+  transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem;
+  border-radius: 6px; cursor: pointer; white-space: nowrap;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
 }
-.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-dropdown-toggle:hover,
+.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-toggle.active { color: var(--accent); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+
+.nav-dropdown-menu {
+  display: none; position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 240px; background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300;
+  animation: dropIn 0.18s ease;
+}
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  text-decoration: none; color: var(--text);
+  transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+
+/* ── Nested sub-menu (AI Writer Tools → Article & Content) ── */
+.nav-dropdown-group { position: relative; }
+.nav-dropdown-group-toggle {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  color: var(--text); cursor: pointer;
+  transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  width: 100%; text-align: left; justify-content: space-between;
+}
+.nav-dropdown-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-group-toggle .group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dropdown-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dropdown-group.open > .nav-dropdown-group-toggle .nav-dropdown-group-chevron { transform: rotate(90deg); }
+
+.nav-dropdown-submenu {
+  display: none; background: var(--bg3);
+  border-radius: 9px; margin: 0.25rem 0 0.25rem 0.5rem;
+  padding: 0.3rem;
+  border: 1px solid var(--border);
+}
+.nav-dropdown-group.open > .nav-dropdown-submenu { display: block; }
+.nav-dropdown-subitem {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0.75rem; border-radius: 7px;
+  text-decoration: none; color: var(--muted);
+  font-size: 0.79rem; transition: background 0.15s, color 0.15s;
+}
+.nav-dropdown-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-dropdown-subitem-icon { font-size: 0.85rem; flex-shrink: 0; width: 20px; text-align: center; }
+
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.02em; transition: background 0.2s, transform 0.15s !important;
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; color: var(--bg) !important; }
 
 /* ═══════════════════════════════════════════════════════════
    TRUST BAR
@@ -199,7 +261,7 @@ nav.main-nav {
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ═══════════════════════════════════════════════════════════
-   MOBILE MENU — hidden always unless .open on mobile
+   MOBILE MENU
 ═══════════════════════════════════════════════════════════ */
 .nav-mobile-menu {
   display: none;
@@ -209,26 +271,27 @@ nav.main-nav {
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
-  padding: 1rem 1.5rem 1.5rem;
+  padding: 0.75rem 0 1.25rem;
   z-index: 190;
   flex-direction: column;
   gap: 0;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
 }
 .nav-mobile-menu a {
   color: var(--muted);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
-  padding: 0.9rem 0.5rem;
+  padding: 0.85rem 1.5rem;
   border-bottom: 1px solid var(--border);
   transition: color 0.2s;
   display: flex; align-items: center; gap: 0.5rem;
 }
 .nav-mobile-menu a:hover { color: var(--text); }
 .nav-mobile-menu a.active { color: var(--accent); }
-.nav-mobile-menu a:last-child { border-bottom: none; }
 .nav-mobile-cta {
-  margin-top: 0.75rem !important;
+  margin: 0.75rem 1.5rem 0 !important;
   background: var(--accent) !important;
   color: var(--bg) !important;
   text-align: center;
@@ -238,6 +301,47 @@ nav.main-nav {
   border-bottom: none !important;
   font-family: 'Syne', sans-serif;
   font-weight: 700 !important;
+}
+
+/* Mobile group toggle */
+.nav-mobile-group-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.85rem 1.5rem; color: var(--muted); background: none; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+  border-bottom: 1px solid var(--border); cursor: pointer; width: 100%;
+}
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; background: var(--bg3); }
+.nav-mobile-submenu.open { display: block; }
+.nav-mobile-submenu a {
+  border-bottom: none !important;
+  padding: 0.7rem 1.5rem !important;
+  font-size: 0.88rem !important;
+}
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+/* Mobile nested group (level 2) */
+.nav-mobile-subgroup-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.7rem 1.5rem; color: var(--muted); background: none; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
+  cursor: pointer; width: 100%;
+  border-top: 1px solid var(--border);
+}
+.nav-mobile-subgroup-toggle:hover { color: var(--accent); }
+.nav-mobile-subgroup-chevron { width: 12px; height: 12px; transition: transform 0.2s; }
+.nav-mobile-subgroup-toggle.open .nav-mobile-subgroup-chevron { transform: rotate(180deg); }
+.nav-mobile-subgroup-toggle.open { color: var(--accent); }
+.nav-mobile-subgroup { display: none; background: var(--bg4); }
+.nav-mobile-subgroup.open { display: block; }
+.nav-mobile-subgroup a {
+  padding: 0.6rem 2rem !important;
+  font-size: 0.82rem !important;
+  border-bottom: none !important;
+  border-top: 1px solid var(--border) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -568,6 +672,10 @@ footer {
   nav.main-nav > .nav-cta { display: none !important; }
   .nav-hamburger { display: flex; }
 }
+@media (min-width: 901px) {
+  .nav-hamburger { display: none !important; }
+  #nav-mobile-menu { display: none !important; }
+}
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE — 768px
@@ -647,13 +755,98 @@ footer {
     RankSorcery
   </a>
   <div class="nav-links">
-    <a href="https://ranksorcery.com/">SEO Auditor</a>
-    <a href="/competitor.html">Competitor Analysis</a>
-    <a href="/keyword-volume.html">Keyword Research</a>
-    <a href="/ai-search.html">AI Search</a>
-    <a href="/document-checker.html">Doc Checker</a>
-    <a href="ai-writer-tools.html" class="active">AI Writer Tools</a>
-    <a href="image-converter.html">Image Tool</a>
+
+    <!-- SEO Tools dropdown -->
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleDd('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+          <div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div>
+        </a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+          <div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div>
+        </a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+          <div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div>
+        </a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+          <div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+          <div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- AI Writer Tools dropdown (active page) -->
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle active" onclick="toggleDd('nav-dd-writer')">
+        AI Writer Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+
+        <!-- Top-level link -->
+        <a href="ai-writer-tools.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div>
+          <div><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div>
+        </a>
+
+        <div class="nav-dropdown-divider"></div>
+
+        <!-- Article & Content Writer sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-content">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-content')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(52,211,153,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">📝</span>
+              <span style="font-weight:600;font-size:0.82rem;">Article &amp; Content Writer</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="ai-blog-writer.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📰</span>AI Blog Writer</a>
+            <a href="ai-writer.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">✍️</span>AI Writer</a>
+            <a href="ai-write-anything.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">💡</span>Write Anything</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">⚡</span>AI Content Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📋</span>AI Article Writer</a>
+            <a href="social-media-post-generator.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📱</span>Social Media Post Generator</a>
+            <a href="ai-faq-generator.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">❓</span>FAQ Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🗞️</span>News Article Generator</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📧</span>AI Newsletter Writer</a>
+          </div>
+        </div>
+
+        <!-- SEO Writing sub-group -->
+        <div class="nav-dropdown-group" id="dd-group-seo-writing">
+          <button class="nav-dropdown-group-toggle" onclick="toggleDdGroup('dd-group-seo-writing')">
+            <span class="group-left">
+              <span style="width:32px;height:32px;border-radius:8px;background:rgba(10,191,188,0.1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">🔍</span>
+              <span style="font-weight:600;font-size:0.82rem;">SEO Writing Tools</span>
+            </span>
+            <svg class="nav-dropdown-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dropdown-submenu">
+            <a href="ai-meta-description-generator.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🏷️</span>AI Meta Description</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🏆</span>SEO Title Generator</a>
+            <a href="ai-alt-text-generator.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🖼️</span>Alt Text Generator</a>
+            <a href="schema-markup-writer.html" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">🧩</span>Schema Markup Writer</a>
+            <a href="#" class="nav-dropdown-subitem"><span class="nav-dropdown-subitem-icon">📋</span>SEO Content Brief</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <a href="https://ranksorcery.com/image-converter.html">Image Tool</a>
     <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
   </div>
   <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
@@ -670,15 +863,63 @@ footer {
   <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
 </div>
 
-<!-- ── MOBILE MENU — position:fixed so it never affects document flow ── -->
+<!-- ── MOBILE MENU ── -->
 <div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation" style="display:none">
-  <a href="/" onclick="closeMobileNav()">🔍 SEO Auditor</a>
-  <a href="/competitor.html" onclick="closeMobileNav()">⚔️ Competitor Analysis</a>
-  <a href="/keyword-volume.html" onclick="closeMobileNav()">📊 Keyword Research</a>
-  <a href="/ai-search.html" onclick="closeMobileNav()">🤖 AI Search Visibility</a>
-  <a href="/document-checker.html" onclick="closeMobileNav()">📄 Doc Checker</a>
-  <a href="ai-writer-tools.html" class="active" onclick="closeMobileNav()">✍️ AI Writer Tools</a>
-  <a href="image-converter.html" onclick="closeMobileNav()">🖼️ Image Tool</a>
+
+  <!-- SEO Tools group -->
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-seo')">
+    🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="https://ranksorcery.com/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div></a>
+    <a href="https://ranksorcery.com/keyword-volume.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div>Keyword Research</div></div></a>
+    <a href="https://ranksorcery.com/competitor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div>Competitor Analysis</div></div></a>
+    <a href="https://ranksorcery.com/ai-search.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div>AI Search Visibility</div></div></a>
+    <a href="https://ranksorcery.com/document-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div>Doc Checker</div></div></a>
+  </div>
+
+  <!-- AI Writer Tools group -->
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-writer')">
+    ✍️ AI Writer Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-writer-submenu">
+    <a href="ai-writer-tools.html" class="active" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div><div>All AI Writer Tools</div><div class="nav-mobile-sub-desc">Browse all 60+ tools</div></div></a>
+
+    <!-- Article & Content nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-content')">
+      📝 Article &amp; Content Writer
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-content-subgroup">
+      <a href="ai-blog-writer.html" onclick="closeMobileNav()">📰 AI Blog Writer</a>
+      <a href="ai-writer.html" onclick="closeMobileNav()">✍️ AI Writer</a>
+      <a href="ai-write-anything.html" onclick="closeMobileNav()">💡 Write Anything</a>
+      <a href="#" onclick="closeMobileNav()">⚡ AI Content Generator</a>
+      <a href="#" onclick="closeMobileNav()">📋 AI Article Writer</a>
+      <a href="social-media-post-generator.html" onclick="closeMobileNav()">📱 Social Media Post Generator</a>
+      <a href="ai-faq-generator.html" onclick="closeMobileNav()">❓ FAQ Generator</a>
+      <a href="#" onclick="closeMobileNav()">🗞️ News Article Generator</a>
+      <a href="#" onclick="closeMobileNav()">📧 AI Newsletter Writer</a>
+    </div>
+
+    <!-- SEO Writing nested group -->
+    <button class="nav-mobile-subgroup-toggle" onclick="toggleMobileSubgroup('mobile-seowriting')">
+      🔍 SEO Writing Tools
+      <svg class="nav-mobile-subgroup-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="nav-mobile-subgroup" id="mobile-seowriting-subgroup">
+      <a href="ai-meta-description-generator.html" onclick="closeMobileNav()">🏷️ AI Meta Description</a>
+      <a href="#" onclick="closeMobileNav()">🏆 SEO Title Generator</a>
+      <a href="ai-alt-text-generator.html" onclick="closeMobileNav()">🖼️ Alt Text Generator</a>
+      <a href="schema-markup-writer.html" onclick="closeMobileNav()">🧩 Schema Markup Writer</a>
+      <a href="#" onclick="closeMobileNav()">📋 SEO Content Brief</a>
+    </div>
+  </div>
+
+  <a href="https://ranksorcery.com/image-converter.html" onclick="closeMobileNav()">🖼️ Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
   <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free Audit →</a>
 </div>
 
@@ -797,8 +1038,8 @@ footer {
       <span class="section-count">8 tools</span>
     </div>
     <div class="tool-grid">
-      <a href="plagiarism-remover.html" class="tool-card" data-cat="rewrite" data-name="Plagiarism Remover"><div class="tool-emoji">🛡️</div><div class="tool-name">Plagiarism Remover</div><div class="tool-tag">Rewrite</div></a>
-      <a href="sentence-rewriter.html" class="tool-card" data-cat="rewrite" data-name="Sentence Rewriter"><div class="tool-emoji">🔁</div><div class="tool-name">Sentence Rewriter</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Plagiarism Remover"><div class="tool-emoji">🛡️</div><div class="tool-name">Plagiarism Remover</div><div class="tool-tag">Rewrite</div></a>
+      <a href="#" class="tool-card" data-cat="rewrite" data-name="Sentence Rewriter"><div class="tool-emoji">🔁</div><div class="tool-name">Sentence Rewriter</div><div class="tool-tag">Rewrite</div></a>
       <a href="#" class="tool-card" data-cat="rewrite" data-name="Paragraph Rewriter"><div class="tool-emoji">📝</div><div class="tool-name">Paragraph Rewriter</div><div class="tool-tag">Rewrite</div></a>
       <a href="#" class="tool-card" data-cat="rewrite" data-name="Essay Rewriter"><div class="tool-emoji">✏️</div><div class="tool-name">Essay Rewriter</div><div class="tool-tag">Rewrite</div></a>
       <a href="#" class="tool-card" data-cat="rewrite" data-name="AI Summarizer"><div class="tool-emoji">📎</div><div class="tool-name">AI Summarizer</div><div class="tool-tag">Rewrite</div></a>
@@ -1022,15 +1263,46 @@ footer {
       }
     });
 
-    // Hide sections with no visible cards
     sections.forEach(section => {
       const visible = section.querySelectorAll('.tool-card:not(.hidden)').length;
       section.style.display = visible > 0 ? '' : 'none';
     });
 
-    // Show "no results" if nothing matches
     const noResults = document.getElementById('noResults');
     noResults.style.display = anyVisible ? 'none' : 'block';
+  }
+
+  // ── Desktop Dropdown ──
+  function toggleDd(id) {
+    const dd   = document.getElementById(id);
+    const menu = document.getElementById(id + '-menu');
+    const toggle = dd.querySelector('.nav-dropdown-toggle');
+    const open = menu.classList.toggle('open');
+    toggle.classList.toggle('open', open);
+
+    // Close other dropdowns
+    document.querySelectorAll('.nav-dropdown-menu.open').forEach(m => {
+      if (m !== menu) {
+        m.classList.remove('open');
+        m.closest('.nav-dropdown').querySelector('.nav-dropdown-toggle').classList.remove('open');
+      }
+    });
+
+    if (open) {
+      document.addEventListener('click', function close(e) {
+        if (!dd.contains(e.target)) {
+          menu.classList.remove('open');
+          toggle.classList.remove('open');
+          document.removeEventListener('click', close);
+        }
+      });
+    }
+  }
+
+  // ── Desktop Nested Group Toggle ──
+  function toggleDdGroup(id) {
+    const group = document.getElementById(id);
+    group.classList.toggle('open');
   }
 
   // ── Mobile Nav ──
@@ -1048,6 +1320,22 @@ footer {
     if (btn)  btn.classList.remove('open');
   }
 
+  // ── Mobile Group Toggle (level 1) ──
+  function toggleMobileGroup(id) {
+    const submenu = document.getElementById(id + '-submenu');
+    const toggle  = submenu.previousElementSibling;
+    const open    = submenu.classList.toggle('open');
+    if (toggle) toggle.classList.toggle('open', open);
+  }
+
+  // ── Mobile Subgroup Toggle (level 2) ──
+  function toggleMobileSubgroup(id) {
+    const subgroup = document.getElementById(id + '-subgroup');
+    const toggle   = subgroup.previousElementSibling;
+    const open     = subgroup.classList.toggle('open');
+    if (toggle) toggle.classList.toggle('open', open);
+  }
+
   // Close when clicking outside nav
   document.addEventListener('click', function(e) {
     const nav  = document.querySelector('nav.main-nav');
@@ -1062,7 +1350,7 @@ footer {
     if (window.innerWidth > 900) closeMobileNav();
   });
 
-  // ── Keyboard search support (Enter key) ──
+  // ── Keyboard search support ──
   document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       this.value = '';
