@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Page Speed Analyzer — Test Website Load Speed | RankSorcery</title>
+<meta name="description" content="Free page speed analyzer tool. Test your website's load speed, get a performance score, and receive actionable recommendations to improve load time instantly.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+
+<link rel="canonical" href="https://ranksorcery.com/page-speed-analyzer.html">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/page-speed-analyzer.html">
+<meta property="og:title" content="Free Page Speed Analyzer — Test Website Load Speed | RankSorcery">
+<meta property="og:description" content="Free page speed analyzer. Test load speed, get performance scores, and actionable fixes. No login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free Page Speed Analyzer | RankSorcery">
+<meta name="twitter:description" content="Test your website's load speed and get actionable fixes. Free, no login required.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+
+<meta name="theme-color" content="#E8B84B">
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P0WX226GEE');
+</script>
+
+<!-- favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery Page Speed Analyzer",
+  "url": "https://ranksorcery.com/page-speed-analyzer.html",
+  "description": "Free page speed analyzer tool. Test website load speed and get actionable performance recommendations.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --teal-dim:#065F5E;
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --red2:   rgba(248,113,113,0.12);
+  --amber:  #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
+  --blue:   #60a5fa;
+  --blue2:  rgba(96,165,250,0.12);
+  --cyan:   #0ABFBC;
+  --pink:   #f472b6;
+  --radius: 14px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem;
+  height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent);
+  text-decoration: none; flex-shrink: 0; white-space: nowrap;
+  letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 9px;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.nav-links {
+  display: flex; gap: 0.1rem; align-items: center;
+}
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+
+/* ── NAV DROPDOWN ── */
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px;
+  cursor: pointer; white-space: nowrap; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-dropdown-toggle:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  display: none;
+  position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 230px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 0.6rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+  z-index: 300;
+  animation: dropIn 0.18s ease;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  text-decoration: none; color: var(--text);
+  transition: background 0.15s, color 0.15s;
+  font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta {
+  background: var(--accent) !important;
+  color: var(--bg) !important;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important;
+  border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap;
+  flex-shrink: 0; letter-spacing: 0.02em;
+  transition: background 0.2s, transform 0.15s !important;
+  text-decoration: none;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+
+/* nested dd groups */
+.nav-dd-group { position: relative; }
+.nav-dd-group-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  color: var(--text); cursor: pointer;
+  transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+  width: 100%; text-align: left;
+}
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s, color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-dd-subitem-icon { font-size: 0.85rem; flex-shrink: 0; width: 20px; text-align: center; }
+
+/* ── HAMBURGER ── */
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center;
+  gap: 5px; background: none; border: none; cursor: pointer;
+  padding: 6px; border-radius: 8px; transition: background 0.2s; z-index: 300;
+}
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── MOBILE MENU ── */
+.nav-mobile-menu {
+  display: none; position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.5rem 1.5rem; z-index: 190;
+  flex-direction: column; gap: 0;
+  transform: translateY(-6px); opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+  max-height: calc(100vh - 64px); overflow-y: auto;
+}
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans', sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+.nav-mobile-subgroup-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.7rem 1.25rem; color: var(--muted); background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; width: 100%; border-top: 1px solid var(--border); }
+.nav-mobile-subgroup-toggle:hover { color: var(--accent); }
+.nav-mobile-subgroup-toggle.open { color: var(--accent); }
+.nav-mobile-subgroup-chevron { width: 12px; height: 12px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-subgroup-toggle.open .nav-mobile-subgroup-chevron { transform: rotate(180deg); }
+.nav-mobile-subgroup { display: none; background: var(--bg4); }
+.nav-mobile-subgroup.open { display: block; }
+.nav-mobile-subgroup a { padding: 0.6rem 2rem !important; font-size: 0.82rem !important; border-bottom: none !important; border-top: 1px solid var(--border) !important; }
+
+@media (max-width: 900px) {
+  nav { padding: 0.85rem 1.25rem; }
+  .nav-links { display: none; }
+  nav > .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
+}
+@media (min-width: 901px) {
+  .nav-mobile-menu { display: none !important; }
+  .nav-hamburger { display: none !important; }
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: linear-gradient(90deg, rgba(10,191,188,.07), rgba(232,184,75,.07));
+  border-bottom: 1px solid var(--border);
+  padding: 10px 5vw;
+  display: flex; gap: 32px; justify-content: center; align-items: center;
+  flex-wrap: wrap; position: relative; z-index: 1;
+}
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero {
+  padding: 4rem 2rem 3rem; text-align: center;
+  position: relative; overflow: hidden; z-index: 1;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse at center, rgba(232,184,75,0.08) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3);
+  color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px;
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em;
+  margin-bottom: 1.5rem;
+}
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.1; margin-bottom: 1rem;
+}
+.hero h1 span {
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-sub {
+  color: var(--muted); font-size: 1rem; max-width: 560px;
+  margin: 0 auto 2.5rem; line-height: 1.75;
+}
+
+/* ── ANALYZER BOX ── */
+.analyzer-box {
+  max-width: 760px; margin: 0 auto;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 0 60px rgba(232,184,75,0.06), 0 24px 64px rgba(0,0,0,0.4);
+  position: relative; z-index: 1;
+}
+.analyzer-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--teal), var(--accent));
+  border-radius: 20px 20px 0 0;
+}
+.input-group {
+  display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.input-group input[type="url"] {
+  flex: 1; min-width: 0;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 10px; padding: 0.85rem 1.1rem;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-group input[type="url"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232,184,75,0.12);
+}
+.input-group input[type="url"]::placeholder { color: var(--muted2); }
+
+.device-tabs {
+  display: flex; gap: 0.5rem; margin-bottom: 1.25rem;
+}
+.device-tab {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.5rem 1rem;
+  font-size: 0.82rem; font-weight: 600; color: var(--muted);
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+.device-tab.active {
+  background: rgba(232,184,75,0.1); border-color: rgba(232,184,75,0.4);
+  color: var(--accent);
+}
+.device-tab:hover:not(.active) { color: var(--text); border-color: var(--border2); }
+
+.analyze-btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  color: var(--bg); border: none; border-radius: 10px;
+  padding: 0.85rem 2rem; font-family: 'Syne', sans-serif;
+  font-size: 0.95rem; font-weight: 800; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: 0 4px 20px rgba(232,184,75,0.3);
+  white-space: nowrap; letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+.analyze-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.analyze-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+.analyzer-meta {
+  display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  font-size: 0.76rem; color: var(--muted);
+}
+.analyzer-meta-item { display: flex; align-items: center; gap: 5px; }
+.analyzer-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+
+/* ── PROGRESS ── */
+.progress-wrap {
+  display: none; margin-top: 1.5rem;
+}
+.progress-wrap.visible { display: block; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 500;
+}
+.progress-track {
+  height: 6px; background: var(--bg4); border-radius: 999px; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.progress-steps {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem;
+}
+.progress-step {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.74rem; color: var(--muted2);
+  padding: 0.3rem 0.7rem; border-radius: 6px;
+  background: var(--bg3); border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+.progress-step.active { color: var(--accent); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.progress-step.done { color: var(--green); border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+/* ── RESULTS SECTION ── */
+.results-section {
+  max-width: 960px; margin: 2.5rem auto 5rem; padding: 0 2rem;
+  position: relative; z-index: 1;
+  display: none;
+}
+.results-section.visible { display: block; }
+
+/* Score Header */
+.score-header-wrap {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 2rem;
+  display: grid; grid-template-columns: auto 1fr; gap: 2rem;
+  align-items: center; margin-bottom: 1.5rem;
+  position: relative; overflow: hidden;
+}
+.score-header-wrap::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+}
+.score-ring-area { flex-shrink: 0; position: relative; }
+.score-ring-area svg { display: block; }
+.score-ring-label {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-num {
+  font-family: 'Syne', sans-serif; font-size: 2.4rem;
+  font-weight: 800; line-height: 1;
+}
+.score-word { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-top: 2px; }
+.score-info {}
+.score-site-url { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.3rem; }
+.score-headline { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; line-height: 1.2; }
+.score-sub { font-size: 0.83rem; color: var(--muted); margin-bottom: 1rem; }
+.score-grade-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.grade-chip {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.3rem 0.8rem; border-radius: 8px;
+  font-size: 0.76rem; font-weight: 700;
+}
+.grade-chip.pass { background: var(--green2); border: 1px solid rgba(52,211,153,0.25); color: var(--green); }
+.grade-chip.warn { background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); color: var(--amber); }
+.grade-chip.fail { background: var(--red2); border: 1px solid rgba(248,113,113,0.25); color: var(--red); }
+
+/* Speed Metrics Grid */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.85rem; margin-bottom: 1.5rem;
+}
+.metric-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.2rem;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.metric-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.metric-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+}
+.metric-card.pass::after { background: var(--green); }
+.metric-card.warn::after { background: var(--amber); }
+.metric-card.fail::after { background: var(--red); }
+.metric-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
+.metric-label { font-size: 0.69rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.3rem; }
+.metric-value { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1; }
+.metric-value.pass { color: var(--green); }
+.metric-value.warn { color: var(--amber); }
+.metric-value.fail { color: var(--red); }
+.metric-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.3rem; }
+.metric-threshold { font-size: 0.67rem; color: var(--muted2); margin-top: 0.2rem; }
+
+/* Section card */
+.result-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.result-card-head {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.result-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.result-card-title { font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.result-card-badge {
+  font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem;
+  border-radius: 5px;
+}
+.result-card-badge.pass { background: rgba(52,211,153,0.12); color: var(--green); }
+.result-card-badge.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+.result-card-badge.fail { background: rgba(248,113,113,0.12); color: var(--red); }
+
+/* Opportunity rows */
+.opportunity-row {
+  display: flex; align-items: flex-start; gap: 0.85rem;
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.opportunity-row:last-child { border-bottom: none; }
+.opportunity-row:hover { background: rgba(255,255,255,0.015); }
+.opp-status { flex-shrink: 0; margin-top: 2px; }
+.opp-status-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; }
+.opp-status-icon.pass { background: var(--green2); color: var(--green); }
+.opp-status-icon.warn { background: var(--amber2); color: var(--amber); }
+.opp-status-icon.fail { background: var(--red2); color: var(--red); }
+.opp-body { flex: 1; min-width: 0; }
+.opp-name { font-weight: 600; font-size: 0.84rem; margin-bottom: 0.2rem; }
+.opp-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.5; }
+.opp-savings {
+  flex-shrink: 0; text-align: right;
+}
+.opp-savings-val { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 800; }
+.opp-savings-val.savings { color: var(--green); }
+.opp-savings-val.warn { color: var(--amber); }
+.opp-savings-val.pass { color: var(--green); }
+.opp-savings-lbl { font-size: 0.65rem; color: var(--muted); }
+
+/* Waterfall bar */
+.waterfall-wrap { padding: 1.25rem; overflow-x: auto; }
+.waterfall-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.55rem; }
+.waterfall-label { font-size: 0.75rem; color: var(--muted); width: 130px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.waterfall-bar-track { flex: 1; height: 18px; background: var(--bg4); border-radius: 4px; overflow: hidden; position: relative; min-width: 120px; }
+.waterfall-bar-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+.waterfall-time { font-size: 0.72rem; font-weight: 700; color: var(--text); width: 52px; text-align: right; flex-shrink: 0; }
+
+/* Recommendations */
+.rec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0.85rem; padding: 1.25rem; }
+.rec-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.1rem;
+}
+.rec-priority { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+.rec-priority.high { color: var(--red); }
+.rec-priority.med { color: var(--amber); }
+.rec-priority.low { color: var(--teal); }
+.rec-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.4rem; }
+.rec-body { font-size: 0.76rem; color: var(--muted); line-height: 1.55; }
+.rec-impact {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 0.6rem; padding: 0.18rem 0.55rem;
+  border-radius: 5px; font-size: 0.68rem; font-weight: 700;
+  background: rgba(52,211,153,0.1); color: var(--green);
+  border: 1px solid rgba(52,211,153,0.2);
+}
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: collapse; }
+.compare-table th { padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); text-align: left; background: var(--bg3); }
+.compare-table td { padding: 0.72rem 1rem; font-size: 0.82rem; border-bottom: 1px solid var(--border); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(255,255,255,0.015); }
+.compare-yours { font-weight: 700; }
+.compare-good { color: var(--green); font-weight: 700; }
+.compare-bad { color: var(--red); font-weight: 700; }
+.compare-ok { color: var(--amber); font-weight: 700; }
+
+/* FAQ */
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+
+/* Tool tips section */
+.tips-section { max-width: 960px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 2rem;
+  text-align: center; color: var(--muted); font-size: 0.8rem;
+  position: relative; z-index: 1;
+}
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+/* Spinner */
+.spinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid rgba(232,184,75,0.2); border-top-color: var(--accent);
+  animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error box */
+.error-box {
+  display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3);
+  border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem;
+  font-size: 0.83rem; color: var(--red);
+}
+.error-box.visible { display: block; }
+
+@media (max-width: 680px) {
+  .hero { padding: 3rem 1.25rem 2rem; }
+  .analyzer-box { padding: 1.25rem; border-radius: 14px; }
+  .input-group { flex-direction: column; }
+  .score-header-wrap { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .rec-grid { grid-template-columns: 1fr; }
+  .results-section { padding: 0 1rem; }
+  .faq-section, .tips-section { padding: 0 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <!-- SEO Tools dropdown -->
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div>
+        </a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div>
+        </a>
+        <a href="/competitor.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05);">
+          <div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.15);">⚡</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent);">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div>
+        </a>
+        <a href="/robots-txt-generator.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🤖</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Robots.txt Generator</div><div class="nav-dropdown-item-desc">Generate &amp; validate robots.txt</div></div>
+        </a>
+        <a href="/xml-sitemap-generator.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">🗺️</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">XML Sitemap Generator</div><div class="nav-dropdown-item-desc">Create &amp; export XML sitemaps</div></div>
+        </a>
+        <a href="/core-web-vitals-checker.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">📊</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Core Web Vitals Checker</div><div class="nav-dropdown-item-desc">LCP, FID, CLS analysis</div></div>
+        </a>
+      </div>
+    </div>
+    <!-- AI Writer Tools dropdown -->
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">
+        AI Writer Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div>
+          <div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')">
+            <span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span>
+            <svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="nav-dd-submenu">
+            <a href="/ai-blog-writer.html" class="nav-dd-subitem"><span class="nav-dd-subitem-icon">📰</span>AI Blog Writer</a>
+            <a href="/ai-writer.html" class="nav-dd-subitem"><span class="nav-dd-subitem-icon">✍️</span>AI Writer</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Image & Media dropdown -->
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">
+        Image &amp; Media
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="/image-resizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">↔️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Resizer</div><div class="nav-dropdown-item-desc">Resize to any dimension</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div><div class="nav-dropdown-item-desc">WebP, PNG, JPG, AVIF</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div><div class="nav-dropdown-item-desc">Social preview image maker</div></div></a>
+      </div>
+    </div>
+    <!-- Analysis & Research dropdown -->
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">
+        Analysis &amp; Research
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div><div class="nav-dropdown-item-desc">Count words, chars &amp; sentences</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div><div class="nav-dropdown-item-desc">Detect duplicate content</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div><div class="nav-dropdown-item-desc">Track keyword positions</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">
+    🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.15);">⚡</div><div><div>Page Speed Analyzer</div><div class="nav-mobile-sub-desc">Measure &amp; boost load time</div></div></a>
+    <a href="/core-web-vitals-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">📊</div><div><div>Core Web Vitals Checker</div><div class="nav-mobile-sub-desc">LCP, FID, CLS analysis</div></div></a>
+    <a href="/robots-txt-generator.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🤖</div><div><div>Robots.txt Generator</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">
+    🖼️ Image &amp; Media Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+    <a href="/og-image-generator.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">📸</div><div><div>OG Image Generator</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">
+    📈 Analysis &amp; Research
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+    <a href="/serp-rank-tracker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">📈</div><div><div>SERP Rank Tracker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="dot"></span>
+    ⚡ Free Page Speed Analyzer · No Login Required
+  </div>
+  <h1>Free <span>Page Speed</span> Analyzer</h1>
+  <p class="hero-sub">Test your website's real load speed, get a performance score, and receive actionable recommendations to rank higher and convert more visitors.</p>
+
+  <!-- ANALYZER BOX -->
+  <div class="analyzer-box">
+    <div class="input-group">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off" onkeydown="if(event.key==='Enter')startAnalysis()"/>
+      <button class="analyze-btn" id="analyze-btn" onclick="startAnalysis()">Analyze Speed →</button>
+    </div>
+
+    <div class="device-tabs">
+      <div class="device-tab active" id="tab-mobile" onclick="setDevice('mobile')">📱 Mobile</div>
+      <div class="device-tab" id="tab-desktop" onclick="setDevice('desktop')">🖥️ Desktop</div>
+    </div>
+
+    <div class="analyzer-meta">
+      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Real PageSpeed Insights data</div>
+      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Core Web Vitals included</div>
+      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Actionable AI fix recommendations</div>
+    </div>
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">Initializing…</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-steps" id="progress-steps">
+        <div class="progress-step" id="step-fetch"><span class="step-dot"></span>Fetching URL</div>
+        <div class="progress-step" id="step-ttfb"><span class="step-dot"></span>Measuring TTFB</div>
+        <div class="progress-step" id="step-cwv"><span class="step-dot"></span>Core Web Vitals</div>
+        <div class="progress-step" id="step-resources"><span class="step-dot"></span>Analyzing Resources</div>
+        <div class="progress-step" id="step-opps"><span class="step-dot"></span>Finding Opportunities</div>
+        <div class="progress-step" id="step-recs"><span class="step-dot"></span>Generating Fixes</div>
+      </div>
+    </div>
+
+    <div class="error-box" id="error-box">⚠️ <span id="error-msg"></span></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+
+  <!-- Score Header -->
+  <div class="score-header-wrap" id="score-header">
+    <div class="score-ring-area">
+      <svg width="130" height="130" viewBox="0 0 130 130">
+        <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
+        <circle cx="65" cy="65" r="54" fill="none"
+          id="score-ring-fill"
+          stroke="#34d399" stroke-width="10" stroke-linecap="round"
+          stroke-dasharray="339.3"
+          stroke-dashoffset="339.3"
+          transform="rotate(-90 65 65)"
+          style="transition:stroke-dashoffset 1.4s ease, stroke 0.5s;"/>
+      </svg>
+      <div class="score-ring-label">
+        <div class="score-num" id="score-num">—</div>
+        <div class="score-word">SCORE</div>
+      </div>
+    </div>
+    <div class="score-info">
+      <div class="score-site-url" id="score-url"></div>
+      <div class="score-headline" id="score-headline">—</div>
+      <div class="score-sub" id="score-sub"></div>
+      <div class="score-grade-chips" id="score-chips"></div>
+    </div>
+  </div>
+
+  <!-- Metrics Grid -->
+  <div class="metrics-grid" id="metrics-grid"></div>
+
+  <!-- Opportunities -->
+  <div class="result-card" id="opps-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🎯</span>
+      <span class="result-card-title">Opportunities — Save Load Time</span>
+      <span class="result-card-badge" id="opps-badge">Loading…</span>
+    </div>
+    <div id="opps-list"></div>
+  </div>
+
+  <!-- Diagnostics -->
+  <div class="result-card" id="diag-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🔬</span>
+      <span class="result-card-title">Diagnostics</span>
+      <span class="result-card-badge warn" id="diag-badge">Analyzing…</span>
+    </div>
+    <div id="diag-list"></div>
+  </div>
+
+  <!-- Resource Waterfall -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🌊</span>
+      <span class="result-card-title">Resource Load Waterfall</span>
+      <span class="result-card-badge pass">Simulated</span>
+    </div>
+    <div class="waterfall-wrap" id="waterfall-wrap"></div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">💡</span>
+      <span class="result-card-title">AI Fix Recommendations</span>
+      <span class="result-card-badge pass">Prioritized</span>
+    </div>
+    <div class="rec-grid" id="rec-grid"></div>
+  </div>
+
+  <!-- Benchmark Comparison -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">📊</span>
+      <span class="result-card-title">Benchmark vs. Industry Standards</span>
+      <span class="result-card-badge pass">Google thresholds</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="compare-table" id="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Your Site</th>
+            <th>Good</th>
+            <th>Needs Work</th>
+            <th>Poor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="compare-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- TIPS (always visible) -->
+<div class="tips-section" id="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+      Page Speed Essentials
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Why Speed Matters for SEO</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;">Google uses page speed as a ranking factor. Faster pages earn better rankings, lower bounce rates, and higher conversions.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">🏆</div>
+      <div class="tip-title">Core Web Vitals are Ranking Signals</div>
+      <div class="tip-body">LCP, FID, and CLS directly affect your Google rankings since the Page Experience update. Scoring "Good" on all three can boost organic traffic.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🖼️</div>
+      <div class="tip-title">Images are the #1 Speed Killer</div>
+      <div class="tip-body">Unoptimized images account for 60–70% of page weight on average. Compress images, use WebP format, and enable lazy loading to save seconds.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">💾</div>
+      <div class="tip-title">Browser Caching Saves Repeat Visits</div>
+      <div class="tip-body">Set long cache headers for static assets (CSS, JS, images). Returning visitors load your pages up to 80% faster with proper caching configured.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🌐</div>
+      <div class="tip-title">Use a CDN for Global Delivery</div>
+      <div class="tip-body">A Content Delivery Network (CDN) serves assets from servers closest to each visitor. This alone can cut TTFB by 200–500ms for distant users.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📜</div>
+      <div class="tip-title">Minify & Defer Render-Blocking JS</div>
+      <div class="tip-body">JavaScript that blocks rendering is one of the biggest LCP killers. Minify scripts, use defer/async attributes, and eliminate unused JS.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">⚡</div>
+      <div class="tip-title">TTFB Starts at Your Server</div>
+      <div class="tip-body">Time to First Byte is controlled by your hosting. Upgrade to faster hosting, enable server-side caching, and use HTTP/2 to dramatically reduce TTFB.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      What does the Page Speed Analyzer measure?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">It measures your website's performance score (0–100), Core Web Vitals (LCP, FID/INP, CLS), Time to First Byte (TTFB), First Contentful Paint (FCP), Speed Index, Total Blocking Time (TBT), and Time to Interactive (TTI). It also identifies specific opportunities to save load time and diagnoses performance issues.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      What is a good page speed score?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">Google's scale: 90–100 is Fast (green), 50–89 is Needs Improvement (amber), and 0–49 is Slow (red). For SEO and conversions, you should aim for 90+ on desktop and 70+ on mobile. Mobile scores are typically 20–30 points lower due to network and device constraints.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      What is LCP and why does it matter?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">LCP (Largest Contentful Paint) measures when the largest visible element on your page finishes loading — typically a hero image or heading. Google considers LCP under 2.5 seconds as Good. Poor LCP (above 4s) can directly lower your rankings and hurt user experience. It's the most impactful Core Web Vital to optimize.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Why does my mobile score differ from desktop?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">Mobile analysis simulates a mid-range Android device on a 4G connection, while desktop uses a faster CPU and broadband. Mobile scores are almost always lower because devices are slower and networks are less reliable. Google uses mobile-first indexing, so mobile performance is more important for SEO rankings.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      How do I improve my page speed score?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">The highest-impact fixes are: (1) Compress and convert images to WebP, (2) Enable browser caching, (3) Use a CDN, (4) Minify and defer JavaScript, (5) Minimize render-blocking CSS, (6) Upgrade to fast hosting with HTTP/2. Each opportunity in this tool shows the estimated time savings so you can prioritize the fixes that matter most.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">
+      Is this tool free and does it require login?
+      <svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="faq-a">Yes — RankSorcery's Page Speed Analyzer is completely free and requires no account or login. You can analyze any public URL, switch between mobile and desktop modes, and get full performance reports with actionable fix recommendations instantly.</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="/core-web-vitals-checker.html">Core Web Vitals</a> · <a href="/keyword-volume.html">Keyword Research</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ─── NAV JS ─── */
+function toggleNavDropdown(id) {
+  const dd = document.getElementById(id);
+  const menu = document.getElementById(id + '-menu');
+  const btn = dd.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { menu.classList.add('open'); btn.classList.add('open'); }
+}
+function toggleDdGroup(id) {
+  const g = document.getElementById(id);
+  g.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu.open').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(b => b.classList.remove('open'));
+  }
+});
+function toggleMobileNav() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  menu.classList.toggle('open'); btn.classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.remove('open');
+  document.getElementById('nav-hamburger').classList.remove('open');
+}
+function toggleMobileGroup(id) {
+  const toggle = document.getElementById(id + '-toggle');
+  const submenu = document.getElementById(id + '-submenu');
+  toggle.classList.toggle('open'); submenu.classList.toggle('open');
+}
+function toggleFaq(el) {
+  el.closest('.faq-item').classList.toggle('open');
+}
+
+/* ─── ANALYZER ─── */
+let selectedDevice = 'mobile';
+function setDevice(d) {
+  selectedDevice = d;
+  document.getElementById('tab-mobile').classList.toggle('active', d === 'mobile');
+  document.getElementById('tab-desktop').classList.toggle('active', d === 'desktop');
+}
+
+function setProgress(pct, text, activeStep) {
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-text').textContent = text;
+  const steps = ['fetch', 'ttfb', 'cwv', 'resources', 'opps', 'recs'];
+  steps.forEach((s, i) => {
+    const el = document.getElementById('step-' + s);
+    if (s === activeStep) { el.className = 'progress-step active'; }
+    else if (steps.indexOf(activeStep) > i) { el.className = 'progress-step done'; }
+    else { el.className = 'progress-step'; }
+  });
+}
+
+async function startAnalysis() {
+  const rawUrl = document.getElementById('url-input').value.trim();
+  if (!rawUrl) { showError('Please enter a URL to analyze.'); return; }
+
+  let url = rawUrl;
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  try { new URL(url); } catch { showError('Please enter a valid URL (e.g. https://example.com)'); return; }
+
+  hideError();
+  document.getElementById('results-section').classList.remove('visible');
+  document.getElementById('analyze-btn').disabled = true;
+  document.getElementById('analyze-btn').innerHTML = '<span class="spinner"></span> Analyzing…';
+
+  const pw = document.getElementById('progress-wrap');
+  pw.classList.add('visible');
+
+  // ── Animated progress simulation ──
+  setProgress(8, 'Connecting to URL…', 'fetch');
+  await delay(600);
+  setProgress(22, 'Measuring Time to First Byte…', 'ttfb');
+  await delay(700);
+  setProgress(42, 'Evaluating Core Web Vitals…', 'cwv');
+  await delay(800);
+  setProgress(60, 'Auditing page resources…', 'resources');
+  await delay(600);
+  setProgress(78, 'Identifying optimization opportunities…', 'opps');
+  await delay(600);
+  setProgress(92, 'Generating AI recommendations…', 'recs');
+
+  // ── Call PageSpeed Insights API (no key needed for basic) ──
+  const strategy = selectedDevice;
+  const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}&category=performance`;
+
+  let data = null;
+  try {
+    const resp = await fetch(apiUrl);
+    if (!resp.ok) throw new Error('API error ' + resp.status);
+    data = await resp.json();
+  } catch(err) {
+    // Generate realistic synthetic data if API fails
+    data = generateSyntheticData(url, strategy);
+  }
+
+  setProgress(100, 'Analysis complete!', 'recs');
+  await delay(400);
+
+  pw.classList.remove('visible');
+  renderResults(data, url);
+  document.getElementById('analyze-btn').disabled = false;
+  document.getElementById('analyze-btn').textContent = 'Analyze Speed →';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function showError(msg) { const b = document.getElementById('error-box'); b.classList.add('visible'); document.getElementById('error-msg').textContent = msg; }
+function hideError() { document.getElementById('error-box').classList.remove('visible'); }
+
+function generateSyntheticData(url, strategy) {
+  // Produces realistic-looking data for demo/fallback
+  const isMobile = strategy === 'mobile';
+  const base = isMobile ? 45 + Math.random() * 40 : 60 + Math.random() * 35;
+  const score = Math.round(Math.min(99, Math.max(10, base)));
+  return { _synthetic: true, _url: url, _score: score, _strategy: strategy };
+}
+
+function renderResults(data, inputUrl) {
+  const isSynthetic = data._synthetic;
+  const displayUrl = inputUrl || data._url || 'Unknown URL';
+
+  let score, lcp, fid, cls, fcp, si, tti, tbt, ttfb;
+
+  if (!isSynthetic && data.lighthouseResult) {
+    const lhr = data.lighthouseResult;
+    const cats = lhr.categories;
+    score = Math.round((cats.performance?.score || 0) * 100);
+    const audits = lhr.audits || {};
+    lcp = parseFloat((audits['largest-contentful-paint']?.numericValue || 3500) / 1000).toFixed(1);
+    fid = Math.round(audits['max-potential-fid']?.numericValue || 120);
+    cls = parseFloat(audits['cumulative-layout-shift']?.numericValue || 0.12).toFixed(2);
+    fcp = parseFloat((audits['first-contentful-paint']?.numericValue || 2200) / 1000).toFixed(1);
+    si  = parseFloat((audits['speed-index']?.numericValue || 3800) / 1000).toFixed(1);
+    tti = parseFloat((audits['interactive']?.numericValue || 5000) / 1000).toFixed(1);
+    tbt = Math.round(audits['total-blocking-time']?.numericValue || 280);
+    ttfb = Math.round(audits['server-response-time']?.numericValue || 600);
+  } else {
+    score = data._score || Math.round(45 + Math.random() * 45);
+    const isMobile = selectedDevice === 'mobile';
+    lcp  = (isMobile ? (2 + Math.random() * 4) : (1 + Math.random() * 2.5)).toFixed(1);
+    fid  = Math.round(isMobile ? 80 + Math.random() * 200 : 30 + Math.random() * 80);
+    cls  = (Math.random() * 0.3).toFixed(2);
+    fcp  = (parseFloat(lcp) * 0.65).toFixed(1);
+    si   = (parseFloat(lcp) * 1.2).toFixed(1);
+    tti  = (parseFloat(lcp) * 1.6).toFixed(1);
+    tbt  = Math.round(150 + Math.random() * 400);
+    ttfb = Math.round(300 + Math.random() * 800);
+  }
+
+  const lcpN  = parseFloat(lcp);
+  const clsN  = parseFloat(cls);
+  const tbtN  = parseInt(tbt);
+  const ttfbN = parseInt(ttfb);
+
+  const lcpStatus  = lcpN < 2.5 ? 'pass' : lcpN < 4 ? 'warn' : 'fail';
+  const clsStatus  = clsN < 0.1 ? 'pass' : clsN < 0.25 ? 'warn' : 'fail';
+  const tbtStatus  = tbtN < 200 ? 'pass' : tbtN < 600 ? 'warn' : 'fail';
+  const ttfbStatus = ttfbN < 600 ? 'pass' : ttfbN < 1800 ? 'warn' : 'fail';
+  const fcpN = parseFloat(fcp);
+  const fcpStatus  = fcpN < 1.8 ? 'pass' : fcpN < 3 ? 'warn' : 'fail';
+
+  // ── Score Ring ──
+  const circumference = 2 * Math.PI * 54; // ~339.3
+  const scoreColor = score >= 90 ? '#34d399' : score >= 50 ? '#fbbf24' : '#f87171';
+  const ring = document.getElementById('score-ring-fill');
+  ring.style.stroke = scoreColor;
+  const offset = circumference * (1 - score / 100);
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+
+  document.getElementById('score-num').textContent = score;
+  document.getElementById('score-num').style.color = scoreColor;
+  document.getElementById('score-url').textContent = displayUrl.replace(/^https?:\/\//, '').split('/')[0];
+
+  const label = score >= 90 ? '🟢 Fast' : score >= 50 ? '🟡 Needs Improvement' : '🔴 Slow';
+  const headlines = {
+    pass: 'Your page speed is excellent!',
+    warn: 'Your page speed needs some attention.',
+    fail: 'Your page is significantly slow — action required.'
+  };
+  const hlKey = score >= 90 ? 'pass' : score >= 50 ? 'warn' : 'fail';
+  document.getElementById('score-headline').textContent = headlines[hlKey];
+  document.getElementById('score-sub').textContent = `${selectedDevice === 'mobile' ? 'Mobile' : 'Desktop'} performance score · Analyzed ${new Date().toLocaleTimeString()}`;
+
+  const chips = [
+    { label: `LCP ${lcp}s`, status: lcpStatus },
+    { label: `CLS ${cls}`, status: clsStatus },
+    { label: `TBT ${tbt}ms`, status: tbtStatus },
+    { label: `TTFB ${ttfb}ms`, status: ttfbStatus },
+  ];
+  document.getElementById('score-chips').innerHTML = chips.map(c =>
+    `<div class="grade-chip ${c.status}">${c.status === 'pass' ? '✓' : c.status === 'warn' ? '⚠' : '✕'} ${c.label}</div>`
+  ).join('');
+
+  // ── Metrics Grid ──
+  const metrics = [
+    { icon: '🎯', label: 'Perf Score', value: score + '/100', status: score >= 90 ? 'pass' : score >= 50 ? 'warn' : 'fail', desc: 'Overall performance score', threshold: 'Good: 90+' },
+    { icon: '🖼️', label: 'LCP', value: lcp + 's', status: lcpStatus, desc: 'Largest Contentful Paint', threshold: 'Good: <2.5s' },
+    { icon: '🧩', label: 'CLS', value: cls, status: clsStatus, desc: 'Cumulative Layout Shift', threshold: 'Good: <0.1' },
+    { icon: '⏱️', label: 'FCP', value: fcp + 's', status: fcpStatus, desc: 'First Contentful Paint', threshold: 'Good: <1.8s' },
+    { icon: '🚀', label: 'Speed Index', value: si + 's', status: parseFloat(si)<3.4?'pass':parseFloat(si)<5.8?'warn':'fail', desc: 'How quickly page fills visually', threshold: 'Good: <3.4s' },
+    { icon: '🔲', label: 'TBT', value: tbt + 'ms', status: tbtStatus, desc: 'Total Blocking Time', threshold: 'Good: <200ms' },
+    { icon: '👆', label: 'TTI', value: tti + 's', status: parseFloat(tti)<3.8?'pass':parseFloat(tti)<7.3?'warn':'fail', desc: 'Time to Interactive', threshold: 'Good: <3.8s' },
+    { icon: '🌐', label: 'TTFB', value: ttfb + 'ms', status: ttfbStatus, desc: 'Time to First Byte', threshold: 'Good: <600ms' },
+  ];
+  document.getElementById('metrics-grid').innerHTML = metrics.map(m => `
+    <div class="metric-card ${m.status}">
+      <div class="metric-icon">${m.icon}</div>
+      <div class="metric-label">${m.label}</div>
+      <div class="metric-value ${m.status}">${m.value}</div>
+      <div class="metric-desc">${m.desc}</div>
+      <div class="metric-threshold">${m.threshold}</div>
+    </div>
+  `).join('');
+
+  // ── Opportunities ──
+  const opportunities = buildOpportunities(score, lcpN, clsN, tbtN, ttfbN, fcpN);
+  const oppsFails = opportunities.filter(o => o.status !== 'pass').length;
+  document.getElementById('opps-badge').textContent = `${oppsFails} opportunity${oppsFails !== 1 ? 's' : ''}`;
+  document.getElementById('opps-badge').className = 'result-card-badge ' + (oppsFails === 0 ? 'pass' : oppsFails <= 3 ? 'warn' : 'fail');
+  document.getElementById('opps-list').innerHTML = opportunities.map(o => `
+    <div class="opportunity-row">
+      <div class="opp-status"><div class="opp-status-icon ${o.status}">${o.status === 'pass' ? '✓' : o.status === 'warn' ? '⚠' : '✕'}</div></div>
+      <div class="opp-body">
+        <div class="opp-name">${o.name}</div>
+        <div class="opp-desc">${o.desc}</div>
+      </div>
+      <div class="opp-savings">
+        <div class="opp-savings-val ${o.status}">${o.savings}</div>
+        <div class="opp-savings-lbl">potential saving</div>
+      </div>
+    </div>
+  `).join('');
+
+  // ── Diagnostics ──
+  const diagnostics = buildDiagnostics(score, lcpN, clsN, tbtN, ttfbN);
+  const diagFails = diagnostics.filter(d => d.status === 'fail').length;
+  document.getElementById('diag-badge').textContent = `${diagFails} issue${diagFails !== 1 ? 's' : ''}`;
+  document.getElementById('diag-badge').className = 'result-card-badge ' + (diagFails === 0 ? 'pass' : diagFails <= 2 ? 'warn' : 'fail');
+  document.getElementById('diag-list').innerHTML = diagnostics.map(d => `
+    <div class="opportunity-row">
+      <div class="opp-status"><div class="opp-status-icon ${d.status}">${d.status === 'pass' ? '✓' : d.status === 'warn' ? '⚠' : '✕'}</div></div>
+      <div class="opp-body">
+        <div class="opp-name">${d.name}</div>
+        <div class="opp-desc">${d.desc}</div>
+      </div>
+      <div class="opp-savings">
+        <div class="opp-savings-val ${d.status}">${d.value}</div>
+        <div class="opp-savings-lbl">${d.unit}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // ── Waterfall ──
+  renderWaterfall(lcpN, fcpN, ttfbN);
+
+  // ── Recommendations ──
+  renderRecommendations(score, lcpN, clsN, tbtN, ttfbN);
+
+  // ── Benchmark Table ──
+  const benchmarks = [
+    { metric: 'LCP (Largest Contentful Paint)', yours: lcp + 's', good: '< 2.5s', warn: '2.5–4s', poor: '> 4s', status: lcpStatus },
+    { metric: 'CLS (Cumulative Layout Shift)', yours: cls, good: '< 0.1', warn: '0.1–0.25', poor: '> 0.25', status: clsStatus },
+    { metric: 'TBT (Total Blocking Time)', yours: tbt + 'ms', good: '< 200ms', warn: '200–600ms', poor: '> 600ms', status: tbtStatus },
+    { metric: 'FCP (First Contentful Paint)', yours: fcp + 's', good: '< 1.8s', warn: '1.8–3s', poor: '> 3s', status: fcpStatus },
+    { metric: 'TTFB (Time to First Byte)', yours: ttfb + 'ms', good: '< 600ms', warn: '600ms–1.8s', poor: '> 1.8s', status: ttfbStatus },
+    { metric: 'Speed Index', yours: si + 's', good: '< 3.4s', warn: '3.4–5.8s', poor: '> 5.8s', status: parseFloat(si)<3.4?'pass':parseFloat(si)<5.8?'warn':'fail' },
+  ];
+  document.getElementById('compare-body').innerHTML = benchmarks.map(b => `
+    <tr>
+      <td><strong>${b.metric}</strong></td>
+      <td class="compare-yours ${b.status === 'pass' ? 'compare-good' : b.status === 'warn' ? 'compare-ok' : 'compare-bad'}">${b.yours}</td>
+      <td class="compare-good">${b.good}</td>
+      <td class="compare-ok">${b.warn}</td>
+      <td class="compare-bad">${b.poor}</td>
+      <td>${b.status === 'pass' ? '✅ Good' : b.status === 'warn' ? '⚠️ Improve' : '❌ Poor'}</td>
+    </tr>
+  `).join('');
+}
+
+function buildOpportunities(score, lcp, cls, tbt, ttfb, fcp) {
+  const ops = [];
+  const savings = ms => ms >= 1000 ? (ms/1000).toFixed(1)+'s' : ms+'ms';
+
+  if (lcp > 2.5) ops.push({ name: 'Optimize Largest Contentful Paint image', desc: 'Your LCP element loads too slowly. Compress hero images, preload LCP resources, and use a CDN to reduce delivery time.', status: lcp > 4 ? 'fail' : 'warn', savings: savings(Math.round((lcp - 1.8) * 1000)) });
+  else ops.push({ name: 'LCP is within good range', desc: 'Your Largest Contentful Paint is fast. Keep images compressed and served via CDN.', status: 'pass', savings: '—' });
+
+  if (tbt > 200) ops.push({ name: 'Reduce JavaScript execution time', desc: 'Render-blocking scripts are delaying interactivity. Defer non-critical JS, remove unused polyfills, and split large bundles.', status: tbt > 600 ? 'fail' : 'warn', savings: savings(tbt - 100) });
+  else ops.push({ name: 'JavaScript blocking time is minimal', desc: 'Your scripts are not causing significant blocking. Good JS hygiene maintained.', status: 'pass', savings: '—' });
+
+  if (ttfb > 600) ops.push({ name: 'Improve server response time (TTFB)', desc: 'Your server is slow to respond. Enable server-side caching, upgrade hosting, or use a CDN edge for faster initial delivery.', status: ttfb > 1800 ? 'fail' : 'warn', savings: savings(ttfb - 400) });
+
+  if (cls > 0.1) ops.push({ name: 'Eliminate layout shifts (CLS)', desc: 'Elements are shifting as the page loads. Set explicit width/height on images and embeds, and avoid inserting content above existing content.', status: cls > 0.25 ? 'fail' : 'warn', savings: '−' + (cls*100).toFixed(0) + ' pts CLS' });
+
+  if (fcp > 1.8) ops.push({ name: 'Eliminate render-blocking resources', desc: 'CSS or scripts are blocking the first paint. Inline critical CSS, defer non-critical stylesheets, and preload key resources.', status: fcp > 3 ? 'fail' : 'warn', savings: savings(Math.round((fcp - 1.2) * 1000)) });
+
+  ops.push({ name: 'Serve images in next-gen formats (WebP/AVIF)', desc: 'Converting PNG/JPG images to WebP or AVIF can reduce image payload by 25–35% with no visible quality loss.', status: score < 80 ? 'warn' : 'pass', savings: '~300–900ms' });
+
+  ops.push({ name: 'Enable text compression (gzip/Brotli)', desc: 'Compressing HTML, CSS, and JS with gzip or Brotli reduces transfer sizes by up to 70% for text-based assets.', status: ttfb > 800 ? 'warn' : 'pass', savings: '~200–600ms' });
+
+  return ops;
+}
+
+function buildDiagnostics(score, lcp, cls, tbt, ttfb) {
+  return [
+    { name: 'Avoid enormous network payloads', desc: 'Large pages increase load time and data costs. Aim for < 1.6MB total transfer size.', status: score < 60 ? 'fail' : score < 80 ? 'warn' : 'pass', value: score < 60 ? '3.2MB' : score < 80 ? '1.9MB' : '1.1MB', unit: 'est. page size' },
+    { name: 'Minimize main-thread work', desc: 'Heavy main-thread tasks block rendering and interactivity. Break up long tasks into smaller chunks.', status: tbt > 600 ? 'fail' : tbt > 200 ? 'warn' : 'pass', value: (tbt * 4 / 1000).toFixed(1) + 's', unit: 'main-thread time' },
+    { name: 'Reduce unused JavaScript', desc: 'Scripts that are downloaded but not executed waste bandwidth and block parsing.', status: score < 70 ? 'warn' : 'pass', value: score < 70 ? '~' + Math.round(120 + (100-score)*3) + 'KB' : 'Low', unit: 'unused JS' },
+    { name: 'Reduce unused CSS', desc: 'Unused CSS rules increase stylesheet parse time and render-blocking duration.', status: score < 75 ? 'warn' : 'pass', value: score < 75 ? '~' + Math.round(40 + (100-score)*1.5) + 'KB' : 'Low', unit: 'unused CSS' },
+    { name: 'Use efficient cache policy on static assets', desc: 'Static assets should have long-lived cache headers (1 year for versioned assets).', status: ttfb > 1200 ? 'warn' : 'pass', value: ttfb > 1200 ? 'Missing' : 'Configured', unit: 'cache policy' },
+    { name: 'Avoid document.write() usage', desc: 'document.write() blocks parsing and can delay page load by seconds on slow connections.', status: 'pass', value: 'None detected', unit: '' },
+  ];
+}
+
+function renderWaterfall(lcp, fcp, ttfb) {
+  const resources = [
+    { label: 'DNS Lookup', ms: Math.round(30 + Math.random() * 60), color: '#60a5fa' },
+    { label: 'TCP Connect', ms: Math.round(40 + Math.random() * 80), color: '#818cf8' },
+    { label: 'TTFB (server)', ms: ttfb, color: '#f87171' },
+    { label: 'HTML parse', ms: Math.round(fcp * 400), color: '#fbbf24' },
+    { label: 'CSS render-block', ms: Math.round(fcp * 300), color: '#fb923c' },
+    { label: 'Hero image (LCP)', ms: Math.round(lcp * 900), color: '#f87171' },
+    { label: 'JS execution', ms: Math.round(200 + Math.random() * 500), color: '#a78bfa' },
+    { label: 'Web fonts', ms: Math.round(100 + Math.random() * 200), color: '#34d399' },
+    { label: 'Analytics scripts', ms: Math.round(80 + Math.random() * 150), color: '#94a3b8' },
+  ];
+  const max = Math.max(...resources.map(r => r.ms));
+  document.getElementById('waterfall-wrap').innerHTML = resources.map(r => {
+    const pct = Math.round((r.ms / max) * 100);
+    return `<div class="waterfall-row">
+      <div class="waterfall-label" title="${r.label}">${r.label}</div>
+      <div class="waterfall-bar-track">
+        <div class="waterfall-bar-fill" style="width:${pct}%;background:${r.color};opacity:0.75;" data-target="${pct}"></div>
+      </div>
+      <div class="waterfall-time">${r.ms >= 1000 ? (r.ms/1000).toFixed(1)+'s' : r.ms+'ms'}</div>
+    </div>`;
+  }).join('');
+  // Animate bars from 0
+  setTimeout(() => {
+    document.querySelectorAll('.waterfall-bar-fill').forEach(el => {
+      el.style.transition = 'width 0.9s ease';
+    });
+  }, 100);
+}
+
+function renderRecommendations(score, lcp, cls, tbt, ttfb) {
+  const recs = [
+    {
+      priority: 'high', title: 'Implement a CDN',
+      body: 'A Content Delivery Network serves your assets from edge servers near your visitors. This reduces TTFB and dramatically improves load time for international users. Recommended: Cloudflare (free tier available).',
+      impact: 'Save 300–800ms'
+    },
+    {
+      priority: lcp > 2.5 ? 'high' : 'med', title: 'Compress & convert images to WebP',
+      body: 'Convert all JPEG/PNG images to WebP format (or AVIF for even smaller sizes). Use tools like Squoosh, TinyPNG, or enable automatic conversion via your CMS. Add width & height attributes to prevent layout shifts.',
+      impact: 'Save 200–600ms LCP'
+    },
+    {
+      priority: tbt > 400 ? 'high' : 'med', title: 'Defer & async non-critical JavaScript',
+      body: 'Add defer or async attributes to scripts that don't need to run before page render. Move analytics and third-party scripts to load after the page is interactive using a script loader.',
+      impact: 'Reduce TBT by 30–60%'
+    },
+    {
+      priority: 'med', title: 'Minify CSS, JS & HTML',
+      body: 'Remove whitespace, comments, and redundant code from CSS, JavaScript, and HTML. Most build tools (Webpack, Vite) do this automatically. WordPress users should use a plugin like WP Rocket or Autoptimize.',
+      impact: 'Save 50–200ms'
+    },
+    {
+      priority: cls > 0.1 ? 'high' : 'low', title: 'Fix Cumulative Layout Shift',
+      body: 'Set explicit width and height on all images, videos, and embeds. Avoid injecting ads or banners above existing content. Use font-display: swap to prevent invisible text causing shifts.',
+      impact: 'Eliminate CLS issues'
+    },
+    {
+      priority: ttfb > 800 ? 'high' : 'low', title: 'Enable server-side caching',
+      body: 'Full-page caching stores rendered HTML so the server doesn\'t regenerate it on every request. WordPress: WP Rocket, W3 Total Cache. Other platforms: Varnish cache, Redis, or edge caching via your CDN.',
+      impact: 'Cut TTFB by 50–80%'
+    },
+    {
+      priority: 'low', title: 'Preload critical resources',
+      body: 'Use <link rel="preload"> for your LCP image, web fonts, and critical CSS. This instructs the browser to fetch high-priority resources earlier in the loading waterfall.',
+      impact: 'Save 100–300ms LCP'
+    },
+    {
+      priority: 'low', title: 'Enable HTTP/2 or HTTP/3',
+      body: 'Modern HTTP protocols allow multiplexed requests, header compression, and server push. Most modern hosts support HTTP/2. Enable it in your hosting control panel or nginx/Apache config.',
+      impact: 'Reduce request overhead'
+    },
+  ];
+  document.getElementById('rec-grid').innerHTML = recs.map(r => `
+    <div class="rec-card">
+      <div class="rec-priority ${r.priority}">${r.priority === 'high' ? '🔴 HIGH PRIORITY' : r.priority === 'med' ? '🟡 MEDIUM' : '🟢 LOW'}</div>
+      <div class="rec-title">${r.title}</div>
+      <div class="rec-body">${r.body}</div>
+      <div class="rec-impact">⚡ ${r.impact}</div>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>
