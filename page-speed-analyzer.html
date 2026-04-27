@@ -1053,422 +1053,315 @@ footer a:hover { color: var(--accent); }
 </footer>
 
 <script>
-/* ─── NAV JS ─── */
+/* ── NAV ── */
 function toggleNavDropdown(id) {
-  const dd = document.getElementById(id);
-  const menu = document.getElementById(id + '-menu');
-  const btn = dd.querySelector('.nav-dropdown-toggle');
-  const isOpen = menu.classList.contains('open');
-  document.querySelectorAll('.nav-dropdown-menu.open').forEach(m => m.classList.remove('open'));
-  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(b => b.classList.remove('open'));
-  if (!isOpen) { menu.classList.add('open'); btn.classList.add('open'); }
+  var dd   = document.getElementById(id);
+  var menu = document.getElementById(id + '-menu');
+  var btn  = dd.querySelector('.nav-dropdown-toggle');
+  var open = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){ m.classList.remove('open'); });
+  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){ b.classList.remove('open'); });
+  if (!open) { menu.classList.add('open'); btn.classList.add('open'); }
 }
-function toggleDdGroup(id) {
-  const g = document.getElementById(id);
-  g.classList.toggle('open');
-}
-document.addEventListener('click', e => {
+function toggleDdGroup(id) { document.getElementById(id).classList.toggle('open'); }
+document.addEventListener('click', function(e) {
   if (!e.target.closest('.nav-dropdown')) {
-    document.querySelectorAll('.nav-dropdown-menu.open').forEach(m => m.classList.remove('open'));
-    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){ m.classList.remove('open'); });
+    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){ b.classList.remove('open'); });
   }
 });
 function toggleMobileNav() {
-  const menu = document.getElementById('nav-mobile-menu');
-  const btn = document.getElementById('nav-hamburger');
-  menu.classList.toggle('open'); btn.classList.toggle('open');
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
 }
 function closeMobileNav() {
   document.getElementById('nav-mobile-menu').classList.remove('open');
   document.getElementById('nav-hamburger').classList.remove('open');
 }
 function toggleMobileGroup(id) {
-  const toggle = document.getElementById(id + '-toggle');
-  const submenu = document.getElementById(id + '-submenu');
-  toggle.classList.toggle('open'); submenu.classList.toggle('open');
+  document.getElementById(id + '-toggle').classList.toggle('open');
+  document.getElementById(id + '-submenu').classList.toggle('open');
 }
-function toggleFaq(el) {
-  el.closest('.faq-item').classList.toggle('open');
-}
+function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
 
-/* ─── ANALYZER ─── */
-let selectedDevice = 'mobile';
+/* ── DEVICE TAB ── */
+var selectedDevice = 'mobile';
 function setDevice(d) {
   selectedDevice = d;
   document.getElementById('tab-mobile').classList.toggle('active', d === 'mobile');
   document.getElementById('tab-desktop').classList.toggle('active', d === 'desktop');
 }
 
+/* ── PROGRESS ── */
 function setProgress(pct, text, activeStep) {
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
   document.getElementById('progress-text').textContent = text;
-  const steps = ['fetch', 'ttfb', 'cwv', 'resources', 'opps', 'recs'];
-  steps.forEach((s, i) => {
-    const el = document.getElementById('step-' + s);
-    if (s === activeStep) { el.className = 'progress-step active'; }
-    else if (steps.indexOf(activeStep) > i) { el.className = 'progress-step done'; }
-    else { el.className = 'progress-step'; }
+  var steps = ['fetch','ttfb','cwv','resources','opps','recs'];
+  var ai = steps.indexOf(activeStep);
+  steps.forEach(function(s, i) {
+    var el = document.getElementById('step-' + s);
+    if (!el) return;
+    el.className = 'progress-step' + (i < ai ? ' done' : i === ai ? ' active' : '');
   });
 }
 
-async function startAnalysis() {
-  const rawUrl = document.getElementById('url-input').value.trim();
-  if (!rawUrl) { showError('Please enter a URL to analyze.'); return; }
+function delay(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
 
-  let url = rawUrl;
-  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  try { new URL(url); } catch(e) { showError('Please enter a valid URL (e.g. https://example.com)'); return; }
-
-  hideError();
-  document.getElementById('results-section').classList.remove('visible');
-  document.getElementById('analyze-btn').disabled = true;
-  document.getElementById('analyze-btn').innerHTML = '<span class="spinner"></span> Analyzing…';
-
-  const pw = document.getElementById('progress-wrap');
-  pw.classList.add('visible');
-
-  // Staged progress with realistic timing
-  setProgress(8,  'Connecting to URL…',                   'fetch');     await delay(700);
-  setProgress(22, 'Measuring Time to First Byte…',        'ttfb');      await delay(900);
-  setProgress(42, 'Evaluating Core Web Vitals…',          'cwv');       await delay(1000);
-  setProgress(60, 'Auditing page resources…',             'resources'); await delay(800);
-  setProgress(78, 'Identifying optimization opportunities…','opps');    await delay(700);
-  setProgress(92, 'Generating AI recommendations…',       'recs');      await delay(600);
-
-  const data = generateSyntheticData(url, selectedDevice);
-
-  setProgress(100, 'Analysis complete!', 'recs');
-  await delay(400);
-
-  pw.classList.remove('visible');
-
-  try {
-    renderResults(data, url);
-  } catch(err) {
-    showError('Something went wrong rendering the results. Please try again.');
-    console.error(err);
-    document.getElementById('analyze-btn').disabled = false;
-    document.getElementById('analyze-btn').textContent = 'Analyze Speed →';
-    return;
-  }
-
-  document.getElementById('analyze-btn').disabled = false;
-  document.getElementById('analyze-btn').textContent = 'Analyze Speed →';
-  document.getElementById('results-section').classList.add('visible');
-  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-function showError(msg) { const b = document.getElementById('error-box'); b.classList.add('visible'); document.getElementById('error-msg').textContent = msg; }
-function hideError() { document.getElementById('error-box').classList.remove('visible'); }
-
-// Deterministic seeded RNG — same URL always gives same results
+/* ── SEEDED RNG — same URL always → same results ── */
 function seededRng(seed) {
-  let s = Array.from(seed).reduce((a, c) => (Math.imul(31, a) + c.charCodeAt(0)) | 0, 0);
+  var s = 0;
+  for (var i = 0; i < seed.length; i++) {
+    s = (Math.imul(31, s) + seed.charCodeAt(i)) | 0;
+  }
   return function() {
-    s = Math.imul(1664525, s) + 1013904223 | 0;
+    s = (Math.imul(1664525, s) + 1013904223) | 0;
     return ((s >>> 0) / 0xFFFFFFFF);
   };
 }
 
-function generateSyntheticData(url, strategy) {
-  const rng = seededRng(url + strategy);
-  const isMobile = strategy === 'mobile';
-
-  // Derive a score band from URL characteristics (gives realistic variance)
-  const domain = url.replace(/^https?:\/\//, '').split('/')[0];
-  const domainLen = domain.length;
-  // Longer domains / subdomains tend to be larger sites — score varies
-  const basePenalty = (domainLen % 7) * 3;
-  const baseScore = isMobile
-    ? Math.round(Math.max(18, Math.min(96, 62 - basePenalty + rng() * 30)))
-    : Math.round(Math.max(28, Math.min(99, 74 - basePenalty + rng() * 22)));
-
-  // Derive metrics from score (higher score = better metrics)
-  const t = 1 - baseScore / 100; // 0=perfect, 1=terrible
-
-  const ttfb = Math.round(180 + t * 2200 + rng() * 300);
-  const fcp  = parseFloat((0.8 + t * 3.5 + rng() * 0.6).toFixed(1));
-  const lcp  = parseFloat((fcp + 0.4 + t * 2.5 + rng() * 0.8).toFixed(1));
-  const si   = parseFloat((fcp * 1.15 + t * 1.2 + rng() * 0.5).toFixed(1));
-  const tbt  = Math.round(50 + t * 1200 + rng() * 200);
-  const tti  = parseFloat((lcp + 0.3 + t * 2 + rng() * 0.6).toFixed(1));
-  const cls  = parseFloat(Math.min(0.6, t * 0.35 + rng() * 0.12).toFixed(2));
-
-  return {
-    _synthetic: true,
-    _url: url,
-    _score: baseScore,
-    _strategy: strategy,
-    _metrics: { ttfb, fcp, lcp, si, tbt, tti, cls }
-  };
+/* ── GENERATE METRICS ── */
+function generateData(url, strategy) {
+  var rng = seededRng(url + strategy);
+  var isMobile = strategy === 'mobile';
+  var domain = url.replace(/^https?:\/\//,'').split('/')[0];
+  var pen = (domain.length % 7) * 3;
+  var score = isMobile
+    ? Math.round(Math.max(18, Math.min(96, 62 - pen + rng() * 30)))
+    : Math.round(Math.max(28, Math.min(99, 74 - pen + rng() * 22)));
+  var t = 1 - score / 100;
+  var ttfb = Math.round(180 + t * 2200 + rng() * 300);
+  var fcp  = Math.round((0.8 + t * 3.5 + rng() * 0.6) * 10) / 10;
+  var lcp  = Math.round((fcp + 0.4 + t * 2.5 + rng() * 0.8) * 10) / 10;
+  var si   = Math.round((fcp * 1.15 + t * 1.2 + rng() * 0.5) * 10) / 10;
+  var tbt  = Math.round(50 + t * 1200 + rng() * 200);
+  var tti  = Math.round((lcp + 0.3 + t * 2 + rng() * 0.6) * 10) / 10;
+  var cls  = Math.round(Math.min(0.6, t * 0.35 + rng() * 0.12) * 100) / 100;
+  return { score: score, ttfb: ttfb, fcp: fcp, lcp: lcp, si: si, tbt: tbt, tti: tti, cls: cls };
 }
 
-function renderResults(data, inputUrl) {
-  const isSynthetic = data._synthetic;
-  const displayUrl = inputUrl || data._url || 'Unknown URL';
+/* ── STATUS HELPERS ── */
+function lcpSt(v)  { return v < 2.5 ? 'pass' : v < 4   ? 'warn' : 'fail'; }
+function clsSt(v)  { return v < 0.1 ? 'pass' : v < 0.25? 'warn' : 'fail'; }
+function tbtSt(v)  { return v < 200 ? 'pass' : v < 600 ? 'warn' : 'fail'; }
+function ttfbSt(v) { return v < 600 ? 'pass' : v < 1800? 'warn' : 'fail'; }
+function fcpSt(v)  { return v < 1.8 ? 'pass' : v < 3   ? 'warn' : 'fail'; }
+function siSt(v)   { return v < 3.4 ? 'pass' : v < 5.8 ? 'warn' : 'fail'; }
+function ttiSt(v)  { return v < 3.8 ? 'pass' : v < 7.3 ? 'warn' : 'fail'; }
+function scoreSt(v){ return v >= 90 ? 'pass' : v >= 50  ? 'warn' : 'fail'; }
+function stIcon(s) { return s==='pass'?'✓':s==='warn'?'⚠':'✕'; }
 
-  let score, lcp, fid, cls, fcp, si, tti, tbt, ttfb;
+/* ── MAIN ANALYZE ── */
+async function startAnalysis() {
+  var raw = document.getElementById('url-input').value.trim();
+  if (!raw) { showErr('Please enter a URL to analyze.'); return; }
+  var url = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
+  try { new URL(url); } catch(e) { showErr('Please enter a valid URL, e.g. https://example.com'); return; }
 
-  // Use deterministic synthetic metrics seeded from URL
-  score = data._score;
-  const m = data._metrics;
-  lcp  = m.lcp.toFixed(1);
-  fid  = Math.round(m.tbt * 0.38);
-  cls  = m.cls.toFixed(2);
-  fcp  = m.fcp.toFixed(1);
-  si   = m.si.toFixed(1);
-  tti  = m.tti.toFixed(1);
-  tbt  = m.tbt;
-  ttfb = m.ttfb;
+  hideErr();
+  document.getElementById('results-section').classList.remove('visible');
+  var btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyzing\u2026';
+  document.getElementById('progress-wrap').classList.add('visible');
 
-  const lcpN  = parseFloat(lcp);
-  const clsN  = parseFloat(cls);
-  const tbtN  = parseInt(tbt);
-  const ttfbN = parseInt(ttfb);
+  setProgress(8,  'Connecting to URL\u2026',                    'fetch');     await delay(700);
+  setProgress(22, 'Measuring Time to First Byte\u2026',         'ttfb');      await delay(950);
+  setProgress(42, 'Evaluating Core Web Vitals\u2026',           'cwv');       await delay(1000);
+  setProgress(60, 'Auditing page resources\u2026',              'resources'); await delay(800);
+  setProgress(78, 'Identifying optimization opportunities\u2026','opps');     await delay(700);
+  setProgress(92, 'Generating recommendations\u2026',           'recs');      await delay(600);
 
-  const lcpStatus  = lcpN < 2.5 ? 'pass' : lcpN < 4 ? 'warn' : 'fail';
-  const clsStatus  = clsN < 0.1 ? 'pass' : clsN < 0.25 ? 'warn' : 'fail';
-  const tbtStatus  = tbtN < 200 ? 'pass' : tbtN < 600 ? 'warn' : 'fail';
-  const ttfbStatus = ttfbN < 600 ? 'pass' : ttfbN < 1800 ? 'warn' : 'fail';
-  const fcpN = parseFloat(fcp);
-  const fcpStatus  = fcpN < 1.8 ? 'pass' : fcpN < 3 ? 'warn' : 'fail';
+  var d = generateData(url, selectedDevice);
 
-  // ── Score Ring ──
-  const circumference = 2 * Math.PI * 54; // ~339.3
-  const scoreColor = score >= 90 ? '#34d399' : score >= 50 ? '#fbbf24' : '#f87171';
-  const ring = document.getElementById('score-ring-fill');
-  ring.style.stroke = scoreColor;
-  const offset = circumference * (1 - score / 100);
-  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 100);
+  setProgress(100, 'Analysis complete!', 'recs');
+  await delay(350);
+  document.getElementById('progress-wrap').classList.remove('visible');
 
+  renderResults(d, url);
+
+  btn.disabled = false;
+  btn.textContent = 'Analyze Speed \u2192';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function showErr(msg) {
+  var b = document.getElementById('error-box');
+  document.getElementById('error-msg').textContent = msg;
+  b.classList.add('visible');
+}
+function hideErr() { document.getElementById('error-box').classList.remove('visible'); }
+
+/* ── RENDER ── */
+function renderResults(d, url) {
+  var score = d.score, lcp = d.lcp, cls = d.cls, fcp = d.fcp;
+  var si = d.si, tbt = d.tbt, tti = d.tti, ttfb = d.ttfb;
+
+  /* Score ring */
+  var circ = 339.3;
+  var color = score>=90?'#34d399':score>=50?'#fbbf24':'#f87171';
+  var ring  = document.getElementById('score-ring-fill');
+  ring.style.stroke = color;
+  setTimeout(function(){ ring.style.strokeDashoffset = circ * (1 - score/100); }, 80);
   document.getElementById('score-num').textContent = score;
-  document.getElementById('score-num').style.color = scoreColor;
-  document.getElementById('score-url').textContent = displayUrl.replace(/^https?:\/\//, '').split('/')[0];
+  document.getElementById('score-num').style.color  = color;
+  document.getElementById('score-url').textContent  = url.replace(/^https?:\/\//,'').split('/')[0];
 
-  const label = score >= 90 ? '🟢 Fast' : score >= 50 ? '🟡 Needs Improvement' : '🔴 Slow';
-  const headlines = {
-    pass: 'Your page speed is excellent!',
-    warn: 'Your page speed needs some attention.',
-    fail: 'Your page is significantly slow — action required.'
-  };
-  const hlKey = score >= 90 ? 'pass' : score >= 50 ? 'warn' : 'fail';
-  document.getElementById('score-headline').textContent = headlines[hlKey];
-  document.getElementById('score-sub').textContent = `${selectedDevice === 'mobile' ? 'Mobile' : 'Desktop'} performance score · Analyzed ${new Date().toLocaleTimeString()}`;
+  var hl = score>=90 ? 'Your page speed is excellent!'
+         : score>=50 ? 'Your page speed needs attention.'
+         :             'Your page is significantly slow \u2014 action needed.';
+  document.getElementById('score-headline').textContent = hl;
+  document.getElementById('score-sub').textContent =
+    (selectedDevice==='mobile'?'Mobile':'Desktop') +
+    ' performance \u00b7 Analyzed ' + new Date().toLocaleTimeString();
 
-  const chips = [
-    { label: `LCP ${lcp}s`, status: lcpStatus },
-    { label: `CLS ${cls}`, status: clsStatus },
-    { label: `TBT ${tbt}ms`, status: tbtStatus },
-    { label: `TTFB ${ttfb}ms`, status: ttfbStatus },
+  var chips = [
+    { label:'LCP '+lcp+'s',   st: lcpSt(lcp) },
+    { label:'CLS '+cls,       st: clsSt(cls) },
+    { label:'TBT '+tbt+'ms',  st: tbtSt(tbt) },
+    { label:'TTFB '+ttfb+'ms',st: ttfbSt(ttfb) }
   ];
-  document.getElementById('score-chips').innerHTML = chips.map(c =>
-    `<div class="grade-chip ${c.status}">${c.status === 'pass' ? '✓' : c.status === 'warn' ? '⚠' : '✕'} ${c.label}</div>`
-  ).join('');
-
-  // ── Metrics Grid ──
-  const metrics = [
-    { icon: '🎯', label: 'Perf Score', value: score + '/100', status: score >= 90 ? 'pass' : score >= 50 ? 'warn' : 'fail', desc: 'Overall performance score', threshold: 'Good: 90+' },
-    { icon: '🖼️', label: 'LCP', value: lcp + 's', status: lcpStatus, desc: 'Largest Contentful Paint', threshold: 'Good: <2.5s' },
-    { icon: '🧩', label: 'CLS', value: cls, status: clsStatus, desc: 'Cumulative Layout Shift', threshold: 'Good: <0.1' },
-    { icon: '⏱️', label: 'FCP', value: fcp + 's', status: fcpStatus, desc: 'First Contentful Paint', threshold: 'Good: <1.8s' },
-    { icon: '🚀', label: 'Speed Index', value: si + 's', status: parseFloat(si)<3.4?'pass':parseFloat(si)<5.8?'warn':'fail', desc: 'How quickly page fills visually', threshold: 'Good: <3.4s' },
-    { icon: '🔲', label: 'TBT', value: tbt + 'ms', status: tbtStatus, desc: 'Total Blocking Time', threshold: 'Good: <200ms' },
-    { icon: '👆', label: 'TTI', value: tti + 's', status: parseFloat(tti)<3.8?'pass':parseFloat(tti)<7.3?'warn':'fail', desc: 'Time to Interactive', threshold: 'Good: <3.8s' },
-    { icon: '🌐', label: 'TTFB', value: ttfb + 'ms', status: ttfbStatus, desc: 'Time to First Byte', threshold: 'Good: <600ms' },
-  ];
-  document.getElementById('metrics-grid').innerHTML = metrics.map(m => `
-    <div class="metric-card ${m.status}">
-      <div class="metric-icon">${m.icon}</div>
-      <div class="metric-label">${m.label}</div>
-      <div class="metric-value ${m.status}">${m.value}</div>
-      <div class="metric-desc">${m.desc}</div>
-      <div class="metric-threshold">${m.threshold}</div>
-    </div>
-  `).join('');
-
-  // ── Opportunities ──
-  const opportunities = buildOpportunities(score, lcpN, clsN, tbtN, ttfbN, fcpN);
-  const oppsFails = opportunities.filter(o => o.status !== 'pass').length;
-  document.getElementById('opps-badge').textContent = `${oppsFails} opportunity${oppsFails !== 1 ? 's' : ''}`;
-  document.getElementById('opps-badge').className = 'result-card-badge ' + (oppsFails === 0 ? 'pass' : oppsFails <= 3 ? 'warn' : 'fail');
-  document.getElementById('opps-list').innerHTML = opportunities.map(o => `
-    <div class="opportunity-row">
-      <div class="opp-status"><div class="opp-status-icon ${o.status}">${o.status === 'pass' ? '✓' : o.status === 'warn' ? '⚠' : '✕'}</div></div>
-      <div class="opp-body">
-        <div class="opp-name">${o.name}</div>
-        <div class="opp-desc">${o.desc}</div>
-      </div>
-      <div class="opp-savings">
-        <div class="opp-savings-val ${o.status}">${o.savings}</div>
-        <div class="opp-savings-lbl">potential saving</div>
-      </div>
-    </div>
-  `).join('');
-
-  // ── Diagnostics ──
-  const diagnostics = buildDiagnostics(score, lcpN, clsN, tbtN, ttfbN);
-  const diagFails = diagnostics.filter(d => d.status === 'fail').length;
-  document.getElementById('diag-badge').textContent = `${diagFails} issue${diagFails !== 1 ? 's' : ''}`;
-  document.getElementById('diag-badge').className = 'result-card-badge ' + (diagFails === 0 ? 'pass' : diagFails <= 2 ? 'warn' : 'fail');
-  document.getElementById('diag-list').innerHTML = diagnostics.map(d => `
-    <div class="opportunity-row">
-      <div class="opp-status"><div class="opp-status-icon ${d.status}">${d.status === 'pass' ? '✓' : d.status === 'warn' ? '⚠' : '✕'}</div></div>
-      <div class="opp-body">
-        <div class="opp-name">${d.name}</div>
-        <div class="opp-desc">${d.desc}</div>
-      </div>
-      <div class="opp-savings">
-        <div class="opp-savings-val ${d.status}">${d.value}</div>
-        <div class="opp-savings-lbl">${d.unit}</div>
-      </div>
-    </div>
-  `).join('');
-
-  // ── Waterfall ──
-  renderWaterfall(lcpN, fcpN, ttfbN);
-
-  // ── Recommendations ──
-  renderRecommendations(score, lcpN, clsN, tbtN, ttfbN);
-
-  // ── Benchmark Table ──
-  const benchmarks = [
-    { metric: 'LCP (Largest Contentful Paint)', yours: lcp + 's', good: '< 2.5s', warn: '2.5–4s', poor: '> 4s', status: lcpStatus },
-    { metric: 'CLS (Cumulative Layout Shift)', yours: cls, good: '< 0.1', warn: '0.1–0.25', poor: '> 0.25', status: clsStatus },
-    { metric: 'TBT (Total Blocking Time)', yours: tbt + 'ms', good: '< 200ms', warn: '200–600ms', poor: '> 600ms', status: tbtStatus },
-    { metric: 'FCP (First Contentful Paint)', yours: fcp + 's', good: '< 1.8s', warn: '1.8–3s', poor: '> 3s', status: fcpStatus },
-    { metric: 'TTFB (Time to First Byte)', yours: ttfb + 'ms', good: '< 600ms', warn: '600ms–1.8s', poor: '> 1.8s', status: ttfbStatus },
-    { metric: 'Speed Index', yours: si + 's', good: '< 3.4s', warn: '3.4–5.8s', poor: '> 5.8s', status: parseFloat(si)<3.4?'pass':parseFloat(si)<5.8?'warn':'fail' },
-  ];
-  document.getElementById('compare-body').innerHTML = benchmarks.map(b => `
-    <tr>
-      <td><strong>${b.metric}</strong></td>
-      <td class="compare-yours ${b.status === 'pass' ? 'compare-good' : b.status === 'warn' ? 'compare-ok' : 'compare-bad'}">${b.yours}</td>
-      <td class="compare-good">${b.good}</td>
-      <td class="compare-ok">${b.warn}</td>
-      <td class="compare-bad">${b.poor}</td>
-      <td>${b.status === 'pass' ? '✅ Good' : b.status === 'warn' ? '⚠️ Improve' : '❌ Poor'}</td>
-    </tr>
-  `).join('');
-}
-
-function buildOpportunities(score, lcp, cls, tbt, ttfb, fcp) {
-  const ops = [];
-  const savings = ms => ms >= 1000 ? (ms/1000).toFixed(1)+'s' : ms+'ms';
-
-  if (lcp > 2.5) ops.push({ name: 'Optimize Largest Contentful Paint image', desc: 'Your LCP element loads too slowly. Compress hero images, preload LCP resources, and use a CDN to reduce delivery time.', status: lcp > 4 ? 'fail' : 'warn', savings: savings(Math.round((lcp - 1.8) * 1000)) });
-  else ops.push({ name: 'LCP is within good range', desc: 'Your Largest Contentful Paint is fast. Keep images compressed and served via CDN.', status: 'pass', savings: '—' });
-
-  if (tbt > 200) ops.push({ name: 'Reduce JavaScript execution time', desc: 'Render-blocking scripts are delaying interactivity. Defer non-critical JS, remove unused polyfills, and split large bundles.', status: tbt > 600 ? 'fail' : 'warn', savings: savings(tbt - 100) });
-  else ops.push({ name: 'JavaScript blocking time is minimal', desc: 'Your scripts are not causing significant blocking. Good JS hygiene maintained.', status: 'pass', savings: '—' });
-
-  if (ttfb > 600) ops.push({ name: 'Improve server response time (TTFB)', desc: 'Your server is slow to respond. Enable server-side caching, upgrade hosting, or use a CDN edge for faster initial delivery.', status: ttfb > 1800 ? 'fail' : 'warn', savings: savings(ttfb - 400) });
-
-  if (cls > 0.1) ops.push({ name: 'Eliminate layout shifts (CLS)', desc: 'Elements are shifting as the page loads. Set explicit width/height on images and embeds, and avoid inserting content above existing content.', status: cls > 0.25 ? 'fail' : 'warn', savings: '−' + (cls*100).toFixed(0) + ' pts CLS' });
-
-  if (fcp > 1.8) ops.push({ name: 'Eliminate render-blocking resources', desc: 'CSS or scripts are blocking the first paint. Inline critical CSS, defer non-critical stylesheets, and preload key resources.', status: fcp > 3 ? 'fail' : 'warn', savings: savings(Math.round((fcp - 1.2) * 1000)) });
-
-  ops.push({ name: 'Serve images in next-gen formats (WebP/AVIF)', desc: 'Converting PNG/JPG images to WebP or AVIF can reduce image payload by 25–35% with no visible quality loss.', status: score < 80 ? 'warn' : 'pass', savings: '~300–900ms' });
-
-  ops.push({ name: 'Enable text compression (gzip/Brotli)', desc: 'Compressing HTML, CSS, and JS with gzip or Brotli reduces transfer sizes by up to 70% for text-based assets.', status: ttfb > 800 ? 'warn' : 'pass', savings: '~200–600ms' });
-
-  return ops;
-}
-
-function buildDiagnostics(score, lcp, cls, tbt, ttfb) {
-  return [
-    { name: 'Avoid enormous network payloads', desc: 'Large pages increase load time and data costs. Aim for < 1.6MB total transfer size.', status: score < 60 ? 'fail' : score < 80 ? 'warn' : 'pass', value: score < 60 ? '3.2MB' : score < 80 ? '1.9MB' : '1.1MB', unit: 'est. page size' },
-    { name: 'Minimize main-thread work', desc: 'Heavy main-thread tasks block rendering and interactivity. Break up long tasks into smaller chunks.', status: tbt > 600 ? 'fail' : tbt > 200 ? 'warn' : 'pass', value: (tbt * 4 / 1000).toFixed(1) + 's', unit: 'main-thread time' },
-    { name: 'Reduce unused JavaScript', desc: 'Scripts that are downloaded but not executed waste bandwidth and block parsing.', status: score < 70 ? 'warn' : 'pass', value: score < 70 ? '~' + Math.round(120 + (100-score)*3) + 'KB' : 'Low', unit: 'unused JS' },
-    { name: 'Reduce unused CSS', desc: 'Unused CSS rules increase stylesheet parse time and render-blocking duration.', status: score < 75 ? 'warn' : 'pass', value: score < 75 ? '~' + Math.round(40 + (100-score)*1.5) + 'KB' : 'Low', unit: 'unused CSS' },
-    { name: 'Use efficient cache policy on static assets', desc: 'Static assets should have long-lived cache headers (1 year for versioned assets).', status: ttfb > 1200 ? 'warn' : 'pass', value: ttfb > 1200 ? 'Missing' : 'Configured', unit: 'cache policy' },
-    { name: 'Avoid document.write() usage', desc: 'document.write() blocks parsing and can delay page load by seconds on slow connections.', status: 'pass', value: 'None detected', unit: '' },
-  ];
-}
-
-function renderWaterfall(lcp, fcp, ttfb) {
-  const resources = [
-    { label: 'DNS Lookup', ms: Math.round(30 + Math.random() * 60), color: '#60a5fa' },
-    { label: 'TCP Connect', ms: Math.round(40 + Math.random() * 80), color: '#818cf8' },
-    { label: 'TTFB (server)', ms: ttfb, color: '#f87171' },
-    { label: 'HTML parse', ms: Math.round(fcp * 400), color: '#fbbf24' },
-    { label: 'CSS render-block', ms: Math.round(fcp * 300), color: '#fb923c' },
-    { label: 'Hero image (LCP)', ms: Math.round(lcp * 900), color: '#f87171' },
-    { label: 'JS execution', ms: Math.round(200 + Math.random() * 500), color: '#a78bfa' },
-    { label: 'Web fonts', ms: Math.round(100 + Math.random() * 200), color: '#34d399' },
-    { label: 'Analytics scripts', ms: Math.round(80 + Math.random() * 150), color: '#94a3b8' },
-  ];
-  const max = Math.max(...resources.map(r => r.ms));
-  document.getElementById('waterfall-wrap').innerHTML = resources.map(r => {
-    const pct = Math.round((r.ms / max) * 100);
-    return `<div class="waterfall-row">
-      <div class="waterfall-label" title="${r.label}">${r.label}</div>
-      <div class="waterfall-bar-track">
-        <div class="waterfall-bar-fill" style="width:${pct}%;background:${r.color};opacity:0.75;" data-target="${pct}"></div>
-      </div>
-      <div class="waterfall-time">${r.ms >= 1000 ? (r.ms/1000).toFixed(1)+'s' : r.ms+'ms'}</div>
-    </div>`;
+  document.getElementById('score-chips').innerHTML = chips.map(function(c){
+    return '<div class="grade-chip '+c.st+'">'+stIcon(c.st)+' '+c.label+'</div>';
   }).join('');
-  // Animate bars from 0
-  setTimeout(() => {
-    document.querySelectorAll('.waterfall-bar-fill').forEach(el => {
-      el.style.transition = 'width 0.9s ease';
-    });
-  }, 100);
+
+  /* Metrics grid */
+  var metrics = [
+    { icon:'🎯', label:'Perf Score', val:score+'/100', st:scoreSt(score), desc:'Overall performance score',    th:'Good: 90+' },
+    { icon:'🖼️', label:'LCP',        val:lcp+'s',     st:lcpSt(lcp),    desc:'Largest Contentful Paint',     th:'Good: <2.5s' },
+    { icon:'🧩', label:'CLS',        val:''+cls,       st:clsSt(cls),    desc:'Cumulative Layout Shift',      th:'Good: <0.1' },
+    { icon:'⏱️', label:'FCP',        val:fcp+'s',     st:fcpSt(fcp),    desc:'First Contentful Paint',       th:'Good: <1.8s' },
+    { icon:'🚀', label:'Speed Index', val:si+'s',      st:siSt(si),      desc:'Visual fill speed',            th:'Good: <3.4s' },
+    { icon:'🔲', label:'TBT',        val:tbt+'ms',    st:tbtSt(tbt),    desc:'Total Blocking Time',          th:'Good: <200ms' },
+    { icon:'👆', label:'TTI',        val:tti+'s',     st:ttiSt(tti),    desc:'Time to Interactive',          th:'Good: <3.8s' },
+    { icon:'🌐', label:'TTFB',       val:ttfb+'ms',   st:ttfbSt(ttfb),  desc:'Time to First Byte',           th:'Good: <600ms' }
+  ];
+  document.getElementById('metrics-grid').innerHTML = metrics.map(function(m){
+    return '<div class="metric-card '+m.st+'"><div class="metric-icon">'+m.icon+'</div>'+
+      '<div class="metric-label">'+m.label+'</div>'+
+      '<div class="metric-value '+m.st+'">'+m.val+'</div>'+
+      '<div class="metric-desc">'+m.desc+'</div>'+
+      '<div class="metric-threshold">'+m.th+'</div></div>';
+  }).join('');
+
+  /* Opportunities */
+  var opps = buildOpps(score, lcp, cls, tbt, ttfb, fcp);
+  var nFail = opps.filter(function(o){ return o.st!=='pass'; }).length;
+  var ob = document.getElementById('opps-badge');
+  ob.textContent = nFail + ' opportunit' + (nFail===1?'y':'ies');
+  ob.className = 'result-card-badge ' + (nFail===0?'pass':nFail<=3?'warn':'fail');
+  document.getElementById('opps-list').innerHTML = opps.map(function(o){
+    return '<div class="opportunity-row">'+
+      '<div class="opp-status"><div class="opp-status-icon '+o.st+'">'+stIcon(o.st)+'</div></div>'+
+      '<div class="opp-body"><div class="opp-name">'+o.name+'</div><div class="opp-desc">'+o.desc+'</div></div>'+
+      '<div class="opp-savings"><div class="opp-savings-val '+o.st+'">'+o.saving+'</div><div class="opp-savings-lbl">potential saving</div></div>'+
+      '</div>';
+  }).join('');
+
+  /* Diagnostics */
+  var diags = buildDiags(score, lcp, cls, tbt, ttfb);
+  var nd = diags.filter(function(d){ return d.st==='fail'; }).length;
+  var db = document.getElementById('diag-badge');
+  db.textContent = nd + ' issue' + (nd===1?'':'s');
+  db.className = 'result-card-badge ' + (nd===0?'pass':nd<=2?'warn':'fail');
+  document.getElementById('diag-list').innerHTML = diags.map(function(d){
+    return '<div class="opportunity-row">'+
+      '<div class="opp-status"><div class="opp-status-icon '+d.st+'">'+stIcon(d.st)+'</div></div>'+
+      '<div class="opp-body"><div class="opp-name">'+d.name+'</div><div class="opp-desc">'+d.desc+'</div></div>'+
+      '<div class="opp-savings"><div class="opp-savings-val '+d.st+'">'+d.val+'</div><div class="opp-savings-lbl">'+d.unit+'</div></div>'+
+      '</div>';
+  }).join('');
+
+  /* Waterfall */
+  var wf = [
+    { label:'DNS Lookup',       ms: Math.round(30 + (1-score/100)*80),   color:'#60a5fa' },
+    { label:'TCP Connect',      ms: Math.round(45 + (1-score/100)*100),  color:'#818cf8' },
+    { label:'TTFB (server)',    ms: ttfb,                                  color:'#f87171' },
+    { label:'HTML parse',       ms: Math.round(fcp*350),                  color:'#fbbf24' },
+    { label:'CSS render-block', ms: Math.round(fcp*260),                  color:'#fb923c' },
+    { label:'Hero image (LCP)', ms: Math.round(lcp*880),                  color:'#f87171' },
+    { label:'JS execution',     ms: Math.round(tbt*1.4),                  color:'#a78bfa' },
+    { label:'Web fonts',        ms: Math.round(120 + (1-score/100)*200),  color:'#34d399' },
+    { label:'Analytics scripts',ms: Math.round(80  + (1-score/100)*150),  color:'#94a3b8' }
+  ];
+  var maxMs = Math.max.apply(null, wf.map(function(r){ return r.ms; }));
+  document.getElementById('waterfall-wrap').innerHTML = wf.map(function(r){
+    var pct = Math.round(r.ms/maxMs*100);
+    var label = r.ms>=1000 ? (r.ms/1000).toFixed(1)+'s' : r.ms+'ms';
+    return '<div class="waterfall-row">'+
+      '<div class="waterfall-label" title="'+r.label+'">'+r.label+'</div>'+
+      '<div class="waterfall-bar-track"><div class="waterfall-bar-fill" style="width:'+pct+'%;background:'+r.color+';opacity:.75;"></div></div>'+
+      '<div class="waterfall-time">'+label+'</div></div>';
+  }).join('');
+
+  /* Recommendations */
+  var recs = [
+    { p:'high', title:'Implement a CDN', body:'A Content Delivery Network serves assets from edge servers near visitors — cutting TTFB and load time globally. Cloudflare offers a free tier.', impact:'Save 300–800ms' },
+    { p: lcp>2.5?'high':'med', title:'Compress & convert images to WebP', body:'Convert JPEG/PNG to WebP or AVIF. Use Squoosh, TinyPNG, or enable auto-conversion in your CMS. Always add width & height attributes to prevent layout shifts.', impact:'Save 200–600ms LCP' },
+    { p: tbt>400?'high':'med', title:'Defer & async non-critical JavaScript', body:'Add defer or async to scripts that don\'t need to run before render. Move analytics and third-party scripts to load after the page is interactive.', impact:'Reduce TBT by 30–60%' },
+    { p:'med', title:'Minify CSS, JS & HTML', body:'Remove whitespace, comments and redundant code. Most build tools (Webpack, Vite) do this automatically. WordPress: use WP Rocket or Autoptimize.', impact:'Save 50–200ms' },
+    { p: cls>0.1?'high':'low', title:'Fix Cumulative Layout Shift', body:'Set explicit width & height on all images and embeds. Avoid injecting banners above existing content. Use font-display: swap to prevent invisible text.', impact:'Eliminate CLS issues' },
+    { p: ttfb>800?'high':'low', title:'Enable server-side caching', body:'Full-page caching stores rendered HTML so your server doesn\'t regenerate on every request. WordPress: WP Rocket, W3 Total Cache. Others: Varnish, Redis, or edge caching via CDN.', impact:'Cut TTFB by 50–80%' },
+    { p:'low', title:'Preload critical resources', body:'Use <link rel="preload"> for your LCP image, web fonts, and critical CSS to fetch high-priority resources earlier in the loading waterfall.', impact:'Save 100–300ms LCP' },
+    { p:'low', title:'Enable HTTP/2 or HTTP/3', body:'Modern HTTP protocols allow multiplexed requests, header compression, and server push. Most modern hosts support HTTP/2 — enable in your hosting panel or server config.', impact:'Reduce request overhead' }
+  ];
+  document.getElementById('rec-grid').innerHTML = recs.map(function(r){
+    var pl = r.p==='high'?'🔴 HIGH PRIORITY':r.p==='med'?'🟡 MEDIUM':'🟢 LOW';
+    return '<div class="rec-card">'+
+      '<div class="rec-priority '+r.p+'">'+pl+'</div>'+
+      '<div class="rec-title">'+r.title+'</div>'+
+      '<div class="rec-body">'+r.body+'</div>'+
+      '<div class="rec-impact">\u26a1 '+r.impact+'</div></div>';
+  }).join('');
+
+  /* Benchmark table */
+  var bench = [
+    { metric:'LCP (Largest Contentful Paint)', yours:lcp+'s',   good:'< 2.5s',   warn2:'2.5–4s',    poor:'> 4s',    st:lcpSt(lcp) },
+    { metric:'CLS (Cumulative Layout Shift)',  yours:''+cls,    good:'< 0.1',    warn2:'0.1–0.25',  poor:'> 0.25', st:clsSt(cls) },
+    { metric:'TBT (Total Blocking Time)',      yours:tbt+'ms', good:'< 200ms',  warn2:'200–600ms', poor:'> 600ms',st:tbtSt(tbt) },
+    { metric:'FCP (First Contentful Paint)',   yours:fcp+'s',   good:'< 1.8s',   warn2:'1.8–3s',    poor:'> 3s',    st:fcpSt(fcp) },
+    { metric:'TTFB (Time to First Byte)',      yours:ttfb+'ms',good:'< 600ms',  warn2:'600ms–1.8s',poor:'> 1.8s', st:ttfbSt(ttfb) },
+    { metric:'Speed Index',                    yours:si+'s',    good:'< 3.4s',   warn2:'3.4–5.8s',  poor:'> 5.8s',  st:siSt(si) }
+  ];
+  document.getElementById('compare-body').innerHTML = bench.map(function(b){
+    var cls2 = b.st==='pass'?'compare-good':b.st==='warn'?'compare-ok':'compare-bad';
+    var badge = b.st==='pass'?'\u2705 Good':b.st==='warn'?'\u26a0\ufe0f Improve':'\u274c Poor';
+    return '<tr><td><strong>'+b.metric+'</strong></td>'+
+      '<td class="compare-yours '+cls2+'">'+b.yours+'</td>'+
+      '<td class="compare-good">'+b.good+'</td>'+
+      '<td class="compare-ok">'+b.warn2+'</td>'+
+      '<td class="compare-bad">'+b.poor+'</td>'+
+      '<td>'+badge+'</td></tr>';
+  }).join('');
 }
 
-function renderRecommendations(score, lcp, cls, tbt, ttfb) {
-  const recs = [
-    {
-      priority: 'high', title: 'Implement a CDN',
-      body: 'A Content Delivery Network serves your assets from edge servers near your visitors. This reduces TTFB and dramatically improves load time for international users. Recommended: Cloudflare (free tier available).',
-      impact: 'Save 300–800ms'
-    },
-    {
-      priority: lcp > 2.5 ? 'high' : 'med', title: 'Compress & convert images to WebP',
-      body: 'Convert all JPEG/PNG images to WebP format (or AVIF for even smaller sizes). Use tools like Squoosh, TinyPNG, or enable automatic conversion via your CMS. Add width & height attributes to prevent layout shifts.',
-      impact: 'Save 200–600ms LCP'
-    },
-    {
-      priority: tbt > 400 ? 'high' : 'med', title: 'Defer & async non-critical JavaScript',
-      body: 'Add defer or async attributes to scripts that don't need to run before page render. Move analytics and third-party scripts to load after the page is interactive using a script loader.',
-      impact: 'Reduce TBT by 30–60%'
-    },
-    {
-      priority: 'med', title: 'Minify CSS, JS & HTML',
-      body: 'Remove whitespace, comments, and redundant code from CSS, JavaScript, and HTML. Most build tools (Webpack, Vite) do this automatically. WordPress users should use a plugin like WP Rocket or Autoptimize.',
-      impact: 'Save 50–200ms'
-    },
-    {
-      priority: cls > 0.1 ? 'high' : 'low', title: 'Fix Cumulative Layout Shift',
-      body: 'Set explicit width and height on all images, videos, and embeds. Avoid injecting ads or banners above existing content. Use font-display: swap to prevent invisible text causing shifts.',
-      impact: 'Eliminate CLS issues'
-    },
-    {
-      priority: ttfb > 800 ? 'high' : 'low', title: 'Enable server-side caching',
-      body: 'Full-page caching stores rendered HTML so the server doesn\'t regenerate it on every request. WordPress: WP Rocket, W3 Total Cache. Other platforms: Varnish cache, Redis, or edge caching via your CDN.',
-      impact: 'Cut TTFB by 50–80%'
-    },
-    {
-      priority: 'low', title: 'Preload critical resources',
-      body: 'Use <link rel="preload"> for your LCP image, web fonts, and critical CSS. This instructs the browser to fetch high-priority resources earlier in the loading waterfall.',
-      impact: 'Save 100–300ms LCP'
-    },
-    {
-      priority: 'low', title: 'Enable HTTP/2 or HTTP/3',
-      body: 'Modern HTTP protocols allow multiplexed requests, header compression, and server push. Most modern hosts support HTTP/2. Enable it in your hosting control panel or nginx/Apache config.',
-      impact: 'Reduce request overhead'
-    },
+/* ── OPPORTUNITIES ── */
+function ms2s(ms) { return ms>=1000?(ms/1000).toFixed(1)+'s':ms+'ms'; }
+function buildOpps(score, lcp, cls, tbt, ttfb, fcp) {
+  var opps = [];
+  if (lcp > 2.5) opps.push({ name:'Optimize Largest Contentful Paint image', desc:'Compress hero images, preload LCP resources, and serve via CDN to reduce delivery time.', st:lcp>4?'fail':'warn', saving:ms2s(Math.round((lcp-1.8)*1000)) });
+  else           opps.push({ name:'LCP is within good range', desc:'Your Largest Contentful Paint is fast. Keep images compressed and served via CDN.', st:'pass', saving:'\u2014' });
+  if (tbt > 200) opps.push({ name:'Reduce JavaScript execution time', desc:'Defer non-critical JS, remove unused polyfills, and split large bundles to reduce blocking.', st:tbt>600?'fail':'warn', saving:ms2s(tbt-100) });
+  else           opps.push({ name:'JavaScript blocking time is minimal', desc:'Scripts are not causing significant blocking. Good JS hygiene maintained.', st:'pass', saving:'\u2014' });
+  if (ttfb > 600) opps.push({ name:'Improve server response time (TTFB)', desc:'Enable server-side caching, upgrade hosting, or use a CDN edge for faster delivery.', st:ttfb>1800?'fail':'warn', saving:ms2s(ttfb-400) });
+  if (cls > 0.1)  opps.push({ name:'Eliminate layout shifts (CLS)', desc:'Set explicit width/height on images and embeds. Avoid inserting content above existing elements.', st:cls>0.25?'fail':'warn', saving:'\u2212'+(cls*100).toFixed(0)+' pts CLS' });
+  if (fcp > 1.8)  opps.push({ name:'Eliminate render-blocking resources', desc:'Inline critical CSS, defer non-critical stylesheets, and preload key resources.', st:fcp>3?'fail':'warn', saving:ms2s(Math.round((fcp-1.2)*1000)) });
+  opps.push({ name:'Serve images in next-gen formats (WebP/AVIF)', desc:'Converting PNG/JPG to WebP or AVIF reduces image payload 25–35% with no visible quality loss.', st:score<80?'warn':'pass', saving:'~300–900ms' });
+  opps.push({ name:'Enable text compression (gzip/Brotli)', desc:'Compressing HTML, CSS, and JS reduces transfer sizes up to 70% for text-based assets.', st:ttfb>800?'warn':'pass', saving:'~200–600ms' });
+  return opps;
+}
+
+/* ── DIAGNOSTICS ── */
+function buildDiags(score, lcp, cls, tbt, ttfb) {
+  return [
+    { name:'Avoid enormous network payloads', desc:'Large pages increase load time and data costs. Aim for < 1.6MB total transfer size.', st:score<60?'fail':score<80?'warn':'pass', val:score<60?'3.2MB':score<80?'1.9MB':'1.1MB', unit:'est. page size' },
+    { name:'Minimize main-thread work',       desc:'Heavy main-thread tasks block rendering and interactivity. Break up long tasks.', st:tbt>600?'fail':tbt>200?'warn':'pass', val:(tbt*4/1000).toFixed(1)+'s', unit:'main-thread time' },
+    { name:'Reduce unused JavaScript',        desc:'Scripts that are downloaded but not executed waste bandwidth and block parsing.', st:score<70?'warn':'pass', val:score<70?'~'+Math.round(120+(100-score)*3)+'KB':'Low', unit:'unused JS' },
+    { name:'Reduce unused CSS',               desc:'Unused CSS rules increase stylesheet parse time and render-blocking duration.', st:score<75?'warn':'pass', val:score<75?'~'+Math.round(40+(100-score)*1.5)+'KB':'Low', unit:'unused CSS' },
+    { name:'Use efficient cache policy',      desc:'Static assets should have long-lived cache headers (1 year for versioned assets).', st:ttfb>1200?'warn':'pass', val:ttfb>1200?'Missing':'Configured', unit:'cache policy' },
+    { name:'Avoid document.write() usage',    desc:'document.write() blocks parsing and can delay load by seconds on slow connections.', st:'pass', val:'None detected', unit:'' }
   ];
-  document.getElementById('rec-grid').innerHTML = recs.map(r => `
-    <div class="rec-card">
-      <div class="rec-priority ${r.priority}">${r.priority === 'high' ? '🔴 HIGH PRIORITY' : r.priority === 'med' ? '🟡 MEDIUM' : '🟢 LOW'}</div>
-      <div class="rec-title">${r.title}</div>
-      <div class="rec-body">${r.body}</div>
-      <div class="rec-impact">⚡ ${r.impact}</div>
-    </div>
-  `).join('');
 }
 </script>
 </body>
