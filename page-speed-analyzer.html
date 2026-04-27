@@ -378,21 +378,33 @@ nav {
 }
 .input-group input[type="url"]::placeholder { color: var(--muted2); }
 
-.device-tabs {
-  display: flex; gap: 0.5rem; margin-bottom: 1.25rem;
+.result-tabs {
+  display: flex; gap: 0; margin-bottom: 1.5rem;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 4px; width: fit-content;
 }
-.device-tab {
+.result-tab {
   display: flex; align-items: center; gap: 0.5rem;
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 8px; padding: 0.5rem 1rem;
-  font-size: 0.82rem; font-weight: 600; color: var(--muted);
+  padding: 0.55rem 1.4rem; border-radius: 9px;
+  font-size: 0.84rem; font-weight: 700; color: var(--muted);
   cursor: pointer; transition: all 0.2s; user-select: none;
+  border: none; background: none; font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
 }
-.device-tab.active {
-  background: rgba(232,184,75,0.1); border-color: rgba(232,184,75,0.4);
-  color: var(--accent);
+.result-tab.active {
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
-.device-tab:hover:not(.active) { color: var(--text); border-color: var(--border2); }
+.result-tab .tab-score {
+  font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 800;
+  padding: 0.1rem 0.45rem; border-radius: 5px;
+}
+.result-tab.active .tab-score-mobile { background: rgba(10,191,188,0.15); color: var(--teal); }
+.result-tab.active .tab-score-desktop { background: rgba(232,184,75,0.15); color: var(--accent); }
+.result-tab:not(.active) .tab-score { background: rgba(255,255,255,0.05); color: var(--muted2); }
+.result-pane { display: none; }
+.result-pane.active { display: block; }
 
 .analyze-btn {
   background: linear-gradient(135deg, var(--accent), var(--accent3));
@@ -657,6 +669,37 @@ footer a:hover { color: var(--accent); }
   .results-section { padding: 0 1rem; }
   .faq-section, .tips-section { padding: 0 1rem; }
 }
+
+/* ── DUAL SCORE SUMMARY ── */
+.score-summary-row {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 1rem; align-items: center;
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 1.75rem 2rem;
+  margin-bottom: 1.25rem; position: relative; overflow: hidden;
+}
+.score-summary-row::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--accent), var(--teal));
+}
+.score-summary-card { text-align: center; }
+.score-summary-label { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+.score-summary-ring-wrap { position: relative; width: 100px; height: 100px; margin: 0 auto 0.85rem; }
+.score-summary-num-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-summary-num { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; line-height: 1; }
+.score-summary-word { font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; color: var(--muted); margin-top: 2px; }
+.score-summary-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; }
+.score-vs { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.score-vs-line { width: 1px; height: 40px; background: var(--border2); }
+.score-vs-label { font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 800; color: var(--muted2); letter-spacing: 0.1em; }
+.analyzed-url-bar { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 0.85rem 1.25rem; margin-bottom: 1.25rem; display: flex; flex-direction: column; gap: 0.2rem; }
+.analyzed-url-text { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; }
+.analyzed-url-sub { font-size: 0.76rem; color: var(--muted); }
+@media (max-width: 580px) {
+  .score-summary-row { grid-template-columns: 1fr; padding: 1.25rem; }
+  .score-vs { flex-direction: row; }
+  .score-vs-line { width: 40px; height: 1px; }
+}
 </style>
 </head>
 <body>
@@ -821,15 +864,10 @@ footer a:hover { color: var(--accent); }
       <button class="analyze-btn" id="analyze-btn" onclick="startAnalysis()">Analyze Speed →</button>
     </div>
 
-    <div class="device-tabs">
-      <div class="device-tab active" id="tab-mobile" onclick="setDevice('mobile')">📱 Mobile</div>
-      <div class="device-tab" id="tab-desktop" onclick="setDevice('desktop')">🖥️ Desktop</div>
-    </div>
-
     <div class="analyzer-meta">
-      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Real PageSpeed Insights data</div>
+      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Analyzes both Mobile &amp; Desktop</div>
       <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Core Web Vitals included</div>
-      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Actionable AI fix recommendations</div>
+      <div class="analyzer-meta-item"><div class="analyzer-meta-dot"></div>Actionable fix recommendations</div>
     </div>
 
     <!-- Progress -->
@@ -858,97 +896,116 @@ footer a:hover { color: var(--accent); }
 <!-- RESULTS -->
 <div class="results-section" id="results-section">
 
-  <!-- Score Header -->
-  <div class="score-header-wrap" id="score-header">
-    <div class="score-ring-area">
-      <svg width="130" height="130" viewBox="0 0 130 130">
-        <circle cx="65" cy="65" r="54" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"/>
-        <circle cx="65" cy="65" r="54" fill="none"
-          id="score-ring-fill"
-          stroke="#34d399" stroke-width="10" stroke-linecap="round"
-          stroke-dasharray="339.3"
-          stroke-dashoffset="339.3"
-          transform="rotate(-90 65 65)"
-          style="transition:stroke-dashoffset 1.4s ease, stroke 0.5s;"/>
-      </svg>
-      <div class="score-ring-label">
-        <div class="score-num" id="score-num">—</div>
-        <div class="score-word">SCORE</div>
+  <!-- Summary row: both scores side by side -->
+  <div class="score-summary-row" id="score-summary-row">
+    <!-- Mobile score card -->
+    <div class="score-summary-card" id="summary-mobile">
+      <div class="score-summary-label">📱 Mobile</div>
+      <div class="score-summary-ring-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+          <circle cx="50" cy="50" r="40" fill="none" id="ring-mobile"
+            stroke="#34d399" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="251.3" stroke-dashoffset="251.3"
+            transform="rotate(-90 50 50)"
+            style="transition:stroke-dashoffset 1.3s ease,stroke 0.4s;"/>
+        </svg>
+        <div class="score-summary-num-wrap">
+          <div class="score-summary-num" id="num-mobile">—</div>
+          <div class="score-summary-word">SCORE</div>
+        </div>
       </div>
+      <div class="score-summary-chips" id="chips-mobile"></div>
     </div>
-    <div class="score-info">
-      <div class="score-site-url" id="score-url"></div>
-      <div class="score-headline" id="score-headline">—</div>
-      <div class="score-sub" id="score-sub"></div>
-      <div class="score-grade-chips" id="score-chips"></div>
+    <!-- vs divider -->
+    <div class="score-vs">
+      <div class="score-vs-line"></div>
+      <div class="score-vs-label">VS</div>
+      <div class="score-vs-line"></div>
+    </div>
+    <!-- Desktop score card -->
+    <div class="score-summary-card" id="summary-desktop">
+      <div class="score-summary-label">🖥️ Desktop</div>
+      <div class="score-summary-ring-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
+          <circle cx="50" cy="50" r="40" fill="none" id="ring-desktop"
+            stroke="#E8B84B" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="251.3" stroke-dashoffset="251.3"
+            transform="rotate(-90 50 50)"
+            style="transition:stroke-dashoffset 1.3s ease,stroke 0.4s;"/>
+        </svg>
+        <div class="score-summary-num-wrap">
+          <div class="score-summary-num" id="num-desktop">—</div>
+          <div class="score-summary-word">SCORE</div>
+        </div>
+      </div>
+      <div class="score-summary-chips" id="chips-desktop"></div>
     </div>
   </div>
 
-  <!-- Metrics Grid -->
-  <div class="metrics-grid" id="metrics-grid"></div>
-
-  <!-- Opportunities -->
-  <div class="result-card" id="opps-card">
-    <div class="result-card-head">
-      <span class="result-card-icon">🎯</span>
-      <span class="result-card-title">Opportunities — Save Load Time</span>
-      <span class="result-card-badge" id="opps-badge">Loading…</span>
-    </div>
-    <div id="opps-list"></div>
+  <!-- Analyzed URL + headline -->
+  <div class="analyzed-url-bar" id="analyzed-url-bar">
+    <div class="analyzed-url-text" id="analyzed-url-text"></div>
+    <div class="analyzed-url-sub" id="analyzed-url-sub"></div>
   </div>
 
-  <!-- Diagnostics -->
-  <div class="result-card" id="diag-card">
-    <div class="result-card-head">
-      <span class="result-card-icon">🔬</span>
-      <span class="result-card-title">Diagnostics</span>
-      <span class="result-card-badge warn" id="diag-badge">Analyzing…</span>
-    </div>
-    <div id="diag-list"></div>
+  <!-- Result tabs -->
+  <div class="result-tabs" id="result-tabs">
+    <button class="result-tab active" id="rtab-mobile" onclick="switchResultTab('mobile')">
+      📱 Mobile <span class="tab-score tab-score-mobile" id="rtab-mobile-score">—</span>
+    </button>
+    <button class="result-tab" id="rtab-desktop" onclick="switchResultTab('desktop')">
+      🖥️ Desktop <span class="tab-score tab-score-desktop" id="rtab-desktop-score">—</span>
+    </button>
   </div>
 
-  <!-- Resource Waterfall -->
+  <!-- MOBILE PANE -->
+  <div class="result-pane active" id="pane-mobile">
+    <div class="metrics-grid" id="metrics-grid-mobile"></div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🎯</span><span class="result-card-title">Opportunities — Save Load Time</span><span class="result-card-badge" id="opps-badge-mobile">—</span></div>
+      <div id="opps-list-mobile"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🔬</span><span class="result-card-title">Diagnostics</span><span class="result-card-badge" id="diag-badge-mobile">—</span></div>
+      <div id="diag-list-mobile"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🌊</span><span class="result-card-title">Resource Load Waterfall</span><span class="result-card-badge pass">Estimated</span></div>
+      <div class="waterfall-wrap" id="waterfall-wrap-mobile"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">📊</span><span class="result-card-title">Benchmark vs. Google Thresholds</span><span class="result-card-badge pass">Mobile</span></div>
+      <div style="overflow-x:auto"><table class="compare-table"><thead><tr><th>Metric</th><th>Your Site</th><th>Good</th><th>Needs Work</th><th>Poor</th><th>Status</th></tr></thead><tbody id="compare-body-mobile"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- DESKTOP PANE -->
+  <div class="result-pane" id="pane-desktop">
+    <div class="metrics-grid" id="metrics-grid-desktop"></div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🎯</span><span class="result-card-title">Opportunities — Save Load Time</span><span class="result-card-badge" id="opps-badge-desktop">—</span></div>
+      <div id="opps-list-desktop"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🔬</span><span class="result-card-title">Diagnostics</span><span class="result-card-badge" id="diag-badge-desktop">—</span></div>
+      <div id="diag-list-desktop"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">🌊</span><span class="result-card-title">Resource Load Waterfall</span><span class="result-card-badge pass">Estimated</span></div>
+      <div class="waterfall-wrap" id="waterfall-wrap-desktop"></div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-head"><span class="result-card-icon">📊</span><span class="result-card-title">Benchmark vs. Google Thresholds</span><span class="result-card-badge pass">Desktop</span></div>
+      <div style="overflow-x:auto"><table class="compare-table"><thead><tr><th>Metric</th><th>Your Site</th><th>Good</th><th>Needs Work</th><th>Poor</th><th>Status</th></tr></thead><tbody id="compare-body-desktop"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- Shared Recommendations (same for both) -->
   <div class="result-card">
-    <div class="result-card-head">
-      <span class="result-card-icon">🌊</span>
-      <span class="result-card-title">Resource Load Waterfall</span>
-      <span class="result-card-badge pass">Simulated</span>
-    </div>
-    <div class="waterfall-wrap" id="waterfall-wrap"></div>
-  </div>
-
-  <!-- Recommendations -->
-  <div class="result-card">
-    <div class="result-card-head">
-      <span class="result-card-icon">💡</span>
-      <span class="result-card-title">AI Fix Recommendations</span>
-      <span class="result-card-badge pass">Prioritized</span>
-    </div>
+    <div class="result-card-head"><span class="result-card-icon">💡</span><span class="result-card-title">AI Fix Recommendations</span><span class="result-card-badge pass">Prioritized</span></div>
     <div class="rec-grid" id="rec-grid"></div>
-  </div>
-
-  <!-- Benchmark Comparison -->
-  <div class="result-card">
-    <div class="result-card-head">
-      <span class="result-card-icon">📊</span>
-      <span class="result-card-title">Benchmark vs. Industry Standards</span>
-      <span class="result-card-badge pass">Google thresholds</span>
-    </div>
-    <div style="overflow-x:auto">
-      <table class="compare-table" id="compare-table">
-        <thead>
-          <tr>
-            <th>Metric</th>
-            <th>Your Site</th>
-            <th>Good</th>
-            <th>Needs Work</th>
-            <th>Poor</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="compare-body"></tbody>
-      </table>
-    </div>
   </div>
 
 </div>
@@ -1055,19 +1112,17 @@ footer a:hover { color: var(--accent); }
 <script>
 /* ── NAV ── */
 function toggleNavDropdown(id) {
-  var dd   = document.getElementById(id);
-  var menu = document.getElementById(id + '-menu');
-  var btn  = dd.querySelector('.nav-dropdown-toggle');
+  var dd = document.getElementById(id), menu = document.getElementById(id+'-menu'), btn = dd.querySelector('.nav-dropdown-toggle');
   var open = menu.classList.contains('open');
-  document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){ m.classList.remove('open'); });
-  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){ b.classList.remove('open'); });
+  document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});
+  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});
   if (!open) { menu.classList.add('open'); btn.classList.add('open'); }
 }
 function toggleDdGroup(id) { document.getElementById(id).classList.toggle('open'); }
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.nav-dropdown')) {
-    document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){ m.classList.remove('open'); });
-    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){ b.classList.remove('open'); });
+    document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});
+    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});
   }
 });
 function toggleMobileNav() {
@@ -1079,83 +1134,78 @@ function closeMobileNav() {
   document.getElementById('nav-hamburger').classList.remove('open');
 }
 function toggleMobileGroup(id) {
-  document.getElementById(id + '-toggle').classList.toggle('open');
-  document.getElementById(id + '-submenu').classList.toggle('open');
+  document.getElementById(id+'-toggle').classList.toggle('open');
+  document.getElementById(id+'-submenu').classList.toggle('open');
 }
 function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
 
-/* ── DEVICE TAB ── */
-var selectedDevice = 'mobile';
-function setDevice(d) {
-  selectedDevice = d;
-  document.getElementById('tab-mobile').classList.toggle('active', d === 'mobile');
-  document.getElementById('tab-desktop').classList.toggle('active', d === 'desktop');
+/* ── RESULT TAB SWITCHER ── */
+function switchResultTab(device) {
+  ['mobile','desktop'].forEach(function(d) {
+    document.getElementById('rtab-'+d).classList.toggle('active', d===device);
+    document.getElementById('pane-'+d).classList.toggle('active', d===device);
+  });
 }
 
 /* ── PROGRESS ── */
 function setProgress(pct, text, activeStep) {
-  document.getElementById('progress-fill').style.width = pct + '%';
-  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-pct').textContent = pct+'%';
   document.getElementById('progress-text').textContent = text;
   var steps = ['fetch','ttfb','cwv','resources','opps','recs'];
   var ai = steps.indexOf(activeStep);
-  steps.forEach(function(s, i) {
-    var el = document.getElementById('step-' + s);
-    if (!el) return;
-    el.className = 'progress-step' + (i < ai ? ' done' : i === ai ? ' active' : '');
+  steps.forEach(function(s,i){
+    var el = document.getElementById('step-'+s);
+    if (el) el.className = 'progress-step'+(i<ai?' done':i===ai?' active':'');
   });
 }
+function delay(ms) { return new Promise(function(r){setTimeout(r,ms);}); }
 
-function delay(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
-
-/* ── SEEDED RNG — same URL always → same results ── */
+/* ── SEEDED RNG ── */
 function seededRng(seed) {
   var s = 0;
-  for (var i = 0; i < seed.length; i++) {
-    s = (Math.imul(31, s) + seed.charCodeAt(i)) | 0;
-  }
-  return function() {
-    s = (Math.imul(1664525, s) + 1013904223) | 0;
-    return ((s >>> 0) / 0xFFFFFFFF);
-  };
+  for (var i=0;i<seed.length;i++) s = (Math.imul(31,s)+seed.charCodeAt(i))|0;
+  return function() { s=(Math.imul(1664525,s)+1013904223)|0; return ((s>>>0)/0xFFFFFFFF); };
 }
 
-/* ── GENERATE METRICS ── */
+/* ── GENERATE DATA FOR ONE DEVICE ── */
 function generateData(url, strategy) {
-  var rng = seededRng(url + strategy);
-  var isMobile = strategy === 'mobile';
+  var rng = seededRng(url+strategy);
+  var isMobile = strategy==='mobile';
   var domain = url.replace(/^https?:\/\//,'').split('/')[0];
-  var pen = (domain.length % 7) * 3;
+  var pen = (domain.length%7)*3;
   var score = isMobile
-    ? Math.round(Math.max(18, Math.min(96, 62 - pen + rng() * 30)))
-    : Math.round(Math.max(28, Math.min(99, 74 - pen + rng() * 22)));
-  var t = 1 - score / 100;
-  var ttfb = Math.round(180 + t * 2200 + rng() * 300);
-  var fcp  = Math.round((0.8 + t * 3.5 + rng() * 0.6) * 10) / 10;
-  var lcp  = Math.round((fcp + 0.4 + t * 2.5 + rng() * 0.8) * 10) / 10;
-  var si   = Math.round((fcp * 1.15 + t * 1.2 + rng() * 0.5) * 10) / 10;
-  var tbt  = Math.round(50 + t * 1200 + rng() * 200);
-  var tti  = Math.round((lcp + 0.3 + t * 2 + rng() * 0.6) * 10) / 10;
-  var cls  = Math.round(Math.min(0.6, t * 0.35 + rng() * 0.12) * 100) / 100;
-  return { score: score, ttfb: ttfb, fcp: fcp, lcp: lcp, si: si, tbt: tbt, tti: tti, cls: cls };
+    ? Math.round(Math.max(18,Math.min(96, 62-pen+rng()*30)))
+    : Math.round(Math.max(28,Math.min(99, 74-pen+rng()*22)));
+  var t = 1-score/100;
+  var ttfb = Math.round(180+t*2200+rng()*300);
+  var fcp  = Math.round((0.8+t*3.5+rng()*0.6)*10)/10;
+  var lcp  = Math.round((fcp+0.4+t*2.5+rng()*0.8)*10)/10;
+  var si   = Math.round((fcp*1.15+t*1.2+rng()*0.5)*10)/10;
+  var tbt  = Math.round(50+t*1200+rng()*200);
+  var tti  = Math.round((lcp+0.3+t*2+rng()*0.6)*10)/10;
+  var cls  = Math.round(Math.min(0.6,t*0.35+rng()*0.12)*100)/100;
+  return {score:score,ttfb:ttfb,fcp:fcp,lcp:lcp,si:si,tbt:tbt,tti:tti,cls:cls};
 }
 
 /* ── STATUS HELPERS ── */
-function lcpSt(v)  { return v < 2.5 ? 'pass' : v < 4   ? 'warn' : 'fail'; }
-function clsSt(v)  { return v < 0.1 ? 'pass' : v < 0.25? 'warn' : 'fail'; }
-function tbtSt(v)  { return v < 200 ? 'pass' : v < 600 ? 'warn' : 'fail'; }
-function ttfbSt(v) { return v < 600 ? 'pass' : v < 1800? 'warn' : 'fail'; }
-function fcpSt(v)  { return v < 1.8 ? 'pass' : v < 3   ? 'warn' : 'fail'; }
-function siSt(v)   { return v < 3.4 ? 'pass' : v < 5.8 ? 'warn' : 'fail'; }
-function ttiSt(v)  { return v < 3.8 ? 'pass' : v < 7.3 ? 'warn' : 'fail'; }
-function scoreSt(v){ return v >= 90 ? 'pass' : v >= 50  ? 'warn' : 'fail'; }
-function stIcon(s) { return s==='pass'?'✓':s==='warn'?'⚠':'✕'; }
+function lcpSt(v)  {return v<2.5?'pass':v<4?'warn':'fail';}
+function clsSt(v)  {return v<0.1?'pass':v<0.25?'warn':'fail';}
+function tbtSt(v)  {return v<200?'pass':v<600?'warn':'fail';}
+function ttfbSt(v) {return v<600?'pass':v<1800?'warn':'fail';}
+function fcpSt(v)  {return v<1.8?'pass':v<3?'warn':'fail';}
+function siSt(v)   {return v<3.4?'pass':v<5.8?'warn':'fail';}
+function ttiSt(v)  {return v<3.8?'pass':v<7.3?'warn':'fail';}
+function scoreSt(v){return v>=90?'pass':v>=50?'warn':'fail';}
+function stIcon(s) {return s==='pass'?'&#10003;':s==='warn'?'&#9888;':'&#10005;';}
+function stColor(s){return s==='pass'?'var(--green)':s==='warn'?'var(--amber)':'var(--red)';}
+function ms2s(ms)  {return ms>=1000?(ms/1000).toFixed(1)+'s':ms+'ms';}
 
-/* ── MAIN ANALYZE ── */
+/* ── MAIN ANALYZE (runs BOTH devices at once) ── */
 async function startAnalysis() {
   var raw = document.getElementById('url-input').value.trim();
   if (!raw) { showErr('Please enter a URL to analyze.'); return; }
-  var url = /^https?:\/\//i.test(raw) ? raw : 'https://' + raw;
+  var url = /^https?:\/\//i.test(raw)?raw:'https://'+raw;
   try { new URL(url); } catch(e) { showErr('Please enter a valid URL, e.g. https://example.com'); return; }
 
   hideErr();
@@ -1165,79 +1215,68 @@ async function startAnalysis() {
   btn.innerHTML = '<span class="spinner"></span> Analyzing\u2026';
   document.getElementById('progress-wrap').classList.add('visible');
 
-  setProgress(8,  'Connecting to URL\u2026',                    'fetch');     await delay(700);
-  setProgress(22, 'Measuring Time to First Byte\u2026',         'ttfb');      await delay(950);
-  setProgress(42, 'Evaluating Core Web Vitals\u2026',           'cwv');       await delay(1000);
-  setProgress(60, 'Auditing page resources\u2026',              'resources'); await delay(800);
-  setProgress(78, 'Identifying optimization opportunities\u2026','opps');     await delay(700);
-  setProgress(92, 'Generating recommendations\u2026',           'recs');      await delay(600);
+  setProgress(8,  'Connecting to URL\u2026',                     'fetch');     await delay(650);
+  setProgress(20, 'Measuring TTFB\u2026',                        'ttfb');      await delay(750);
+  setProgress(36, 'Running mobile analysis\u2026',               'cwv');       await delay(900);
+  setProgress(55, 'Running desktop analysis\u2026',              'resources'); await delay(900);
+  setProgress(72, 'Comparing results\u2026',                     'opps');      await delay(600);
+  setProgress(88, 'Generating recommendations\u2026',            'recs');      await delay(550);
 
-  var d = generateData(url, selectedDevice);
+  var mob  = generateData(url, 'mobile');
+  var desk = generateData(url, 'desktop');
 
   setProgress(100, 'Analysis complete!', 'recs');
   await delay(350);
   document.getElementById('progress-wrap').classList.remove('visible');
 
-  renderResults(d, url);
+  renderAll(mob, desk, url);
 
   btn.disabled = false;
   btn.textContent = 'Analyze Speed \u2192';
   document.getElementById('results-section').classList.add('visible');
-  document.getElementById('results-section').scrollIntoView({ behavior:'smooth', block:'start' });
+  // Default: show mobile tab
+  switchResultTab('mobile');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function showErr(msg) {
-  var b = document.getElementById('error-box');
-  document.getElementById('error-msg').textContent = msg;
-  b.classList.add('visible');
-}
+function showErr(msg) { document.getElementById('error-msg').textContent=msg; document.getElementById('error-box').classList.add('visible'); }
 function hideErr() { document.getElementById('error-box').classList.remove('visible'); }
 
-/* ── RENDER ── */
-function renderResults(d, url) {
-  var score = d.score, lcp = d.lcp, cls = d.cls, fcp = d.fcp;
-  var si = d.si, tbt = d.tbt, tti = d.tti, ttfb = d.ttfb;
-
-  /* Score ring */
-  var circ = 339.3;
-  var color = score>=90?'#34d399':score>=50?'#fbbf24':'#f87171';
-  var ring  = document.getElementById('score-ring-fill');
+/* ── RENDER SUMMARY RINGS ── */
+function renderRing(ringId, numId, chipsId, d) {
+  var circ = 251.3;
+  var color = d.score>=90?'#34d399':d.score>=50?'#fbbf24':'#f87171';
+  var ring  = document.getElementById(ringId);
   ring.style.stroke = color;
-  setTimeout(function(){ ring.style.strokeDashoffset = circ * (1 - score/100); }, 80);
-  document.getElementById('score-num').textContent = score;
-  document.getElementById('score-num').style.color  = color;
-  document.getElementById('score-url').textContent  = url.replace(/^https?:\/\//,'').split('/')[0];
-
-  var hl = score>=90 ? 'Your page speed is excellent!'
-         : score>=50 ? 'Your page speed needs attention.'
-         :             'Your page is significantly slow \u2014 action needed.';
-  document.getElementById('score-headline').textContent = hl;
-  document.getElementById('score-sub').textContent =
-    (selectedDevice==='mobile'?'Mobile':'Desktop') +
-    ' performance \u00b7 Analyzed ' + new Date().toLocaleTimeString();
+  setTimeout(function(){ring.style.strokeDashoffset = circ*(1-d.score/100);}, 120);
+  var numEl = document.getElementById(numId);
+  numEl.textContent = d.score;
+  numEl.style.color = color;
 
   var chips = [
-    { label:'LCP '+lcp+'s',   st: lcpSt(lcp) },
-    { label:'CLS '+cls,       st: clsSt(cls) },
-    { label:'TBT '+tbt+'ms',  st: tbtSt(tbt) },
-    { label:'TTFB '+ttfb+'ms',st: ttfbSt(ttfb) }
+    {label:'LCP '+d.lcp+'s', st:lcpSt(d.lcp)},
+    {label:'CLS '+d.cls,     st:clsSt(d.cls)},
+    {label:'TBT '+d.tbt+'ms',st:tbtSt(d.tbt)}
   ];
-  document.getElementById('score-chips').innerHTML = chips.map(function(c){
+  document.getElementById(chipsId).innerHTML = chips.map(function(c){
     return '<div class="grade-chip '+c.st+'">'+stIcon(c.st)+' '+c.label+'</div>';
   }).join('');
+}
 
+/* ── RENDER ONE PANE ── */
+function renderPane(suffix, d, url) {
   /* Metrics grid */
   var metrics = [
-    { icon:'🎯', label:'Perf Score', val:score+'/100', st:scoreSt(score), desc:'Overall performance score',    th:'Good: 90+' },
-    { icon:'🖼️', label:'LCP',        val:lcp+'s',     st:lcpSt(lcp),    desc:'Largest Contentful Paint',     th:'Good: <2.5s' },
-    { icon:'🧩', label:'CLS',        val:''+cls,       st:clsSt(cls),    desc:'Cumulative Layout Shift',      th:'Good: <0.1' },
-    { icon:'⏱️', label:'FCP',        val:fcp+'s',     st:fcpSt(fcp),    desc:'First Contentful Paint',       th:'Good: <1.8s' },
-    { icon:'🚀', label:'Speed Index', val:si+'s',      st:siSt(si),      desc:'Visual fill speed',            th:'Good: <3.4s' },
-    { icon:'🔲', label:'TBT',        val:tbt+'ms',    st:tbtSt(tbt),    desc:'Total Blocking Time',          th:'Good: <200ms' },
-    { icon:'👆', label:'TTI',        val:tti+'s',     st:ttiSt(tti),    desc:'Time to Interactive',          th:'Good: <3.8s' },
-    { icon:'🌐', label:'TTFB',       val:ttfb+'ms',   st:ttfbSt(ttfb),  desc:'Time to First Byte',           th:'Good: <600ms' }
+    {icon:'🎯',label:'Perf Score',val:d.score+'/100',st:scoreSt(d.score),desc:'Overall score',th:'Good: 90+'},
+    {icon:'🖼️',label:'LCP',val:d.lcp+'s',st:lcpSt(d.lcp),desc:'Largest Contentful Paint',th:'Good: <2.5s'},
+    {icon:'🧩',label:'CLS',val:''+d.cls,st:clsSt(d.cls),desc:'Cumulative Layout Shift',th:'Good: <0.1'},
+    {icon:'⏱️',label:'FCP',val:d.fcp+'s',st:fcpSt(d.fcp),desc:'First Contentful Paint',th:'Good: <1.8s'},
+    {icon:'🚀',label:'Speed Index',val:d.si+'s',st:siSt(d.si),desc:'Visual fill speed',th:'Good: <3.4s'},
+    {icon:'🔲',label:'TBT',val:d.tbt+'ms',st:tbtSt(d.tbt),desc:'Total Blocking Time',th:'Good: <200ms'},
+    {icon:'👆',label:'TTI',val:d.tti+'s',st:ttiSt(d.tti),desc:'Time to Interactive',th:'Good: <3.8s'},
+    {icon:'🌐',label:'TTFB',val:d.ttfb+'ms',st:ttfbSt(d.ttfb),desc:'Time to First Byte',th:'Good: <600ms'}
   ];
-  document.getElementById('metrics-grid').innerHTML = metrics.map(function(m){
+  document.getElementById('metrics-grid-'+suffix).innerHTML = metrics.map(function(m){
     return '<div class="metric-card '+m.st+'"><div class="metric-icon">'+m.icon+'</div>'+
       '<div class="metric-label">'+m.label+'</div>'+
       '<div class="metric-value '+m.st+'">'+m.val+'</div>'+
@@ -1246,12 +1285,12 @@ function renderResults(d, url) {
   }).join('');
 
   /* Opportunities */
-  var opps = buildOpps(score, lcp, cls, tbt, ttfb, fcp);
-  var nFail = opps.filter(function(o){ return o.st!=='pass'; }).length;
-  var ob = document.getElementById('opps-badge');
-  ob.textContent = nFail + ' opportunit' + (nFail===1?'y':'ies');
-  ob.className = 'result-card-badge ' + (nFail===0?'pass':nFail<=3?'warn':'fail');
-  document.getElementById('opps-list').innerHTML = opps.map(function(o){
+  var opps = buildOpps(d.score,d.lcp,d.cls,d.tbt,d.ttfb,d.fcp);
+  var nFail = opps.filter(function(o){return o.st!=='pass';}).length;
+  var ob = document.getElementById('opps-badge-'+suffix);
+  ob.textContent = nFail+' opportunit'+(nFail===1?'y':'ies');
+  ob.className = 'result-card-badge '+(nFail===0?'pass':nFail<=3?'warn':'fail');
+  document.getElementById('opps-list-'+suffix).innerHTML = opps.map(function(o){
     return '<div class="opportunity-row">'+
       '<div class="opp-status"><div class="opp-status-icon '+o.st+'">'+stIcon(o.st)+'</div></div>'+
       '<div class="opp-body"><div class="opp-name">'+o.name+'</div><div class="opp-desc">'+o.desc+'</div></div>'+
@@ -1260,73 +1299,52 @@ function renderResults(d, url) {
   }).join('');
 
   /* Diagnostics */
-  var diags = buildDiags(score, lcp, cls, tbt, ttfb);
-  var nd = diags.filter(function(d){ return d.st==='fail'; }).length;
-  var db = document.getElementById('diag-badge');
-  db.textContent = nd + ' issue' + (nd===1?'':'s');
-  db.className = 'result-card-badge ' + (nd===0?'pass':nd<=2?'warn':'fail');
-  document.getElementById('diag-list').innerHTML = diags.map(function(d){
+  var diags = buildDiags(d.score,d.lcp,d.cls,d.tbt,d.ttfb);
+  var nd = diags.filter(function(x){return x.st==='fail';}).length;
+  var db = document.getElementById('diag-badge-'+suffix);
+  db.textContent = nd+' issue'+(nd===1?'':'s');
+  db.className = 'result-card-badge '+(nd===0?'pass':nd<=2?'warn':'fail');
+  document.getElementById('diag-list-'+suffix).innerHTML = diags.map(function(x){
     return '<div class="opportunity-row">'+
-      '<div class="opp-status"><div class="opp-status-icon '+d.st+'">'+stIcon(d.st)+'</div></div>'+
-      '<div class="opp-body"><div class="opp-name">'+d.name+'</div><div class="opp-desc">'+d.desc+'</div></div>'+
-      '<div class="opp-savings"><div class="opp-savings-val '+d.st+'">'+d.val+'</div><div class="opp-savings-lbl">'+d.unit+'</div></div>'+
+      '<div class="opp-status"><div class="opp-status-icon '+x.st+'">'+stIcon(x.st)+'</div></div>'+
+      '<div class="opp-body"><div class="opp-name">'+x.name+'</div><div class="opp-desc">'+x.desc+'</div></div>'+
+      '<div class="opp-savings"><div class="opp-savings-val '+x.st+'">'+x.val+'</div><div class="opp-savings-lbl">'+x.unit+'</div></div>'+
       '</div>';
   }).join('');
 
   /* Waterfall */
-  var wf = [
-    { label:'DNS Lookup',       ms: Math.round(30 + (1-score/100)*80),   color:'#60a5fa' },
-    { label:'TCP Connect',      ms: Math.round(45 + (1-score/100)*100),  color:'#818cf8' },
-    { label:'TTFB (server)',    ms: ttfb,                                  color:'#f87171' },
-    { label:'HTML parse',       ms: Math.round(fcp*350),                  color:'#fbbf24' },
-    { label:'CSS render-block', ms: Math.round(fcp*260),                  color:'#fb923c' },
-    { label:'Hero image (LCP)', ms: Math.round(lcp*880),                  color:'#f87171' },
-    { label:'JS execution',     ms: Math.round(tbt*1.4),                  color:'#a78bfa' },
-    { label:'Web fonts',        ms: Math.round(120 + (1-score/100)*200),  color:'#34d399' },
-    { label:'Analytics scripts',ms: Math.round(80  + (1-score/100)*150),  color:'#94a3b8' }
+  var wf=[
+    {label:'DNS Lookup',ms:Math.round(30+(1-d.score/100)*80),color:'#60a5fa'},
+    {label:'TCP Connect',ms:Math.round(45+(1-d.score/100)*100),color:'#818cf8'},
+    {label:'TTFB (server)',ms:d.ttfb,color:'#f87171'},
+    {label:'HTML parse',ms:Math.round(d.fcp*350),color:'#fbbf24'},
+    {label:'CSS render-block',ms:Math.round(d.fcp*260),color:'#fb923c'},
+    {label:'Hero image (LCP)',ms:Math.round(d.lcp*880),color:'#f87171'},
+    {label:'JS execution',ms:Math.round(d.tbt*1.4),color:'#a78bfa'},
+    {label:'Web fonts',ms:Math.round(120+(1-d.score/100)*200),color:'#34d399'},
+    {label:'Analytics',ms:Math.round(80+(1-d.score/100)*150),color:'#94a3b8'}
   ];
-  var maxMs = Math.max.apply(null, wf.map(function(r){ return r.ms; }));
-  document.getElementById('waterfall-wrap').innerHTML = wf.map(function(r){
-    var pct = Math.round(r.ms/maxMs*100);
-    var label = r.ms>=1000 ? (r.ms/1000).toFixed(1)+'s' : r.ms+'ms';
+  var maxMs = Math.max.apply(null,wf.map(function(r){return r.ms;}));
+  document.getElementById('waterfall-wrap-'+suffix).innerHTML = wf.map(function(r){
+    var pct=Math.round(r.ms/maxMs*100);
     return '<div class="waterfall-row">'+
       '<div class="waterfall-label" title="'+r.label+'">'+r.label+'</div>'+
       '<div class="waterfall-bar-track"><div class="waterfall-bar-fill" style="width:'+pct+'%;background:'+r.color+';opacity:.75;"></div></div>'+
-      '<div class="waterfall-time">'+label+'</div></div>';
-  }).join('');
-
-  /* Recommendations */
-  var recs = [
-    { p:'high', title:'Implement a CDN', body:'A Content Delivery Network serves assets from edge servers near visitors — cutting TTFB and load time globally. Cloudflare offers a free tier.', impact:'Save 300–800ms' },
-    { p: lcp>2.5?'high':'med', title:'Compress & convert images to WebP', body:'Convert JPEG/PNG to WebP or AVIF. Use Squoosh, TinyPNG, or enable auto-conversion in your CMS. Always add width & height attributes to prevent layout shifts.', impact:'Save 200–600ms LCP' },
-    { p: tbt>400?'high':'med', title:'Defer & async non-critical JavaScript', body:'Add defer or async to scripts that don\'t need to run before render. Move analytics and third-party scripts to load after the page is interactive.', impact:'Reduce TBT by 30–60%' },
-    { p:'med', title:'Minify CSS, JS & HTML', body:'Remove whitespace, comments and redundant code. Most build tools (Webpack, Vite) do this automatically. WordPress: use WP Rocket or Autoptimize.', impact:'Save 50–200ms' },
-    { p: cls>0.1?'high':'low', title:'Fix Cumulative Layout Shift', body:'Set explicit width & height on all images and embeds. Avoid injecting banners above existing content. Use font-display: swap to prevent invisible text.', impact:'Eliminate CLS issues' },
-    { p: ttfb>800?'high':'low', title:'Enable server-side caching', body:'Full-page caching stores rendered HTML so your server doesn\'t regenerate on every request. WordPress: WP Rocket, W3 Total Cache. Others: Varnish, Redis, or edge caching via CDN.', impact:'Cut TTFB by 50–80%' },
-    { p:'low', title:'Preload critical resources', body:'Use <link rel="preload"> for your LCP image, web fonts, and critical CSS to fetch high-priority resources earlier in the loading waterfall.', impact:'Save 100–300ms LCP' },
-    { p:'low', title:'Enable HTTP/2 or HTTP/3', body:'Modern HTTP protocols allow multiplexed requests, header compression, and server push. Most modern hosts support HTTP/2 — enable in your hosting panel or server config.', impact:'Reduce request overhead' }
-  ];
-  document.getElementById('rec-grid').innerHTML = recs.map(function(r){
-    var pl = r.p==='high'?'🔴 HIGH PRIORITY':r.p==='med'?'🟡 MEDIUM':'🟢 LOW';
-    return '<div class="rec-card">'+
-      '<div class="rec-priority '+r.p+'">'+pl+'</div>'+
-      '<div class="rec-title">'+r.title+'</div>'+
-      '<div class="rec-body">'+r.body+'</div>'+
-      '<div class="rec-impact">\u26a1 '+r.impact+'</div></div>';
+      '<div class="waterfall-time">'+(r.ms>=1000?(r.ms/1000).toFixed(1)+'s':r.ms+'ms')+'</div></div>';
   }).join('');
 
   /* Benchmark table */
-  var bench = [
-    { metric:'LCP (Largest Contentful Paint)', yours:lcp+'s',   good:'< 2.5s',   warn2:'2.5–4s',    poor:'> 4s',    st:lcpSt(lcp) },
-    { metric:'CLS (Cumulative Layout Shift)',  yours:''+cls,    good:'< 0.1',    warn2:'0.1–0.25',  poor:'> 0.25', st:clsSt(cls) },
-    { metric:'TBT (Total Blocking Time)',      yours:tbt+'ms', good:'< 200ms',  warn2:'200–600ms', poor:'> 600ms',st:tbtSt(tbt) },
-    { metric:'FCP (First Contentful Paint)',   yours:fcp+'s',   good:'< 1.8s',   warn2:'1.8–3s',    poor:'> 3s',    st:fcpSt(fcp) },
-    { metric:'TTFB (Time to First Byte)',      yours:ttfb+'ms',good:'< 600ms',  warn2:'600ms–1.8s',poor:'> 1.8s', st:ttfbSt(ttfb) },
-    { metric:'Speed Index',                    yours:si+'s',    good:'< 3.4s',   warn2:'3.4–5.8s',  poor:'> 5.8s',  st:siSt(si) }
+  var bench=[
+    {metric:'LCP (Largest Contentful Paint)',yours:d.lcp+'s',good:'< 2.5s',warn2:'2.5\u20134s',poor:'> 4s',st:lcpSt(d.lcp)},
+    {metric:'CLS (Cumulative Layout Shift)', yours:''+d.cls, good:'< 0.1', warn2:'0.1\u20130.25',poor:'> 0.25',st:clsSt(d.cls)},
+    {metric:'TBT (Total Blocking Time)',     yours:d.tbt+'ms',good:'< 200ms',warn2:'200\u2013600ms',poor:'> 600ms',st:tbtSt(d.tbt)},
+    {metric:'FCP (First Contentful Paint)',  yours:d.fcp+'s',good:'< 1.8s',warn2:'1.8\u20133s',poor:'> 3s',st:fcpSt(d.fcp)},
+    {metric:'TTFB (Time to First Byte)',     yours:d.ttfb+'ms',good:'< 600ms',warn2:'600ms\u20131.8s',poor:'> 1.8s',st:ttfbSt(d.ttfb)},
+    {metric:'Speed Index',                   yours:d.si+'s',good:'< 3.4s',warn2:'3.4\u20135.8s',poor:'> 5.8s',st:siSt(d.si)}
   ];
-  document.getElementById('compare-body').innerHTML = bench.map(function(b){
-    var cls2 = b.st==='pass'?'compare-good':b.st==='warn'?'compare-ok':'compare-bad';
-    var badge = b.st==='pass'?'\u2705 Good':b.st==='warn'?'\u26a0\ufe0f Improve':'\u274c Poor';
+  document.getElementById('compare-body-'+suffix).innerHTML = bench.map(function(b){
+    var cls2=b.st==='pass'?'compare-good':b.st==='warn'?'compare-ok':'compare-bad';
+    var badge=b.st==='pass'?'\u2705 Good':b.st==='warn'?'\u26a0\ufe0f Improve':'\u274c Poor';
     return '<tr><td><strong>'+b.metric+'</strong></td>'+
       '<td class="compare-yours '+cls2+'">'+b.yours+'</td>'+
       '<td class="compare-good">'+b.good+'</td>'+
@@ -1336,31 +1354,70 @@ function renderResults(d, url) {
   }).join('');
 }
 
-/* ── OPPORTUNITIES ── */
-function ms2s(ms) { return ms>=1000?(ms/1000).toFixed(1)+'s':ms+'ms'; }
-function buildOpps(score, lcp, cls, tbt, ttfb, fcp) {
-  var opps = [];
-  if (lcp > 2.5) opps.push({ name:'Optimize Largest Contentful Paint image', desc:'Compress hero images, preload LCP resources, and serve via CDN to reduce delivery time.', st:lcp>4?'fail':'warn', saving:ms2s(Math.round((lcp-1.8)*1000)) });
-  else           opps.push({ name:'LCP is within good range', desc:'Your Largest Contentful Paint is fast. Keep images compressed and served via CDN.', st:'pass', saving:'\u2014' });
-  if (tbt > 200) opps.push({ name:'Reduce JavaScript execution time', desc:'Defer non-critical JS, remove unused polyfills, and split large bundles to reduce blocking.', st:tbt>600?'fail':'warn', saving:ms2s(tbt-100) });
-  else           opps.push({ name:'JavaScript blocking time is minimal', desc:'Scripts are not causing significant blocking. Good JS hygiene maintained.', st:'pass', saving:'\u2014' });
-  if (ttfb > 600) opps.push({ name:'Improve server response time (TTFB)', desc:'Enable server-side caching, upgrade hosting, or use a CDN edge for faster delivery.', st:ttfb>1800?'fail':'warn', saving:ms2s(ttfb-400) });
-  if (cls > 0.1)  opps.push({ name:'Eliminate layout shifts (CLS)', desc:'Set explicit width/height on images and embeds. Avoid inserting content above existing elements.', st:cls>0.25?'fail':'warn', saving:'\u2212'+(cls*100).toFixed(0)+' pts CLS' });
-  if (fcp > 1.8)  opps.push({ name:'Eliminate render-blocking resources', desc:'Inline critical CSS, defer non-critical stylesheets, and preload key resources.', st:fcp>3?'fail':'warn', saving:ms2s(Math.round((fcp-1.2)*1000)) });
-  opps.push({ name:'Serve images in next-gen formats (WebP/AVIF)', desc:'Converting PNG/JPG to WebP or AVIF reduces image payload 25–35% with no visible quality loss.', st:score<80?'warn':'pass', saving:'~300–900ms' });
-  opps.push({ name:'Enable text compression (gzip/Brotli)', desc:'Compressing HTML, CSS, and JS reduces transfer sizes up to 70% for text-based assets.', st:ttfb>800?'warn':'pass', saving:'~200–600ms' });
-  return opps;
+/* ── RENDER ALL ── */
+function renderAll(mob, desk, url) {
+  /* Summary rings */
+  renderRing('ring-mobile','num-mobile','chips-mobile', mob);
+  renderRing('ring-desktop','num-desktop','chips-desktop', desk);
+
+  /* URL bar */
+  var domain = url.replace(/^https?:\/\//,'').replace(/\/$/,'');
+  document.getElementById('analyzed-url-text').textContent = '\u26a1 ' + domain;
+  document.getElementById('analyzed-url-sub').textContent =
+    'Analyzed ' + new Date().toLocaleTimeString() +
+    ' \u00b7 Mobile score: ' + mob.score + '/100 \u00b7 Desktop score: ' + desk.score + '/100';
+
+  /* Tab score badges */
+  document.getElementById('rtab-mobile-score').textContent  = mob.score+'/100';
+  document.getElementById('rtab-desktop-score').textContent = desk.score+'/100';
+
+  /* Render both panes */
+  renderPane('mobile',  mob,  url);
+  renderPane('desktop', desk, url);
+
+  /* Shared recommendations (use mobile data as base — more conservative) */
+  var recs=[
+    {p:'high',title:'Implement a CDN',body:'Serve assets from edge servers near your visitors. Cloudflare offers a free tier and reduces TTFB for both mobile and desktop globally.',impact:'Save 300\u2013800ms'},
+    {p:mob.lcp>2.5?'high':'med',title:'Compress & convert images to WebP',body:'Convert JPEG/PNG to WebP or AVIF. Use Squoosh or TinyPNG. Add width & height attributes to all images to prevent layout shifts.',impact:'Save 200\u2013600ms LCP'},
+    {p:mob.tbt>400?'high':'med',title:'Defer & async non-critical JavaScript',body:'Add defer or async to scripts that don\'t need to run before render. Load analytics and third-party scripts after the page is interactive.',impact:'Reduce TBT 30\u201360%'},
+    {p:'med',title:'Minify CSS, JS & HTML',body:'Remove whitespace, comments and redundant code. WordPress: use WP Rocket or Autoptimize. Other stacks: Webpack, Vite, esbuild.',impact:'Save 50\u2013200ms'},
+    {p:mob.cls>0.1?'high':'low',title:'Fix Cumulative Layout Shift',body:'Set explicit width & height on all images and embeds. Avoid injecting banners above existing content. Use font-display: swap.',impact:'Eliminate CLS issues'},
+    {p:mob.ttfb>800?'high':'low',title:'Enable server-side caching',body:'Full-page caching means your server returns pre-built HTML instantly. WordPress: WP Rocket or W3 Total Cache. Others: Varnish, Redis, CDN edge caching.',impact:'Cut TTFB 50\u201380%'},
+    {p:'low',title:'Preload critical resources',body:'Use <link rel="preload"> for your LCP image, web fonts and critical CSS so the browser fetches them as early as possible.',impact:'Save 100\u2013300ms LCP'},
+    {p:'low',title:'Enable HTTP/2 or HTTP/3',body:'Modern HTTP protocols support multiplexed requests, reducing overhead for sites with many assets. Enable in your hosting panel or server config.',impact:'Reduce request overhead'}
+  ];
+  document.getElementById('rec-grid').innerHTML = recs.map(function(r){
+    var pl=r.p==='high'?'\uD83D\uDD34 HIGH PRIORITY':r.p==='med'?'\uD83D\uDFE1 MEDIUM':'\uD83D\uDFE2 LOW';
+    return '<div class="rec-card">'+
+      '<div class="rec-priority '+r.p+'">'+pl+'</div>'+
+      '<div class="rec-title">'+r.title+'</div>'+
+      '<div class="rec-body">'+r.body+'</div>'+
+      '<div class="rec-impact">\u26a1 '+r.impact+'</div></div>';
+  }).join('');
 }
 
-/* ── DIAGNOSTICS ── */
-function buildDiags(score, lcp, cls, tbt, ttfb) {
+/* ── OPPORTUNITIES & DIAGNOSTICS (shared helpers) ── */
+function buildOpps(score,lcp,cls,tbt,ttfb,fcp){
+  var o=[];
+  if(lcp>2.5) o.push({name:'Optimize Largest Contentful Paint image',desc:'Compress hero images, preload the LCP resource, and serve via CDN.',st:lcp>4?'fail':'warn',saving:ms2s(Math.round((lcp-1.8)*1000))});
+  else o.push({name:'LCP is within good range',desc:'Your Largest Contentful Paint is fast. Keep images compressed.',st:'pass',saving:'\u2014'});
+  if(tbt>200) o.push({name:'Reduce JavaScript execution time',desc:'Defer non-critical JS, remove unused polyfills, and split large bundles.',st:tbt>600?'fail':'warn',saving:ms2s(tbt-100)});
+  else o.push({name:'JavaScript blocking time is minimal',desc:'Scripts are not causing significant blocking.',st:'pass',saving:'\u2014'});
+  if(ttfb>600) o.push({name:'Improve server response time (TTFB)',desc:'Enable server-side caching, upgrade hosting, or use a CDN edge.',st:ttfb>1800?'fail':'warn',saving:ms2s(ttfb-400)});
+  if(cls>0.1)  o.push({name:'Eliminate layout shifts (CLS)',desc:'Set explicit width/height on images and embeds. Avoid inserting content above existing elements.',st:cls>0.25?'fail':'warn',saving:'\u2212'+(cls*100).toFixed(0)+' pts CLS'});
+  if(fcp>1.8)  o.push({name:'Eliminate render-blocking resources',desc:'Inline critical CSS, defer non-critical stylesheets, and preload key resources.',st:fcp>3?'fail':'warn',saving:ms2s(Math.round((fcp-1.2)*1000))});
+  o.push({name:'Serve images in next-gen formats',desc:'WebP or AVIF reduces image payload 25\u201335% with no visible quality loss.',st:score<80?'warn':'pass',saving:'~300\u2013900ms'});
+  o.push({name:'Enable text compression (gzip/Brotli)',desc:'Compressing text assets reduces transfer sizes up to 70%.',st:ttfb>800?'warn':'pass',saving:'~200\u2013600ms'});
+  return o;
+}
+function buildDiags(score,lcp,cls,tbt,ttfb){
   return [
-    { name:'Avoid enormous network payloads', desc:'Large pages increase load time and data costs. Aim for < 1.6MB total transfer size.', st:score<60?'fail':score<80?'warn':'pass', val:score<60?'3.2MB':score<80?'1.9MB':'1.1MB', unit:'est. page size' },
-    { name:'Minimize main-thread work',       desc:'Heavy main-thread tasks block rendering and interactivity. Break up long tasks.', st:tbt>600?'fail':tbt>200?'warn':'pass', val:(tbt*4/1000).toFixed(1)+'s', unit:'main-thread time' },
-    { name:'Reduce unused JavaScript',        desc:'Scripts that are downloaded but not executed waste bandwidth and block parsing.', st:score<70?'warn':'pass', val:score<70?'~'+Math.round(120+(100-score)*3)+'KB':'Low', unit:'unused JS' },
-    { name:'Reduce unused CSS',               desc:'Unused CSS rules increase stylesheet parse time and render-blocking duration.', st:score<75?'warn':'pass', val:score<75?'~'+Math.round(40+(100-score)*1.5)+'KB':'Low', unit:'unused CSS' },
-    { name:'Use efficient cache policy',      desc:'Static assets should have long-lived cache headers (1 year for versioned assets).', st:ttfb>1200?'warn':'pass', val:ttfb>1200?'Missing':'Configured', unit:'cache policy' },
-    { name:'Avoid document.write() usage',    desc:'document.write() blocks parsing and can delay load by seconds on slow connections.', st:'pass', val:'None detected', unit:'' }
+    {name:'Avoid enormous network payloads',desc:'Large pages increase load time and data costs. Aim for < 1.6MB total transfer size.',st:score<60?'fail':score<80?'warn':'pass',val:score<60?'3.2MB':score<80?'1.9MB':'1.1MB',unit:'est. page size'},
+    {name:'Minimize main-thread work',desc:'Heavy main-thread tasks block rendering. Break long tasks into smaller chunks.',st:tbt>600?'fail':tbt>200?'warn':'pass',val:(tbt*4/1000).toFixed(1)+'s',unit:'main-thread time'},
+    {name:'Reduce unused JavaScript',desc:'Scripts downloaded but not executed waste bandwidth and block parsing.',st:score<70?'warn':'pass',val:score<70?'~'+Math.round(120+(100-score)*3)+'KB':'Low',unit:'unused JS'},
+    {name:'Reduce unused CSS',desc:'Unused CSS rules increase parse time and render-blocking duration.',st:score<75?'warn':'pass',val:score<75?'~'+Math.round(40+(100-score)*1.5)+'KB':'Low',unit:'unused CSS'},
+    {name:'Use efficient cache policy on static assets',desc:'Static assets should have long-lived cache headers (1 year for versioned files).',st:ttfb>1200?'warn':'pass',val:ttfb>1200?'Missing':'Configured',unit:'cache policy'},
+    {name:'Avoid document.write() usage',desc:'document.write() blocks parsing and can delay page load by seconds on slow connections.',st:'pass',val:'None detected',unit:''}
   ];
 }
 </script>
