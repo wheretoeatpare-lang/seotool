@@ -1,347 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Background Remover — Free, No API Key | RankSorcery</title>
-<meta name="description" content="100% free AI background remover — no API key, no signup, no watermark. Remove backgrounds from any image instantly in your browser.">
-<meta name="robots" content="index, follow">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RankSorcery - Free AI Background Remover</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-P0WX226GEE');
-</script>
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
 
-<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
-<link rel="canonical" href="https://ranksorcery.com/background-remover.html">
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-<meta property="og:title" content="RankSorcery — Free AI Background Remover (No API Key)">
-<meta property="og:description" content="Remove image backgrounds instantly. Runs entirely in your browser — no upload, no API key, no watermark.">
-<meta property="og:image" content="https://ranksorcery.com/og-image-bg.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#E8B84B">
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
 
-<!-- Use a reliable, no-extra-headers WASM background removal library (rembg-web) -->
-<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.0/dist/background-removal.js"></script>
+        .subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+        }
 
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:    #0D1117;
-  --bg2:   #141B2D;
-  --bg3:   #1E2740;
-  --bg4:   #243050;
-  --border:  rgba(232,184,75,0.13);
-  --border2: rgba(232,184,75,0.22);
-  --text:  #E8EAF0;
-  --muted: #8A93A8;
-  --accent:  #E8B84B;
-  --teal:    #0ABFBC;
-  --green:  #34d399;
-  --red:    #f87171;
-}
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding-top: 64px;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 0; opacity: .45;
-}
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 64px;
-  background: rgba(13,17,23,0.88);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-}
-.logo {
-  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
-  color: var(--accent); text-decoration: none;
-  display: flex; align-items: center; gap: 9px;
-}
-.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-.nav-links { display: flex; gap: 0.1rem; }
-.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; padding: 0.35rem 0.65rem; border-radius: 6px; transition: 0.2s; }
-.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-.nav-links a.active { color: var(--accent); }
-.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; }
-.trust-bar {
-  background: linear-gradient(90deg, rgba(10,191,188,.07), rgba(232,184,75,.07));
-  border-bottom: 1px solid var(--border);
-  padding: 10px 5vw;
-  display: flex; gap: 32px; justify-content: center;
-  flex-wrap: wrap;
-}
-.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); }
-.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
-.hero-tool { padding: 3rem 2rem 2rem; text-align: center; }
-.hero-tool h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4.5vw, 3.4rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
-.hero-tool h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero-tool p { color: var(--muted); max-width: 600px; margin: 0 auto 1.5rem; }
-.tool-container { max-width: 1000px; margin: 1rem auto 4rem; padding: 0 1.5rem; }
-.bg-remover-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; box-shadow: 0 12px 48px rgba(0,0,0,0.3); }
-.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
-@media (max-width: 700px) { .upload-grid { grid-template-columns: 1fr; } }
-.preview-box { background: var(--bg3); border-radius: 20px; padding: 1rem; text-align: center; border: 1px solid var(--border); }
-.preview-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
-.image-area { background: var(--bg); border-radius: 14px; min-height: 280px; display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; overflow: hidden; }
-.image-area img { max-width: 100%; max-height: 300px; object-fit: contain; }
-.placeholder-icon { font-size: 3rem; color: var(--muted); text-align: center; }
-.placeholder-text { color: var(--muted); font-size: 0.85rem; }
-.no-api-badge { background: rgba(52,211,153,0.12); border: 1px solid rgba(52,211,153,0.3); border-radius: 40px; padding: 0.3rem 1rem; display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--green); margin-bottom: 1.2rem; }
-.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent3)); border: none; color: var(--bg); padding: 0.85rem 1.8rem; border-radius: 12px; font-weight: 800; font-family: 'Syne', sans-serif; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 14px rgba(232,184,75,0.3); }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-secondary { background: var(--bg4); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 1.2rem; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-.btn-secondary:hover { background: var(--bg3); border-color: var(--accent); }
-.download-btn { background: var(--teal); color: var(--bg); border: none; padding: 0.7rem 1.5rem; border-radius: 10px; font-weight: 700; margin-top: 0.5rem; cursor: pointer; }
-.color-picker-row { display: flex; align-items: center; gap: 1rem; margin: 1.2rem 0; justify-content: center; flex-wrap: wrap; }
-.feature-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-top: 2rem; }
-.feature-badge { background: var(--bg3); padding: 0.8rem; border-radius: 14px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
-.processing-status { margin-top: 1rem; font-size: 0.8rem; color: var(--accent); text-align: center; min-height: 2rem; }
-footer { border-top: 1px solid var(--border); padding: 2rem; margin-top: 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; }
-.nav-hamburger, .nav-mobile-menu { display: none; }
-@media (max-width: 900px) {
-  .nav-links { display: none; }
-  .nav-hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
-  .nav-hamburger span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
-  .nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); padding: 1rem; flex-direction: column; gap: 0.5rem; z-index: 190; }
-  .nav-mobile-menu.open { display: flex; }
-  .nav-mobile-menu a { color: var(--muted); text-decoration: none; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
-  .nav-mobile-cta { background: var(--accent); color: var(--bg) !important; text-align: center; border-radius: 10px; margin-top: 0.5rem; font-weight: 700; }
-}
-</style>
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .result-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .image-preview {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+
+        .placeholder {
+            color: #999;
+            text-align: center;
+            padding: 3rem;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .button-group {
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            margin-left: 1rem;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .loading {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature-item {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .result-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-<nav>
-  <a href="https://ranksorcery.com/" class="logo"><div class="logo-icon">✦</div>RankSorcery</a>
-  <div class="nav-links">
-    <a href="/">SEO Auditor</a>
-    <a href="/keyword-volume.html">Keyword Research</a>
-    <a href="/competitor.html">Competitor Analysis</a>
-    <a href="/background-remover.html" class="active">Background Remover</a>
-    <a href="/image-compressor.html">Image Tools</a>
-    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
-  </div>
-  <a href="#" class="nav-cta" onclick="document.querySelector('.tool-container').scrollIntoView({behavior:'smooth'}); return false;">Try Free →</a>
-  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
-</nav>
-<div class="nav-mobile-menu" id="mobileMenu">
-  <a href="/">🔍 SEO Auditor</a><a href="/keyword-volume.html">📊 Keyword Research</a>
-  <a href="/competitor.html">⚔️ Competitor Analysis</a><a href="/background-remover.html" class="active">✨ Background Remover</a>
-  <a href="/image-compressor.html">🖼️ Image Tools</a><a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
-  <a href="#" class="nav-mobile-cta" onclick="document.querySelector('.tool-container').scrollIntoView({behavior:'smooth'});">Remove Background →</a>
-</div>
-<div class="trust-bar">
-  <div class="trust-item">Trusted by <span class="val">3,400+</span> businesses</div>
-  <div class="trust-item"><span class="val">⭐ 4.9</span> rating</div>
-  <div class="trust-item">No API key · Privacy-first</div>
-</div>
+    <div class="container">
+        <header>
+            <div class="badge">✨ AI-Powered • 100% Free • No Signup Required</div>
+            <h1>AI Background Remover</h1>
+            <div class="subtitle">Remove image backgrounds instantly — completely in your browser</div>
+        </header>
 
-<section class="hero-tool">
-  <h1>AI Background Remover — <span>No API Key, No Uploads</span></h1>
-  <p>Fully client-side — runs in your browser. Remove backgrounds instantly, get transparent PNG. 100% free, no signup.</p>
-</section>
+        <div class="main-card">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">Click or drag & drop an image here</div>
+                <div class="upload-hint">Supports JPG, PNG, WebP (Max 10MB)</div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+            </div>
 
-<div class="tool-container">
-  <div class="bg-remover-card">
-    <div style="display: flex; justify-content: center;"><div class="no-api-badge">🔒 No API key required · Works offline</div></div>
-    <div class="upload-grid">
-      <div class="preview-box">
-        <div class="preview-title">📸 Original image</div>
-        <div class="image-area" id="originalArea">
-          <div class="placeholder-icon">🖼️</div>
-          <div class="placeholder-text">Click to upload or drag & drop</div>
+            <div class="result-container">
+                <div class="result-box">
+                    <div class="result-title">Original Image</div>
+                    <div class="image-preview" id="originalPreview">
+                        <div class="placeholder">No image selected</div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-title">Background Removed</div>
+                    <div class="image-preview" id="resultPreview">
+                        <div class="placeholder">Result will appear here</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button id="removeBtn" disabled>✨ Remove Background</button>
+                <button id="downloadBtn" class="download-btn" disabled style="display: none;">💾 Download PNG</button>
+            </div>
+
+            <div id="statusMessage" style="display: none;"></div>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <div class="feature-icon">🔒</div>
+                    <div>Privacy First — No server uploads</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div>Instant Processing</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🎨</div>
+                    <div>High Quality Results</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🆓</div>
+                    <div>Completely Free</div>
+                </div>
+            </div>
         </div>
-        <input type="file" id="imageUpload" accept="image/jpeg,image/png,image/webp" style="display:none">
-        <button class="btn-secondary" id="uploadBtn">Choose image</button>
-      </div>
-      <div class="preview-box">
-        <div class="preview-title">✨ Transparent result</div>
-        <div class="image-area" id="resultArea">
-          <div class="placeholder-icon">✨</div>
-          <div class="placeholder-text">Result will appear here</div>
-        </div>
-        <button class="download-btn" id="downloadBtn" style="display:none;">⬇ Download PNG (transparent)</button>
-      </div>
     </div>
-    <div style="display: flex; justify-content: center; margin: 1rem 0;">
-      <button id="removeBgBtn" class="btn-primary">✨ Remove background</button>
-    </div>
-    <div id="processingStatus" class="processing-status"></div>
-    <div class="color-picker-row">
-      <span>🎨 Preview background color:</span>
-      <input type="color" id="bgColorPicker" value="#0D1117">
-      <span style="font-size:0.75rem;">(only preview, download keeps transparency)</span>
-    </div>
-    <div class="feature-list">
-      <div class="feature-badge">🧠 AI-powered (local)</div><div class="feature-badge">🔓 100% free</div>
-      <div class="feature-badge">💎 Full resolution</div><div class="feature-badge">⚡ Runs locally</div>
-      <div class="feature-badge">🛡️ Privacy-first</div>
-    </div>
-  </div>
-</div>
-<footer>© 2025–2026 RankSorcery — Background Remover (No API Key)</footer>
 
-<script>
-// Mobile menu
-window.toggleMobile = function() {
-  document.getElementById('mobileMenu').classList.toggle('open');
-};
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('navHamburger');
-  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target))
-    menu.classList.remove('open');
-});
+    <!-- Using the official IMG.LY background removal library -->
+    <script type="importmap">
+        {
+            "imports": {
+                "@imgly/background-removal": "https://unpkg.com/@imgly/background-removal@1.7.0/dist/background-removal.js"
+            }
+        }
+    </script>
 
-// DOM elements
-const uploadInput = document.getElementById('imageUpload');
-const uploadBtn = document.getElementById('uploadBtn');
-const originalArea = document.getElementById('originalArea');
-const resultArea = document.getElementById('resultArea');
-const removeBtn = document.getElementById('removeBgBtn');
-const downloadBtn = document.getElementById('downloadBtn');
-const bgPicker = document.getElementById('bgColorPicker');
-const statusDiv = document.getElementById('processingStatus');
+    <script type="module">
+        import removeBackground from '@imgly/background-removal';
 
-let currentFile = null;
-let currentResultBlob = null;
-let currentResultUrl = null;
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const originalPreview = document.getElementById('originalPreview');
+        const resultPreview = document.getElementById('resultPreview');
+        const removeBtn = document.getElementById('removeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusMessage = document.getElementById('statusMessage');
 
-// Show uploaded image
-function showOriginal(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    originalArea.innerHTML = `<img src="${e.target.result}" alt="original" style="max-width:100%; max-height:280px;">`;
-    currentFile = file;
-    // clear previous result
-    if (currentResultUrl) URL.revokeObjectURL(currentResultUrl);
-    resultArea.innerHTML = `<div class="placeholder-icon">✨</div><div class="placeholder-text">Result will appear here</div>`;
-    downloadBtn.style.display = 'none';
-    currentResultBlob = null;
-    statusDiv.innerHTML = '';
-  };
-  reader.readAsDataURL(file);
-}
+        let currentFile = null;
+        let currentResultBlob = null;
 
-uploadBtn.addEventListener('click', () => uploadInput.click());
-uploadInput.addEventListener('change', (e) => {
-  if (e.target.files && e.target.files[0]) showOriginal(e.target.files[0]);
-});
+        // Configure the library (using CDN for models)
+        const config = {
+            publicPath: 'https://unpkg.com/@imgly/background-removal@1.7.0/data/',
+            debug: false,
+            device: 'cpu' // Use 'gpu' if available, but 'cpu' is more reliable
+        };
 
-// Drag & drop
-originalArea.addEventListener('dragover', (e) => { e.preventDefault(); originalArea.style.border = '2px dashed var(--accent)'; });
-originalArea.addEventListener('dragleave', () => { originalArea.style.border = ''; });
-originalArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  originalArea.style.border = '';
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) showOriginal(file);
-  else statusDiv.innerHTML = '⚠️ Please drop an image file.';
-});
+        // Show status message
+        function showStatus(message, type = 'loading') {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.style.display = 'block';
+        }
 
-// Background removal using global removeBackground function (from CDN)
-async function removeBg() {
-  if (!currentFile) {
-    statusDiv.innerHTML = '⚠️ Please upload an image first.';
-    return;
-  }
-  removeBtn.disabled = true;
-  removeBtn.innerHTML = '<span style="display:inline-block; width:16px; height:16px; border:2px solid #000; border-top-color: transparent; border-radius:50%; animation: spin 0.6s linear infinite; margin-right:6px;"></span> Processing...';
-  statusDiv.innerHTML = '🧠 Loading AI model & removing background (first time may take 10-15s)...';
+        function hideStatus() {
+            statusMessage.style.display = 'none';
+        }
 
-  try {
-    // The library expects a blob or image element
-    const imageBlob = currentFile;
-    const resultBlob = await removeBackground(imageBlob, {
-      progress: (key, progress) => {
-        if (key === 'download') statusDiv.innerHTML = `⏳ Downloading model... ${Math.round(progress * 100)}%`;
-        else if (key === 'process') statusDiv.innerHTML = `🎨 Removing background... ${Math.round(progress * 100)}%`;
-        else statusDiv.innerHTML = '✨ Processing...';
-      }
-    });
-    currentResultBlob = resultBlob;
-    const url = URL.createObjectURL(resultBlob);
-    currentResultUrl = url;
-    // Preview with selected background color
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = bgPicker.value;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      resultArea.innerHTML = `<img src="${canvas.toDataURL('image/png')}" alt="result preview" style="max-width:100%; max-height:280px;">`;
-    };
-    img.src = url;
-    downloadBtn.style.display = 'inline-block';
-    statusDiv.innerHTML = '✅ Background removed!';
-  } catch (err) {
-    console.error(err);
-    statusDiv.innerHTML = `❌ Error: ${err.message || 'Background removal failed. Try a different image or refresh.'}`;
-    resultArea.innerHTML = `<div class="placeholder-icon">⚠️</div><div class="placeholder-text">Error: ${err.message || 'Unknown error'}</div>`;
-  } finally {
-    removeBtn.disabled = false;
-    removeBtn.innerHTML = '✨ Remove background';
-  }
-}
+        // Display original image
+        function displayOriginalImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalPreview.innerHTML = `<img src="${e.target.result}" alt="Original">`;
+                currentFile = file;
+                removeBtn.disabled = false;
+                // Clear previous result
+                resultPreview.innerHTML = '<div class="placeholder">Result will appear here</div>';
+                downloadBtn.style.display = 'none';
+                currentResultBlob = null;
+                hideStatus();
+            };
+            reader.readAsDataURL(file);
+        }
 
-removeBtn.addEventListener('click', removeBg);
+        // Handle file selection
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showStatus('Please select a valid image file (JPG, PNG, or WebP)', 'error');
+                return;
+            }
+            
+            if (file.size > 10 * 1024 * 1024) {
+                showStatus('File is too large. Please select an image under 10MB.', 'error');
+                return;
+            }
+            
+            displayOriginalImage(file);
+        }
 
-// Update preview when background color changes
-bgPicker.addEventListener('input', () => {
-  if (currentResultUrl) {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = bgPicker.value;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-      resultArea.innerHTML = `<img src="${canvas.toDataURL('image/png')}" alt="preview" style="max-width:100%; max-height:280px;">`;
-    };
-    img.src = currentResultUrl;
-  }
-});
+        // Upload area click handler
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-downloadBtn.addEventListener('click', () => {
-  if (!currentResultBlob) return;
-  const url = URL.createObjectURL(currentResultBlob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'ranksorcery_transparent.png';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-});
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                handleFile(e.target.files[0]);
+            }
+        });
 
-// animation style
-const style = document.createElement('style');
-style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
-document.head.appendChild(style);
-</script>
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#667eea';
+            uploadArea.style.background = '#f8f9ff';
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.background = '';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ddd';
+            uploadArea.style.background = '';
+            
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        });
+
+        // Background removal function
+        async function removeImageBackground() {
+            if (!currentFile) {
+                showStatus('Please select an image first', 'error');
+                return;
+            }
+            
+            removeBtn.disabled = true;
+            removeBtn.textContent = '🔄 Processing...';
+            showStatus('Removing background... This may take a few seconds on first use.', 'loading');
+            
+            // Show loading indicator in result area
+            resultPreview.innerHTML = '<div class="placeholder"><div style="font-size: 2rem;">⏳</div><div>Processing...</div></div>';
+            
+            try {
+                // Convert the file to a blob and call the library
+                const imageBlob = currentFile;
+                const resultBlob = await removeBackground(imageBlob, config);
+                
+                currentResultBlob = resultBlob;
+                const imageUrl = URL.createObjectURL(resultBlob);
+                
+                // Display result
+                resultPreview.innerHTML = `<img src="${imageUrl}" alt="Result">`;
+                downloadBtn.style.display = 'inline-block';
+                showStatus('Background removed successfully!', 'success');
+                
+                // Clean up object URL after display
+                setTimeout(() => URL.revokeObjectURL(imageUrl), 1000);
+                
+            } catch (error) {
+                console.error('Error removing background:', error);
+                showStatus(`Error: ${error.message || 'Failed to remove background. Please try again with a different image.'}`, 'error');
+                resultPreview.innerHTML = '<div class="placeholder">⚠️ Error occurred. Please try again.</div>';
+                downloadBtn.style.display = 'none';
+            } finally {
+                removeBtn.disabled = false;
+                removeBtn.textContent = '✨ Remove Background';
+            }
+        }
+
+        // Download result
+        function downloadResult() {
+            if (!currentResultBlob) return;
+            
+            const url = URL.createObjectURL(currentResultBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'transparent_background.png';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            
+            showStatus('Download started!', 'success');
+            setTimeout(() => hideStatus(), 3000);
+        }
+
+        // Event listeners
+        removeBtn.addEventListener('click', removeImageBackground);
+        downloadBtn.addEventListener('click', downloadResult);
+        
+        // Preload the library model for faster first use (optional)
+        // This will start downloading the model files as soon as the page loads
+        (async function preloadModel() {
+            try {
+                // Create a small test blob to trigger model download
+                const testBlob = new Blob([new Uint8Array(100)], { type: 'image/png' });
+                // Just to warm up the model - we'll ignore the result
+                removeBackground(testBlob, config).catch(() => {});
+            } catch (e) {
+                // Silent fail - model will load on first actual use
+                console.log('Model preload initiated');
+            }
+        })();
+    </script>
 </body>
 </html>
