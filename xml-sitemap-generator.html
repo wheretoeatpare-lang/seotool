@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XML Sitemap Generator — Free SEO Tool | RankSorcery</title>
+<meta name="description" content="Generate a valid XML sitemap for your website instantly. Add URLs, set priorities, change frequencies, and download a ready-to-submit sitemap.xml. Free — no login required.">
+<meta name="theme-color" content="#E8B84B">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="canonical" href="https://ranksorcery.com/xml-sitemap-generator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/xml-sitemap-generator">
+<meta property="og:title" content="XML Sitemap Generator — Free SEO Tool | RankSorcery">
+<meta property="og:description" content="Generate a valid XML sitemap instantly. Free SEO tool — no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --bg:#0D1117; --bg2:#141B2D; --bg3:#1E2740; --bg4:#243050;
+  --border:rgba(232,184,75,0.13); --border2:rgba(232,184,75,0.22); --border3:rgba(232,184,75,0.35);
+  --text:#E8EAF0; --muted:#8A93A8; --muted2:#6A748A;
+  --accent:#E8B84B; --accent2:#F5D98A; --accent3:#C9902A; --glow:rgba(232,184,75,0.15);
+  --teal:#0ABFBC; --green:#34d399; --red:#f87171; --amber:#fbbf24;
+  --amber2:rgba(251,191,36,0.12); --radius:14px;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.6; padding-top:64px; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; opacity:.45; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:64px; background:rgba(13,17,23,0.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid var(--border); gap:1rem; }
+.logo { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--accent); text-decoration:none; flex-shrink:0; white-space:nowrap; letter-spacing:-0.02em; display:flex; align-items:center; gap:9px; }
+.logo-icon { width:30px; height:30px; background:linear-gradient(135deg,var(--accent),var(--teal)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.85rem; flex-shrink:0; }
+.nav-links { display:flex; gap:0.1rem; align-items:center; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:0.82rem; font-weight:500; transition:color 0.2s,background 0.2s; padding:0.35rem 0.65rem; border-radius:6px; white-space:nowrap; }
+.nav-links a:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+.nav-links a.active { color:var(--accent); }
+.nav-dropdown { position:relative; }
+.nav-dropdown-toggle { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:0.82rem; font-weight:500; transition:color 0.2s,background 0.2s; padding:0.35rem 0.65rem; border-radius:6px; cursor:pointer; white-space:nowrap; background:none; border:none; font-family:'DM Sans',sans-serif; }
+.nav-dropdown-toggle:hover,.nav-dropdown-toggle.open { color:var(--text); background:rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width:12px; height:12px; flex-shrink:0; transition:transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform:rotate(180deg); }
+.nav-dropdown-menu { display:none; position:absolute; top:calc(100% + 10px); left:0; min-width:230px; background:var(--bg2); border:1px solid var(--border2); border-radius:14px; padding:0.6rem; box-shadow:0 16px 48px rgba(0,0,0,0.45); z-index:300; animation:dropIn 0.18s ease; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display:block; }
+.nav-dropdown-item { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 0.85rem; border-radius:9px; text-decoration:none; color:var(--text); transition:background 0.15s,color 0.15s; font-size:0.84rem; }
+.nav-dropdown-item:hover { background:rgba(232,184,75,0.08); color:var(--accent); }
+.nav-dropdown-item-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+.nav-dropdown-item-name { font-weight:600; font-size:0.82rem; line-height:1.2; }
+.nav-dropdown-item-desc { font-size:0.71rem; color:var(--muted); margin-top:0.1rem; }
+.nav-dropdown-divider { height:1px; background:var(--border); margin:0.4rem 0.5rem; }
+.nav-cta { background:var(--accent) !important; color:var(--bg) !important; font-family:'Syne',sans-serif; font-weight:700 !important; padding:0.45rem 1.1rem !important; border-radius:8px; font-size:0.82rem !important; white-space:nowrap; flex-shrink:0; letter-spacing:0.02em; transition:background 0.2s,transform 0.15s !important; text-decoration:none; }
+.nav-cta:hover { background:var(--accent2) !important; transform:translateY(-1px) !important; color:var(--bg) !important; }
+.nav-hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; flex-shrink:0; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--muted); border-radius:2px; transition:all 0.25s; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity:0; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display:none; flex-direction:column; position:fixed; top:64px; left:0; right:0; bottom:0; background:var(--bg2); border-top:1px solid var(--border); z-index:199; overflow-y:auto; padding:0.75rem 0; }
+.nav-mobile-menu.open { display:flex; }
+.nav-mobile-menu a { display:flex; align-items:center; gap:0.75rem; padding:0.9rem 1.5rem; color:var(--text); text-decoration:none; font-size:0.92rem; font-weight:500; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.nav-mobile-menu a:hover { background:rgba(232,184,75,0.06); }
+.nav-mobile-cta { background:var(--accent) !important; color:var(--bg) !important; font-weight:700 !important; font-family:'Syne',sans-serif; justify-content:center; border-bottom:none !important; margin:0.75rem 1.5rem; border-radius:10px; padding:0.9rem 1.5rem !important; }
+.nav-mobile-group-toggle { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.5rem; color:var(--muted); background:none; border:none; font-family:'DM Sans',sans-serif; font-size:0.92rem; font-weight:500; border-bottom:1px solid var(--border); cursor:pointer; width:100%; }
+.nav-mobile-group-chevron { width:14px; height:14px; transition:transform 0.2s; }
+.nav-mobile-submenu { display:none; background:var(--bg3); }
+.nav-mobile-submenu.open { display:block; }
+.nav-mobile-submenu a { border-bottom:none !important; padding:0.7rem 1.25rem !important; font-size:0.88rem !important; }
+.nav-mobile-sub-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; flex-shrink:0; }
+.nav-mobile-sub-desc { font-size:0.72rem; color:var(--muted); margin-top:0.05rem; }
+@media(max-width:900px){ nav{padding:0.85rem 1.25rem;} .nav-links{display:none;} nav>.nav-cta{display:none;} .nav-hamburger{display:flex;} }
+@media(min-width:901px){ .nav-mobile-menu{display:none !important;} .nav-hamburger{display:none !important;} }
+
+/* TRUST BAR */
+.trust-bar { background:linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom:1px solid var(--border); padding:10px 5vw; display:flex; gap:32px; justify-content:center; align-items:center; flex-wrap:wrap; position:relative; z-index:1; }
+.trust-item { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--muted); font-weight:500; }
+.trust-item .val { color:var(--accent); font-weight:700; font-family:'Syne',sans-serif; }
+.trust-dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+
+/* HERO */
+.hero { padding:4.5rem 2rem 3rem; text-align:center; position:relative; overflow:hidden; z-index:1; }
+.hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:900px; height:600px; background:radial-gradient(ellipse at center,rgba(232,184,75,0.09) 0%,transparent 65%); pointer-events:none; }
+.hero::after { content:''; position:absolute; width:500px; height:400px; background:radial-gradient(circle,rgba(10,191,188,.06) 0%,transparent 70%); bottom:-60px; right:5%; pointer-events:none; }
+.hero-badge { display:inline-flex; align-items:center; gap:7px; background:rgba(10,191,188,.1); border:1px solid rgba(10,191,188,.3); color:var(--teal); padding:0.38rem 1rem; border-radius:999px; font-size:0.75rem; font-weight:600; margin-bottom:1.5rem; letter-spacing:0.06em; text-transform:uppercase; }
+.hero-badge .dot { width:7px; height:7px; border-radius:50%; background:var(--teal); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:800; line-height:1.08; letter-spacing:-0.035em; margin-bottom:1rem; }
+.hero h1 span { background:linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero p { color:var(--muted); font-size:1rem; max-width:540px; margin:0 auto 1.75rem; line-height:1.75; }
+.hero-pills { display:flex; justify-content:center; flex-wrap:wrap; gap:0.5rem; }
+.hero-pill { display:inline-flex; align-items:center; gap:5px; background:var(--bg3); border:1px solid var(--border); border-radius:999px; padding:0.28rem 0.85rem; font-size:0.75rem; color:var(--muted); font-weight:500; }
+
+/* LAYOUT */
+.main-wrap { max-width:1080px; margin:0 auto; padding:2rem 1.5rem 6rem; position:relative; z-index:1; }
+
+/* CARD */
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; transition:border-color 0.2s; }
+.card:hover { border-color:var(--border2); }
+
+/* SECTION LABEL */
+.section-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted2); margin-bottom:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* FORM */
+.field { margin-bottom:0.85rem; }
+.field:last-child { margin-bottom:0; }
+.field-label { display:block; font-size:0.78rem; font-weight:600; color:var(--muted); margin-bottom:0.4rem; letter-spacing:0.02em; }
+.field-label small { font-weight:400; color:var(--muted2); text-transform:none; letter-spacing:0; }
+input[type="url"], input[type="text"], input[type="date"], select, textarea {
+  width:100%; background:var(--bg3); border:1px solid var(--border2); color:var(--text);
+  padding:0.7rem 1rem; border-radius:10px; font-family:'DM Sans',sans-serif;
+  font-size:0.88rem; outline:none; transition:border-color 0.2s,box-shadow 0.2s;
+  appearance:none; -webkit-appearance:none;
+}
+input:focus, select:focus, textarea:focus { border-color:rgba(232,184,75,0.4); box-shadow:0 0 0 3px var(--glow); }
+input::placeholder { color:var(--muted2); }
+select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A93A8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; cursor:pointer; }
+select option { background:var(--bg2); }
+.grid-4 { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:0.65rem; align-items:end; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.85rem; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.85rem; }
+
+/* URL TABLE */
+.url-table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--border); margin-bottom:0.75rem; }
+.url-table { width:100%; border-collapse:collapse; font-size:0.83rem; min-width:700px; }
+.url-table thead tr { background:var(--bg3); border-bottom:1px solid var(--border); }
+.url-table th { padding:0.65rem 0.85rem; text-align:left; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted2); white-space:nowrap; }
+.url-table tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+.url-table tbody tr:last-child { border-bottom:none; }
+.url-table tbody tr:hover { background:rgba(232,184,75,0.03); }
+.url-table td { padding:0.55rem 0.65rem; vertical-align:middle; }
+.url-table td input, .url-table td select { padding:0.45rem 0.65rem; font-size:0.82rem; border-radius:7px; }
+.url-table td select { padding-right:28px; background-position:right 8px center; }
+.url-table .col-url { min-width:260px; }
+.url-table .col-sm { width:110px; }
+.url-table .col-xs { width:80px; }
+.url-table .col-act { width:44px; text-align:center; }
+.del-btn { background:none; border:none; color:var(--muted2); cursor:pointer; font-size:1rem; padding:0.25rem 0.5rem; border-radius:6px; transition:color 0.15s,background 0.15s; }
+.del-btn:hover { color:var(--red); background:rgba(248,113,113,0.1); }
+
+/* PRIORITY BADGES */
+.pri-high { color:var(--green); }
+.pri-med  { color:var(--amber); }
+.pri-low  { color:var(--muted); }
+
+/* STATS BAR */
+.stats-bar { display:flex; gap:1.5rem; flex-wrap:wrap; padding:1rem 1.25rem; background:var(--bg3); border-radius:10px; margin-bottom:1rem; }
+.stat { display:flex; flex-direction:column; gap:2px; }
+.stat-val { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--accent); }
+.stat-label { font-size:0.7rem; color:var(--muted); }
+
+/* GENERATE BTN */
+.btn-generate { width:100%; padding:0.95rem 2rem; background:linear-gradient(135deg,var(--accent),var(--accent3)); color:var(--bg); border:none; border-radius:var(--radius); font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; letter-spacing:0.02em; cursor:pointer; transition:opacity 0.2s,transform 0.1s; display:flex; align-items:center; justify-content:center; gap:0.7rem; box-shadow:0 4px 20px rgba(232,184,75,0.3); margin-top:0.25rem; }
+.btn-generate:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-generate:active { transform:scale(0.99); }
+
+/* ADD URL ROW */
+.btn-add-url { display:flex; align-items:center; gap:0.6rem; background:none; border:1.5px dashed var(--border2); color:var(--muted); padding:0.75rem 1.25rem; border-radius:10px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:600; transition:all 0.2s; width:100%; justify-content:center; margin-bottom:0.75rem; }
+.btn-add-url:hover { border-color:var(--accent); color:var(--accent); background:rgba(232,184,75,0.04); }
+
+/* BULK IMPORT */
+.adv-toggle { display:flex; align-items:center; gap:0.6rem; cursor:pointer; font-size:0.85rem; color:var(--muted); font-weight:500; padding:0.5rem 0; transition:color 0.2s; background:none; border:none; font-family:'DM Sans',sans-serif; }
+.adv-toggle:hover { color:var(--text); }
+.adv-toggle .chevron { transition:transform 0.25s; font-size:0.75rem; }
+.adv-toggle.open .chevron { transform:rotate(180deg); }
+.adv-body { display:none; padding-top:1rem; border-top:1px solid var(--border); margin-top:0.75rem; }
+.adv-body.open { display:block; }
+
+/* OUTPUT */
+.output-card { display:none; }
+.output-card.show { display:block; }
+.output-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:0.6rem; background:var(--bg3); border-radius:var(--radius) var(--radius) 0 0; }
+.output-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:0.5rem; }
+.output-title .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 6px rgba(52,211,153,0.6); }
+.export-btns { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.btn-export { font-size:0.75rem; padding:0.35rem 0.75rem; border-radius:6px; border:1px solid var(--border); background:var(--bg4); color:var(--muted); cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; gap:0.3rem; font-family:'DM Sans',sans-serif; }
+.btn-export:hover { border-color:var(--accent); color:var(--accent); }
+.btn-copy { font-size:0.75rem; padding:0.35rem 0.75rem; border-radius:6px; border:1px solid rgba(232,184,75,0.35); background:rgba(232,184,75,0.1); color:var(--accent); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+.btn-copy:hover { background:rgba(232,184,75,0.2); }
+.output-code { background:var(--bg2); border:1px solid var(--border); border-top:none; border-radius:0 0 var(--radius) var(--radius); padding:1.5rem; font-family:'Fira Code','Courier New',monospace; font-size:0.78rem; line-height:1.85; color:var(--text); white-space:pre; overflow-x:auto; max-height:500px; overflow-y:auto; }
+
+/* INFO GRID */
+.info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:0.75rem; margin-top:1.25rem; }
+.info-card { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+.info-card-icon { font-size:1.2rem; margin-bottom:0.5rem; }
+.info-card-title { font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700; margin-bottom:0.3rem; }
+.info-card-desc { font-size:0.74rem; color:var(--muted); line-height:1.6; }
+
+/* ERROR */
+.error-box { display:none; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.3); border-radius:8px; padding:0.85rem 1rem; color:var(--red); font-size:0.85rem; margin-bottom:0.8rem; }
+.error-box.show { display:block; }
+
+/* FOOTER */
+footer { background:var(--bg2); border-top:1px solid var(--border); padding:2rem; text-align:center; font-size:0.78rem; color:var(--muted); position:relative; z-index:1; }
+footer a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
+footer a:hover { color:var(--accent); }
+.footer-logo { font-family:'Syne',sans-serif; font-weight:800; color:var(--accent); }
+
+@media(max-width:768px) {
+  .grid-4 { grid-template-columns:1fr; }
+  .grid-3 { grid-template-columns:1fr; }
+  .grid-2 { grid-template-columns:1fr; }
+  .main-wrap { padding:1.5rem 1rem 4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo"><div class="logo-icon">✦</div>RankSorcery</a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleDd('nav-dd-seo')">SEO Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/ai-writer-tools.html">AI Writer Tools</a>
+    <a href="https://ranksorcery.com/image-converter.html">Image Tool</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="https://ranksorcery.com/"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="https://ranksorcery.com/keyword-volume.html"><div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div>Keyword Research</div></div></a>
+    <a href="https://ranksorcery.com/competitor.html"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div>Competitor Analysis</div></div></a>
+    <a href="https://ranksorcery.com/ai-search.html"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div>AI Search Visibility</div></div></a>
+  </div>
+  <a href="https://ranksorcery.com/ai-writer-tools.html">✍️ AI Writer Tools</a>
+  <a href="https://ranksorcery.com/image-converter.html">🖼 Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">25+</span>&nbsp; free SEO tools</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>✦ Free SEO Tool · Instant · No Login</div>
+  <h1>XML Sitemap<br><span>Generator</span></h1>
+  <p>Build a valid XML sitemap for your website in seconds. Add URLs, set priorities and change frequencies, then download a ready-to-submit sitemap.xml file.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">🗺️ Valid XML Output</span>
+    <span class="hero-pill">⚙️ Per-URL Priority</span>
+    <span class="hero-pill">📅 Change Frequency</span>
+    <span class="hero-pill">📋 Bulk Import</span>
+    <span class="hero-pill">⬇ Download .xml</span>
+    <span class="hero-pill">🆓 100% Free</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main-wrap">
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat"><div class="stat-val" id="stat-urls">0</div><div class="stat-label">URLs Added</div></div>
+    <div class="stat"><div class="stat-val" id="stat-high">0</div><div class="stat-label">High Priority</div></div>
+    <div class="stat"><div class="stat-val" id="stat-med">0</div><div class="stat-label">Medium Priority</div></div>
+    <div class="stat"><div class="stat-val" id="stat-low">0</div><div class="stat-label">Low Priority</div></div>
+  </div>
+
+  <!-- GLOBAL DEFAULTS -->
+  <div class="card">
+    <div class="section-label">Global Defaults</div>
+    <div class="grid-3">
+      <div class="field">
+        <label class="field-label">Default Change Frequency</label>
+        <select id="defaultFreq" onchange="applyDefaults()">
+          <option value="weekly" selected>Weekly</option>
+          <option value="always">Always</option>
+          <option value="hourly">Hourly</option>
+          <option value="daily">Daily</option>
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+          <option value="never">Never</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Default Priority</label>
+        <select id="defaultPri" onchange="applyDefaults()">
+          <option value="1.0">1.0 — Homepage</option>
+          <option value="0.9">0.9 — Very High</option>
+          <option value="0.8" selected>0.8 — High</option>
+          <option value="0.7">0.7 — Medium-High</option>
+          <option value="0.6">0.6 — Medium</option>
+          <option value="0.5">0.5 — Normal</option>
+          <option value="0.4">0.4 — Low</option>
+          <option value="0.3">0.3 — Very Low</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Default Last Modified</label>
+        <input type="date" id="defaultDate" onchange="applyDefaults()">
+      </div>
+    </div>
+  </div>
+
+  <!-- URL TABLE -->
+  <div class="card">
+    <div class="section-label">URL List</div>
+
+    <div class="url-table-wrap">
+      <table class="url-table">
+        <thead>
+          <tr>
+            <th class="col-url">URL</th>
+            <th class="col-sm">Change Freq</th>
+            <th class="col-sm">Priority</th>
+            <th class="col-sm">Last Modified</th>
+            <th class="col-act"></th>
+          </tr>
+        </thead>
+        <tbody id="urlTableBody"></tbody>
+      </table>
+    </div>
+
+    <button class="btn-add-url" onclick="addUrl()">＋ Add URL</button>
+
+    <!-- Bulk Import -->
+    <button class="adv-toggle" id="bulk-toggle" onclick="toggleBulk()">
+      📋 Bulk Import <small style="font-weight:400;margin-left:4px;">(paste multiple URLs)</small>
+      <span class="chevron">▼</span>
+    </button>
+    <div class="adv-body" id="bulk-body">
+      <div class="field" style="margin-top:0.75rem;">
+        <label class="field-label">Paste URLs <small>(one per line)</small></label>
+        <textarea id="bulkInput" rows="6" placeholder="https://yoursite.com/&#10;https://yoursite.com/about/&#10;https://yoursite.com/services/&#10;https://yoursite.com/blog/"></textarea>
+      </div>
+      <button onclick="importBulk()" style="background:var(--bg3);border:1px solid var(--border2);color:var(--muted);padding:0.65rem 1.25rem;border-radius:10px;cursor:pointer;font-size:0.85rem;font-family:'DM Sans',sans-serif;transition:all 0.15s;display:inline-flex;align-items:center;gap:0.5rem;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">📥 Import URLs</button>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- GENERATE -->
+  <button class="btn-generate" onclick="generate()">🗺️ &nbsp;Generate sitemap.xml</button>
+
+  <!-- OUTPUT -->
+  <div class="output-card" id="output-card" style="margin-top:1rem;">
+    <div class="output-header">
+      <div class="output-title"><div class="dot"></div>sitemap.xml Ready</div>
+      <div class="export-btns">
+        <button class="btn-copy" onclick="copyOutput()">📋 Copy XML</button>
+        <button class="btn-export" onclick="downloadXml()">⬇ Download .xml</button>
+        <button class="btn-export" onclick="downloadTxt()">⬇ URL List .txt</button>
+      </div>
+    </div>
+    <div class="output-code" id="outputCode"></div>
+  </div>
+
+  <!-- INFO CARDS -->
+  <div class="info-grid">
+    <div class="info-card"><div class="info-card-icon">📁</div><div class="info-card-title">File Location</div><div class="info-card-desc">Upload to your site root: <code style="color:var(--accent);font-size:0.71rem;">yoursite.com/sitemap.xml</code></div></div>
+    <div class="info-card"><div class="info-card-icon">📣</div><div class="info-card-title">Submit to Google</div><div class="info-card-desc">Go to Google Search Console → Sitemaps and submit your sitemap URL for faster indexing.</div></div>
+    <div class="info-card"><div class="info-card-icon">🗺️</div><div class="info-card-title">Declare in robots.txt</div><div class="info-card-desc">Add <code style="color:var(--accent);font-size:0.71rem;">Sitemap: https://yoursite.com/sitemap.xml</code> to your robots.txt file.</div></div>
+    <div class="info-card"><div class="info-card-icon">📏</div><div class="info-card-title">Size Limit</div><div class="info-card-desc">Google supports up to 50,000 URLs per sitemap file. For larger sites, use a sitemap index file.</div></div>
+  </div>
+
+</main>
+
+<footer><p>Part of <a href="https://ranksorcery.com/" class="footer-logo">✦ RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p></footer>
+
+<script>
+// ── State ──────────────────────────────────────────────────────
+let urls = [];
+let rowId = 0;
+
+// ── Default values ─────────────────────────────────────────────
+function getDefaults() {
+  return {
+    freq: document.getElementById('defaultFreq').value,
+    pri:  document.getElementById('defaultPri').value,
+    date: document.getElementById('defaultDate').value || new Date().toISOString().split('T')[0],
+  };
+}
+
+function applyDefaults() {
+  const d = getDefaults();
+  urls.forEach(u => {
+    if (!u.customFreq) u.freq = d.freq;
+    if (!u.customPri)  u.pri  = d.pri;
+    if (!u.customDate) u.date = d.date;
+  });
+  renderTable();
+}
+
+// ── Add URL ────────────────────────────────────────────────────
+function addUrl(urlVal) {
+  const d = getDefaults();
+  urls.push({ id: rowId++, url: urlVal || '', freq: d.freq, pri: d.pri, date: d.date, customFreq:false, customPri:false, customDate:false });
+  renderTable();
+  updateStats();
+}
+
+// ── Remove URL ─────────────────────────────────────────────────
+function removeUrl(id) {
+  urls = urls.filter(u => u.id !== id);
+  renderTable();
+  updateStats();
+}
+
+// ── Render table ───────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('urlTableBody');
+  if (urls.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--muted2);font-size:0.85rem;">No URLs yet — click "+ Add URL" or use Bulk Import below</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = urls.map(u => `
+    <tr>
+      <td class="col-url">
+        <input type="url" value="${escHtml(u.url)}" placeholder="https://yoursite.com/page/"
+          onchange="updateField(${u.id},'url',this.value)" oninput="updateField(${u.id},'url',this.value)">
+      </td>
+      <td class="col-sm">
+        <select onchange="updateField(${u.id},'freq',this.value,true)">
+          ${['always','hourly','daily','weekly','monthly','yearly','never'].map(f =>
+            `<option value="${f}" ${u.freq===f?'selected':''}>${f}</option>`).join('')}
+        </select>
+      </td>
+      <td class="col-sm">
+        <select onchange="updateField(${u.id},'pri',this.value,true)">
+          ${['1.0','0.9','0.8','0.7','0.6','0.5','0.4','0.3','0.2','0.1'].map(p =>
+            `<option value="${p}" ${u.pri===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </td>
+      <td class="col-sm">
+        <input type="date" value="${u.date}" onchange="updateField(${u.id},'date',this.value,true)">
+      </td>
+      <td class="col-act">
+        <button class="del-btn" onclick="removeUrl(${u.id})" title="Remove">✕</button>
+      </td>
+    </tr>`).join('');
+  updateStats();
+}
+
+function updateField(id, field, value, custom) {
+  const u = urls.find(u => u.id === id);
+  if (!u) return;
+  u[field] = value;
+  if (custom) u[`custom${field.charAt(0).toUpperCase()+field.slice(1)}`] = true;
+  updateStats();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Stats ──────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-urls').textContent = urls.length;
+  document.getElementById('stat-high').textContent = urls.filter(u => parseFloat(u.pri) >= 0.8).length;
+  document.getElementById('stat-med').textContent  = urls.filter(u => parseFloat(u.pri) >= 0.5 && parseFloat(u.pri) < 0.8).length;
+  document.getElementById('stat-low').textContent  = urls.filter(u => parseFloat(u.pri) < 0.5).length;
+}
+
+// ── Bulk import ────────────────────────────────────────────────
+function importBulk() {
+  const raw = document.getElementById('bulkInput').value.trim();
+  if (!raw) return;
+  const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  lines.forEach(url => addUrl(url));
+  document.getElementById('bulkInput').value = '';
+  document.getElementById('bulk-toggle').classList.remove('open');
+  document.getElementById('bulk-body').classList.remove('open');
+}
+
+// ── Toggle bulk ────────────────────────────────────────────────
+function toggleBulk() {
+  document.getElementById('bulk-toggle').classList.toggle('open');
+  document.getElementById('bulk-body').classList.toggle('open');
+}
+
+// ── Build XML ──────────────────────────────────────────────────
+function buildXml() {
+  const validUrls = urls.filter(u => u.url.trim().length > 0);
+  let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+  xml += `<!-- Generated by RankSorcery XML Sitemap Generator -->\n`;
+  xml += `<!-- https://ranksorcery.com/xml-sitemap-generator -->\n`;
+  xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n\n`;
+
+  validUrls.forEach(u => {
+    xml += `  <url>\n`;
+    xml += `    <loc>${escXml(u.url.trim())}</loc>\n`;
+    if (u.date) xml += `    <lastmod>${u.date}</lastmod>\n`;
+    xml += `    <changefreq>${u.freq}</changefreq>\n`;
+    xml += `    <priority>${u.pri}</priority>\n`;
+    xml += `  </url>\n\n`;
+  });
+
+  xml += `</urlset>`;
+  return xml;
+}
+
+function escXml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+}
+
+// ── Generate ───────────────────────────────────────────────────
+function generate() {
+  const errorBox = document.getElementById('error-box');
+  errorBox.className = 'error-box';
+
+  const valid = urls.filter(u => u.url.trim().length > 0);
+  if (valid.length === 0) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = '⚠ Please add at least one URL before generating.';
+    return;
+  }
+
+  const badUrls = valid.filter(u => !u.url.startsWith('http'));
+  if (badUrls.length > 0) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = `⚠ ${badUrls.length} URL(s) don't start with http:// or https://. Please fix them.`;
+    return;
+  }
+
+  const xml = buildXml();
+  document.getElementById('outputCode').textContent = xml;
+  const card = document.getElementById('output-card');
+  card.classList.add('show');
+  card.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ── Copy ───────────────────────────────────────────────────────
+function copyOutput() {
+  navigator.clipboard.writeText(document.getElementById('outputCode').textContent).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ── Download XML ───────────────────────────────────────────────
+function downloadXml() {
+  const content = document.getElementById('outputCode').textContent || buildXml();
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type:'application/xml' }));
+  a.download = 'sitemap.xml';
+  a.click();
+}
+
+// ── Download URL list as TXT ───────────────────────────────────
+function downloadTxt() {
+  const lines = urls.filter(u => u.url.trim()).map(u => u.url.trim()).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([lines], { type:'text/plain' }));
+  a.download = 'urls.txt';
+  a.click();
+}
+
+// ── Nav helpers ────────────────────────────────────────────────
+function toggleDd(id) {
+  const dd = document.getElementById(id);
+  const menu = document.getElementById(id + '-menu');
+  const toggle = dd.querySelector('.nav-dropdown-toggle');
+  const open = menu.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  if (open) {
+    document.addEventListener('click', function close(e) {
+      if (!dd.contains(e.target)) { menu.classList.remove('open'); toggle.classList.remove('open'); document.removeEventListener('click', close); }
+    });
+  }
+}
+function toggleMobile() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+function toggleMobileGroup(id) {
+  document.getElementById(id + '-submenu').classList.toggle('open');
+}
+
+// ── Init ───────────────────────────────────────────────────────
+document.getElementById('defaultDate').value = new Date().toISOString().split('T')[0];
+
+// Seed with a homepage row
+addUrl('https://yoursite.com/');
+</script>
+</body>
+</html>
