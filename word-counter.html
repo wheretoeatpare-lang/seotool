@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Counter — Free Online Tool | RankSorcery</title>
+<meta name="description" content="Free online word counter. Count words, characters, sentences, paragraphs, and reading time instantly. No login required.">
+<meta name="theme-color" content="#E8B84B">
+
+<!-- favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+
+<link rel="canonical" href="https://ranksorcery.com/word-counter.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/word-counter.html">
+<meta property="og:title" content="Word Counter — Free Online Tool | RankSorcery">
+<meta property="og:description" content="Count words, characters, sentences, paragraphs, and reading time instantly. Free — no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --red2:   rgba(248,113,113,0.12);
+  --amber:  #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
+  --blue:   #60a5fa;
+  --blue2:  rgba(96,165,250,0.12);
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg); color: var(--text);
+  min-height: 100vh; overflow-x: hidden;
+  line-height: 1.6; padding-top: 64px;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border); gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  white-space: nowrap; letter-spacing: -0.02em;
+  display: flex; align-items: center; gap: 9px;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center;
+  justify-content: center; font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px;
+  cursor: pointer; white-space: nowrap; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-dropdown-toggle:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  display: none; position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 230px; background: var(--bg2);
+  border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300;
+  animation: dropIn 0.18s ease;
+  max-height: calc(100vh - 80px); overflow-y: auto;
+}
+@keyframes dropIn { from { opacity:0;transform:translateY(-6px); } to { opacity:1;transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.65rem 0.85rem; border-radius: 9px;
+  text-decoration: none; color: var(--text);
+  transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.9rem; flex-shrink: 0;
+}
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+  letter-spacing: 0.02em; text-decoration: none;
+  transition: background 0.2s, transform 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+
+/* ── HAMBURGER ── */
+.nav-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--muted); border-radius: 2px; transition: all 0.3s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ── MOBILE NAV ── */
+.nav-mobile-menu {
+  display: none; flex-direction: column;
+  position: fixed; top: 64px; left: 0; right: 0;
+  background: var(--bg2); border-bottom: 1px solid var(--border2);
+  z-index: 190; max-height: calc(100vh - 64px); overflow-y: auto;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-menu a {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.9rem 1.5rem; color: var(--muted);
+  text-decoration: none; font-size: 0.9rem; font-weight: 500;
+  border-bottom: 1px solid var(--border); transition: color 0.2s, background 0.2s;
+}
+.nav-mobile-menu a:hover { color: var(--accent); background: rgba(232,184,75,0.04); }
+.nav-mobile-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  text-align: center; justify-content: center !important;
+  margin: 0.75rem 1rem; border-radius: 10px; padding: 0.8rem !important;
+  border-bottom: none !important;
+}
+.nav-mobile-group-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.5rem; color: var(--muted);
+  font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  background: none; border: none; border-bottom: 1px solid var(--border);
+  font-family: 'DM Sans', sans-serif; width: 100%; text-align: left;
+  transition: color 0.2s;
+}
+.nav-mobile-group-toggle:hover { color: var(--accent); }
+.nav-mobile-group-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: var(--bg3); }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a {
+  border-bottom: none !important; padding: 0.7rem 1.25rem !important;
+  font-size: 0.88rem !important; gap: 0.65rem !important;
+}
+.nav-mobile-sub-icon {
+  width: 28px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; flex-shrink: 0;
+}
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) {
+  nav { padding: 0.85rem 1.25rem; }
+  .nav-links { display: none; }
+  nav > .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
+}
+@media (min-width: 901px) {
+  .nav-mobile-menu { display: none !important; }
+  .nav-hamburger { display: none !important; }
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: linear-gradient(90deg, rgba(10,191,188,.07), rgba(232,184,75,.07));
+  border-bottom: 1px solid var(--border); padding: 10px 5vw;
+  display: flex; gap: 32px; justify-content: center; align-items: center;
+  flex-wrap: wrap; position: relative; z-index: 1;
+}
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero {
+  padding: 4.5rem 2rem 3rem; text-align: center;
+  position: relative; overflow: hidden; z-index: 1;
+}
+.hero::before {
+  content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse at center, rgba(232,184,75,0.09) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3);
+  color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; margin-bottom: 1.5rem;
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.hero-badge .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--teal); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1;transform:scale(1); } 50% { opacity:.4;transform:scale(1.4); } }
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 800; line-height: 1.08;
+  letter-spacing: -0.035em; margin-bottom: 1.25rem;
+}
+h1 span {
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p {
+  color: var(--muted); font-size: 1rem; max-width: 520px;
+  margin: 0 auto 2rem; line-height: 1.75;
+}
+.hero-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.hero-pill {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 999px; padding: 0.3rem 0.85rem;
+  font-size: 0.76rem; color: var(--muted); font-weight: 500;
+}
+
+/* ── MAIN WRAP ── */
+.main-wrap {
+  max-width: 960px; margin: 0 auto;
+  padding: 0 1.5rem 5rem; position: relative; z-index: 1;
+}
+
+/* ── STATS STRIP ── */
+.stats-strip {
+  display: grid; grid-template-columns: repeat(6, 1fr);
+  gap: 0.75rem; margin-bottom: 1.25rem;
+}
+@media (max-width: 700px) { .stats-strip { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 400px) { .stats-strip { grid-template-columns: repeat(2, 1fr); } }
+
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.1rem 0.75rem;
+  text-align: center; transition: border-color 0.2s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.stat-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  opacity: 0; transition: opacity 0.2s;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-icon { font-size: 1.2rem; margin-bottom: 0.4rem; }
+.stat-value {
+  font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800;
+  line-height: 1; margin-bottom: 0.25rem;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.stat-label { font-size: 0.68rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* ── EDITOR CARD ── */
+.editor-card {
+  background: var(--bg2); border: 1.5px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+  box-shadow: 0 8px 48px rgba(0,0,0,.35); margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+}
+.editor-card:focus-within { border-color: var(--accent); }
+
+.editor-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem 1.25rem; background: var(--bg3);
+  border-bottom: 1px solid var(--border); gap: 0.75rem; flex-wrap: wrap;
+}
+.toolbar-left { display: flex; align-items: center; gap: 0.6rem; }
+.toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+.toolbar-label {
+  font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
+  color: var(--text);
+}
+.toolbar-tip { font-size: 0.74rem; color: var(--muted); }
+
+.btn-toolbar {
+  background: var(--bg4); border: 1px solid var(--border2);
+  color: var(--muted); font-size: 0.76rem; font-weight: 600;
+  padding: 0.35rem 0.85rem; border-radius: 7px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.2s; white-space: nowrap;
+}
+.btn-toolbar:hover { color: var(--text); border-color: var(--accent); }
+.btn-toolbar.accent { background: rgba(232,184,75,0.1); color: var(--accent); border-color: rgba(232,184,75,0.3); }
+.btn-toolbar.accent:hover { background: rgba(232,184,75,0.18); }
+
+#editor {
+  width: 100%; min-height: 320px; background: var(--bg2);
+  color: var(--text); border: none; outline: none; resize: none;
+  font-family: 'DM Sans', sans-serif; font-size: 0.97rem;
+  line-height: 1.8; padding: 1.5rem; caret-color: var(--accent);
+}
+#editor::placeholder { color: var(--muted2); }
+
+.editor-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.6rem 1.25rem; background: var(--bg3);
+  border-top: 1px solid var(--border); gap: 1rem; flex-wrap: wrap;
+}
+.char-limit-bar { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 120px; }
+.char-limit-track { flex: 1; height: 4px; background: var(--bg4); border-radius: 99px; overflow: hidden; max-width: 160px; }
+.char-limit-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--teal), var(--accent)); transition: width 0.2s, background 0.2s; }
+.char-limit-fill.warn { background: var(--amber); }
+.char-limit-fill.over { background: var(--red); }
+.char-limit-text { font-size: 0.74rem; color: var(--muted); white-space: nowrap; }
+
+/* ── OPTIONS ROW ── */
+.options-row {
+  display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.option-card {
+  flex: 1; min-width: 180px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1rem 1.1rem;
+}
+.option-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted); margin-bottom: 0.5rem;
+}
+.option-card select {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); padding: 0.45rem 0.75rem; border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  outline: none; cursor: pointer; transition: border-color 0.2s;
+}
+.option-card select:focus { border-color: var(--accent); }
+
+/* ── KEYWORD DENSITY CARD ── */
+.kd-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem;
+}
+.kd-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border);
+  background: var(--bg3);
+}
+.kd-title {
+  font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.kd-body { padding: 1rem 1.25rem; }
+.kd-empty { font-size: 0.84rem; color: var(--muted2); font-style: italic; text-align: center; padding: 1rem 0; }
+.kd-table { width: 100%; border-collapse: collapse; }
+.kd-table th {
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted); padding: 0.4rem 0.5rem;
+  text-align: left; border-bottom: 1px solid var(--border);
+}
+.kd-table td { padding: 0.5rem 0.5rem; font-size: 0.83rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.kd-table tr:last-child td { border-bottom: none; }
+.kd-table tr:hover td { background: rgba(255,255,255,0.015); }
+.kd-word { font-weight: 600; color: var(--text); }
+.kd-count { color: var(--muted); }
+.kd-pct { color: var(--accent); font-weight: 600; font-family: 'Syne', sans-serif; }
+.kd-bar-wrap { display: flex; align-items: center; gap: 0.5rem; }
+.kd-bar-track { flex: 1; height: 5px; background: var(--bg4); border-radius: 99px; overflow: hidden; min-width: 60px; }
+.kd-bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--accent)); border-radius: 99px; }
+
+/* ── READABILITY CARD ── */
+.readability-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.readability-header {
+  display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;
+}
+.readability-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(232,184,75,0.12), rgba(10,191,188,0.08));
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.readability-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; }
+.readability-subtitle { font-size: 0.75rem; color: var(--muted); margin-top: 0.1rem; }
+.readability-grade {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.35rem 1rem; border-radius: 999px; font-family: 'Syne', sans-serif;
+  font-size: 0.9rem; font-weight: 800; border: 1px solid;
+}
+.grade-easy { background: var(--green2); color: var(--green); border-color: rgba(52,211,153,0.28); }
+.grade-moderate { background: var(--amber2); color: var(--amber); border-color: rgba(251,191,36,0.28); }
+.grade-hard { background: var(--red2); color: var(--red); border-color: rgba(248,113,113,0.28); }
+.readability-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.55; margin-top: 0.6rem; }
+.readability-metrics {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 1rem;
+}
+@media (max-width: 500px) { .readability-metrics { grid-template-columns: repeat(2, 1fr); } }
+.r-metric {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.75rem 0.9rem; text-align: center;
+}
+.r-metric-val {
+  font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.r-metric-label { font-size: 0.66rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.15rem; }
+
+/* ── AI SECTION ── */
+.ai-card {
+  background: linear-gradient(135deg, rgba(232,184,75,0.06), rgba(10,191,188,0.03));
+  border: 1px solid rgba(232,184,75,0.16);
+  border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.ai-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;
+}
+.ai-card-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
+}
+.ai-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25);
+  color: var(--accent); font-size: 0.68rem; font-weight: 700;
+  padding: 0.15rem 0.55rem; border-radius: 5px; letter-spacing: 0.04em;
+}
+.btn-ai {
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  color: var(--bg); border: none; padding: 0.6rem 1.4rem;
+  border-radius: 9px; font-family: 'Syne', sans-serif;
+  font-size: 0.84rem; font-weight: 700; cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s; white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(232,184,75,0.25);
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.btn-ai:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-ai:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+.spinner-sm {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(13,17,23,0.3); border-top-color: var(--bg);
+  animation: spin 0.8s linear infinite; display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-output {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1rem 1.1rem;
+  font-size: 0.88rem; color: var(--text); line-height: 1.7;
+  min-height: 64px; white-space: pre-wrap;
+}
+.ai-output.placeholder { color: var(--muted2); font-style: italic; }
+.ai-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.5rem; }
+
+/* ── GOAL TARGETS ── */
+.targets-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.25rem;
+}
+.targets-title {
+  font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700;
+  margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+}
+.targets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+.target-item {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 0.85rem 1rem;
+}
+.target-name { font-size: 0.75rem; color: var(--muted); font-weight: 600; margin-bottom: 0.3rem; }
+.target-range { font-family: 'Syne', sans-serif; font-size: 0.98rem; font-weight: 700; color: var(--text); margin-bottom: 0.25rem; }
+.target-status {
+  font-size: 0.7rem; font-weight: 700; padding: 0.12rem 0.5rem;
+  border-radius: 5px; display: inline-block;
+}
+.ts-good { background: var(--green2); color: var(--green); }
+.ts-warn { background: var(--amber2); color: var(--amber); }
+.ts-over { background: var(--red2); color: var(--red); }
+.ts-empty { background: var(--bg4); color: var(--muted2); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--bg2); border-top: 1px solid var(--border);
+  padding: 2rem; text-align: center;
+  font-size: 0.78rem; color: var(--muted); position: relative; z-index: 1;
+}
+footer a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+footer a:hover { color: var(--accent); }
+.footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--accent); }
+
+.section-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .options-row { flex-direction: column; }
+  .option-card { min-width: unset; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleDd('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div>
+          <div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div>
+        </a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div>
+          <div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div>
+        </a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div>
+          <div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div>
+        </a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div>
+          <div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div>
+        </a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item">
+          <div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div>
+          <div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div>
+        </a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/ai-writer-tools.html">AI Writer Tools</a>
+    <a href="https://ranksorcery.com/word-counter.html" class="active">Word Counter</a>
+    <a href="https://ranksorcery.com/image-converter.html">Image Tool</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-seo')">
+    🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="https://ranksorcery.com/"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div></a>
+    <a href="https://ranksorcery.com/keyword-volume.html"><div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div>Keyword Research</div></div></a>
+    <a href="https://ranksorcery.com/competitor.html"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div>Competitor Analysis</div></div></a>
+  </div>
+  <a href="https://ranksorcery.com/ai-writer-tools.html">✍️ AI Writer Tools</a>
+  <a href="https://ranksorcery.com/word-counter.html">🔢 Word Counter</a>
+  <a href="https://ranksorcery.com/image-converter.html">🖼 Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">Real-time</span>&nbsp; counting</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>✦ Real-time · AI-Enhanced · Free</div>
+  <h1>Word<br><span>Counter</span></h1>
+  <p>Count words, characters, sentences, paragraphs & reading time instantly. Paste or type your text and let AI give you a writing quality score.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">📊 Live Stats</span>
+    <span class="hero-pill">⏱ Reading Time</span>
+    <span class="hero-pill">🔑 Keyword Density</span>
+    <span class="hero-pill">📖 Readability Score</span>
+    <span class="hero-pill">✨ AI Writing Feedback</span>
+    <span class="hero-pill">🆓 No Login</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main-wrap">
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-card">
+      <div class="stat-icon">📝</div>
+      <div class="stat-value" id="stat-words">0</div>
+      <div class="stat-label">Words</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔤</div>
+      <div class="stat-value" id="stat-chars">0</div>
+      <div class="stat-label">Characters</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔡</div>
+      <div class="stat-value" id="stat-chars-no-space">0</div>
+      <div class="stat-label">No Spaces</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💬</div>
+      <div class="stat-value" id="stat-sentences">0</div>
+      <div class="stat-label">Sentences</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">¶</div>
+      <div class="stat-value" id="stat-paragraphs">0</div>
+      <div class="stat-label">Paragraphs</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏱</div>
+      <div class="stat-value" id="stat-reading">0s</div>
+      <div class="stat-label">Read Time</div>
+    </div>
+  </div>
+
+  <!-- EDITOR -->
+  <div class="editor-card">
+    <div class="editor-toolbar">
+      <div class="toolbar-left">
+        <div class="toolbar-label">📄 Text Editor</div>
+        <div class="toolbar-tip">Type or paste your content below</div>
+      </div>
+      <div class="toolbar-right">
+        <button class="btn-toolbar" onclick="pasteText()">📋 Paste</button>
+        <button class="btn-toolbar" onclick="clearText()">🗑 Clear</button>
+        <button class="btn-toolbar accent" onclick="copyText()">📋 Copy</button>
+      </div>
+    </div>
+    <textarea id="editor" placeholder="Start typing or paste your text here…&#10;&#10;Your word count, character count, readability score, and keyword density will update in real-time as you write." oninput="updateStats()"></textarea>
+    <div class="editor-footer">
+      <div class="char-limit-bar">
+        <div class="char-limit-track">
+          <div class="char-limit-fill" id="char-bar" style="width:0%"></div>
+        </div>
+        <div class="char-limit-text" id="char-limit-text">0 / 10,000</div>
+      </div>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn-toolbar" onclick="exportTxt()">⬇ TXT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="options-row">
+    <div class="option-card">
+      <div class="option-label">📖 Reading Speed</div>
+      <select id="wpm-select" onchange="updateStats()">
+        <option value="200">Slow (200 wpm)</option>
+        <option value="238" selected>Average (238 wpm)</option>
+        <option value="300">Fast (300 wpm)</option>
+        <option value="400">Speed Reader (400 wpm)</option>
+      </select>
+    </div>
+    <div class="option-card">
+      <div class="option-label">🔑 Keyword Density</div>
+      <select id="kd-filter" onchange="updateKeywordDensity()">
+        <option value="3">Min. 3 occurrences</option>
+        <option value="2">Min. 2 occurrences</option>
+        <option value="1">All words</option>
+      </select>
+    </div>
+    <div class="option-card">
+      <div class="option-label">🎯 Writing Goal</div>
+      <select id="goal-select" onchange="updateTargets()">
+        <option value="blog">Blog Post (1,500–2,500)</option>
+        <option value="tweet">Tweet (max 280)</option>
+        <option value="meta">Meta Description (150–160)</option>
+        <option value="essay">Essay (500–1,200)</option>
+        <option value="headline">Headline (max 70)</option>
+        <option value="email">Email (150–300)</option>
+        <option value="linkedin">LinkedIn Post (1,300–2,000)</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GOAL TARGETS -->
+  <div class="targets-card">
+    <div class="targets-title">🎯 Writing Goal Progress</div>
+    <div class="targets-grid" id="targets-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- READABILITY -->
+  <div class="readability-card">
+    <div class="readability-header">
+      <div class="readability-icon">📖</div>
+      <div>
+        <div class="readability-title">Readability Analysis</div>
+        <div class="readability-subtitle">Flesch Reading Ease & complexity metrics</div>
+      </div>
+      <div id="readability-grade" class="readability-grade grade-easy" style="margin-left:auto;">—</div>
+    </div>
+    <div id="readability-desc" class="readability-desc" style="color:var(--muted2);font-style:italic;">Start typing to see your readability score.</div>
+    <div class="readability-metrics">
+      <div class="r-metric">
+        <div class="r-metric-val" id="r-score">—</div>
+        <div class="r-metric-label">Flesch Score</div>
+      </div>
+      <div class="r-metric">
+        <div class="r-metric-val" id="r-avg-word">—</div>
+        <div class="r-metric-label">Avg Word Len</div>
+      </div>
+      <div class="r-metric">
+        <div class="r-metric-val" id="r-avg-sent">—</div>
+        <div class="r-metric-label">Avg Sent Len</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEYWORD DENSITY -->
+  <div class="kd-card">
+    <div class="kd-header">
+      <div class="kd-title">🔑 Keyword Density</div>
+      <span style="font-size:0.72rem;color:var(--muted);">Top words by frequency</span>
+    </div>
+    <div class="kd-body" id="kd-body">
+      <div class="kd-empty">Start typing to see keyword density.</div>
+    </div>
+  </div>
+
+  <!-- AI WRITING FEEDBACK -->
+  <div class="ai-card">
+    <div class="ai-card-header">
+      <div class="ai-card-title">
+        ✨ AI Writing Feedback
+        <span class="ai-badge">POWERED BY AI</span>
+      </div>
+      <button class="btn-ai" id="ai-btn" onclick="getAiFeedback()">
+        <span id="ai-icon">✨</span>
+        <span id="ai-text">Analyze with AI</span>
+      </button>
+    </div>
+    <div class="ai-output placeholder" id="ai-output">Click "Analyze with AI" to get instant writing feedback — clarity, tone, structure improvements, and more.</div>
+    <div class="ai-hint">Tip: Works best with 50+ words. The AI will review tone, clarity, structure, and SEO-friendliness.</div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Part of <a href="https://ranksorcery.com/" class="footer-logo">✦ RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p>
+</footer>
+
+<script>
+// ── Nav ────────────────────────────────────────────────────────
+function toggleDd(id) {
+  const dd = document.getElementById(id);
+  const menu = document.getElementById(id + '-menu');
+  const toggle = dd.querySelector('.nav-dropdown-toggle');
+  const open = menu.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+  if (open) {
+    document.addEventListener('click', function close(e) {
+      if (!dd.contains(e.target)) {
+        menu.classList.remove('open');
+        toggle.classList.remove('open');
+        document.removeEventListener('click', close);
+      }
+    });
+  }
+}
+function toggleMobile() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+function toggleMobileGroup(id) {
+  document.getElementById(id + '-submenu').classList.toggle('open');
+  event.currentTarget.classList.toggle('open');
+}
+
+// ── Constants ──────────────────────────────────────────────────
+const CHAR_LIMIT = 10000;
+const STOP_WORDS = new Set([
+  'the','a','an','and','or','but','in','on','at','to','for','of','with',
+  'by','from','up','about','as','is','was','are','were','be','been','being',
+  'have','has','had','do','does','did','will','would','could','should','may',
+  'might','can','it','its','this','that','these','those','i','you','he','she',
+  'we','they','not','so','if','then','than','when','which','who','what',
+  'there','their','they\'re','your','our','my','his','her','its','we\'re',
+  'you\'re','he\'s','she\'s','it\'s','don\'t','won\'t','can\'t','isn\'t',
+  'are\'re','also','just','into','over','after','before','between',
+]);
+
+const GOALS = {
+  blog:     { name: 'Blog Post',        min: 1500, max: 2500 },
+  tweet:    { name: 'Tweet',            min: 0,    max: 280  },
+  meta:     { name: 'Meta Description', min: 150,  max: 160  },
+  essay:    { name: 'Essay',            min: 500,  max: 1200 },
+  headline: { name: 'Headline',         min: 0,    max: 70   },
+  email:    { name: 'Email',            min: 150,  max: 300  },
+  linkedin: { name: 'LinkedIn Post',    min: 1300, max: 2000 },
+  custom:   { name: 'Custom',           min: 300,  max: 800  },
+};
+
+// ── Core counting ──────────────────────────────────────────────
+function getText() { return document.getElementById('editor').value; }
+
+function countWords(t) {
+  return t.trim() === '' ? 0 : t.trim().split(/\s+/).filter(w => w.length > 0).length;
+}
+function countSentences(t) {
+  if (!t.trim()) return 0;
+  const matches = t.match(/[^.!?]*[.!?]+/g);
+  return matches ? matches.length : (t.trim().length > 0 ? 1 : 0);
+}
+function countParagraphs(t) {
+  if (!t.trim()) return 0;
+  return t.split(/\n\s*\n/).filter(p => p.trim().length > 0).length || (t.trim().length > 0 ? 1 : 0);
+}
+function avgWordLength(t) {
+  const words = t.trim() === '' ? [] : t.trim().split(/\s+/).filter(w => w.replace(/[^a-zA-Z]/g,'').length > 0);
+  if (!words.length) return 0;
+  const total = words.reduce((s, w) => s + w.replace(/[^a-zA-Z]/g,'').length, 0);
+  return (total / words.length).toFixed(1);
+}
+function avgSentenceLength(words, sentences) {
+  if (!sentences) return 0;
+  return (words / sentences).toFixed(1);
+}
+
+// ── Readability ────────────────────────────────────────────────
+function fleschScore(text) {
+  const words = countWords(text);
+  const sentences = countSentences(text);
+  if (words < 10 || sentences < 1) return null;
+  // Syllable approximation
+  const syllables = text.trim().split(/\s+/).filter(Boolean).reduce((sum, w) => {
+    const clean = w.toLowerCase().replace(/[^a-z]/g, '');
+    if (!clean) return sum;
+    const count = clean.replace(/[^aeiou]/g,'').length || 1;
+    return sum + count;
+  }, 0);
+  const score = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllables / words);
+  return Math.min(100, Math.max(0, Math.round(score)));
+}
+
+function readabilityGradeInfo(score) {
+  if (score === null) return { label: '—', cls: 'grade-easy', desc: 'Not enough text to evaluate readability.' };
+  if (score >= 70) return { label: 'Easy', cls: 'grade-easy', desc: 'Easily understood by an average 13-year-old student. Great for broad audiences.' };
+  if (score >= 50) return { label: 'Moderate', cls: 'grade-moderate', desc: 'Fairly difficult to read. Best suited for high school level or specialized audiences.' };
+  return { label: 'Hard', cls: 'grade-hard', desc: 'Very difficult to read. Best understood by university graduates. Consider simplifying.' };
+}
+
+// ── Keyword density ────────────────────────────────────────────
+function getKeywordDensity(text) {
+  const minOcc = parseInt(document.getElementById('kd-filter').value);
+  const words = text.toLowerCase().replace(/[^a-z\s'-]/g,' ').trim().split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+  if (!words.length) return [];
+  const freq = {};
+  words.forEach(w => { freq[w] = (freq[w] || 0) + 1; });
+  const total = words.length;
+  return Object.entries(freq)
+    .filter(([,c]) => c >= minOcc)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([w, c]) => ({ word: w, count: c, pct: ((c / total) * 100).toFixed(1) }));
+}
+
+function updateKeywordDensity() {
+  const text = getText();
+  const kd = getKeywordDensity(text);
+  const body = document.getElementById('kd-body');
+  if (!kd.length) {
+    body.innerHTML = '<div class="kd-empty">Start typing to see keyword density.</div>';
+    return;
+  }
+  const max = kd[0].count;
+  body.innerHTML = `<table class="kd-table">
+    <thead><tr><th>#</th><th>Word</th><th>Count</th><th>Density</th><th style="min-width:100px">Frequency</th></tr></thead>
+    <tbody>${kd.map((k, i) => `<tr>
+      <td style="color:var(--muted2);font-size:0.76rem;">${i + 1}</td>
+      <td class="kd-word">${k.word}</td>
+      <td class="kd-count">${k.count}×</td>
+      <td class="kd-pct">${k.pct}%</td>
+      <td><div class="kd-bar-wrap"><div class="kd-bar-track"><div class="kd-bar-fill" style="width:${(k.count/max*100).toFixed(0)}%"></div></div></div></td>
+    </tr>`).join('')}</tbody>
+  </table>`;
+}
+
+// ── Targets ────────────────────────────────────────────────────
+function updateTargets() {
+  const goalKey = document.getElementById('goal-select').value;
+  const goal = GOALS[goalKey];
+  const chars = getText().length;
+  const words = countWords(getText());
+  const grid = document.getElementById('targets-grid');
+
+  const items = [
+    { name: goal.name + ' Words', val: goal.min && goal.max ? `${goal.min.toLocaleString()}–${goal.max.toLocaleString()}`, current: words, min: goal.min, max: goal.max, unit: 'words' },
+    { name: goal.name + ' Chars', val: goal.max ? `≤ ${(goal.max * 5.5).toFixed(0)}`, current: chars, min: 0, max: goal.max * 5.5, unit: 'chars' },
+    { name: 'Sentences', val: '8–20 recommended', current: countSentences(getText()), min: 8, max: 20, unit: '' },
+    { name: 'Paragraphs', val: '3–8 recommended', current: countParagraphs(getText()), min: 3, max: 8, unit: '' },
+  ];
+
+  grid.innerHTML = items.map(item => {
+    let status, cls;
+    if (item.current === 0) { status = 'Start writing'; cls = 'ts-empty'; }
+    else if (item.min && item.current < item.min) { status = `${item.min - item.current} ${item.unit} short`; cls = 'ts-warn'; }
+    else if (item.max && item.current > item.max) { status = `${item.current - item.max} ${item.unit} over`; cls = 'ts-over'; }
+    else { status = '✓ On target'; cls = 'ts-good'; }
+    return `<div class="target-item">
+      <div class="target-name">${item.name}</div>
+      <div class="target-range">${item.val}</div>
+      <span class="target-status ${cls}">${status}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── Formatting ─────────────────────────────────────────────────
+function formatReadingTime(words) {
+  const wpm = parseInt(document.getElementById('wpm-select').value);
+  const minutes = words / wpm;
+  if (minutes < 1) return Math.round(minutes * 60) + 's';
+  if (minutes < 60) return Math.round(minutes) + 'm';
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return `${h}h ${m}m`;
+}
+
+// ── Main update ────────────────────────────────────────────────
+function updateStats() {
+  const text = getText();
+  const words = countWords(text);
+  const chars = text.length;
+  const charsNoSpace = text.replace(/\s/g, '').length;
+  const sentences = countSentences(text);
+  const paragraphs = countParagraphs(text);
+
+  document.getElementById('stat-words').textContent = words.toLocaleString();
+  document.getElementById('stat-chars').textContent = chars.toLocaleString();
+  document.getElementById('stat-chars-no-space').textContent = charsNoSpace.toLocaleString();
+  document.getElementById('stat-sentences').textContent = sentences.toLocaleString();
+  document.getElementById('stat-paragraphs').textContent = paragraphs.toLocaleString();
+  document.getElementById('stat-reading').textContent = words > 0 ? formatReadingTime(words) : '0s';
+
+  // Char limit bar
+  const pct = Math.min(100, (chars / CHAR_LIMIT) * 100);
+  const bar = document.getElementById('char-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'char-limit-fill' + (pct > 95 ? ' over' : pct > 80 ? ' warn' : '');
+  document.getElementById('char-limit-text').textContent = `${chars.toLocaleString()} / ${CHAR_LIMIT.toLocaleString()}`;
+
+  // Readability
+  const score = fleschScore(text);
+  const gradeInfo = readabilityGradeInfo(score);
+  const gradeEl = document.getElementById('readability-grade');
+  gradeEl.textContent = gradeInfo.label;
+  gradeEl.className = 'readability-grade ' + gradeInfo.cls;
+  document.getElementById('readability-desc').textContent = gradeInfo.desc;
+  document.getElementById('readability-desc').style.fontStyle = score === null ? 'italic' : 'normal';
+  document.getElementById('r-score').textContent = score !== null ? score : '—';
+  document.getElementById('r-avg-word').textContent = words > 0 ? avgWordLength(text) : '—';
+  document.getElementById('r-avg-sent').textContent = sentences > 0 ? avgSentenceLength(words, sentences) : '—';
+
+  updateKeywordDensity();
+  updateTargets();
+}
+
+// ── AI Feedback ────────────────────────────────────────────────
+async function getAiFeedback() {
+  const text = getText().trim();
+  const outEl = document.getElementById('ai-output');
+  const btn = document.getElementById('ai-btn');
+  const icon = document.getElementById('ai-icon');
+  const label = document.getElementById('ai-text');
+
+  if (!text || countWords(text) < 10) {
+    outEl.className = 'ai-output placeholder';
+    outEl.textContent = '⚠ Please enter at least 10 words before analyzing.';
+    return;
+  }
+
+  btn.disabled = true;
+  icon.innerHTML = '<span class="spinner-sm"></span>';
+  label.textContent = 'Analyzing…';
+  outEl.className = 'ai-output';
+  outEl.textContent = '';
+
+  const words = countWords(text);
+  const sentences = countSentences(text);
+  const score = fleschScore(text);
+
+  const prompt = `You are a professional writing coach and SEO content strategist. Analyze the following text and provide clear, concise, actionable feedback.
+
+TEXT STATS:
+- Words: ${words}
+- Sentences: ${sentences}
+- Flesch Readability Score: ${score !== null ? score + '/100' : 'N/A (too short)'}
+
+TEXT:
+"""
+${text.slice(0, 3000)}${text.length > 3000 ? '\n[... text truncated for analysis ...]' : ''}
+"""
+
+Please provide feedback covering:
+1. **Clarity & Readability** — Is the writing clear and easy to follow?
+2. **Tone & Voice** — Is the tone consistent and appropriate?
+3. **Structure** — Is the content well-organized?
+4. **SEO Friendliness** — Any keyword or readability suggestions for SEO?
+5. **Top 3 Improvements** — Specific, actionable suggestions.
+
+Keep your response concise and practical. Use plain text, no markdown headers.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || `API error ${res.status}`);
+
+    const reply = data.content?.map(b => b.type === 'text' ? b.text : '').join('').trim();
+    outEl.className = 'ai-output';
+    outEl.textContent = reply || 'No feedback returned. Please try again.';
+
+  } catch (err) {
+    outEl.className = 'ai-output placeholder';
+    outEl.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    icon.textContent = '✨';
+    label.textContent = 'Analyze with AI';
+  }
+}
+
+// ── Utilities ──────────────────────────────────────────────────
+async function pasteText() {
+  try {
+    const text = await navigator.clipboard.readText();
+    document.getElementById('editor').value = text;
+    updateStats();
+  } catch {
+    document.getElementById('editor').focus();
+  }
+}
+
+function clearText() {
+  if (document.getElementById('editor').value && !confirm('Clear all text?')) return;
+  document.getElementById('editor').value = '';
+  document.getElementById('ai-output').textContent = 'Click "Analyze with AI" to get instant writing feedback — clarity, tone, structure improvements, and more.';
+  document.getElementById('ai-output').className = 'ai-output placeholder';
+  updateStats();
+}
+
+function copyText() {
+  const text = getText();
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.btn-toolbar.accent');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+function exportTxt() {
+  const text = getText();
+  if (!text) return;
+  const words = countWords(text);
+  const chars = text.length;
+  const header = `Word Count: ${words} | Characters: ${chars} | Generated by RankSorcery Word Counter\n${'─'.repeat(60)}\n\n`;
+  const blob = new Blob([header + text], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'word-counter-export.txt';
+  a.click();
+}
+
+// ── Init ───────────────────────────────────────────────────────
+updateStats();
+updateTargets();
+</script>
+</body>
+</html>
