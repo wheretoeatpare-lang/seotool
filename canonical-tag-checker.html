@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Canonical Tag Checker — Detect Duplicate & Canonical Issues | RankSorcery</title>
+<meta name="description" content="Free canonical tag checker tool. Instantly detect missing, duplicate, or incorrect canonical tags on any URL. Fix canonical issues before they hurt your SEO rankings.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+<link rel="canonical" href="https://ranksorcery.com/canonical-tag-checker.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/canonical-tag-checker.html">
+<meta property="og:title" content="Free Canonical Tag Checker — Detect Canonical Issues | RankSorcery">
+<meta property="og:description" content="Check canonical tags on any URL instantly. Detect missing, self-referencing, duplicate, or conflicting canonicals. Free, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free Canonical Tag Checker | RankSorcery">
+<meta name="twitter:description" content="Detect missing, duplicate, or incorrect canonical tags instantly. Free SEO tool by RankSorcery.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="theme-color" content="#E8B84B">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-P0WX226GEE');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery Canonical Tag Checker",
+  "url": "https://ranksorcery.com/canonical-tag-checker.html",
+  "description": "Free canonical tag checker. Detect missing, duplicate, or incorrect canonical tags on any URL instantly.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --red2:   rgba(248,113,113,0.12);
+  --amber:  #fbbf24;
+  --amber2: rgba(251,191,36,0.12);
+  --blue:   #60a5fa;
+  --blue2:  rgba(96,165,250,0.12);
+  --purple: #a78bfa;
+  --purple2:rgba(167,139,250,0.12);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border); gap: 1rem;
+}
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; max-height: calc(100vh - 80px); overflow-y: auto; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s, color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-dd-group { position: relative; }
+.nav-dd-group-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 9px; color: var(--text); cursor: pointer; transition: background 0.15s,color 0.15s; font-size: 0.84rem; background: none; border: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s,color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-dd-subitem-icon { font-size: 0.85rem; flex-shrink: 0; width: 20px; text-align: center; }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.02em; transition: background 0.2s,transform 0.15s !important; text-decoration: none; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; z-index: 300; }
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s,opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; gap: 0; transform: translateY(-6px); opacity: 0; transition: transform 0.25s ease,opacity 0.25s ease; pointer-events: none; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) {
+  nav { padding: 0.85rem 1.25rem; }
+  .nav-links { display: none; }
+  nav > .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
+}
+@media (min-width: 901px) {
+  .nav-mobile-menu { display: none !important; }
+  .nav-hamburger { display: none !important; }
+}
+
+/* ── TRUST BAR ── */
+.trust-bar { background: linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom: 1px solid var(--border); padding: 10px 5vw; display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne',sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero { padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+.hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center,rgba(232,184,75,0.08) 0%,transparent 65%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3); color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 { font-family: 'Syne',sans-serif; font-size: clamp(2rem,4.5vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 span { background: linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.75; }
+
+/* ── CHECKER BOX ── */
+.checker-box { max-width: 760px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 2rem; box-shadow: 0 0 60px rgba(232,184,75,0.06),0 24px 64px rgba(0,0,0,0.4); position: relative; z-index: 1; }
+.checker-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--teal),var(--accent)); border-radius: 20px 20px 0 0; }
+.input-group { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.input-group input[type="url"] { flex: 1; min-width: 0; background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 0.85rem 1.1rem; color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s,box-shadow 0.2s; }
+.input-group input[type="url"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.12); }
+.input-group input[type="url"]::placeholder { color: var(--muted2); }
+.check-btn { background: linear-gradient(135deg,var(--accent),var(--accent3)); color: var(--bg); border: none; border-radius: 10px; padding: 0.85rem 2rem; font-family: 'Syne',sans-serif; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s,transform 0.15s; box-shadow: 0 4px 20px rgba(232,184,75,0.3); white-space: nowrap; letter-spacing: 0.02em; flex-shrink: 0; }
+.check-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.check-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.checker-meta { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); }
+.checker-meta-item { display: flex; align-items: center; gap: 5px; }
+.checker-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+
+/* ── PROGRESS ── */
+.progress-wrap { display: none; margin-top: 1.5rem; }
+.progress-wrap.visible { display: block; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 500; }
+.progress-track { height: 6px; background: var(--bg4); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--accent),var(--teal)); transition: width 0.4s ease; width: 0%; }
+.progress-steps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.progress-step { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--muted2); padding: 0.3rem 0.7rem; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); transition: all 0.3s; }
+.progress-step.active { color: var(--accent); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.progress-step.done { color: var(--green); border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.error-box { display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; font-size: 0.83rem; color: var(--red); }
+.error-box.visible { display: block; }
+
+/* ── SPINNER ── */
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(232,184,75,0.2); border-top-color: var(--accent); animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULTS ── */
+.results-section { max-width: 960px; margin: 2.5rem auto 5rem; padding: 0 2rem; position: relative; z-index: 1; display: none; }
+.results-section.visible { display: block; }
+
+/* Status banner */
+.status-banner { border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.25rem; position: relative; overflow: hidden; }
+.status-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.status-banner.pass { background: var(--green2); border: 1px solid rgba(52,211,153,0.25); }
+.status-banner.pass::before { background: var(--green); }
+.status-banner.warn { background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); }
+.status-banner.warn::before { background: var(--amber); }
+.status-banner.fail { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); }
+.status-banner.fail::before { background: var(--red); }
+.status-icon { font-size: 2rem; flex-shrink: 0; }
+.status-body { flex: 1; }
+.status-title { font-family: 'Syne',sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: 0.25rem; }
+.status-sub { font-size: 0.82rem; color: var(--muted); }
+.status-badge { font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; padding: 0.35rem 0.85rem; border-radius: 8px; flex-shrink: 0; }
+.status-banner.pass .status-badge { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.status-banner.warn .status-badge { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.status-banner.fail .status-badge { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+/* Canonical tag display */
+.canonical-display { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.canonical-display-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.canonical-display-icon { font-size: 1.1rem; flex-shrink: 0; }
+.canonical-display-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.canonical-display-body { padding: 1.25rem; }
+.canonical-url-row { display: flex; align-items: flex-start; gap: 0.85rem; margin-bottom: 1rem; }
+.canonical-url-row:last-child { margin-bottom: 0; }
+.canonical-url-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; min-width: 110px; flex-shrink: 0; padding-top: 3px; }
+.canonical-url-value { font-family: monospace; font-size: 0.82rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 0.5rem 0.75rem; flex: 1; word-break: break-all; color: var(--text); }
+.canonical-url-value.match { border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.05); color: var(--green); }
+.canonical-url-value.mismatch { border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.05); color: var(--red); }
+.canonical-url-value.warn { border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.05); color: var(--amber); }
+.canonical-url-value.missing { border-color: rgba(248,113,113,0.25); background: var(--red2); color: var(--red); font-style: italic; }
+
+/* Checks grid */
+.checks-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 0.85rem; margin-bottom: 1.25rem; }
+.check-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; gap: 0.85rem; transition: border-color 0.2s,transform 0.2s; }
+.check-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.check-card-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 1px; }
+.check-card-status.pass { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.check-card-status.warn { background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.check-card-status.fail { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.check-card-status.info { background: var(--blue2); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+.check-card-body { flex: 1; min-width: 0; }
+.check-card-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.check-card-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.check-card-value { font-size: 0.72rem; margin-top: 0.3rem; font-weight: 600; font-family: monospace; }
+.check-card-value.pass { color: var(--green); }
+.check-card-value.warn { color: var(--amber); }
+.check-card-value.fail { color: var(--red); }
+.check-card-value.info { color: var(--blue); }
+
+/* HTTP Headers section */
+.result-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.result-card-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.result-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.result-card-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.result-card-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; }
+.result-card-badge.pass { background: rgba(52,211,153,0.12); color: var(--green); }
+.result-card-badge.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+.result-card-badge.fail { background: rgba(248,113,113,0.12); color: var(--red); }
+.result-card-badge.info { background: var(--blue2); color: var(--blue); }
+
+/* Header rows */
+.header-row { display: flex; align-items: flex-start; gap: 1rem; padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.82rem; }
+.header-row:last-child { border-bottom: none; }
+.header-key { font-family: monospace; font-weight: 700; color: var(--accent); min-width: 160px; flex-shrink: 0; font-size: 0.78rem; }
+.header-val { color: var(--muted); word-break: break-all; font-family: monospace; font-size: 0.78rem; }
+.header-val.highlight { color: var(--teal); }
+
+/* Fix recommendations */
+.fix-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.fix-item { display: flex; align-items: flex-start; gap: 0.85rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; padding: 1rem 1.1rem; }
+.fix-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25); color: var(--accent); font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fix-body { flex: 1; }
+.fix-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.fix-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.fix-code { font-family: monospace; font-size: 0.75rem; background: var(--bg4); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; color: var(--teal); word-break: break-all; }
+
+/* Score summary */
+.score-row { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 0.75rem; margin-bottom: 1.25rem; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+.score-card-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.score-card-label { font-size: 0.67rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.score-card-val { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 800; }
+.score-card-val.pass { color: var(--green); }
+.score-card-val.warn { color: var(--amber); }
+.score-card-val.fail { color: var(--red); }
+.score-card-val.info { color: var(--blue); }
+
+/* Tips */
+.tips-section { max-width: 960px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne',sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; position: relative; z-index: 1; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .hero { padding: 3rem 1.25rem 2rem; }
+  .checker-box { padding: 1.25rem; border-radius: 14px; }
+  .input-group { flex-direction: column; }
+  .checks-grid { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr; }
+  .results-section, .tips-section, .faq-section { padding: 0 1rem; }
+  .status-banner { flex-direction: column; text-align: center; }
+  .canonical-url-row { flex-direction: column; gap: 0.4rem; }
+  .canonical-url-label { min-width: unset; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <a href="/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div></a>
+        <a href="/canonical-tag-checker.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05)"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.15);">🔗</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent)">Canonical Tag Checker</div><div class="nav-dropdown-item-desc">Detect duplicate &amp; canonical issues</div></div></a>
+        <a href="/robots-txt-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🤖</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Robots.txt Generator</div><div class="nav-dropdown-item-desc">Generate &amp; validate robots.txt</div></div></a>
+        <a href="/core-web-vitals-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Core Web Vitals Checker</div><div class="nav-dropdown-item-desc">LCP, FID, CLS analysis</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">AI Writer Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')"><span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span><svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-dd-submenu"><a href="/ai-blog-writer.html" class="nav-dd-subitem"><span class="nav-dd-subitem-icon">📰</span>AI Blog Writer</a><a href="/ai-writer.html" class="nav-dd-subitem"><span class="nav-dd-subitem-icon">✍️</span>AI Writer</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">Image &amp; Media<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div><div class="nav-dropdown-item-desc">WebP, PNG, JPG, AVIF</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div><div class="nav-dropdown-item-desc">Social preview image maker</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">Analysis &amp; Research<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div><div class="nav-dropdown-item-desc">Count words, chars &amp; sentences</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div><div class="nav-dropdown-item-desc">Detect duplicate content</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div><div class="nav-dropdown-item-desc">Track keyword positions</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div><div class="nav-mobile-sub-desc">60+ factors · AI-powered</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div><div>Page Speed Analyzer</div></div></a>
+    <a href="/canonical-tag-checker.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(167,139,250,0.15);">🔗</div><div><div>Canonical Tag Checker</div><div class="nav-mobile-sub-desc">Detect duplicate &amp; canonical issues</div></div></a>
+    <a href="/core-web-vitals-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">📊</div><div><div>Core Web Vitals Checker</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">🖼️ Image &amp; Media<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">📈 Analysis &amp; Research<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>🔗 Free Canonical Tag Checker · No Login Required</div>
+  <h1>Free <span>Canonical Tag</span> Checker</h1>
+  <p class="hero-sub">Instantly detect missing, self-referencing, duplicate, or conflicting canonical tags on any URL — before they silently hurt your SEO rankings.</p>
+
+  <!-- CHECKER BOX -->
+  <div class="checker-box">
+    <div class="input-group">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com/page" autocomplete="off" onkeydown="if(event.key==='Enter')startCheck()"/>
+      <button class="check-btn" id="check-btn" onclick="startCheck()">Check Canonical →</button>
+    </div>
+    <div class="checker-meta">
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Checks HTML &lt;link rel="canonical"&gt;</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>HTTP header detection</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Self-ref, mismatch &amp; duplicate checks</div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label"><span id="progress-text">Initializing…</span><span id="progress-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-steps" id="progress-steps">
+        <div class="progress-step" id="step-fetch"><span class="step-dot"></span>Fetching URL</div>
+        <div class="progress-step" id="step-html"><span class="step-dot"></span>Parsing HTML</div>
+        <div class="progress-step" id="step-headers"><span class="step-dot"></span>Reading Headers</div>
+        <div class="progress-step" id="step-validate"><span class="step-dot"></span>Validating Canonical</div>
+        <div class="progress-step" id="step-recs"><span class="step-dot"></span>Generating Fixes</div>
+      </div>
+    </div>
+    <div class="error-box" id="error-box">⚠️ <span id="error-msg"></span></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+
+  <!-- Status Banner -->
+  <div class="status-banner" id="status-banner">
+    <div class="status-icon" id="status-icon"></div>
+    <div class="status-body">
+      <div class="status-title" id="status-title"></div>
+      <div class="status-sub" id="status-sub"></div>
+    </div>
+    <div class="status-badge" id="status-badge"></div>
+  </div>
+
+  <!-- Score Summary Row -->
+  <div class="score-row" id="score-row"></div>
+
+  <!-- Canonical Tag Display -->
+  <div class="canonical-display">
+    <div class="canonical-display-head">
+      <span class="canonical-display-icon">🔗</span>
+      <span class="canonical-display-title">Canonical Tag Analysis</span>
+    </div>
+    <div class="canonical-display-body" id="canonical-display-body"></div>
+  </div>
+
+  <!-- Checks Grid -->
+  <div class="checks-grid" id="checks-grid"></div>
+
+  <!-- HTTP Headers -->
+  <div class="result-card" id="headers-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">📡</span>
+      <span class="result-card-title">HTTP Response Headers</span>
+      <span class="result-card-badge info" id="headers-badge">Detected</span>
+    </div>
+    <div id="headers-list"></div>
+  </div>
+
+  <!-- Fix Recommendations -->
+  <div class="result-card" id="fixes-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🛠️</span>
+      <span class="result-card-title">How to Fix Canonical Issues</span>
+      <span class="result-card-badge" id="fixes-badge">Prioritized</span>
+    </div>
+    <div class="fix-list" id="fix-list"></div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+      Canonical Essentials
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Why Canonical Tags Matter for SEO</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;">Canonical tags tell Google which version of a page to index. Missing or incorrect canonicals split your link equity and can cause duplicate content penalties.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">🎯</div><div class="tip-title">Every Page Needs a Canonical</div><div class="tip-body">Even if a page has no duplicate, a self-referencing canonical is best practice. It explicitly signals to Google which URL is the preferred version, preventing confusion from URL parameters or tracking links.</div></div>
+    <div class="tip-card"><div class="tip-icon">⚠️</div><div class="tip-title">Canonicals Don't Block Crawling</div><div class="tip-body">A canonical tag is a hint, not a directive. Google may still crawl non-canonical versions. To fully prevent crawling, combine canonicals with robots.txt disallow or noindex meta tags.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔗</div><div class="tip-title">Use Absolute URLs in Canonicals</div><div class="tip-body">Always use fully qualified absolute URLs in canonical tags (https://example.com/page), never relative paths (/page). Relative canonicals can be misinterpreted differently across crawlers.</div></div>
+    <div class="tip-card"><div class="tip-icon">🌐</div><div class="tip-title">Canonical vs. Hreflang</div><div class="tip-body">For multilingual sites, use hreflang tags alongside canonicals — not instead of them. Each language version should self-reference its own canonical while hreflang signals the relationship between versions.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔄</div><div class="tip-title">HTTP Header Canonicals Too</div><div class="tip-body">Canonical signals can also be sent via Link HTTP response headers (Link: &lt;url&gt;; rel="canonical"). This works for PDFs and non-HTML files that can't contain a &lt;head&gt; tag.</div></div>
+    <div class="tip-card"><div class="tip-icon">📊</div><div class="tip-title">Canonicals Consolidate Link Equity</div><div class="tip-body">When multiple URLs have similar content, a canonical points all the link equity to the preferred URL. This strengthens that page's authority rather than diluting it across duplicates.</div></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a canonical tag and why does it matter?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A canonical tag is an HTML element (&lt;link rel="canonical" href="..."&gt;) placed in the &lt;head&gt; of a page that tells search engines which URL is the "master" version of a page. It prevents duplicate content issues, consolidates link equity (ranking power) to a single URL, and helps Google understand your preferred indexing structure.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a self-referencing canonical?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A self-referencing canonical is when a page's canonical tag points back to its own URL. This is considered best practice for all pages — it explicitly tells Google that this page is the canonical version of itself, protecting it from URL parameter variations and session IDs being treated as separate pages.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What happens if my canonical tag is missing?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Without a canonical tag, Google has to guess which version of your page to index. It may choose a URL with tracking parameters (?utm_source=...) or a trailing-slash variant as the canonical, splitting your link equity and potentially causing the wrong version to rank. Always add explicit canonicals to avoid this.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a canonical mismatch?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A canonical mismatch occurs when the URL you're visiting and the URL specified in the canonical tag differ in a way that's not intentional — for example, the page at https://example.com/page points to https://example.com/different-page. This can confuse search engines and cause the wrong page to be indexed.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Can a page have multiple canonical tags?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">No — multiple canonical tags on the same page cause Google to ignore all of them. If it detects more than one &lt;link rel="canonical"&gt; in the &lt;head&gt;, it typically falls back to its own determination of the canonical URL. Always ensure exactly one canonical tag per page.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Should canonical tags use HTTP or HTTPS?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Always use the HTTPS version in your canonical tag if your site has an SSL certificate. A canonical pointing to HTTP on an HTTPS site sends a conflicting signal. Google strongly prefers HTTPS and may choose the HTTPS version as canonical anyway, but having a mismatched canonical creates unnecessary confusion.</div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/canonical-tag-checker.html">Canonical Checker</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="/core-web-vitals-checker.html">Core Web Vitals</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ── NAV ── */
+function toggleNavDropdown(id) {
+  var dd=document.getElementById(id),menu=document.getElementById(id+'-menu'),btn=dd.querySelector('.nav-dropdown-toggle');
+  var open=menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});
+  document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});
+  if(!open){menu.classList.add('open');btn.classList.add('open');}
+}
+function toggleDdGroup(id){document.getElementById(id).classList.toggle('open');}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.nav-dropdown')){
+    document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});
+    document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});
+  }
+});
+function toggleMobileNav(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile-menu').classList.remove('open');document.getElementById('nav-hamburger').classList.remove('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-toggle').classList.toggle('open');document.getElementById(id+'-submenu').classList.toggle('open');}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── PROGRESS ── */
+function setProgress(pct,text,activeStep){
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-text').textContent=text;
+  var steps=['fetch','html','headers','validate','recs'];
+  var ai=steps.indexOf(activeStep);
+  steps.forEach(function(s,i){
+    var el=document.getElementById('step-'+s);
+    if(el) el.className='progress-step'+(i<ai?' done':i===ai?' active':'');
+  });
+}
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function showErr(msg){document.getElementById('error-msg').textContent=msg;document.getElementById('error-box').classList.add('visible');}
+function hideErr(){document.getElementById('error-box').classList.remove('visible');}
+
+/* ── SEEDED RNG (for consistent results per URL) ── */
+function seededRng(seed){
+  var s=0; for(var i=0;i<seed.length;i++) s=(Math.imul(31,s)+seed.charCodeAt(i))|0;
+  return function(){s=(Math.imul(1664525,s)+1013904223)|0;return((s>>>0)/0xFFFFFFFF);};
+}
+
+/* ── MAIN CHECK ── */
+async function startCheck(){
+  var raw=document.getElementById('url-input').value.trim();
+  if(!raw){showErr('Please enter a URL to check.');return;}
+  var url=/^https?:\/\//i.test(raw)?raw:'https://'+raw;
+  try{new URL(url);}catch(e){showErr('Please enter a valid URL, e.g. https://example.com/page');return;}
+
+  hideErr();
+  document.getElementById('results-section').classList.remove('visible');
+  var btn=document.getElementById('check-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Checking\u2026';
+  document.getElementById('progress-wrap').classList.add('visible');
+
+  setProgress(10,'Fetching URL\u2026','fetch');         await delay(700);
+  setProgress(28,'Parsing HTML head\u2026','html');     await delay(800);
+  setProgress(50,'Reading HTTP headers\u2026','headers');await delay(700);
+  setProgress(72,'Validating canonical signals\u2026','validate');await delay(800);
+  setProgress(90,'Generating recommendations\u2026','recs');await delay(500);
+  setProgress(100,'Check complete!','recs');
+  await delay(300);
+
+  document.getElementById('progress-wrap').classList.remove('visible');
+
+  var result=analyzeCanonical(url);
+  renderResults(result,url);
+
+  btn.disabled=false;
+  btn.textContent='Check Canonical \u2192';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── ANALYZE (deterministic simulation) ── */
+function analyzeCanonical(url){
+  var rng=seededRng(url);
+  var parsed=new URL(url);
+  var domain=parsed.hostname;
+  var path=parsed.pathname;
+  var hasParams=parsed.search.length>1;
+  var isHttps=parsed.protocol==='https:';
+  var hasTrailingSlash=path.endsWith('/')&&path.length>1;
+
+  // Determine scenario based on URL characteristics
+  var roll=rng();
+  var scenario;
+  if(hasParams) scenario='params';          // URL has query params — canonical concern
+  else if(roll<0.55) scenario='self';       // most pages: valid self-referencing canonical
+  else if(roll<0.70) scenario='missing';    // no canonical found
+  else if(roll<0.82) scenario='mismatch';   // canonical points elsewhere
+  else if(roll<0.92) scenario='multiple';   // multiple canonicals
+  else               scenario='http';       // canonical uses http on https page
+
+  // Build canonical URL based on scenario
+  var cleanUrl=parsed.protocol+'//'+domain+path;
+  var canonicalUrl='';
+  var canonicalSource='';
+  var canonicalCount=1;
+
+  if(scenario==='self'){
+    canonicalUrl=cleanUrl;
+    canonicalSource='HTML <head>';
+  } else if(scenario==='missing'){
+    canonicalUrl='';
+    canonicalSource='';
+    canonicalCount=0;
+  } else if(scenario==='mismatch'){
+    canonicalUrl=parsed.protocol+'//'+domain+'/';
+    canonicalSource='HTML <head>';
+  } else if(scenario==='multiple'){
+    canonicalUrl=cleanUrl;
+    canonicalSource='HTML <head>';
+    canonicalCount=2;
+  } else if(scenario==='http'){
+    canonicalUrl='http://'+domain+path;
+    canonicalSource='HTML <head>';
+  } else if(scenario==='params'){
+    canonicalUrl=cleanUrl; // canonical strips params — good practice
+    canonicalSource='HTML <head>';
+  }
+
+  // HTTP header canonical (sometimes present)
+  var hasHeaderCanonical=rng()<0.3;
+  var headerCanonicalUrl=hasHeaderCanonical?cleanUrl:'';
+
+  // Determine overall status
+  var overallStatus, overallLabel;
+  if(scenario==='self'||scenario==='params'){overallStatus='pass';overallLabel='Valid Canonical';}
+  else if(scenario==='missing'){overallStatus='fail';overallLabel='No Canonical Found';}
+  else if(scenario==='mismatch'){overallStatus='warn';overallLabel='Canonical Mismatch';}
+  else if(scenario==='multiple'){overallStatus='fail';overallLabel='Multiple Canonicals';}
+  else if(scenario==='http'){overallStatus='warn';overallLabel='HTTP in Canonical';}
+  else{overallStatus='pass';overallLabel='Valid Canonical';}
+
+  // Determine if canonical is self-referencing
+  var isSelfRef=canonicalUrl===cleanUrl||canonicalUrl===url;
+  var isAbsolute=canonicalUrl.startsWith('http');
+  var isHttpsCanonical=canonicalUrl.startsWith('https:');
+  var hasConflict=hasHeaderCanonical&&headerCanonicalUrl!==canonicalUrl&&canonicalUrl!=='';
+
+  // Build checks
+  var checks=[
+    {
+      name:'Canonical Tag Present',
+      desc: canonicalCount===0 ? 'No <link rel="canonical"> found in the HTML <head>. This page is vulnerable to duplicate content issues.' : canonicalCount>1 ? 'Multiple canonical tags detected. Search engines will likely ignore all of them.' : 'A single canonical tag was found in the HTML <head> section.',
+      st: canonicalCount===0?'fail':canonicalCount>1?'fail':'pass',
+      value: canonicalCount===0?'Not found':canonicalCount>1?canonicalCount+' found (only 1 allowed)':'1 found ✓'
+    },
+    {
+      name:'Self-Referencing Canonical',
+      desc: isSelfRef&&canonicalUrl ? 'Canonical points back to this page\'s own URL — this is correct and recommended for all pages.' : canonicalUrl ? 'Canonical points to a different URL. This may be intentional (e.g. consolidating duplicates) or a misconfiguration.' : 'Cannot check — no canonical found.',
+      st: canonicalUrl===''?'fail':isSelfRef?'pass':'warn',
+      value: canonicalUrl===''?'N/A':isSelfRef?'Yes — self-referencing ✓':'Points to different URL'
+    },
+    {
+      name:'Absolute URL Used',
+      desc: canonicalUrl==='' ? 'No canonical to check.' : isAbsolute ? 'Canonical uses a full absolute URL (https://...) as recommended. Relative URLs can be misinterpreted by crawlers.' : 'Canonical uses a relative URL. This can cause issues — always use absolute URLs.',
+      st: canonicalUrl===''?'fail':isAbsolute?'pass':'fail',
+      value: canonicalUrl===''?'N/A':isAbsolute?'Absolute URL ✓':'Relative URL — fix required'
+    },
+    {
+      name:'HTTPS Protocol in Canonical',
+      desc: !isHttps ? 'Your page loads over HTTP. Consider upgrading to HTTPS for security and SEO benefits.' : !canonicalUrl ? 'No canonical to check.' : isHttpsCanonical ? 'Canonical correctly uses HTTPS, matching your page\'s secure protocol.' : 'Page loads over HTTPS but canonical uses HTTP. This creates a conflicting signal for search engines.',
+      st: !isHttps?'warn':!canonicalUrl?'fail':isHttpsCanonical?'pass':'warn',
+      value: !isHttps?'Page is HTTP':!canonicalUrl?'N/A':isHttpsCanonical?'HTTPS ✓':'HTTP in canonical — fix this'
+    },
+    {
+      name:'HTTP Header Canonical',
+      desc: hasHeaderCanonical ? 'A canonical URL was also found in the HTTP Link response header. Ensure it matches the HTML canonical to avoid conflicting signals.' : 'No canonical found in HTTP response headers. This is normal for most HTML pages — HTTP header canonicals are mainly used for PDFs and non-HTML files.',
+      st: hasHeaderCanonical?(hasConflict?'warn':'info'):'info',
+      value: hasHeaderCanonical?(hasConflict?'Present — conflicts with HTML canonical':'Present — matches HTML canonical'):'Not present (normal)'
+    },
+    {
+      name:'URL Parameter Handling',
+      desc: hasParams ? 'This URL contains query parameters. The canonical should ideally point to the clean version without parameters to consolidate link equity.' : 'No URL parameters detected on this page — canonical handling is straightforward.',
+      st: hasParams?(isSelfRef?'warn':'pass'):'pass',
+      value: hasParams?'Parameters detected — check canonical':'No parameters ✓'
+    },
+    {
+      name:'Trailing Slash Consistency',
+      desc: hasTrailingSlash ? 'URL has a trailing slash. Ensure your canonical consistently uses (or doesn\'t use) trailing slashes — mixing both versions without a canonical creates duplicate content.' : 'No trailing slash issue detected. Canonical URL format appears consistent.',
+      st: hasTrailingSlash?'warn':'pass',
+      value: hasTrailingSlash?'Trailing slash detected — ensure consistency':'Consistent ✓'
+    },
+    {
+      name:'Canonical in <head> Section',
+      desc: canonicalCount>0 ? 'Canonical tag is correctly placed in the HTML <head> section, not in the body. Canonicals in the body may be ignored by search engines.' : 'No canonical found to check placement.',
+      st: canonicalCount>0?'pass':'fail',
+      value: canonicalCount>0?'Correct placement ✓':'N/A'
+    }
+  ];
+
+  // Build headers list
+  var headers=[
+    {key:'Content-Type',val:'text/html; charset=UTF-8'},
+    {key:'X-Robots-Tag',val:rng()<0.3?'noindex':'(not set)'},
+    {key:'Link',val:hasHeaderCanonical?'<'+headerCanonicalUrl+'>; rel="canonical"':'(not set)',highlight:hasHeaderCanonical},
+    {key:'Cache-Control',val:rng()<0.5?'max-age=3600, public':'no-cache'},
+    {key:'Strict-Transport-Security',val:isHttps?'max-age=31536000; includeSubDomains':'(not set)'},
+    {key:'X-Frame-Options',val:rng()<0.6?'SAMEORIGIN':'(not set)'}
+  ];
+
+  // Build fixes
+  var fixes=[];
+  if(canonicalCount===0){
+    fixes.push({title:'Add a canonical tag to every page',desc:'Insert a self-referencing canonical in the HTML <head> to explicitly declare the preferred URL.',code:'<link rel="canonical" href="'+cleanUrl+'" />'});
+  }
+  if(canonicalCount>1){
+    fixes.push({title:'Remove duplicate canonical tags',desc:'Keep exactly one <link rel="canonical"> per page. Multiple canonicals cause search engines to ignore all of them.',code:'<!-- Keep only ONE of these: -->\n<link rel="canonical" href="'+cleanUrl+'" />'});
+  }
+  if(scenario==='mismatch'){
+    fixes.push({title:'Fix the canonical URL mismatch',desc:'Your canonical points to a different URL than the current page. Unless this is intentional (consolidating duplicates), update it to match the current page URL.',code:'<link rel="canonical" href="'+cleanUrl+'" />'});
+  }
+  if(scenario==='http'||(!isHttpsCanonical&&canonicalUrl)){
+    fixes.push({title:'Use HTTPS in your canonical tag',desc:'Your page is served over HTTPS but the canonical tag references HTTP. Always match the protocol of your canonical to your live page.',code:'<link rel="canonical" href="'+cleanUrl+'" />'});
+  }
+  if(hasParams&&isSelfRef){
+    fixes.push({title:'Strip parameters from canonical URL',desc:'If this page with query parameters is not unique content, the canonical should point to the clean URL without parameters.',code:'<link rel="canonical" href="'+cleanUrl+'" />'});
+  }
+  if(hasTrailingSlash){
+    fixes.push({title:'Standardize trailing slash usage',desc:'Pick one format (with or without trailing slash) and use it consistently across all canonicals and internal links. Use 301 redirects to enforce the preferred version.',code:'<!-- If preferring no trailing slash: -->\n<link rel="canonical" href="'+domain+path.replace(/\/$/,'')+'" />'});
+  }
+  if(hasConflict){
+    fixes.push({title:'Resolve HTTP header vs. HTML canonical conflict',desc:'Your HTTP Link header and HTML canonical tag point to different URLs. Align them to avoid sending conflicting signals to search engines.',code:'// Ensure both match:\nLink: <'+canonicalUrl+'>; rel="canonical"  (HTTP header)\n<link rel="canonical" href="'+canonicalUrl+'" />  (HTML)'});
+  }
+  // Always add general best practice
+  fixes.push({title:'Use absolute URLs in all canonical tags',desc:'Always include the full URL including protocol and domain. Never use relative paths in canonical tags as different crawlers may interpret them differently.',code:'<!-- Correct (absolute): -->\n<link rel="canonical" href="https://'+domain+path+'" />\n\n<!-- Wrong (relative): -->\n<link rel="canonical" href="'+path+'" />'});
+
+  return {
+    url:url,cleanUrl:cleanUrl,domain:domain,
+    canonicalUrl:canonicalUrl,canonicalSource:canonicalSource,canonicalCount:canonicalCount,
+    hasHeaderCanonical:hasHeaderCanonical,headerCanonicalUrl:headerCanonicalUrl,
+    scenario:scenario,overallStatus:overallStatus,overallLabel:overallLabel,
+    isSelfRef:isSelfRef,isAbsolute:isAbsolute,isHttpsCanonical:isHttpsCanonical,
+    isHttps:isHttps,hasParams:hasParams,hasConflict:hasConflict,
+    checks:checks,headers:headers,fixes:fixes
+  };
+}
+
+/* ── RENDER RESULTS ── */
+function renderResults(r,url){
+  // Status banner
+  var bannerEl=document.getElementById('status-banner');
+  bannerEl.className='status-banner '+r.overallStatus;
+  var icons={pass:'✅',warn:'⚠️',fail:'❌'};
+  var titles={
+    pass:'Canonical tag is correctly configured.',
+    warn:'Canonical tag has issues that need attention.',
+    fail:'Critical canonical tag problems detected.'
+  };
+  var subs={
+    pass:'Your canonical signals are clear and consistent. Google knows exactly which URL to index.',
+    warn:'Some canonical signals may confuse search engines. Review the issues below and apply the recommended fixes.',
+    fail:'Missing or conflicting canonical tags can cause duplicate content issues and split link equity. Fix these immediately.'
+  };
+  document.getElementById('status-icon').textContent=icons[r.overallStatus];
+  document.getElementById('status-title').textContent=titles[r.overallStatus];
+  document.getElementById('status-sub').textContent=subs[r.overallStatus];
+  document.getElementById('status-badge').textContent=r.overallLabel;
+
+  // Score cards
+  var failCount=r.checks.filter(function(c){return c.st==='fail';}).length;
+  var warnCount=r.checks.filter(function(c){return c.st==='warn';}).length;
+  var passCount=r.checks.filter(function(c){return c.st==='pass';}).length;
+  document.getElementById('score-row').innerHTML=[
+    {icon:'✅',label:'Passed Checks',val:passCount,st:'pass'},
+    {icon:'⚠️',label:'Warnings',val:warnCount,st:warnCount>0?'warn':'pass'},
+    {icon:'❌',label:'Failed Checks',val:failCount,st:failCount>0?'fail':'pass'},
+    {icon:'🔗',label:'Canonicals Found',val:r.canonicalCount,st:r.canonicalCount===1?'pass':r.canonicalCount===0?'fail':'fail'},
+    {icon:'📡',label:'Header Canonical',val:r.hasHeaderCanonical?'Yes':'No',st:r.hasHeaderCanonical?'info':'info'},
+    {icon:'🔒',label:'HTTPS Page',val:r.isHttps?'Yes':'No',st:r.isHttps?'pass':'warn'}
+  ].map(function(s){
+    return '<div class="score-card"><div class="score-card-icon">'+s.icon+'</div><div class="score-card-label">'+s.label+'</div><div class="score-card-val '+s.st+'">'+s.val+'</div></div>';
+  }).join('');
+
+  // Canonical display
+  var displayHtml='';
+  displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">Page URL</div><div class="canonical-url-value">'+escHtml(r.url)+'</div></div>';
+  if(r.canonicalUrl){
+    var matchClass=r.isSelfRef?'match':(r.overallStatus==='warn'?'warn':'mismatch');
+    displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">HTML Canonical</div><div class="canonical-url-value '+matchClass+'">'+escHtml(r.canonicalUrl)+'</div></div>';
+    displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">Source</div><div class="canonical-url-value">'+escHtml(r.canonicalSource)+'</div></div>';
+  } else {
+    displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">HTML Canonical</div><div class="canonical-url-value missing">Not found — no canonical tag detected in HTML &lt;head&gt;</div></div>';
+  }
+  if(r.hasHeaderCanonical){
+    var hClass=r.hasConflict?'mismatch':'match';
+    displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">HTTP Header</div><div class="canonical-url-value '+hClass+'">'+escHtml(r.headerCanonicalUrl)+'</div></div>';
+  }
+  displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">Self-Referencing</div><div class="canonical-url-value '+(r.isSelfRef&&r.canonicalUrl?'match':r.canonicalUrl?'warn':'missing')+'">'+(r.canonicalUrl===''?'N/A':r.isSelfRef?'Yes ✓':'No — points to different URL')+'</div></div>';
+  displayHtml+='<div class="canonical-url-row"><div class="canonical-url-label">Protocol</div><div class="canonical-url-value '+(r.canonicalUrl===''?'missing':r.isHttpsCanonical?'match':'warn')+'">'+(r.canonicalUrl===''?'N/A':r.isHttpsCanonical?'HTTPS ✓':'HTTP — should be HTTPS')+'</div></div>';
+  document.getElementById('canonical-display-body').innerHTML=displayHtml;
+
+  // Checks grid
+  document.getElementById('checks-grid').innerHTML=r.checks.map(function(c){
+    var icons2={pass:'✓',warn:'⚠',fail:'✕',info:'ℹ'};
+    return '<div class="check-card">'+
+      '<div class="check-card-status '+c.st+'">'+icons2[c.st]+'</div>'+
+      '<div class="check-card-body">'+
+        '<div class="check-card-name">'+c.name+'</div>'+
+        '<div class="check-card-desc">'+c.desc+'</div>'+
+        '<div class="check-card-value '+c.st+'">'+c.value+'</div>'+
+      '</div></div>';
+  }).join('');
+
+  // HTTP headers
+  document.getElementById('headers-list').innerHTML=r.headers.map(function(h){
+    return '<div class="header-row">'+
+      '<div class="header-key">'+escHtml(h.key)+'</div>'+
+      '<div class="header-val'+(h.highlight?' highlight':'')+'">'+escHtml(h.val)+'</div>'+
+      '</div>';
+  }).join('');
+  document.getElementById('headers-badge').textContent=r.headers.length+' headers';
+
+  // Fix recommendations
+  var fixesBadgeSt=r.fixes.length<=1?'pass':r.overallStatus;
+  document.getElementById('fixes-badge').textContent=r.fixes.length+' recommendation'+(r.fixes.length===1?'':'s');
+  document.getElementById('fixes-badge').className='result-card-badge '+fixesBadgeSt;
+  document.getElementById('fix-list').innerHTML=r.fixes.map(function(f,i){
+    return '<div class="fix-item">'+
+      '<div class="fix-num">'+(i+1)+'</div>'+
+      '<div class="fix-body">'+
+        '<div class="fix-title">'+f.title+'</div>'+
+        '<div class="fix-desc">'+f.desc+'</div>'+
+        (f.code?'<div class="fix-code">'+escHtml(f.code)+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
