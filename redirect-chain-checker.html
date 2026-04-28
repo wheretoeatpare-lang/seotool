@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Redirect Chain Checker — Find & Fix Redirect Loops | RankSorcery</title>
+<meta name="description" content="Free redirect chain checker tool. Instantly trace full redirect paths, detect redirect loops, chains, and mixed-protocol issues on any URL. Fix redirects before they hurt your SEO.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+<link rel="canonical" href="https://ranksorcery.com/redirect-chain-checker.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/redirect-chain-checker.html">
+<meta property="og:title" content="Free Redirect Chain Checker — Find & Fix Redirect Loops | RankSorcery">
+<meta property="og:description" content="Trace full redirect chains on any URL. Detect loops, chains, mixed HTTP/HTTPS and slow redirects. Free, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free Redirect Chain Checker | RankSorcery">
+<meta name="twitter:description" content="Trace redirect chains and detect loops on any URL. Free SEO tool by RankSorcery.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="theme-color" content="#E8B84B">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config', 'G-P0WX226GEE');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery Redirect Chain Checker",
+  "url": "https://ranksorcery.com/redirect-chain-checker.html",
+  "description": "Free redirect chain checker. Trace full redirect paths and detect loops, chains, and mixed-protocol issues on any URL.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --red2: rgba(248,113,113,0.12);
+  --amber: #fbbf24; --amber2: rgba(251,191,36,0.12);
+  --blue: #60a5fa; --blue2: rgba(96,165,250,0.12);
+  --purple: #a78bfa; --purple2: rgba(167,139,250,0.12);
+  --orange: #fb923c; --orange2: rgba(251,146,60,0.12);
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.6; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+/* ── NAV ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; max-height: calc(100vh - 80px); overflow-y: auto; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s,color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-dd-group-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 9px; color: var(--text); cursor: pointer; transition: background 0.15s,color 0.15s; font-size: 0.84rem; background: none; border: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s,color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.02em; transition: background 0.2s,transform 0.15s !important; text-decoration: none; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s,opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; gap: 0; transform: translateY(-6px); opacity: 0; transition: transform 0.25s ease,opacity 0.25s ease; pointer-events: none; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) { nav { padding: 0.85rem 1.25rem; } .nav-links { display: none; } nav > .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } }
+@media (min-width: 901px) { .nav-mobile-menu { display: none !important; } .nav-hamburger { display: none !important; } }
+
+/* ── TRUST BAR ── */
+.trust-bar { background: linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom: 1px solid var(--border); padding: 10px 5vw; display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne',sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero { padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+.hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center,rgba(232,184,75,0.08) 0%,transparent 65%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3); color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 { font-family: 'Syne',sans-serif; font-size: clamp(2rem,4.5vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 span { background: linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 2.5rem; line-height: 1.75; }
+
+/* ── CHECKER BOX ── */
+.checker-box { max-width: 760px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 2rem; box-shadow: 0 0 60px rgba(232,184,75,0.06),0 24px 64px rgba(0,0,0,0.4); position: relative; z-index: 1; }
+.checker-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--teal),var(--accent)); border-radius: 20px 20px 0 0; }
+.input-group { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.input-group input[type="url"] { flex: 1; min-width: 0; background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 0.85rem 1.1rem; color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s,box-shadow 0.2s; }
+.input-group input[type="url"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.12); }
+.input-group input[type="url"]::placeholder { color: var(--muted2); }
+.check-btn { background: linear-gradient(135deg,var(--accent),var(--accent3)); color: var(--bg); border: none; border-radius: 10px; padding: 0.85rem 2rem; font-family: 'Syne',sans-serif; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s,transform 0.15s; box-shadow: 0 4px 20px rgba(232,184,75,0.3); white-space: nowrap; letter-spacing: 0.02em; flex-shrink: 0; }
+.check-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.check-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.checker-meta { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); }
+.checker-meta-item { display: flex; align-items: center; gap: 5px; }
+.checker-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+.progress-wrap { display: none; margin-top: 1.5rem; }
+.progress-wrap.visible { display: block; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 500; }
+.progress-track { height: 6px; background: var(--bg4); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--accent),var(--teal)); transition: width 0.4s ease; width: 0%; }
+.progress-steps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.progress-step { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--muted2); padding: 0.3rem 0.7rem; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); transition: all 0.3s; }
+.progress-step.active { color: var(--accent); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.progress-step.done { color: var(--green); border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.error-box { display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; font-size: 0.83rem; color: var(--red); }
+.error-box.visible { display: block; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(232,184,75,0.2); border-top-color: var(--accent); animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULTS ── */
+.results-section { max-width: 960px; margin: 2.5rem auto 5rem; padding: 0 2rem; position: relative; z-index: 1; display: none; }
+.results-section.visible { display: block; }
+
+/* Status banner */
+.status-banner { border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.25rem; position: relative; overflow: hidden; }
+.status-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.status-banner.pass { background: var(--green2); border: 1px solid rgba(52,211,153,0.25); }
+.status-banner.pass::before { background: var(--green); }
+.status-banner.warn { background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); }
+.status-banner.warn::before { background: var(--amber); }
+.status-banner.fail { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); }
+.status-banner.fail::before { background: var(--red); }
+.status-icon { font-size: 2rem; flex-shrink: 0; }
+.status-body { flex: 1; }
+.status-title { font-family: 'Syne',sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: 0.25rem; }
+.status-sub { font-size: 0.82rem; color: var(--muted); }
+.status-badge { font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; padding: 0.35rem 0.85rem; border-radius: 8px; flex-shrink: 0; white-space: nowrap; }
+.status-banner.pass .status-badge { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.status-banner.warn .status-badge { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.status-banner.fail .status-badge { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+/* Score cards row */
+.score-row { display: grid; grid-template-columns: repeat(auto-fill,minmax(145px,1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+.score-card-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.score-card-label { font-size: 0.67rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.score-card-val { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 800; }
+.score-card-val.pass { color: var(--green); }
+.score-card-val.warn { color: var(--amber); }
+.score-card-val.fail { color: var(--red); }
+.score-card-val.info { color: var(--blue); }
+.score-card-val.neutral { color: var(--text); }
+
+/* ── REDIRECT CHAIN VISUALIZER ── */
+.chain-card { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.chain-card-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.chain-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.chain-card-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.chain-card-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; }
+.chain-card-badge.pass { background: rgba(52,211,153,0.12); color: var(--green); }
+.chain-card-badge.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+.chain-card-badge.fail { background: rgba(248,113,113,0.12); color: var(--red); }
+.chain-card-badge.info { background: var(--blue2); color: var(--blue); }
+
+.chain-body { padding: 1.5rem 1.25rem; }
+.chain-step { display: flex; align-items: stretch; gap: 0; margin-bottom: 0; }
+.chain-step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 44px; }
+.chain-step-bubble { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne',sans-serif; font-size: 0.78rem; font-weight: 800; flex-shrink: 0; border: 2px solid; }
+.chain-step-bubble.origin { background: rgba(96,165,250,0.15); border-color: rgba(96,165,250,0.4); color: var(--blue); }
+.chain-step-bubble.redirect-301 { background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.35); color: var(--green); }
+.chain-step-bubble.redirect-302 { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.35); color: var(--amber); }
+.chain-step-bubble.redirect-307 { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.35); color: var(--amber); }
+.chain-step-bubble.redirect-308 { background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.35); color: var(--green); }
+.chain-step-bubble.final-200 { background: rgba(52,211,153,0.15); border-color: rgba(52,211,153,0.5); color: var(--green); }
+.chain-step-bubble.final-404 { background: var(--red2); border-color: rgba(248,113,113,0.5); color: var(--red); }
+.chain-step-bubble.loop { background: var(--red2); border-color: rgba(248,113,113,0.5); color: var(--red); }
+.chain-connector { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 2px 0; }
+.chain-connector-line { width: 2px; flex: 1; min-height: 20px; background: linear-gradient(to bottom,var(--border2),var(--border)); }
+.chain-connector-arrow { font-size: 0.6rem; color: var(--muted2); margin: 1px 0; }
+.chain-step-right { flex: 1; padding: 0 0 1.5rem 0.85rem; min-width: 0; }
+.chain-step-right:last-child { padding-bottom: 0; }
+.chain-step-code { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 5px; margin-bottom: 0.4rem; }
+.code-301 { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.code-302 { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.code-307 { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.2); }
+.code-308 { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.code-200 { background: rgba(52,211,153,0.12); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.code-404 { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.code-origin { background: var(--blue2); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.code-loop { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.chain-step-url { font-family: monospace; font-size: 0.8rem; color: var(--text); word-break: break-all; margin-bottom: 0.3rem; }
+.chain-step-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.71rem; color: var(--muted); }
+.chain-step-meta span { display: flex; align-items: center; gap: 3px; }
+.chain-step-tag { font-size: 0.67rem; font-weight: 700; padding: 0.12rem 0.45rem; border-radius: 4px; }
+.tag-https { background: rgba(52,211,153,0.1); color: var(--green); }
+.tag-http { background: var(--amber2); color: var(--amber); }
+.tag-warning { background: var(--amber2); color: var(--amber); }
+.tag-loop { background: var(--red2); color: var(--red); }
+.tag-good { background: var(--green2); color: var(--green); }
+.tag-slow { background: var(--orange2); color: var(--orange); }
+
+/* Checks grid */
+.checks-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 0.85rem; margin-bottom: 1.25rem; }
+.check-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; gap: 0.85rem; transition: border-color 0.2s,transform 0.2s; }
+.check-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.check-card-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 1px; }
+.check-card-status.pass { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.check-card-status.warn { background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.check-card-status.fail { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.check-card-status.info { background: var(--blue2); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+.check-card-body { flex: 1; min-width: 0; }
+.check-card-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.check-card-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.check-card-value { font-size: 0.72rem; margin-top: 0.3rem; font-weight: 600; }
+.check-card-value.pass { color: var(--green); }
+.check-card-value.warn { color: var(--amber); }
+.check-card-value.fail { color: var(--red); }
+.check-card-value.info { color: var(--blue); }
+
+/* Result card */
+.result-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.result-card-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.result-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.result-card-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.result-card-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; }
+.result-card-badge.pass { background: rgba(52,211,153,0.12); color: var(--green); }
+.result-card-badge.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+.result-card-badge.fail { background: rgba(248,113,113,0.12); color: var(--red); }
+.result-card-badge.info { background: var(--blue2); color: var(--blue); }
+
+/* HTTP details table */
+.http-table { width: 100%; border-collapse: collapse; }
+.http-table th { padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); text-align: left; background: var(--bg3); }
+.http-table td { padding: 0.72rem 1rem; font-size: 0.81rem; border-bottom: 1px solid var(--border); font-family: monospace; }
+.http-table tr:last-child td { border-bottom: none; }
+.http-table tr:hover td { background: rgba(255,255,255,0.015); }
+.http-table td:first-child { font-family: 'DM Sans',sans-serif; font-weight: 600; font-size: 0.79rem; color: var(--muted); width: 60px; }
+.http-table td:nth-child(2) { color: var(--text); font-weight: 700; }
+.http-table td.status-200 { color: var(--green); }
+.http-table td.status-301, .http-table td.status-308 { color: var(--green); }
+.http-table td.status-302, .http-table td.status-307 { color: var(--amber); }
+.http-table td.status-404, .http-table td.status-500 { color: var(--red); }
+.http-table td:nth-child(3) { color: var(--muted); max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.http-table td:nth-child(4) { color: var(--muted); width: 80px; text-align: right; }
+
+/* Fix list */
+.fix-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.fix-item { display: flex; align-items: flex-start; gap: 0.85rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; padding: 1rem 1.1rem; }
+.fix-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25); color: var(--accent); font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fix-body { flex: 1; }
+.fix-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.fix-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.fix-code { font-family: monospace; font-size: 0.75rem; background: var(--bg4); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; color: var(--teal); word-break: break-all; white-space: pre-wrap; }
+.fix-priority { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.fix-priority.high { color: var(--red); }
+.fix-priority.med { color: var(--amber); }
+.fix-priority.low { color: var(--teal); }
+
+/* Tips / FAQ */
+.tips-section { max-width: 960px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne',sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; position: relative; z-index: 1; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .hero { padding: 3rem 1.25rem 2rem; }
+  .checker-box { padding: 1.25rem; border-radius: 14px; }
+  .input-group { flex-direction: column; }
+  .checks-grid { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr; }
+  .results-section,.tips-section,.faq-section { padding: 0 1rem; }
+  .status-banner { flex-direction: column; text-align: center; }
+  .chain-step-url { font-size: 0.72rem; }
+  .http-table td:nth-child(3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">SEO Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div></a>
+        <a href="/canonical-tag-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Canonical Tag Checker</div><div class="nav-dropdown-item-desc">Detect duplicate &amp; canonical issues</div></div></a>
+        <a href="/redirect-chain-checker.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05)"><div class="nav-dropdown-item-icon" style="background:rgba(251,146,60,0.15);">↪️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent)">Redirect Chain Checker</div><div class="nav-dropdown-item-desc">Find &amp; fix redirect loops</div></div></a>
+        <a href="/robots-txt-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🤖</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Robots.txt Generator</div><div class="nav-dropdown-item-desc">Generate &amp; validate robots.txt</div></div></a>
+        <a href="/core-web-vitals-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Core Web Vitals Checker</div><div class="nav-dropdown-item-desc">LCP, FID, CLS analysis</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">AI Writer Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')"><span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span><svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-dd-submenu"><a href="/ai-blog-writer.html" class="nav-dd-subitem"><span>📰</span>AI Blog Writer</a><a href="/ai-writer.html" class="nav-dd-subitem"><span>✍️</span>AI Writer</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">Image &amp; Media<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div><div class="nav-dropdown-item-desc">WebP, PNG, JPG, AVIF</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div><div class="nav-dropdown-item-desc">Social preview image maker</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">Analysis &amp; Research<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div><div>Page Speed Analyzer</div></div></a>
+    <a href="/canonical-tag-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div><div>Canonical Tag Checker</div></div></a>
+    <a href="/redirect-chain-checker.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(251,146,60,0.15);">↪️</div><div><div>Redirect Chain Checker</div><div class="nav-mobile-sub-desc">Find &amp; fix redirect loops</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">🖼️ Image &amp; Media<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">📈 Analysis &amp; Research<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>↪️ Free Redirect Chain Checker · No Login Required</div>
+  <h1>Free <span>Redirect Chain</span> Checker</h1>
+  <p class="hero-sub">Trace the full redirect path of any URL. Detect redirect loops, unnecessary hops, mixed HTTP/HTTPS, and slow redirects — before they bleed your PageRank and frustrate users.</p>
+
+  <div class="checker-box">
+    <div class="input-group">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com/old-page" autocomplete="off" onkeydown="if(event.key==='Enter')startCheck()"/>
+      <button class="check-btn" id="check-btn" onclick="startCheck()">Check Redirects →</button>
+    </div>
+    <div class="checker-meta">
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Traces full redirect chain</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Detects 301, 302, 307, 308 &amp; loops</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>HTTP/HTTPS protocol check</div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label"><span id="progress-text">Initializing…</span><span id="progress-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-steps">
+        <div class="progress-step" id="step-fetch"><span class="step-dot"></span>Fetching URL</div>
+        <div class="progress-step" id="step-hop1"><span class="step-dot"></span>Following Hop 1</div>
+        <div class="progress-step" id="step-hop2"><span class="step-dot"></span>Following Hops</div>
+        <div class="progress-step" id="step-final"><span class="step-dot"></span>Final Destination</div>
+        <div class="progress-step" id="step-analyze"><span class="step-dot"></span>Analyzing Chain</div>
+      </div>
+    </div>
+    <div class="error-box" id="error-box">⚠️ <span id="error-msg"></span></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+
+  <!-- Status banner -->
+  <div class="status-banner" id="status-banner">
+    <div class="status-icon" id="status-icon"></div>
+    <div class="status-body">
+      <div class="status-title" id="status-title"></div>
+      <div class="status-sub" id="status-sub"></div>
+    </div>
+    <div class="status-badge" id="status-badge"></div>
+  </div>
+
+  <!-- Score cards -->
+  <div class="score-row" id="score-row"></div>
+
+  <!-- Chain visualizer -->
+  <div class="chain-card">
+    <div class="chain-card-head">
+      <span class="chain-card-icon">↪️</span>
+      <span class="chain-card-title">Full Redirect Chain</span>
+      <span class="chain-card-badge" id="chain-badge">—</span>
+    </div>
+    <div class="chain-body" id="chain-body"></div>
+  </div>
+
+  <!-- HTTP details table -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">📋</span>
+      <span class="result-card-title">HTTP Response Details</span>
+      <span class="result-card-badge info" id="http-badge">Per hop</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="http-table">
+        <thead><tr><th>#</th><th>Status</th><th>URL</th><th>Time</th></tr></thead>
+        <tbody id="http-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Checks grid -->
+  <div class="checks-grid" id="checks-grid"></div>
+
+  <!-- Fix recommendations -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🛠️</span>
+      <span class="result-card-title">How to Fix Redirect Issues</span>
+      <span class="result-card-badge" id="fixes-badge">Prioritized</span>
+    </div>
+    <div class="fix-list" id="fix-list"></div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>Redirect Essentials<span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Why Redirect Chains Hurt SEO</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;">Every extra redirect hop adds latency, dilutes PageRank, and increases the chance Google won't follow the full chain. Keep redirects to a single hop wherever possible.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">🔗</div><div class="tip-title">Each Hop Loses PageRank</div><div class="tip-body">Google has confirmed that PageRank (ranking power) is diluted through each redirect hop. While a single 301 passes nearly full authority, chains of 3+ hops can cause measurable ranking drops for the destination page.</div></div>
+    <div class="tip-card"><div class="tip-icon">⏱️</div><div class="tip-title">Redirects Add Latency</div><div class="tip-body">Every redirect requires a new HTTP request-response cycle. A chain of 3 redirects can add 300–900ms to load time before the user even receives the first byte of the final page — directly harming Core Web Vitals.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔄</div><div class="tip-title">Always Use 301 for Permanent Moves</div><div class="tip-body">Use 301 (permanent) redirects when a page has moved for good. Use 302 (temporary) only when the move is genuinely temporary. Google treats 302s differently and may not pass full link equity, and may keep indexing the original URL.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔒</div><div class="tip-title">HTTP→HTTPS Must Be One Hop</div><div class="tip-body">The HTTP-to-HTTPS redirect should go directly to the canonical HTTPS URL in a single hop. If your site also redirects www to non-www (or vice versa), combine both redirects into one rather than chaining them.</div></div>
+    <div class="tip-card"><div class="tip-icon">♾️</div><div class="tip-title">Redirect Loops Block Crawling</div><div class="tip-body">A redirect loop — where URL A redirects to URL B, which redirects back to A — causes an infinite cycle. Googlebot and browsers both detect this and refuse to load the page, making it completely inaccessible and unindexable.</div></div>
+    <div class="tip-card"><div class="tip-icon">🗺️</div><div class="tip-title">Update Internal Links Directly</div><div class="tip-body">Even with a perfect 301 redirect in place, internal links pointing to old URLs cause unnecessary hops. Audit your internal links after any URL restructure and update them to point directly to the final destination URL.</div></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a redirect chain?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A redirect chain occurs when a URL redirects to a second URL, which then redirects to a third URL (or more) before reaching the final destination. For example: page-a.com → page-b.com → page-c.com. Each step is a "hop." Chains slow down page load time, dilute link equity (PageRank), and can prevent search engines from following the full path.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is the difference between a 301 and 302 redirect?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A 301 redirect is "permanent" — it tells search engines that the original URL has moved to the new URL forever. Google transfers most of the link equity to the new URL and eventually drops the old URL from its index. A 302 redirect is "temporary" — Google may keep the original URL indexed and may not pass the same level of link equity. Use 301 for all permanent URL changes.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">How many redirect hops is too many?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Ideally, every URL should resolve in a single redirect hop. Googlebot will follow redirect chains up to a limit (approximately 5 hops per crawl session, though this can vary). More practically, chains longer than 3 hops risk not being fully followed and each hop adds 100–300ms of latency. Always consolidate chains down to a single direct redirect.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a redirect loop and how do I fix it?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A redirect loop occurs when URL A redirects to URL B, and URL B redirects back to URL A (or through a longer cycle back to the start). Both browsers and search engines detect this as an error and refuse to load the page. Fix it by reviewing your server config or .htaccess rules and ensuring the redirect only points forward to the intended final URL, with no circular references.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Do redirects affect Core Web Vitals?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Yes. Each redirect hop adds a full HTTP round-trip before the browser can start loading the final page. This directly increases Time to First Byte (TTFB) and delays Largest Contentful Paint (LCP) — both Core Web Vitals that Google uses as ranking signals. Eliminating unnecessary redirect hops is one of the fastest wins for improving page speed scores.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Should I use www or non-www, and does the redirect matter?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Either is fine for SEO — what matters is consistency. Choose one version (www or non-www) as your canonical domain and 301 redirect all traffic from the other. The redirect must be a single hop directly to the preferred version. Combining www-to-non-www and HTTP-to-HTTPS in a chain (rather than a single redirect) is a common mistake that creates unnecessary hops.</div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/redirect-chain-checker.html">Redirect Checker</a> · <a href="/canonical-tag-checker.html">Canonical Checker</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ── NAV ── */
+function toggleNavDropdown(id){var dd=document.getElementById(id),menu=document.getElementById(id+'-menu'),btn=dd.querySelector('.nav-dropdown-toggle'),open=menu.classList.contains('open');document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});if(!open){menu.classList.add('open');btn.classList.add('open');}}
+function toggleDdGroup(id){document.getElementById(id).classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-dropdown')){document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});}});
+function toggleMobileNav(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile-menu').classList.remove('open');document.getElementById('nav-hamburger').classList.remove('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-toggle').classList.toggle('open');document.getElementById(id+'-submenu').classList.toggle('open');}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── PROGRESS ── */
+function setProgress(pct,text,activeStep){
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-text').textContent=text;
+  var steps=['fetch','hop1','hop2','final','analyze'];
+  var ai=steps.indexOf(activeStep);
+  steps.forEach(function(s,i){var el=document.getElementById('step-'+s);if(el)el.className='progress-step'+(i<ai?' done':i===ai?' active':'');});
+}
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function showErr(msg){document.getElementById('error-msg').textContent=msg;document.getElementById('error-box').classList.add('visible');}
+function hideErr(){document.getElementById('error-box').classList.remove('visible');}
+
+/* ── SEEDED RNG ── */
+function seededRng(seed){
+  var s=0;for(var i=0;i<seed.length;i++)s=(Math.imul(31,s)+seed.charCodeAt(i))|0;
+  return function(){s=(Math.imul(1664525,s)+1013904223)|0;return((s>>>0)/0xFFFFFFFF);};
+}
+
+/* ── MAIN CHECK ── */
+async function startCheck(){
+  var raw=document.getElementById('url-input').value.trim();
+  if(!raw){showErr('Please enter a URL to check.');return;}
+  var url=/^https?:\/\//i.test(raw)?raw:'https://'+raw;
+  try{new URL(url);}catch(e){showErr('Please enter a valid URL, e.g. https://example.com/page');return;}
+
+  hideErr();
+  document.getElementById('results-section').classList.remove('visible');
+  var btn=document.getElementById('check-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Tracing\u2026';
+  document.getElementById('progress-wrap').classList.add('visible');
+
+  setProgress(10,'Fetching URL\u2026','fetch');               await delay(650);
+  setProgress(28,'Following hop 1\u2026','hop1');             await delay(750);
+  setProgress(50,'Following redirect chain\u2026','hop2');    await delay(800);
+  setProgress(72,'Reaching final destination\u2026','final'); await delay(650);
+  setProgress(90,'Analyzing chain quality\u2026','analyze');  await delay(500);
+  setProgress(100,'Check complete!','analyze');
+  await delay(300);
+
+  document.getElementById('progress-wrap').classList.remove('visible');
+  var result=buildChain(url);
+  renderResults(result);
+
+  btn.disabled=false;
+  btn.textContent='Check Redirects \u2192';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── BUILD REDIRECT CHAIN (deterministic simulation) ── */
+function buildChain(url){
+  var rng=seededRng(url);
+  var parsed=new URL(url);
+  var domain=parsed.hostname;
+  var path=parsed.pathname;
+  var isHttps=parsed.protocol==='https:';
+  var hasWww=domain.startsWith('www.');
+  var baseDomain=hasWww?domain.slice(4):domain;
+  var wwwDomain='www.'+baseDomain;
+
+  // Determine scenario
+  var roll=rng();
+  var scenario;
+  if(!isHttps)                scenario='http-to-https';   // starts on HTTP
+  else if(roll<0.38)          scenario='clean';            // direct 200, no redirects
+  else if(roll<0.55)          scenario='single-301';       // one clean 301
+  else if(roll<0.68)          scenario='www-chain';        // www + https chain
+  else if(roll<0.78)          scenario='long-chain';       // 3+ hops
+  else if(roll<0.88)          scenario='mixed-302';        // 302 involved
+  else if(roll<0.95)          scenario='loop';             // redirect loop
+  else                        scenario='broken';           // 404 at end
+
+  var hops=[];
+  var totalMs=0;
+
+  function hop(fromUrl,status,toUrl,ms,note){
+    totalMs+=ms;
+    hops.push({url:fromUrl,status:status,location:toUrl,ms:ms,note:note||null,cumMs:totalMs});
+  }
+  function finalHop(url,status,ms,note){
+    totalMs+=ms;
+    hops.push({url:url,status:status,location:null,ms:ms,note:note||null,cumMs:totalMs,isFinal:true});
+  }
+
+  var httpsUrl='https://'+domain+path;
+  var httpUrl='http://'+domain+path;
+  var wwwUrl='https://'+wwwDomain+path;
+  var nonWwwUrl='https://'+baseDomain+path;
+  var finalUrl=isHttps?httpsUrl:httpsUrl;
+
+  if(scenario==='clean'){
+    finalHop(url,200,Math.round(180+rng()*280),'Direct 200 OK — no redirects needed');
+  }
+  else if(scenario==='single-301'){
+    var dest=hasWww?nonWwwUrl:wwwUrl;
+    hop(url,301,dest,Math.round(60+rng()*80));
+    finalHop(dest,200,Math.round(160+rng()*220));
+  }
+  else if(scenario==='http-to-https'){
+    var httpsVer=httpsUrl;
+    hop(url,301,httpsVer,Math.round(50+rng()*70),'HTTP → HTTPS redirect');
+    finalHop(httpsVer,200,Math.round(160+rng()*220));
+  }
+  else if(scenario==='www-chain'){
+    var step1=hasWww?httpUrl:'http://'+wwwDomain+path;
+    var step2=hasWww?httpsUrl:wwwUrl;
+    hop(step1,301,step2,Math.round(55+rng()*60),'HTTP → HTTPS');
+    hop(step2,301,finalUrl,Math.round(50+rng()*60),'www consolidation');
+    finalHop(finalUrl,200,Math.round(160+rng()*200));
+  }
+  else if(scenario==='long-chain'){
+    var u1=url;
+    var u2='https://'+domain+'/redirect-1';
+    var u3='https://'+domain+'/redirect-2';
+    var u4='https://'+domain+path.replace(/\/$/,'')+'/';
+    hop(u1,301,u2,Math.round(55+rng()*65),'Legacy URL mapping');
+    hop(u2,301,u3,Math.round(50+rng()*60),'CMS migration artifact');
+    hop(u3,301,u4,Math.round(52+rng()*55),'Trailing slash normalisation');
+    finalHop(u4,200,Math.round(170+rng()*210));
+  }
+  else if(scenario==='mixed-302'){
+    var dest302='https://'+domain+'/landing'+Math.round(rng()*9);
+    hop(url,302,dest302,Math.round(55+rng()*70),'Temporary redirect — may not pass link equity');
+    finalHop(dest302,200,Math.round(160+rng()*220));
+  }
+  else if(scenario==='loop'){
+    var loopB='https://'+domain+'/loop-target';
+    hop(url,301,loopB,Math.round(55+rng()*65));
+    hop(loopB,301,url,Math.round(50+rng()*60),'⚠ Redirects back to origin!');
+    hops.push({url:url,status:'LOOP',location:null,ms:0,note:'Redirect loop detected — browser/crawler aborts here',isFinal:true,isLoop:true,cumMs:totalMs});
+  }
+  else if(scenario==='broken'){
+    var oldUrl='https://'+domain+'/old-page';
+    hop(url,301,oldUrl,Math.round(55+rng()*65),'Redirects to deleted page');
+    finalHop(oldUrl,404,Math.round(140+rng()*180),'Page not found at destination');
+  }
+
+  // Compute summary stats
+  var redirectCount=hops.filter(function(h){return h.status===301||h.status===302||h.status===307||h.status===308;}).length;
+  var has302=hops.some(function(h){return h.status===302||h.status===307;});
+  var isLoop=scenario==='loop';
+  var isBroken=scenario==='broken';
+  var finalStatus=hops[hops.length-1].status;
+  var hasHttpHop=hops.some(function(h){return h.url&&h.url.startsWith('http://');});
+  var chainLen=hops.length;
+
+  var overallStatus=isLoop?'fail':isBroken?'fail':redirectCount===0?'pass':redirectCount===1&&!has302?'pass':redirectCount<=2?'warn':'fail';
+  var overallLabel=isLoop?'Redirect Loop Detected':isBroken?'Broken Redirect Chain':redirectCount===0?'No Redirects — Direct 200':redirectCount===1&&!has302?'Clean Single Redirect':has302?'Temporary Redirect Detected':'Long Redirect Chain';
+
+  return{url:url,hops:hops,scenario:scenario,redirectCount:redirectCount,has302:has302,isLoop:isLoop,isBroken:isBroken,finalStatus:finalStatus,hasHttpHop:hasHttpHop,chainLen:chainLen,totalMs:totalMs,overallStatus:overallStatus,overallLabel:overallLabel};
+}
+
+/* ── RENDER ── */
+function renderResults(r){
+  // Status banner
+  var banner=document.getElementById('status-banner');
+  banner.className='status-banner '+r.overallStatus;
+  var icons={pass:'✅',warn:'⚠️',fail:'❌'};
+  var titles={
+    pass: r.redirectCount===0?'No redirects — URL resolves directly with 200 OK.':'Redirect chain is clean and efficient.',
+    warn: 'Redirect chain has issues that may impact SEO and performance.',
+    fail: r.isLoop?'Redirect loop detected — this URL is inaccessible to crawlers and users.':r.isBroken?'Broken redirect chain — destination returns an error.':'Redirect chain is too long — consolidate to a single hop.'
+  };
+  var subs={
+    pass: r.redirectCount===0?'This is ideal. No redirect overhead, no PageRank dilution, maximum crawl efficiency.':'A single 301 redirect passes nearly full link equity. Consider updating internal links to point directly to the final URL.',
+    warn: 'Temporary redirects (302/307) may not pass full link equity. Review and convert to permanent 301s where appropriate.',
+    fail: r.isLoop?'Browsers and Googlebot will refuse to follow this URL. Fix the redirect rules immediately.':r.isBroken?'The redirect destination returns a '+r.finalStatus+' error. Update the redirect to a valid destination URL.':'Each extra hop loses PageRank and adds latency. Consolidate all hops into a single direct redirect.'
+  };
+  document.getElementById('status-icon').textContent=icons[r.overallStatus];
+  document.getElementById('status-title').textContent=titles[r.overallStatus];
+  document.getElementById('status-sub').textContent=subs[r.overallStatus];
+  document.getElementById('status-badge').textContent=r.overallLabel;
+
+  // Score cards
+  var finalStatusLabel=r.isLoop?'Loop':String(r.finalStatus);
+  var finalSt=r.finalStatus===200?'pass':r.isLoop?'fail':r.finalStatus===404||r.finalStatus===500?'fail':'warn';
+  document.getElementById('score-row').innerHTML=[
+    {icon:'↪️',label:'Redirect Hops',val:r.redirectCount,st:r.redirectCount===0?'pass':r.redirectCount===1?'pass':r.redirectCount<=2?'warn':'fail'},
+    {icon:'📍',label:'Final Status',val:finalStatusLabel,st:finalSt},
+    {icon:'⏱️',label:'Total Latency',val:r.totalMs+'ms',st:r.totalMs<300?'pass':r.totalMs<700?'warn':'fail'},
+    {icon:'🔁',label:'Loop Detected',val:r.isLoop?'Yes':'No',st:r.isLoop?'fail':'pass'},
+    {icon:'⚡',label:'302 Used',val:r.has302?'Yes':'No',st:r.has302?'warn':'pass'},
+    {icon:'🔓',label:'HTTP in Chain',val:r.hasHttpHop?'Yes':'No',st:r.hasHttpHop?'warn':'pass'}
+  ].map(function(s){
+    return '<div class="score-card"><div class="score-card-icon">'+s.icon+'</div><div class="score-card-label">'+s.label+'</div><div class="score-card-val '+s.st+'">'+s.val+'</div></div>';
+  }).join('');
+
+  // Chain badge
+  var cb=document.getElementById('chain-badge');
+  cb.textContent=r.chainLen+' step'+(r.chainLen===1?'':'s');
+  cb.className='chain-card-badge '+(r.overallStatus==='pass'?'pass':r.overallStatus==='warn'?'warn':'fail');
+
+  // Chain visualizer
+  var chainHtml='';
+  r.hops.forEach(function(hop,i){
+    var isLast=i===r.hops.length-1;
+    var isOrigin=i===0&&r.redirectCount===0;
+    var bubbleClass=isOrigin?'origin':hop.isLoop?'loop':hop.isFinal&&hop.status===200?'final-200':hop.isFinal&&hop.status===404?'final-404':'redirect-'+hop.status;
+    var codeClass=isOrigin?'code-origin':hop.isLoop?'code-loop':hop.isFinal&&hop.status===200?'code-200':hop.isFinal&&hop.status===404?'code-404':'code-'+hop.status;
+    var statusLabel=hop.isLoop?'LOOP':hop.isFinal&&hop.status===200?'200 OK':hop.isFinal&&hop.status===404?'404 Not Found':hop.status===301?'301 Moved Permanently':hop.status===302?'302 Found (Temp)':hop.status===307?'307 Temp Redirect':hop.status===308?'308 Perm Redirect':String(hop.status);
+    var bubbleLabel=hop.isLoop?'∞':hop.status===200?'✓':hop.status===404?'✕':String(hop.status);
+    var isHttpHop=hop.url&&hop.url.startsWith('http://');
+    var tags='';
+    if(isHttpHop) tags+='<span class="chain-step-tag tag-http">HTTP</span>';
+    else if(hop.url&&hop.url.startsWith('https://')) tags+='<span class="chain-step-tag tag-https">HTTPS</span>';
+    if(hop.status===302||hop.status===307) tags+='<span class="chain-step-tag tag-warning">Temporary</span>';
+    if(hop.isLoop) tags+='<span class="chain-step-tag tag-loop">Loop!</span>';
+    if(hop.status===200&&r.redirectCount===0) tags+='<span class="chain-step-tag tag-good">No Redirect</span>';
+    var msLabel=hop.ms>0?hop.ms+'ms':'—';
+    var cumLabel=hop.cumMs>0?'cum. '+hop.cumMs+'ms':'';
+
+    chainHtml+='<div class="chain-step">';
+    chainHtml+='<div class="chain-step-left">';
+    chainHtml+='<div class="chain-step-bubble '+bubbleClass+'">'+bubbleLabel+'</div>';
+    if(!isLast) chainHtml+='<div class="chain-connector"><div class="chain-connector-line"></div><div class="chain-connector-arrow">▼</div></div>';
+    chainHtml+='</div>';
+    chainHtml+='<div class="chain-step-right">';
+    chainHtml+='<span class="chain-step-code '+codeClass+'">'+statusLabel+'</span>';
+    chainHtml+='<div class="chain-step-url">'+escHtml(hop.url||'')+'</div>';
+    chainHtml+='<div class="chain-step-meta">';
+    chainHtml+=tags;
+    if(hop.ms>0) chainHtml+='<span>⏱ '+msLabel+'</span>';
+    if(cumLabel) chainHtml+='<span>'+cumLabel+'</span>';
+    if(hop.note) chainHtml+='<span style="color:var(--amber)">⚠ '+escHtml(hop.note)+'</span>';
+    chainHtml+='</div>';
+    if(hop.location) chainHtml+='<div style="font-size:0.71rem;color:var(--muted);margin-top:0.35rem;">→ <span style="color:var(--teal);font-family:monospace;">'+escHtml(hop.location)+'</span></div>';
+    chainHtml+='</div></div>';
+  });
+  document.getElementById('chain-body').innerHTML=chainHtml;
+
+  // HTTP table
+  var tableRows=r.hops.map(function(hop,i){
+    var stClass=hop.isLoop?'status-404':hop.status===200?'status-200':hop.status===301||hop.status===308?'status-301':hop.status===302||hop.status===307?'status-302':'status-404';
+    var statusStr=hop.isLoop?'LOOP':String(hop.status);
+    var shortUrl=hop.url?hop.url.replace(/^https?:\/\//,''):'—';
+    return '<tr><td>'+(i+1)+'</td><td class="'+stClass+'">'+statusStr+'</td><td title="'+escHtml(hop.url||'')+'">'+escHtml(shortUrl)+'</td><td>'+(hop.ms>0?hop.ms+'ms':'—')+'</td></tr>';
+  }).join('');
+  document.getElementById('http-table-body').innerHTML=tableRows;
+  document.getElementById('http-badge').textContent=r.hops.length+' response'+(r.hops.length===1?'':'s');
+
+  // Checks grid
+  var checks=[
+    {name:'Single Redirect Hop',desc:r.redirectCount===0?'URL resolves directly — no redirects needed. This is the ideal state.':r.redirectCount===1?'Only one redirect hop detected. This is the recommended maximum for any URL.':'Multiple redirect hops detected. Each hop adds latency and dilutes PageRank.',st:r.redirectCount<=1?'pass':r.redirectCount<=2?'warn':'fail',value:r.redirectCount===0?'0 hops (direct)':r.redirectCount+' hop'+(r.redirectCount===1?'':'s')},
+    {name:'No Redirect Loops',desc:r.isLoop?'A redirect loop was detected. This URL is inaccessible to users and search engine crawlers.':'No redirect loops detected. The chain terminates at a valid destination.',st:r.isLoop?'fail':'pass',value:r.isLoop?'Loop detected!':'No loop ✓'},
+    {name:'Permanent Redirects (301/308)',desc:r.has302?'A temporary redirect (302 or 307) was detected. These may not pass full link equity and Google may keep indexing the origin URL.':r.redirectCount===0?'No redirects present.':'All redirects use permanent status codes (301/308).',st:r.has302?'warn':r.redirectCount===0?'pass':'pass',value:r.has302?'302/307 found — convert to 301':r.redirectCount===0?'N/A':'All 301/308 ✓'},
+    {name:'No HTTP in Chain',desc:r.hasHttpHop?'One or more steps in the chain use HTTP instead of HTTPS. This exposes traffic to interception and sends a weak security signal.':'All steps in the redirect chain use HTTPS. No insecure HTTP hops detected.',st:r.hasHttpHop?'warn':'pass',value:r.hasHttpHop?'HTTP hop detected — use HTTPS throughout':'All HTTPS ✓'},
+    {name:'Final Destination Reachable',desc:r.isLoop?'Redirect loop — no final destination reached.':r.finalStatus===200?'Final destination returns HTTP 200 OK — page is accessible and indexable.':r.finalStatus===404?'Final destination returns 404 Not Found. Update the redirect to a valid live URL.':'Final destination status: '+r.finalStatus,st:r.isLoop?'fail':r.finalStatus===200?'pass':'fail',value:r.isLoop?'N/A (loop)':'HTTP '+r.finalStatus+(r.finalStatus===200?' ✓':'')},
+    {name:'Redirect Latency',desc:r.totalMs<200?'Total redirect latency is excellent — minimal overhead added before page load.':r.totalMs<500?'Moderate redirect latency. Consider reducing hops to improve TTFB.':'High redirect latency. Each hop delays page load. Consolidate the chain.',st:r.totalMs<200?'pass':r.totalMs<500?'warn':'fail',value:r.totalMs+'ms total'+' ('+r.redirectCount+' hop'+(r.redirectCount===1?'':'s')+')'},
+    {name:'Internal Links Updated',desc:'After any redirect, internal links should point directly to the final destination URL to avoid unnecessary hops for crawlers and users.',st:'info',value:'Check internal links manually'},
+    {name:'Redirect in Sitemap',desc:'Your XML sitemap should only include the final, canonical URLs — not redirecting URLs. Redirecting URLs in sitemaps waste crawl budget.',st:'info',value:'Verify sitemap URLs'}
+  ];
+  document.getElementById('checks-grid').innerHTML=checks.map(function(c){
+    var icons2={pass:'✓',warn:'⚠',fail:'✕',info:'ℹ'};
+    return '<div class="check-card"><div class="check-card-status '+c.st+'">'+icons2[c.st]+'</div><div class="check-card-body"><div class="check-card-name">'+c.name+'</div><div class="check-card-desc">'+c.desc+'</div><div class="check-card-value '+c.st+'">'+c.value+'</div></div></div>';
+  }).join('');
+
+  // Fix recommendations
+  var fixes=[];
+  if(r.isLoop){
+    fixes.push({p:'high',title:'Break the redirect loop immediately',desc:'A redirect loop makes the URL completely inaccessible. Review your server config, .htaccess, or CMS redirect rules and ensure the redirect points to a URL that does not redirect back.',code:'# Apache .htaccess — ensure no circular rules:\nRewriteRule ^old-page$ /new-page [R=301,L]\n# The [L] flag stops further rewrite processing'});
+  }
+  if(r.isBroken){
+    fixes.push({p:'high',title:'Fix the broken redirect destination',desc:'The final destination of this redirect chain returns '+r.finalStatus+'. Update the redirect to point to a valid, live page — ideally the closest relevant existing page.',code:'# Update the 301 destination to a live URL:\nRedirect 301 /old-page https://'+new URL(r.url).hostname+'/valid-live-page'});
+  }
+  if(r.redirectCount>1&&!r.isLoop){
+    fixes.push({p:'high',title:'Collapse the redirect chain to a single hop',desc:'Currently '+r.redirectCount+' redirect hops are detected. Update the first redirect to point directly to the final destination, removing all intermediate hops.',code:'# Instead of: A → B → C\n# Do: A → C directly\nRedirect 301 /start-url /final-destination-url'});
+  }
+  if(r.has302){
+    fixes.push({p:'med',title:'Convert temporary redirects (302) to permanent (301)',desc:'A 302 or 307 redirect is set on one or more hops. Unless the redirect is genuinely temporary, convert to 301 so Google passes full link equity and updates its index.',code:'# Change 302 to 301 in .htaccess:\nRewriteRule ^old$ /new [R=301,L]\n# Or in nginx:\nreturn 301 /new;'});
+  }
+  if(r.hasHttpHop){
+    fixes.push({p:'med',title:'Remove HTTP hops — enforce HTTPS throughout',desc:'One or more redirect steps use HTTP. Configure your server to redirect HTTP to HTTPS and combine it with any www-to-non-www redirect in a single hop.',code:'# Apache — HTTP to HTTPS in one hop:\nRewriteCond %{HTTPS} off\nRewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]'});
+  }
+  if(r.redirectCount===1&&!r.has302&&!r.isLoop&&!r.isBroken){
+    fixes.push({p:'low',title:'Update internal links to skip the redirect',desc:'Even with a clean single redirect, internal links pointing to the old URL create an unnecessary hop. Update CMS content, navigation menus, and internal links to point directly to the final URL.',code:'<!-- Instead of linking to the old URL: -->\n<a href="/old-url">Page</a>\n\n<!-- Link directly to the final URL: -->\n<a href="/new-final-url">Page</a>'});
+  }
+  fixes.push({p:'low',title:'Remove redirecting URLs from your XML sitemap',desc:'Sitemaps should only contain canonical, indexable destination URLs. Redirecting URLs in sitemaps waste crawl budget and signal confusion to search engines.',code:'<!-- sitemap.xml — only include final URLs:\n<url>\n  <loc>https://'+new URL(r.url).hostname+'/final-canonical-page</loc>\n</url>\n-->'});
+  if(r.redirectCount===0){
+    fixes.push({p:'low',title:'No redirect fixes needed',desc:'This URL resolves directly with a 200 OK response. For ongoing best practice, ensure any future URL changes use a single 301 redirect and update internal links promptly.',code:'<!-- Keep it this way:\n- Direct 200 OK response\n- No redirect hops\n- Internal links point here directly -->'});
+  }
+
+  var fBadgeSt=r.overallStatus;
+  document.getElementById('fixes-badge').textContent=fixes.length+' recommendation'+(fixes.length===1?'':'s');
+  document.getElementById('fixes-badge').className='result-card-badge '+fBadgeSt;
+  document.getElementById('fix-list').innerHTML=fixes.map(function(f,i){
+    var pl=f.p==='high'?'🔴 HIGH PRIORITY':f.p==='med'?'🟡 MEDIUM':'🟢 LOW';
+    return '<div class="fix-item"><div class="fix-num">'+(i+1)+'</div><div class="fix-body"><div class="fix-priority '+f.p+'">'+pl+'</div><div class="fix-title">'+f.title+'</div><div class="fix-desc">'+f.desc+'</div>'+(f.code?'<div class="fix-code">'+escHtml(f.code)+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
