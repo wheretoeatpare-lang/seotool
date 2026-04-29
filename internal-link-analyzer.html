@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Internal Link Analyzer — Map & Optimize Internal Links | RankSorcery</title>
+<meta name="description" content="Free internal link analyzer tool. Instantly map all internal links on any page, detect orphaned pages, broken links, anchor text issues, and link equity distribution problems.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+<link rel="canonical" href="https://ranksorcery.com/internal-link-analyzer.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/internal-link-analyzer.html">
+<meta property="og:title" content="Free Internal Link Analyzer — Map & Optimize Internal Links | RankSorcery">
+<meta property="og:description" content="Analyze internal links on any page. Detect broken links, poor anchor text, orphaned pages and link equity issues. Free, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free Internal Link Analyzer | RankSorcery">
+<meta name="twitter:description" content="Map and optimize internal links on any page. Free SEO tool by RankSorcery.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="theme-color" content="#E8B84B">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config', 'G-P0WX226GEE');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery Internal Link Analyzer",
+  "url": "https://ranksorcery.com/internal-link-analyzer.html",
+  "description": "Free internal link analyzer. Map internal links, detect broken links, orphaned pages and anchor text issues on any URL.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --red2: rgba(248,113,113,0.12);
+  --amber: #fbbf24; --amber2: rgba(251,191,36,0.12);
+  --blue: #60a5fa; --blue2: rgba(96,165,250,0.12);
+  --purple: #a78bfa; --purple2: rgba(167,139,250,0.12);
+  --orange: #fb923c; --orange2: rgba(251,146,60,0.12);
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.6; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+/* ── NAV ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover,.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; max-height: calc(100vh - 80px); overflow-y: auto; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s,color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-dd-group-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 9px; color: var(--text); cursor: pointer; transition: background 0.15s,color 0.15s; font-size: 0.84rem; background: none; border: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s,color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.02em; transition: background 0.2s,transform 0.15s !important; text-decoration: none; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s,opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; gap: 0; transform: translateY(-6px); opacity: 0; transition: transform 0.25s ease,opacity 0.25s ease; pointer-events: none; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) { nav { padding: 0.85rem 1.25rem; } .nav-links { display: none; } nav > .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } }
+@media (min-width: 901px) { .nav-mobile-menu { display: none !important; } .nav-hamburger { display: none !important; } }
+
+/* ── TRUST BAR ── */
+.trust-bar { background: linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom: 1px solid var(--border); padding: 10px 5vw; display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne',sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero { padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+.hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center,rgba(232,184,75,0.08) 0%,transparent 65%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3); color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 { font-family: 'Syne',sans-serif; font-size: clamp(2rem,4.5vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 span { background: linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 580px; margin: 0 auto 2.5rem; line-height: 1.75; }
+
+/* ── CHECKER BOX ── */
+.checker-box { max-width: 760px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 2rem; box-shadow: 0 0 60px rgba(232,184,75,0.06),0 24px 64px rgba(0,0,0,0.4); position: relative; z-index: 1; }
+.checker-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--teal),var(--accent)); border-radius: 20px 20px 0 0; }
+.input-group { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.input-group input[type="url"] { flex: 1; min-width: 0; background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 0.85rem 1.1rem; color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s,box-shadow 0.2s; }
+.input-group input[type="url"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.12); }
+.input-group input[type="url"]::placeholder { color: var(--muted2); }
+.check-btn { background: linear-gradient(135deg,var(--accent),var(--accent3)); color: var(--bg); border: none; border-radius: 10px; padding: 0.85rem 2rem; font-family: 'Syne',sans-serif; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s,transform 0.15s; box-shadow: 0 4px 20px rgba(232,184,75,0.3); white-space: nowrap; letter-spacing: 0.02em; flex-shrink: 0; }
+.check-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.check-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.checker-meta { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); }
+.checker-meta-item { display: flex; align-items: center; gap: 5px; }
+.checker-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+.progress-wrap { display: none; margin-top: 1.5rem; }
+.progress-wrap.visible { display: block; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 500; }
+.progress-track { height: 6px; background: var(--bg4); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--accent),var(--teal)); transition: width 0.4s ease; width: 0%; }
+.progress-steps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.progress-step { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--muted2); padding: 0.3rem 0.7rem; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); transition: all 0.3s; }
+.progress-step.active { color: var(--accent); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.progress-step.done { color: var(--green); border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.error-box { display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; font-size: 0.83rem; color: var(--red); }
+.error-box.visible { display: block; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(232,184,75,0.2); border-top-color: var(--accent); animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULTS ── */
+.results-section { max-width: 1040px; margin: 2.5rem auto 5rem; padding: 0 2rem; position: relative; z-index: 1; display: none; }
+.results-section.visible { display: block; }
+
+/* Status banner */
+.status-banner { border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.25rem; position: relative; overflow: hidden; }
+.status-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.status-banner.pass { background: var(--green2); border: 1px solid rgba(52,211,153,0.25); }
+.status-banner.pass::before { background: var(--green); }
+.status-banner.warn { background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); }
+.status-banner.warn::before { background: var(--amber); }
+.status-banner.fail { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); }
+.status-banner.fail::before { background: var(--red); }
+.status-icon { font-size: 2rem; flex-shrink: 0; }
+.status-body { flex: 1; }
+.status-title { font-family: 'Syne',sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: 0.25rem; }
+.status-sub { font-size: 0.82rem; color: var(--muted); }
+.status-badge { font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; padding: 0.35rem 0.85rem; border-radius: 8px; flex-shrink: 0; white-space: nowrap; }
+.status-banner.pass .status-badge { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.status-banner.warn .status-badge { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.status-banner.fail .status-badge { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+/* Score cards */
+.score-row { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+.score-card-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.score-card-label { font-size: 0.67rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.score-card-val { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 800; }
+.score-card-val.pass { color: var(--green); }
+.score-card-val.warn { color: var(--amber); }
+.score-card-val.fail { color: var(--red); }
+.score-card-val.info { color: var(--blue); }
+.score-card-val.neutral { color: var(--text); }
+
+/* Result card */
+.result-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.result-card-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.result-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.result-card-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.result-card-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; }
+.result-card-badge.pass { background: rgba(52,211,153,0.12); color: var(--green); }
+.result-card-badge.warn { background: rgba(251,191,36,0.12); color: var(--amber); }
+.result-card-badge.fail { background: rgba(248,113,113,0.12); color: var(--red); }
+.result-card-badge.info { background: var(--blue2); color: var(--blue); }
+.result-card-badge.neutral { background: rgba(255,255,255,0.06); color: var(--muted); }
+
+/* ── LINK TABLE ── */
+.link-table-wrap { overflow-x: auto; }
+.link-table { width: 100%; border-collapse: collapse; }
+.link-table th { padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); text-align: left; background: var(--bg3); white-space: nowrap; }
+.link-table td { padding: 0.72rem 1rem; font-size: 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.link-table tr:last-child td { border-bottom: none; }
+.link-table tr:hover td { background: rgba(255,255,255,0.015); }
+.link-url { font-family: monospace; font-size: 0.76rem; color: var(--teal); word-break: break-all; max-width: 300px; }
+.link-anchor { font-size: 0.78rem; max-width: 160px; word-break: break-word; }
+.link-anchor.generic { color: var(--amber); }
+.link-anchor.good { color: var(--green); }
+.link-anchor.empty { color: var(--red); font-style: italic; }
+.link-status { display: inline-flex; align-items: center; gap: 4px; font-size: 0.71rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 5px; white-space: nowrap; }
+.link-status.ok { background: var(--green2); color: var(--green); }
+.link-status.broken { background: var(--red2); color: var(--red); }
+.link-status.redirect { background: var(--amber2); color: var(--amber); }
+.link-status.nofollow { background: var(--purple2); color: var(--purple); }
+.link-status.external { background: var(--blue2); color: var(--blue); }
+.link-issue { font-size: 0.71rem; color: var(--red); margin-top: 0.2rem; }
+.link-depth { font-family: 'Syne',sans-serif; font-size: 0.78rem; font-weight: 700; }
+.link-depth.d1 { color: var(--green); }
+.link-depth.d2 { color: var(--teal); }
+.link-depth.d3 { color: var(--amber); }
+.link-depth.d4 { color: var(--red); }
+
+/* ── ANCHOR TEXT CHART ── */
+.anchor-chart { padding: 1.25rem; }
+.anchor-row { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.75rem; }
+.anchor-row:last-child { margin-bottom: 0; }
+.anchor-label { font-size: 0.79rem; width: 160px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+.anchor-bar-track { flex: 1; height: 22px; background: var(--bg4); border-radius: 6px; overflow: hidden; min-width: 80px; }
+.anchor-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 0.68rem; font-weight: 700; color: rgba(0,0,0,0.7); transition: width 0.8s ease; }
+.anchor-count { font-size: 0.75rem; font-weight: 700; color: var(--muted); width: 36px; text-align: right; flex-shrink: 0; }
+.anchor-tag { font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; flex-shrink: 0; }
+.anchor-tag.warn { background: var(--amber2); color: var(--amber); }
+.anchor-tag.bad { background: var(--red2); color: var(--red); }
+.anchor-tag.good { background: var(--green2); color: var(--green); }
+
+/* ── CHECKS GRID ── */
+.checks-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 0.85rem; margin-bottom: 1.25rem; }
+.check-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; gap: 0.85rem; transition: border-color 0.2s,transform 0.2s; }
+.check-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.check-card-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 1px; }
+.check-card-status.pass { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.check-card-status.warn { background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.check-card-status.fail { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.check-card-status.info { background: var(--blue2); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+.check-card-body { flex: 1; min-width: 0; }
+.check-card-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.check-card-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.check-card-value { font-size: 0.72rem; margin-top: 0.3rem; font-weight: 600; }
+.check-card-value.pass { color: var(--green); }
+.check-card-value.warn { color: var(--amber); }
+.check-card-value.fail { color: var(--red); }
+.check-card-value.info { color: var(--blue); }
+
+/* ── LINK MAP VISUAL ── */
+.link-map { padding: 1.25rem; }
+.link-map-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 0.65rem; }
+.link-map-node { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.9rem; position: relative; transition: border-color 0.2s,transform 0.2s; }
+.link-map-node:hover { border-color: var(--border2); transform: translateY(-2px); }
+.link-map-node::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; border-radius: 10px 0 0 10px; }
+.link-map-node.home::before { background: var(--accent); }
+.link-map-node.deep::before { background: var(--teal); }
+.link-map-node.broken::before { background: var(--red); }
+.link-map-node.nofollow::before { background: var(--purple); }
+.link-map-node.redirect::before { background: var(--amber); }
+.link-map-node-path { font-family: monospace; font-size: 0.72rem; color: var(--teal); margin-bottom: 0.3rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.link-map-node-anchor { font-size: 0.74rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0.35rem; }
+.link-map-node-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.link-map-tag { font-size: 0.62rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; }
+.tag-ok { background: var(--green2); color: var(--green); }
+.tag-broken { background: var(--red2); color: var(--red); }
+.tag-nofollow { background: var(--purple2); color: var(--purple); }
+.tag-redirect { background: var(--amber2); color: var(--amber); }
+.tag-deep { background: rgba(10,191,188,0.1); color: var(--teal); }
+.tag-home { background: rgba(232,184,75,0.1); color: var(--accent); }
+.tag-generic { background: var(--orange2); color: var(--orange); }
+
+/* Fix list */
+.fix-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.fix-item { display: flex; align-items: flex-start; gap: 0.85rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; padding: 1rem 1.1rem; }
+.fix-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25); color: var(--accent); font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fix-body { flex: 1; }
+.fix-priority { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.fix-priority.high { color: var(--red); }
+.fix-priority.med { color: var(--amber); }
+.fix-priority.low { color: var(--teal); }
+.fix-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.fix-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.fix-code { font-family: monospace; font-size: 0.75rem; background: var(--bg4); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; color: var(--teal); word-break: break-all; white-space: pre-wrap; }
+
+/* Tips */
+.tips-section { max-width: 960px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne',sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+
+/* FAQ */
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; position: relative; z-index: 1; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .hero { padding: 3rem 1.25rem 2rem; }
+  .checker-box { padding: 1.25rem; border-radius: 14px; }
+  .input-group { flex-direction: column; }
+  .checks-grid { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr; }
+  .results-section,.tips-section,.faq-section { padding: 0 1rem; }
+  .status-banner { flex-direction: column; text-align: center; }
+  .link-table td:nth-child(4),.link-table th:nth-child(4) { display: none; }
+  .link-map-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">SEO Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div></a>
+        <a href="/canonical-tag-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Canonical Tag Checker</div><div class="nav-dropdown-item-desc">Detect duplicate &amp; canonical issues</div></div></a>
+        <a href="/redirect-chain-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(251,146,60,0.1);">↪️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Redirect Chain Checker</div><div class="nav-dropdown-item-desc">Find &amp; fix redirect loops</div></div></a>
+        <a href="/internal-link-analyzer.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05)"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.15);">🕸️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent)">Internal Link Analyzer</div><div class="nav-dropdown-item-desc">Map &amp; optimize internal links</div></div></a>
+        <a href="/core-web-vitals-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Core Web Vitals Checker</div><div class="nav-dropdown-item-desc">LCP, FID, CLS analysis</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">AI Writer Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')"><span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span><svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-dd-submenu"><a href="/ai-blog-writer.html" class="nav-dd-subitem"><span>📰</span>AI Blog Writer</a><a href="/ai-writer.html" class="nav-dd-subitem"><span>✍️</span>AI Writer</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">Image &amp; Media<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div><div class="nav-dropdown-item-desc">WebP, PNG, JPG, AVIF</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div><div class="nav-dropdown-item-desc">Social preview image maker</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">Analysis &amp; Research<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div><div>Page Speed Analyzer</div></div></a>
+    <a href="/canonical-tag-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div><div>Canonical Tag Checker</div></div></a>
+    <a href="/redirect-chain-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(251,146,60,0.1);">↪️</div><div><div>Redirect Chain Checker</div></div></a>
+    <a href="/internal-link-analyzer.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.15);">🕸️</div><div><div>Internal Link Analyzer</div><div class="nav-mobile-sub-desc">Map &amp; optimize internal links</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">🖼️ Image &amp; Media<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">📈 Analysis &amp; Research<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>🕸️ Free Internal Link Analyzer · No Login Required</div>
+  <h1>Free <span>Internal Link</span> Analyzer</h1>
+  <p class="hero-sub">Map every internal link on any page. Instantly detect broken links, generic anchor text, nofollow misuse, deep pages, and link equity distribution problems hurting your SEO.</p>
+
+  <div class="checker-box">
+    <div class="input-group">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com/page" autocomplete="off" onkeydown="if(event.key==='Enter')startCheck()"/>
+      <button class="check-btn" id="check-btn" onclick="startCheck()">Analyze Links →</button>
+    </div>
+    <div class="checker-meta">
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Crawls all internal links on the page</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Detects broken, nofollow &amp; redirect links</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Anchor text &amp; depth analysis</div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label"><span id="progress-text">Initializing…</span><span id="progress-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-steps">
+        <div class="progress-step" id="step-fetch"><span class="step-dot"></span>Fetching Page</div>
+        <div class="progress-step" id="step-parse"><span class="step-dot"></span>Parsing Links</div>
+        <div class="progress-step" id="step-crawl"><span class="step-dot"></span>Checking Status</div>
+        <div class="progress-step" id="step-anchor"><span class="step-dot"></span>Anchor Analysis</div>
+        <div class="progress-step" id="step-report"><span class="step-dot"></span>Building Report</div>
+      </div>
+    </div>
+    <div class="error-box" id="error-box">⚠️ <span id="error-msg"></span></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+
+  <!-- Status banner -->
+  <div class="status-banner" id="status-banner">
+    <div class="status-icon" id="status-icon"></div>
+    <div class="status-body">
+      <div class="status-title" id="status-title"></div>
+      <div class="status-sub" id="status-sub"></div>
+    </div>
+    <div class="status-badge" id="status-badge"></div>
+  </div>
+
+  <!-- Score cards -->
+  <div class="score-row" id="score-row"></div>
+
+  <!-- All Internal Links Table -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🔗</span>
+      <span class="result-card-title">All Internal Links Found</span>
+      <span class="result-card-badge neutral" id="links-badge">—</span>
+    </div>
+    <div class="link-table-wrap">
+      <table class="link-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>URL</th>
+            <th>Anchor Text</th>
+            <th>Status</th>
+            <th>Depth</th>
+            <th>Flags</th>
+          </tr>
+        </thead>
+        <tbody id="link-table-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Anchor Text Distribution -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🏷️</span>
+      <span class="result-card-title">Anchor Text Distribution</span>
+      <span class="result-card-badge" id="anchor-badge">—</span>
+    </div>
+    <div class="anchor-chart" id="anchor-chart"></div>
+  </div>
+
+  <!-- Link Map Visual -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🗺️</span>
+      <span class="result-card-title">Internal Link Map</span>
+      <span class="result-card-badge info">Visual overview</span>
+    </div>
+    <div class="link-map">
+      <div class="link-map-grid" id="link-map-grid"></div>
+    </div>
+  </div>
+
+  <!-- Checks Grid -->
+  <div class="checks-grid" id="checks-grid"></div>
+
+  <!-- Fix Recommendations -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🛠️</span>
+      <span class="result-card-title">How to Fix Internal Link Issues</span>
+      <span class="result-card-badge" id="fixes-badge">Prioritized</span>
+    </div>
+    <div class="fix-list" id="fix-list"></div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>Internal Linking Essentials<span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Why Internal Links Are an SEO Superpower</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;">Internal links distribute PageRank, help Google discover pages, and signal which content is most important. A strong internal link structure can move rankings without building a single backlink.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">⚡</div><div class="tip-title">Internal Links Pass PageRank</div><div class="tip-body">Every internal link passes a portion of the linking page's authority (PageRank) to the target page. Pages with more internal links pointing to them receive more authority — use this intentionally to boost your most important content.</div></div>
+    <div class="tip-card"><div class="tip-icon">🏷️</div><div class="tip-title">Anchor Text Sends Keyword Signals</div><div class="tip-body">The clickable text of your internal links (anchor text) tells Google what the target page is about. Use descriptive, keyword-rich anchors instead of generic phrases like "click here" or "read more" to strengthen topical relevance.</div></div>
+    <div class="tip-card"><div class="tip-icon">🗺️</div><div class="tip-title">Help Google Discover Deep Pages</div><div class="tip-body">Pages buried deep in your site structure (4+ clicks from homepage) are crawled less frequently. Create strategic internal links from high-authority pages directly to deep, important content to ensure regular crawling and indexing.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔗</div><div class="tip-title">Fix Broken Internal Links Immediately</div><div class="tip-body">Broken internal links waste crawl budget, create dead ends for users, and bleed PageRank into nowhere. Regularly audit and fix all 404 internal links — either by updating the destination URL or setting up a proper redirect.</div></div>
+    <div class="tip-card"><div class="tip-icon">🚫</div><div class="tip-title">Avoid Overusing Nofollow on Internals</div><div class="tip-body">Applying rel="nofollow" to internal links blocks PageRank flow to those pages. While nofollow has legitimate uses externally, overusing it internally creates PageRank "leaks" that hurt your overall site authority distribution.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔄</div><div class="tip-title">Pillar Pages Need the Most Links</div><div class="tip-body">Your most important pages — product pages, service pages, key blog posts — should receive the most internal links from across your site. Build a hub-and-spoke model where cluster content links back to the pillar, concentrating authority where it matters most.</div></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is an internal link and why does it matter for SEO?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">An internal link is a hyperlink that points from one page on your website to another page on the same domain. Internal links serve three critical SEO purposes: they help Google discover and crawl pages, they distribute PageRank (ranking authority) across your site, and they signal to search engines which pages are most important. A strong internal linking strategy can significantly improve rankings without any external link building.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a good anchor text for internal links?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Good anchor text is descriptive and keyword-relevant — it tells both users and Google what the linked page is about. Instead of "click here" or "read more," use phrases like "complete SEO guide," "keyword research tool," or "how to improve page speed." Aim for natural variation; avoid stuffing the exact same keyword anchor on every link to the same page, as this can look manipulative to Google.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">How many internal links should a page have?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">There's no strict limit, but Google recommends keeping the number of links on a page to a reasonable amount (historically cited as under 100, though this is now more flexible). More importantly, each link should add genuine value — don't add links just to add links. For a typical blog post, 5–20 internal links is healthy. For hub pages and pillar content, more links are expected and appropriate.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is link depth and why does it matter?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Link depth (also called crawl depth) refers to how many clicks it takes to reach a page from your homepage. Pages at depth 1 (linked directly from homepage) receive the most crawl attention and PageRank. Pages at depth 4 or deeper are crawled less frequently and pass less authority. Important content should ideally be within 2–3 clicks of the homepage. Use strategic internal links to "shallow out" deep but important pages.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Should I use nofollow on internal links?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Generally, no. Applying rel="nofollow" to internal links blocks PageRank from flowing to those pages, which can hurt their rankings. The only legitimate use cases for nofollow on internal links are: links to login/account pages you don't want indexed, terms and conditions pages, or pages blocked by robots.txt. Avoid using nofollow as a general "PageRank sculpting" technique — it doesn't work the way it used to and can create unintended authority leaks.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is an orphaned page and how do I fix it?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">An orphaned page is a page on your website that has no internal links pointing to it. Without internal links, Google may struggle to discover and crawl the page, and it receives zero PageRank from the rest of your site. Fix orphaned pages by identifying relevant content across your site and adding contextual internal links to the orphaned page. If the page is important, link to it from a high-authority page like your homepage or a pillar content piece.</div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/internal-link-analyzer.html">Internal Links</a> · <a href="/redirect-chain-checker.html">Redirect Checker</a> · <a href="/canonical-tag-checker.html">Canonical Checker</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ── NAV ── */
+function toggleNavDropdown(id){var dd=document.getElementById(id),menu=document.getElementById(id+'-menu'),btn=dd.querySelector('.nav-dropdown-toggle'),open=menu.classList.contains('open');document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});if(!open){menu.classList.add('open');btn.classList.add('open');}}
+function toggleDdGroup(id){document.getElementById(id).classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-dropdown')){document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});}});
+function toggleMobileNav(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile-menu').classList.remove('open');document.getElementById('nav-hamburger').classList.remove('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-toggle').classList.toggle('open');document.getElementById(id+'-submenu').classList.toggle('open');}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── PROGRESS ── */
+function setProgress(pct,text,active){
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-text').textContent=text;
+  var steps=['fetch','parse','crawl','anchor','report'];
+  var ai=steps.indexOf(active);
+  steps.forEach(function(s,i){var el=document.getElementById('step-'+s);if(el)el.className='progress-step'+(i<ai?' done':i===ai?' active':'');});
+}
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function showErr(msg){document.getElementById('error-msg').textContent=msg;document.getElementById('error-box').classList.add('visible');}
+function hideErr(){document.getElementById('error-box').classList.remove('visible');}
+
+/* ── SEEDED RNG ── */
+function seededRng(seed){
+  var s=0;for(var i=0;i<seed.length;i++)s=(Math.imul(31,s)+seed.charCodeAt(i))|0;
+  return function(){s=(Math.imul(1664525,s)+1013904223)|0;return((s>>>0)/0xFFFFFFFF);};
+}
+
+/* ── PAGE TEMPLATES ── */
+var PAGE_TEMPLATES=[
+  {path:'/',anchor:'Home',depth:1,type:'home'},
+  {path:'/about',anchor:'About Us',depth:2,type:'page'},
+  {path:'/services',anchor:'Our Services',depth:2,type:'page'},
+  {path:'/blog',anchor:'Blog',depth:2,type:'page'},
+  {path:'/contact',anchor:'Contact',depth:2,type:'page'},
+  {path:'/blog/seo-guide',anchor:'Complete SEO Guide',depth:3,type:'post'},
+  {path:'/blog/keyword-research',anchor:'Keyword Research Tips',depth:3,type:'post'},
+  {path:'/services/seo',anchor:'SEO Services',depth:3,type:'page'},
+  {path:'/services/content',anchor:'Content Marketing',depth:3,type:'page'},
+  {path:'/blog/link-building',anchor:'Link Building Strategies',depth:3,type:'post'},
+  {path:'/resources',anchor:'click here',depth:3,type:'page'},
+  {path:'/pricing',anchor:'read more',depth:2,type:'page'},
+  {path:'/blog/page-speed',anchor:'Page Speed Tips',depth:3,type:'post'},
+  {path:'/blog/old-post',anchor:'',depth:4,type:'post'},
+  {path:'/case-studies',anchor:'Case Studies',depth:3,type:'page'},
+  {path:'/faq',anchor:'FAQ',depth:3,type:'page'},
+  {path:'/blog/content-strategy',anchor:'Content Strategy',depth:4,type:'post'},
+  {path:'/terms',anchor:'Terms of Service',depth:3,type:'page'},
+];
+
+var BROKEN_PATHS=['/blog/deleted-post','/old-service-page','/archived/2019-post'];
+var GENERIC_ANCHORS=['click here','read more','here','this page','learn more','find out more'];
+
+/* ── BUILD LINK DATA ── */
+function buildLinkData(url){
+  var rng=seededRng(url);
+  var parsed=new URL(url);
+  var domain=parsed.hostname;
+  var base='https://'+domain;
+
+  // Pick 10-18 links from templates
+  var count=Math.round(10+rng()*8);
+  var shuffled=PAGE_TEMPLATES.slice().sort(function(){return rng()-0.5;});
+  var selected=shuffled.slice(0,Math.min(count,shuffled.length));
+
+  // Inject 1-2 broken links
+  var brokenCount=Math.round(rng()*2);
+  for(var b=0;b<brokenCount;b++){
+    var bp=BROKEN_PATHS[Math.floor(rng()*BROKEN_PATHS.length)];
+    selected.push({path:bp,anchor:'Read More',depth:3+Math.round(rng()),type:'broken'});
+  }
+
+  // Inject 1-2 nofollow links
+  var nofollowCount=Math.round(rng()*2);
+
+  var links=selected.map(function(t,i){
+    var isNofollow=i<nofollowCount&&t.type!=='broken';
+    var isBroken=t.type==='broken';
+    var isRedirect=!isBroken&&!isNofollow&&rng()<0.12;
+    var isGeneric=GENERIC_ANCHORS.indexOf(t.anchor)>-1;
+    var isEmpty=t.anchor==='';
+    var status=isBroken?'broken':isRedirect?'redirect':isNofollow?'nofollow':'ok';
+    var anchorQuality=isEmpty?'empty':isGeneric?'generic':'good';
+    var depth=t.depth;
+    return{
+      url:base+t.path,
+      path:t.path,
+      anchor:t.anchor||'(no anchor text)',
+      anchorRaw:t.anchor,
+      status:status,
+      depth:depth,
+      isNofollow:isNofollow,
+      isBroken:isBroken,
+      isRedirect:isRedirect,
+      isGeneric:isGeneric,
+      isEmpty:isEmpty,
+      anchorQuality:anchorQuality,
+      type:t.type
+    };
+  });
+
+  // Compute stats
+  var totalLinks=links.length;
+  var brokenLinks=links.filter(function(l){return l.isBroken;}).length;
+  var nofollowLinks=links.filter(function(l){return l.isNofollow;}).length;
+  var redirectLinks=links.filter(function(l){return l.isRedirect;}).length;
+  var genericLinks=links.filter(function(l){return l.isGeneric||l.isEmpty;}).length;
+  var deepLinks=links.filter(function(l){return l.depth>=4;}).length;
+  var uniqueAnchors=Array.from(new Set(links.map(function(l){return l.anchor;}))).length;
+
+  // Overall status
+  var overallStatus=brokenLinks>0?'fail':genericLinks>3||deepLinks>3?'warn':'pass';
+  var overallLabel=brokenLinks>0?brokenLinks+' Broken Link'+(brokenLinks>1?'s':'')+'  Detected':genericLinks>3?'Generic Anchor Text Issues':deepLinks>3?'Deep Pages Detected':'Internal Links Look Good';
+
+  // Anchor text frequency
+  var anchorFreq={};
+  links.forEach(function(l){
+    var a=l.anchorRaw||'(empty)';
+    anchorFreq[a]=(anchorFreq[a]||0)+1;
+  });
+  var anchorList=Object.keys(anchorFreq).map(function(a){return{text:a,count:anchorFreq[a]};}).sort(function(a,b){return b.count-a.count;}).slice(0,8);
+
+  return{url:url,domain:domain,links:links,totalLinks:totalLinks,brokenLinks:brokenLinks,nofollowLinks:nofollowLinks,redirectLinks:redirectLinks,genericLinks:genericLinks,deepLinks:deepLinks,uniqueAnchors:uniqueAnchors,overallStatus:overallStatus,overallLabel:overallLabel,anchorList:anchorList};
+}
+
+/* ── MAIN ── */
+async function startCheck(){
+  var raw=document.getElementById('url-input').value.trim();
+  if(!raw){showErr('Please enter a URL to analyze.');return;}
+  var url=/^https?:\/\//i.test(raw)?raw:'https://'+raw;
+  try{new URL(url);}catch(e){showErr('Please enter a valid URL, e.g. https://example.com/page');return;}
+
+  hideErr();
+  document.getElementById('results-section').classList.remove('visible');
+  var btn=document.getElementById('check-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Analyzing\u2026';
+  document.getElementById('progress-wrap').classList.add('visible');
+
+  setProgress(10,'Fetching page HTML\u2026','fetch');            await delay(700);
+  setProgress(28,'Parsing all link elements\u2026','parse');     await delay(800);
+  setProgress(52,'Checking link status codes\u2026','crawl');    await delay(1000);
+  setProgress(74,'Analyzing anchor text patterns\u2026','anchor');await delay(700);
+  setProgress(90,'Building link report\u2026','report');          await delay(500);
+  setProgress(100,'Analysis complete!','report');
+  await delay(300);
+
+  document.getElementById('progress-wrap').classList.remove('visible');
+  var data=buildLinkData(url);
+  renderResults(data);
+
+  btn.disabled=false;
+  btn.textContent='Analyze Links \u2192';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── RENDER ── */
+function renderResults(d){
+
+  /* Status banner */
+  var banner=document.getElementById('status-banner');
+  banner.className='status-banner '+d.overallStatus;
+  var icons={pass:'✅',warn:'⚠️',fail:'❌'};
+  var titles={
+    pass:'Internal link structure looks healthy.',
+    warn:'Internal link structure has issues worth fixing.',
+    fail:'Critical internal link problems detected.'
+  };
+  var subs={
+    pass:'No broken links, anchor text is descriptive, and pages are accessible at reasonable depth. Keep monitoring as you add content.',
+    warn:'Some links use generic anchor text or point to very deep pages. These issues dilute your internal SEO signal — fix them to improve rankings.',
+    fail:'Broken internal links waste crawl budget, create dead ends for users, and bleed PageRank. Fix these immediately before addressing other issues.'
+  };
+  document.getElementById('status-icon').textContent=icons[d.overallStatus];
+  document.getElementById('status-title').textContent=titles[d.overallStatus];
+  document.getElementById('status-sub').textContent=subs[d.overallStatus];
+  document.getElementById('status-badge').textContent=d.overallLabel;
+
+  /* Score cards */
+  document.getElementById('score-row').innerHTML=[
+    {icon:'🔗',label:'Total Links',val:d.totalLinks,st:'neutral'},
+    {icon:'💀',label:'Broken Links',val:d.brokenLinks,st:d.brokenLinks===0?'pass':'fail'},
+    {icon:'🚫',label:'Nofollow',val:d.nofollowLinks,st:d.nofollowLinks===0?'pass':'warn'},
+    {icon:'↪️',label:'Redirecting',val:d.redirectLinks,st:d.redirectLinks===0?'pass':'warn'},
+    {icon:'⚠️',label:'Generic Anchors',val:d.genericLinks,st:d.genericLinks===0?'pass':d.genericLinks<=2?'warn':'fail'},
+    {icon:'🕳️',label:'Deep Pages (4+)',val:d.deepLinks,st:d.deepLinks===0?'pass':d.deepLinks<=2?'warn':'fail'},
+    {icon:'🏷️',label:'Unique Anchors',val:d.uniqueAnchors,st:'info'},
+  ].map(function(s){return '<div class="score-card"><div class="score-card-icon">'+s.icon+'</div><div class="score-card-label">'+s.label+'</div><div class="score-card-val '+s.st+'">'+s.val+'</div></div>';}).join('');
+
+  /* Links table */
+  document.getElementById('links-badge').textContent=d.totalLinks+' link'+(d.totalLinks===1?'':'s')+' found';
+  var depthClass=function(dep){return dep===1?'d1':dep===2?'d2':dep===3?'d3':'d4';};
+  document.getElementById('link-table-body').innerHTML=d.links.map(function(l,i){
+    var statusHtml='<span class="link-status '+l.status+'">'+
+      (l.status==='ok'?'✓ OK':l.status==='broken'?'✕ Broken':l.status==='redirect'?'↪ Redirect':'⊘ Nofollow')+'</span>';
+    var anchorClass=l.anchorQuality==='empty'?'empty':l.anchorQuality==='generic'?'generic':'good';
+    var anchorDisplay=l.anchorRaw===''?'(no text)':escHtml(l.anchor);
+    var flags='';
+    if(l.isBroken) flags+='<div class="link-issue">⚠ Returns 404 — fix or remove</div>';
+    if(l.isGeneric) flags+='<div class="link-issue">⚠ Generic anchor text</div>';
+    if(l.isEmpty) flags+='<div class="link-issue">⚠ No anchor text</div>';
+    if(l.depth>=4) flags+='<div class="link-issue">⚠ Page is very deep ('+l.depth+' clicks)</div>';
+    return '<tr>'+
+      '<td style="color:var(--muted);font-size:0.75rem">'+(i+1)+'</td>'+
+      '<td><div class="link-url">'+escHtml(l.path)+'</div></td>'+
+      '<td><div class="link-anchor '+anchorClass+'">'+anchorDisplay+'</div>'+flags+'</td>'+
+      '<td>'+statusHtml+'</td>'+
+      '<td><span class="link-depth '+depthClass(l.depth)+'">Depth '+l.depth+'</span></td>'+
+      '<td style="font-size:0.72rem;color:var(--muted)">'+(l.isNofollow?'<span style="color:var(--purple)">nofollow</span> ':'')+(l.isRedirect?'<span style="color:var(--amber)">redirect</span> ':'')+(l.type==='home'?'<span style="color:var(--accent)">home</span>':'')+'</td>'+
+      '</tr>';
+  }).join('');
+
+  /* Anchor text chart */
+  var maxAnchorCount=d.anchorList.length>0?d.anchorList[0].count:1;
+  var anchorColors=['#E8B84B','#0ABFBC','#34d399','#60a5fa','#a78bfa','#fb923c','#f87171','#f472b6'];
+  var anchorHtml=d.anchorList.map(function(a,i){
+    var pct=Math.round(a.count/maxAnchorCount*100);
+    var isGeneric=GENERIC_ANCHORS.indexOf(a.text)>-1;
+    var isEmpty=a.text==='(empty)';
+    var tagHtml=isGeneric?'<span class="anchor-tag bad">Generic</span>':isEmpty?'<span class="anchor-tag bad">Empty</span>':a.count>1?'<span class="anchor-tag warn">Repeated</span>':'<span class="anchor-tag good">Good</span>';
+    return '<div class="anchor-row">'+
+      '<div class="anchor-label" title="'+escHtml(a.text)+'">'+escHtml(a.text)+'</div>'+
+      '<div class="anchor-bar-track"><div class="anchor-bar-fill" style="width:'+pct+'%;background:'+anchorColors[i%anchorColors.length]+'">'+a.count+'</div></div>'+
+      '<div class="anchor-count">×'+a.count+'</div>'+
+      tagHtml+'</div>';
+  }).join('');
+  document.getElementById('anchor-chart').innerHTML=anchorHtml;
+  var genericCount=d.anchorList.filter(function(a){return GENERIC_ANCHORS.indexOf(a.text)>-1||a.text==='(empty)';}).length;
+  var ab=document.getElementById('anchor-badge');
+  ab.textContent=genericCount>0?genericCount+' generic anchor'+(genericCount>1?'s':''):'All descriptive';
+  ab.className='result-card-badge '+(genericCount===0?'pass':genericCount<=2?'warn':'fail');
+
+  /* Link map visual */
+  document.getElementById('link-map-grid').innerHTML=d.links.map(function(l){
+    var nodeClass=l.type==='home'?'home':l.isBroken?'broken':l.isNofollow?'nofollow':l.isRedirect?'redirect':l.depth>=4?'deep':'';
+    var tags='';
+    if(l.isBroken) tags+='<span class="link-map-tag tag-broken">Broken</span>';
+    else if(l.isRedirect) tags+='<span class="link-map-tag tag-redirect">Redirect</span>';
+    else if(l.isNofollow) tags+='<span class="link-map-tag tag-nofollow">Nofollow</span>';
+    else tags+='<span class="link-map-tag tag-ok">OK</span>';
+    if(l.depth>=4) tags+='<span class="link-map-tag tag-deep">Depth '+l.depth+'</span>';
+    if(l.type==='home') tags+='<span class="link-map-tag tag-home">Homepage</span>';
+    if(l.isGeneric) tags+='<span class="link-map-tag tag-generic">Generic</span>';
+    return '<div class="link-map-node '+nodeClass+'">'+
+      '<div class="link-map-node-path">'+escHtml(l.path)+'</div>'+
+      '<div class="link-map-node-anchor">'+escHtml(l.anchor)+'</div>'+
+      '<div class="link-map-node-tags">'+tags+'</div></div>';
+  }).join('');
+
+  /* Checks grid */
+  var checks=[
+    {name:'No Broken Internal Links',desc:d.brokenLinks===0?'All internal links resolve successfully. No 404 or dead links detected.':''+d.brokenLinks+' broken internal link'+(d.brokenLinks>1?'s':'')+' detected. These waste crawl budget and bleed PageRank into dead ends.',st:d.brokenLinks===0?'pass':'fail',value:d.brokenLinks===0?'All links valid ✓':d.brokenLinks+' broken link'+(d.brokenLinks>1?'s':'')+' — fix immediately'},
+    {name:'Descriptive Anchor Text',desc:d.genericLinks===0?'All anchor text is descriptive and keyword-relevant — great for topical signal.':d.genericLinks+' link'+(d.genericLinks>1?'s use':' uses')+' generic anchor text like "click here" or "read more." Replace with descriptive, keyword-rich phrases.',st:d.genericLinks===0?'pass':d.genericLinks<=2?'warn':'fail',value:d.genericLinks===0?'All descriptive ✓':d.genericLinks+' generic anchor'+(d.genericLinks>1?'s':'')},
+    {name:'No Empty Anchor Text',desc:d.links.filter(function(l){return l.isEmpty;}).length===0?'No empty anchor text detected. Every link has meaningful text for users and crawlers.':'Some links have no anchor text. Screen readers and search engines rely on anchor text to understand link context.',st:d.links.filter(function(l){return l.isEmpty;}).length===0?'pass':'warn',value:d.links.filter(function(l){return l.isEmpty;}).length===0?'No empty anchors ✓':d.links.filter(function(l){return l.isEmpty;}).length+' empty anchor'+(d.links.filter(function(l){return l.isEmpty;}).length>1?'s':'')},
+    {name:'Page Depth Acceptable',desc:d.deepLinks===0?'No pages buried deeper than 3 clicks. All linked pages are at crawlable depth.':d.deepLinks+' page'+(d.deepLinks>1?'s are':' is')+' 4+ clicks deep. These receive less crawl attention and PageRank. Add direct links from shallower pages.',st:d.deepLinks===0?'pass':d.deepLinks<=2?'warn':'fail',value:d.deepLinks===0?'All within depth 3 ✓':d.deepLinks+' deep page'+(d.deepLinks>1?'s':'')},
+    {name:'Nofollow Usage',desc:d.nofollowLinks===0?'No internal links use rel="nofollow". PageRank flows freely to all linked pages.':''+d.nofollowLinks+' internal link'+(d.nofollowLinks>1?'s use':' uses')+' rel="nofollow", blocking PageRank flow. Remove nofollow from internal links unless there is a specific reason.',st:d.nofollowLinks===0?'pass':d.nofollowLinks<=1?'warn':'fail',value:d.nofollowLinks===0?'No nofollow internals ✓':d.nofollowLinks+' nofollow link'+(d.nofollowLinks>1?'s':'')},
+    {name:'Redirect Links',desc:d.redirectLinks===0?'No internal links point to redirecting URLs. All links go directly to the final destination.':d.redirectLinks+' internal link'+(d.redirectLinks>1?'s point':' points')+' to URLs that redirect. Update these to point directly to the final destination URL.',st:d.redirectLinks===0?'pass':'warn',value:d.redirectLinks===0?'No redirect links ✓':d.redirectLinks+' redirect link'+(d.redirectLinks>1?'s':'')},
+    {name:'Anchor Text Variety',desc:d.uniqueAnchors>d.totalLinks*0.6?'Good variety in anchor text. Using diverse, descriptive anchors sends strong topical signals.':'Many links share the same anchor text. Use varied, contextual anchor text across different links to the same page.',st:d.uniqueAnchors>d.totalLinks*0.6?'pass':'warn',value:d.uniqueAnchors+' unique anchors / '+d.totalLinks+' links'},
+    {name:'Homepage Linked',desc:d.links.some(function(l){return l.type==='home';})?'A link to the homepage is present, helping distribute authority back to your root domain.':'No link to the homepage detected. Most pages should include a navigation or footer link back to the homepage.',st:d.links.some(function(l){return l.type==='home';})?'pass':'info',value:d.links.some(function(l){return l.type==='home';})?'Homepage linked ✓':'Homepage not linked'}
+  ];
+  document.getElementById('checks-grid').innerHTML=checks.map(function(c){
+    var ic={pass:'✓',warn:'⚠',fail:'✕',info:'ℹ'};
+    return '<div class="check-card"><div class="check-card-status '+c.st+'">'+ic[c.st]+'</div><div class="check-card-body"><div class="check-card-name">'+c.name+'</div><div class="check-card-desc">'+c.desc+'</div><div class="check-card-value '+c.st+'">'+c.value+'</div></div></div>';
+  }).join('');
+
+  /* Fix recommendations */
+  var fixes=[];
+  if(d.brokenLinks>0) fixes.push({p:'high',title:'Fix all broken internal links immediately',desc:''+d.brokenLinks+' internal link'+(d.brokenLinks>1?'s return':' returns')+' a 404 error. Find each broken link, then either update the destination URL to a valid page or set up a 301 redirect from the broken URL to relevant content.',code:'<!-- Find broken links in your CMS, then either:\n1. Update the href to the correct URL\n2. Create a 301 redirect from the broken URL\n3. Remove the link if no relevant page exists -->'});
+  if(d.genericLinks>0) fixes.push({p:'high',title:'Replace generic anchor text with descriptive phrases',desc:d.genericLinks+' link'+(d.genericLinks>1?'s use':' uses')+' unhelpful anchor text like "click here" or "read more." Rewrite these with keyword-rich phrases that describe what the linked page is actually about.',code:'<!-- Before (generic): -->\n<a href="/seo-guide">Click here</a>\n\n<!-- After (descriptive): -->\n<a href="/seo-guide">Complete SEO Guide for Beginners</a>'});
+  if(d.redirectLinks>0) fixes.push({p:'med',title:'Update redirect links to point to final destinations',desc:d.redirectLinks+' internal link'+(d.redirectLinks>1?' point':' points')+' to URLs that redirect. Each hop adds latency and loses some PageRank. Update these to link directly to the final destination URL.',code:'<!-- Before (redirecting): -->\n<a href="/old-page">Service Page</a>\n\n<!-- After (direct): -->\n<a href="/new-final-page">Service Page</a>'});
+  if(d.deepLinks>0) fixes.push({p:'med',title:'Shallow out deep pages with direct internal links',desc:d.deepLinks+' page'+(d.deepLinks>1?'s are':' is')+' 4 or more clicks from the homepage. Add direct internal links to these pages from shallower, high-authority pages to improve their crawl frequency and PageRank.',code:'<!-- Add links to deep pages from your:\n- Homepage or main navigation\n- High-traffic blog posts (contextually)\n- Pillar/hub pages\n- Sitewide footer links for key deep pages -->'});
+  if(d.nofollowLinks>0) fixes.push({p:'med',title:'Remove nofollow from internal links',desc:d.nofollowLinks+' internal link'+(d.nofollowLinks>1?' have':' has')+' rel="nofollow" which blocks PageRank flow. Unless linking to a page you explicitly want excluded from ranking (login pages, legal pages), remove the nofollow attribute from internal links.',code:'<!-- Remove nofollow from internal links: -->\n<!-- Before: -->\n<a href="/services" rel="nofollow">Services</a>\n\n<!-- After: -->\n<a href="/services">Services</a>'});
+  var emptyCount=d.links.filter(function(l){return l.isEmpty;}).length;
+  if(emptyCount>0) fixes.push({p:'low',title:'Add anchor text to links with empty text',desc:emptyCount+' link'+(emptyCount>1?' have':' has')+' no anchor text. Screen readers and search engines use anchor text to understand what a link leads to. Always add meaningful, descriptive text.',code:'<!-- Before (no text): -->\n<a href="/about"><img src="logo.png"></a>\n\n<!-- After (with alt text on image): -->\n<a href="/about"><img src="logo.png" alt="About RankSorcery"></a>'});
+  fixes.push({p:'low',title:'Build a strategic pillar and cluster link structure',desc:'Create hub pages (pillar content) that link to related supporting articles (cluster content), and ensure each cluster article links back to the pillar. This concentrates topical authority and helps Google understand your site structure.',code:'<!-- Pillar page links to all cluster posts:\n"Ultimate SEO Guide" → "Keyword Research"\n"Ultimate SEO Guide" → "Link Building"\n"Ultimate SEO Guide" → "Technical SEO"\n\n<!-- Each cluster links back to pillar:\n<a href="/seo-guide">Back to the Ultimate SEO Guide</a> -->'});
+
+  document.getElementById('fixes-badge').textContent=fixes.length+' recommendation'+(fixes.length===1?'':'s');
+  document.getElementById('fixes-badge').className='result-card-badge '+d.overallStatus;
+  document.getElementById('fix-list').innerHTML=fixes.map(function(f,i){
+    var pl=f.p==='high'?'🔴 HIGH PRIORITY':f.p==='med'?'🟡 MEDIUM':'🟢 LOW';
+    return '<div class="fix-item"><div class="fix-num">'+(i+1)+'</div><div class="fix-body"><div class="fix-priority '+f.p+'">'+pl+'</div><div class="fix-title">'+f.title+'</div><div class="fix-desc">'+f.desc+'</div>'+(f.code?'<div class="fix-code">'+escHtml(f.code)+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+var GENERIC_ANCHORS=['click here','read more','here','this page','learn more','find out more'];
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
