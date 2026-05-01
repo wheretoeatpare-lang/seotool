@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free SERP Snippet Previewer — Preview Google Search Results | RankSorcery</title>
+<meta name="description" content="Free SERP snippet previewer tool. Preview exactly how your page title, meta description and URL will appear in Google search results. Optimize for clicks before you publish.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+<link rel="canonical" href="https://ranksorcery.com/serp-snippet-previewer.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/serp-snippet-previewer.html">
+<meta property="og:title" content="Free SERP Snippet Previewer — Preview Google Search Results | RankSorcery">
+<meta property="og:description" content="See exactly how your page looks in Google search results. Preview title, meta description and URL live. Free, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free SERP Snippet Previewer | RankSorcery">
+<meta name="twitter:description" content="Preview your Google search snippet live. Optimize title tags and meta descriptions before publishing.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="theme-color" content="#E8B84B">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config', 'G-P0WX226GEE');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery SERP Snippet Previewer",
+  "url": "https://ranksorcery.com/serp-snippet-previewer.html",
+  "description": "Free SERP snippet previewer. Preview title tags and meta descriptions exactly as they appear in Google search results.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --teal: #0ABFBC; --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --red2: rgba(248,113,113,0.12);
+  --amber: #fbbf24; --amber2: rgba(251,191,36,0.12);
+  --blue: #60a5fa; --blue2: rgba(96,165,250,0.12);
+  --purple: #a78bfa; --orange: #fb923c;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.6; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+/* ── NAV ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover,.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; max-height: calc(100vh - 80px); overflow-y: auto; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s,color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-dd-group-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 9px; color: var(--text); cursor: pointer; transition: background 0.15s,color 0.15s; font-size: 0.84rem; background: none; border: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s,color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.02em; transition: background 0.2s,transform 0.15s !important; text-decoration: none; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s,opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; gap: 0; transform: translateY(-6px); opacity: 0; transition: transform 0.25s ease,opacity 0.25s ease; pointer-events: none; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) { nav { padding: 0.85rem 1.25rem; } .nav-links { display: none; } nav > .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } }
+@media (min-width: 901px) { .nav-mobile-menu { display: none !important; } .nav-hamburger { display: none !important; } }
+
+/* ── TRUST BAR ── */
+.trust-bar { background: linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom: 1px solid var(--border); padding: 10px 5vw; display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne',sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero { padding: 3.5rem 2rem 2rem; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+.hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center,rgba(232,184,75,0.08) 0%,transparent 65%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3); color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 1.25rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 { font-family: 'Syne',sans-serif; font-size: clamp(2rem,4.5vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.85rem; }
+.hero h1 span { background: linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.75; }
+
+/* ── MAIN TOOL LAYOUT ── */
+.tool-wrap { max-width: 1100px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 860px) { .tool-grid { grid-template-columns: 1fr; } }
+
+/* ── EDITOR PANEL ── */
+.editor-panel { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 1.75rem; position: relative; }
+.editor-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--teal)); border-radius: 20px 20px 0 0; }
+.panel-title { font-family: 'Syne',sans-serif; font-size: 0.95rem; font-weight: 800; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+.panel-title-icon { font-size: 1rem; }
+
+.field-group { margin-bottom: 1.25rem; }
+.field-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem; }
+.field-label-text { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.field-counter { font-size: 0.72rem; font-weight: 700; font-family: 'Syne',sans-serif; padding: 0.15rem 0.5rem; border-radius: 5px; transition: background 0.2s,color 0.2s; }
+.field-counter.good { background: var(--green2); color: var(--green); }
+.field-counter.warn { background: var(--amber2); color: var(--amber); }
+.field-counter.over { background: var(--red2); color: var(--red); }
+
+.field-input { width: 100%; background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 0.75rem 1rem; color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s,box-shadow 0.2s; resize: none; }
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.12); }
+.field-input::placeholder { color: var(--muted2); }
+.field-input.good { border-color: rgba(52,211,153,0.4); }
+.field-input.warn { border-color: rgba(251,191,36,0.4); }
+.field-input.over { border-color: rgba(248,113,113,0.5); }
+
+.field-hint { font-size: 0.72rem; color: var(--muted2); margin-top: 0.4rem; }
+
+/* Progress bar under each field */
+.field-progress { height: 3px; background: var(--bg4); border-radius: 3px; margin-top: 0.5rem; overflow: hidden; }
+.field-progress-fill { height: 100%; border-radius: 3px; transition: width 0.2s ease,background 0.2s; }
+
+/* Device toggle */
+.device-toggle { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 4px; width: fit-content; }
+.device-btn { display: flex; align-items: center; gap: 6px; padding: 0.45rem 1rem; border-radius: 7px; font-size: 0.8rem; font-weight: 700; color: var(--muted); cursor: pointer; transition: all 0.2s; border: none; background: none; font-family: 'DM Sans',sans-serif; }
+.device-btn.active { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+.device-btn:hover:not(.active) { color: var(--text); }
+
+/* Schema markup toggle */
+.schema-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 1.25rem; cursor: pointer; user-select: none; transition: border-color 0.2s; }
+.schema-toggle-row:hover { border-color: var(--border2); }
+.schema-toggle-label { font-size: 0.82rem; font-weight: 600; }
+.schema-toggle-sub { font-size: 0.71rem; color: var(--muted); }
+.toggle-switch { width: 40px; height: 22px; background: var(--bg4); border-radius: 999px; position: relative; transition: background 0.2s; flex-shrink: 0; border: 1px solid var(--border2); }
+.toggle-switch.on { background: var(--teal); border-color: var(--teal); }
+.toggle-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.toggle-switch.on::after { transform: translateX(18px); }
+
+/* ── PREVIEW PANEL ── */
+.preview-panel { position: sticky; top: 84px; }
+.preview-panel-inner { background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; overflow: hidden; }
+.preview-panel-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.preview-panel-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.preview-mode-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; background: var(--blue2); color: var(--blue); }
+
+/* ── GOOGLE SERP MOCK ── */
+.serp-container { padding: 1.25rem; }
+
+/* Google search bar mock */
+.google-search-bar { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid #dfe1e5; border-radius: 24px; padding: 8px 16px; margin-bottom: 16px; box-shadow: 0 1px 6px rgba(32,33,36,0.12); }
+.google-logo { font-size: 1.1rem; font-weight: 900; letter-spacing: -1px; flex-shrink: 0; }
+.google-logo .g-blue { color: #4285F4; }
+.google-logo .g-red { color: #EA4335; }
+.google-logo .g-yellow { color: #FBBC05; }
+.google-logo .g-green { color: #34A853; }
+.google-search-text { font-family: arial,sans-serif; font-size: 0.85rem; color: #202124; flex: 1; }
+.google-search-icon { color: #4285F4; font-size: 0.9rem; }
+
+/* Result count bar */
+.serp-result-count { font-family: arial,sans-serif; font-size: 0.75rem; color: #70757a; margin-bottom: 12px; }
+
+/* ── DESKTOP SNIPPET ── */
+.serp-result { background: transparent; margin-bottom: 6px; }
+.serp-breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+.serp-favicon { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.serp-domain { font-family: arial,sans-serif; font-size: 0.82rem; color: #202124; }
+.serp-path { font-family: arial,sans-serif; font-size: 0.82rem; color: #4d5156; }
+.serp-menu-dots { font-size: 1rem; color: #70757a; margin-left: auto; cursor: pointer; }
+.serp-title { font-family: arial,sans-serif; font-size: 1.15rem; color: #1a0dab; text-decoration: none; cursor: pointer; line-height: 1.35; margin-bottom: 4px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; transition: color 0.15s; }
+.serp-title:hover { text-decoration: underline; color: #1a0dab; }
+.serp-title.truncated { color: #1a0dab; }
+.serp-desc { font-family: arial,sans-serif; font-size: 0.84rem; color: #4d5156; line-height: 1.55; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.serp-date { font-family: arial,sans-serif; font-size: 0.84rem; color: #70757a; }
+
+/* Rich result badge */
+.rich-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(66,133,244,0.08); border: 1px solid rgba(66,133,244,0.2); border-radius: 4px; padding: 2px 7px; font-family: arial,sans-serif; font-size: 0.72rem; color: #1a73e8; margin-bottom: 4px; }
+.stars-row { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+.stars { color: #fbbc04; font-size: 0.78rem; letter-spacing: -1px; }
+.stars-text { font-family: arial,sans-serif; font-size: 0.75rem; color: #70757a; }
+
+/* ── MOBILE SNIPPET ── */
+.serp-mobile-wrap { font-family: arial,sans-serif; }
+.serp-mobile-bar { background: #f1f3f4; border-radius: 22px; padding: 9px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.serp-mobile-bar-text { font-size: 0.85rem; color: #202124; flex: 1; }
+.serp-mobile-result { background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); padding: 14px; }
+.serp-mobile-breadcrumb { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.serp-mobile-title { font-size: 1rem; color: #1a0dab; line-height: 1.35; margin-bottom: 5px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.serp-mobile-desc { font-size: 0.82rem; color: #4d5156; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+
+/* Pixel truncation indicator */
+.truncation-indicator { display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 0.75rem; font-size: 0.76rem; color: var(--red); }
+.truncation-indicator.visible { display: flex; align-items: center; gap: 0.5rem; }
+
+/* ── SCORE PANEL ── */
+.score-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-top: 1rem; }
+.score-panel-title { font-family: 'Syne',sans-serif; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; }
+.score-metrics { display: flex; flex-direction: column; gap: 0.65rem; }
+.score-metric-row { display: flex; align-items: center; gap: 0.75rem; }
+.score-metric-label { font-size: 0.76rem; font-weight: 600; color: var(--muted); min-width: 130px; flex-shrink: 0; }
+.score-metric-bar { flex: 1; height: 8px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+.score-metric-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease,background 0.3s; }
+.score-metric-val { font-size: 0.72rem; font-weight: 700; min-width: 40px; text-align: right; flex-shrink: 0; }
+.score-metric-val.good { color: var(--green); }
+.score-metric-val.warn { color: var(--amber); }
+.score-metric-val.over { color: var(--red); }
+
+/* ── TIPS PANEL (below editor) ── */
+.tips-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 1.25rem; margin-top: 1rem; }
+.tips-panel-title { font-family: 'Syne',sans-serif; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.85rem; }
+.tip-row { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+.tip-row:last-child { border-bottom: none; padding-bottom: 0; }
+.tip-row-icon { font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+.tip-row-body { flex: 1; }
+.tip-row-title { font-size: 0.78rem; font-weight: 700; margin-bottom: 0.15rem; }
+.tip-row-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.5; }
+
+/* ── CHECKS SECTION ── */
+.checks-section { margin-top: 1.5rem; }
+.checks-section-title { font-family: 'Syne',sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem; }
+.checks-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 0.85rem; }
+.check-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.1rem 1.25rem; display: flex; align-items: flex-start; gap: 0.85rem; transition: border-color 0.2s,transform 0.2s; }
+.check-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.check-card-status { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; margin-top: 1px; }
+.check-card-status.pass { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.check-card-status.warn { background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.check-card-status.fail { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.check-card-status.info { background: var(--blue2); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+.check-card-body { flex: 1; }
+.check-card-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.check-card-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.check-card-value { font-size: 0.72rem; margin-top: 0.3rem; font-weight: 600; }
+.check-card-value.pass { color: var(--green); }
+.check-card-value.warn { color: var(--amber); }
+.check-card-value.fail { color: var(--red); }
+.check-card-value.info { color: var(--blue); }
+
+/* ── TIPS / FAQ sections ── */
+.tips-section { max-width: 1100px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne',sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; position: relative; z-index: 1; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .hero { padding: 3rem 1.25rem 1.5rem; }
+  .tool-wrap { padding: 0 1rem; }
+  .tips-section,.faq-section { padding: 0 1rem; }
+  .checks-grid { grid-template-columns: 1fr; }
+  .preview-panel { position: static; }
+  .score-metric-label { min-width: 100px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">SEO Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div></a>
+        <a href="/canonical-tag-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Canonical Tag Checker</div><div class="nav-dropdown-item-desc">Detect duplicate &amp; canonical issues</div></div></a>
+        <a href="/redirect-chain-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(251,146,60,0.1);">↪️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Redirect Chain Checker</div><div class="nav-dropdown-item-desc">Find &amp; fix redirect loops</div></div></a>
+        <a href="/internal-link-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🕸️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Internal Link Analyzer</div><div class="nav-dropdown-item-desc">Map &amp; optimize internal links</div></div></a>
+        <a href="/serp-snippet-previewer.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05)"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.15);">🔎</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent)">SERP Snippet Previewer</div><div class="nav-dropdown-item-desc">Preview Google search results</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">AI Writer Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')"><span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span><svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-dd-submenu"><a href="/ai-blog-writer.html" class="nav-dd-subitem"><span>📰</span>AI Blog Writer</a><a href="/ai-writer.html" class="nav-dd-subitem"><span>✍️</span>AI Writer</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">Image &amp; Media<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">Analysis &amp; Research<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div><div>Page Speed Analyzer</div></div></a>
+    <a href="/internal-link-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">🕸️</div><div><div>Internal Link Analyzer</div></div></a>
+    <a href="/serp-snippet-previewer.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.15);">🔎</div><div><div>SERP Snippet Previewer</div><div class="nav-mobile-sub-desc">Preview Google search results</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">🖼️ Image &amp; Media<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">📈 Analysis &amp; Research<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>Updates live as you type</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>🔎 Free SERP Snippet Previewer · Live Preview</div>
+  <h1>Free <span>SERP Snippet</span> Previewer</h1>
+  <p class="hero-sub">See exactly how your page title, meta description and URL will appear in Google search results — live as you type. Optimize for clicks before you ever publish.</p>
+</section>
+
+<!-- MAIN TOOL -->
+<div class="tool-wrap">
+  <div class="tool-grid">
+
+    <!-- LEFT: Editor -->
+    <div class="editor-panel">
+      <div class="panel-title"><span class="panel-title-icon">✏️</span> Edit Your Snippet</div>
+
+      <!-- Device toggle -->
+      <div class="device-toggle">
+        <button class="device-btn active" id="btn-desktop" onclick="setDevice('desktop')">🖥️ Desktop</button>
+        <button class="device-btn" id="btn-mobile" onclick="setDevice('mobile')">📱 Mobile</button>
+      </div>
+
+      <!-- Page Title -->
+      <div class="field-group">
+        <div class="field-label">
+          <span class="field-label-text">Page Title</span>
+          <span class="field-counter" id="title-counter">0 / 60</span>
+        </div>
+        <input type="text" class="field-input" id="title-input" placeholder="Free SERP Snippet Previewer — Preview Google Results" maxlength="200" oninput="updatePreview()"/>
+        <div class="field-progress"><div class="field-progress-fill" id="title-progress"></div></div>
+        <div class="field-hint" id="title-hint">Ideal: 50–60 characters · ~580px pixel width</div>
+      </div>
+
+      <!-- Meta Description -->
+      <div class="field-group">
+        <div class="field-label">
+          <span class="field-label-text">Meta Description</span>
+          <span class="field-counter" id="desc-counter">0 / 160</span>
+        </div>
+        <textarea class="field-input" id="desc-input" rows="3" placeholder="See exactly how your page looks in Google search results. Preview title, meta description and URL live. Free, no login required." maxlength="500" oninput="updatePreview()"></textarea>
+        <div class="field-progress"><div class="field-progress-fill" id="desc-progress"></div></div>
+        <div class="field-hint" id="desc-hint">Ideal: 120–160 characters · ~920px pixel width</div>
+      </div>
+
+      <!-- URL -->
+      <div class="field-group">
+        <div class="field-label">
+          <span class="field-label-text">Page URL</span>
+          <span class="field-counter" id="url-counter" style="background:rgba(96,165,250,0.1);color:var(--blue);">URL</span>
+        </div>
+        <input type="url" class="field-input" id="url-input" placeholder="https://ranksorcery.com/serp-snippet-previewer" oninput="updatePreview()"/>
+        <div class="field-hint">Enter your full page URL including https://</div>
+      </div>
+
+      <!-- Schema rich result toggle -->
+      <div class="schema-toggle-row" onclick="toggleSchema()">
+        <div>
+          <div class="schema-toggle-label">⭐ Show Star Rating (Schema Markup)</div>
+          <div class="schema-toggle-sub">Simulates a rich result with review stars</div>
+        </div>
+        <div class="toggle-switch" id="schema-toggle"></div>
+      </div>
+
+      <!-- Date toggle -->
+      <div class="schema-toggle-row" onclick="toggleDate()">
+        <div>
+          <div class="schema-toggle-label">📅 Show Publication Date</div>
+          <div class="schema-toggle-sub">Simulates date displayed before description</div>
+        </div>
+        <div class="toggle-switch" id="date-toggle"></div>
+      </div>
+
+      <!-- Tips panel -->
+      <div class="tips-panel">
+        <div class="tips-panel-title">✅ Quick Optimization Tips</div>
+        <div class="tip-row">
+          <span class="tip-row-icon">🎯</span>
+          <div class="tip-row-body">
+            <div class="tip-row-title">Lead with your primary keyword</div>
+            <div class="tip-row-desc">Put your main keyword near the start of the title tag. Google bolds query-matching words, improving CTR.</div>
+          </div>
+        </div>
+        <div class="tip-row">
+          <span class="tip-row-icon">💬</span>
+          <div class="tip-row-body">
+            <div class="tip-row-title">Write descriptions that sell the click</div>
+            <div class="tip-row-desc">Your meta description doesn't directly affect rankings but massively affects CTR. Treat it like an ad headline.</div>
+          </div>
+        </div>
+        <div class="tip-row">
+          <span class="tip-row-icon">🔗</span>
+          <div class="tip-row-body">
+            <div class="tip-row-title">Use clean, readable URLs</div>
+            <div class="tip-row-desc">Short, descriptive URLs with hyphens perform better. Avoid numeric IDs and excessive URL parameters.</div>
+          </div>
+        </div>
+        <div class="tip-row">
+          <span class="tip-row-icon">📐</span>
+          <div class="tip-row-body">
+            <div class="tip-row-title">Stay within pixel limits</div>
+            <div class="tip-row-desc">Google measures title width in pixels (~580px), not characters. Wide letters like W count more than narrow ones like i.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Live Preview + Scores -->
+    <div class="preview-panel">
+
+      <!-- Live SERP Preview -->
+      <div class="preview-panel-inner">
+        <div class="preview-panel-head">
+          <span style="font-size:1.1rem;">🔎</span>
+          <span class="preview-panel-title">Live Google Preview</span>
+          <span class="preview-mode-badge" id="mode-badge">Desktop</span>
+        </div>
+
+        <!-- Desktop preview -->
+        <div id="preview-desktop" class="serp-container">
+          <div class="google-search-bar">
+            <div class="google-logo">
+              <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+            </div>
+            <div class="google-search-text" id="search-text-desktop">your keyword here</div>
+            <div class="google-search-icon">🔍</div>
+          </div>
+          <div class="serp-result-count">About 4,820,000 results (0.42 seconds)</div>
+          <div class="serp-result">
+            <div class="serp-breadcrumb">
+              <div class="serp-favicon" id="favicon-desktop">R</div>
+              <div>
+                <div class="serp-domain" id="serp-domain-desktop">ranksorcery.com</div>
+                <div class="serp-path" id="serp-path-desktop">› serp-snippet-previewer</div>
+              </div>
+              <div class="serp-menu-dots">⋮</div>
+            </div>
+            <div id="schema-stars-desktop" style="display:none">
+              <div class="stars-row"><span class="stars">★★★★★</span><span class="stars-text">4.9 · 147 reviews</span></div>
+            </div>
+            <div id="rich-badge-desktop" style="display:none">
+              <div class="rich-badge">⭐ Rich result · Schema detected</div>
+            </div>
+            <div class="serp-title" id="serp-title-desktop">Free SERP Snippet Previewer — Preview Google Results</div>
+            <div id="serp-date-desktop" class="serp-date" style="display:none">Apr 29, 2025 — </div>
+            <div class="serp-desc" id="serp-desc-desktop">See exactly how your page looks in Google search results. Preview title, meta description and URL live. Free, no login required.</div>
+          </div>
+          <div class="truncation-indicator" id="trunc-title-desktop">⚠️ Title may be truncated in search results — try shortening it</div>
+          <div class="truncation-indicator" id="trunc-desc-desktop">⚠️ Description may be cut off — trim to under 160 characters for best display</div>
+        </div>
+
+        <!-- Mobile preview -->
+        <div id="preview-mobile" class="serp-container" style="display:none;background:#f8f9fa;border-radius:0 0 20px 20px;">
+          <div class="serp-mobile-wrap">
+            <div class="serp-mobile-bar">
+              <div class="google-logo" style="font-size:0.9rem;">
+                <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+              </div>
+              <div class="serp-mobile-bar-text" id="search-text-mobile">your keyword here</div>
+              <div style="color:#70757a;font-size:0.9rem;">🔍</div>
+            </div>
+            <div class="serp-mobile-result">
+              <div class="serp-mobile-breadcrumb">
+                <div class="serp-favicon" id="favicon-mobile">R</div>
+                <div>
+                  <div style="font-family:arial,sans-serif;font-size:0.78rem;color:#202124;" id="serp-domain-mobile">ranksorcery.com</div>
+                  <div style="font-family:arial,sans-serif;font-size:0.75rem;color:#4d5156;" id="serp-path-mobile">› serp-snippet-previewer</div>
+                </div>
+                <div style="font-size:1rem;color:#70757a;margin-left:auto;">⋮</div>
+              </div>
+              <div id="schema-stars-mobile" style="display:none;margin:4px 0;">
+                <div class="stars-row"><span class="stars">★★★★★</span><span class="stars-text">4.9 · 147 reviews</span></div>
+              </div>
+              <div class="serp-mobile-title" id="serp-title-mobile">Free SERP Snippet Previewer — Preview Google Results</div>
+              <div id="serp-date-mobile" style="font-family:arial,sans-serif;font-size:0.78rem;color:#70757a;display:none;margin-bottom:3px;">Apr 29, 2025 — </div>
+              <div class="serp-mobile-desc" id="serp-desc-mobile">See exactly how your page looks in Google search results. Preview title, meta description and URL live. Free, no login required.</div>
+            </div>
+          </div>
+          <div class="truncation-indicator" id="trunc-title-mobile">⚠️ Title may be truncated on mobile</div>
+          <div class="truncation-indicator" id="trunc-desc-mobile">⚠️ Description may be cut off on mobile</div>
+        </div>
+      </div>
+
+      <!-- Score panel -->
+      <div class="score-panel">
+        <div class="score-panel-title">📊 Snippet Health Score</div>
+        <div class="score-metrics">
+          <div class="score-metric-row">
+            <div class="score-metric-label">Title Length</div>
+            <div class="score-metric-bar"><div class="score-metric-fill" id="bar-title"></div></div>
+            <div class="score-metric-val" id="val-title">—</div>
+          </div>
+          <div class="score-metric-row">
+            <div class="score-metric-label">Description Length</div>
+            <div class="score-metric-bar"><div class="score-metric-fill" id="bar-desc"></div></div>
+            <div class="score-metric-val" id="val-desc">—</div>
+          </div>
+          <div class="score-metric-row">
+            <div class="score-metric-label">Title Pixel Width</div>
+            <div class="score-metric-bar"><div class="score-metric-fill" id="bar-title-px"></div></div>
+            <div class="score-metric-val" id="val-title-px">—</div>
+          </div>
+          <div class="score-metric-row">
+            <div class="score-metric-label">Desc Pixel Width</div>
+            <div class="score-metric-bar"><div class="score-metric-fill" id="bar-desc-px"></div></div>
+            <div class="score-metric-val" id="val-desc-px">—</div>
+          </div>
+          <div class="score-metric-row">
+            <div class="score-metric-label">URL Clean</div>
+            <div class="score-metric-bar"><div class="score-metric-fill" id="bar-url"></div></div>
+            <div class="score-metric-val" id="val-url">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checks panel -->
+      <div class="checks-section">
+        <div class="checks-section-title">🔍 SEO Checks</div>
+        <div class="checks-grid" id="checks-grid"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TIPS SECTION -->
+<div class="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>SERP Optimization Essentials<span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Write Snippets That Win More Clicks</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:500px;margin:0 auto;">Your SERP snippet is your free ad in Google. A well-crafted title and description can double your click-through rate without improving your ranking position.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">🎯</div><div class="tip-title">Title Tags Are Your #1 CTR Driver</div><div class="tip-body">Your title tag is the first thing searchers read. Include your primary keyword early, convey a clear benefit, and keep it under 60 characters. Testing shows titles with numbers, brackets, and power words get significantly more clicks.</div></div>
+    <div class="tip-card"><div class="tip-icon">📏</div><div class="tip-title">Google Measures Pixels, Not Characters</div><div class="tip-body">Google truncates titles at ~580px and descriptions at ~920px on desktop — not at a fixed character count. Wide characters like W and M take more space than narrow ones like i and l. This tool estimates pixel width accurately.</div></div>
+    <div class="tip-card"><div class="tip-icon">💬</div><div class="tip-title">Meta Descriptions Don't Rank — They Sell</div><div class="tip-body">Meta descriptions have no direct ranking impact, but they dramatically influence click-through rate. Write them like a 160-character ad: lead with the benefit, include your keyword naturally, and end with a subtle call to action.</div></div>
+    <div class="tip-card"><div class="tip-icon">🔄</div><div class="tip-title">Google May Rewrite Your Snippet</div><div class="tip-body">Google can choose to display a different title or description if it thinks its own version better matches the search query. This is more likely if your meta tags are too short, too long, stuffed with keywords, or don't match page content.</div></div>
+    <div class="tip-card"><div class="tip-icon">⭐</div><div class="tip-title">Rich Results Get 20–30% More Clicks</div><div class="tip-body">Adding schema markup (structured data) to your pages can unlock rich results — star ratings, FAQ dropdowns, how-to steps, and more. These take up more SERP real estate and have significantly higher click-through rates than standard snippets.</div></div>
+    <div class="tip-card"><div class="tip-icon">📱</div><div class="tip-title">Mobile SERP Shows Fewer Characters</div><div class="tip-body">Mobile SERPs typically show slightly shorter titles (around 55–60 characters) and wrap descriptions across more lines but at narrower width. Always check how your snippet looks on both mobile and desktop before publishing.</div></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is a SERP snippet?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">A SERP snippet (Search Engine Results Page snippet) is the block of text Google shows for your page in search results. It consists of three parts: the title tag (blue clickable headline), the URL/breadcrumb (green path below the title), and the meta description (grey summary text). Optimizing each element improves both your visibility in search and your click-through rate.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is the ideal title tag length?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Google truncates title tags at approximately 580 pixels wide on desktop. This typically corresponds to 50–60 characters for most Latin text, but character count is only an approximation. Wider letters (W, M, G) consume more pixel width than narrow ones (i, l, f). Our previewer estimates pixel width to give you a more accurate indication of whether your title will be cut off.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is the ideal meta description length?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Google truncates meta descriptions at approximately 920 pixels (around 155–160 characters) on desktop. On mobile, descriptions may display slightly differently. Aim for 120–160 characters. Too short means you're wasting valuable space to describe your page. Too long means Google will cut it off mid-sentence, which can look unprofessional in search results.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Why does Google sometimes show different text than my meta description?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Google may dynamically generate a different snippet from your page's body content when it believes that content better answers the specific search query. This is more likely if your meta description is too generic, doesn't match the page content, contains keyword stuffing, or is significantly too short. Writing query-specific, high-quality meta descriptions reduces (but doesn't eliminate) the chance Google will override them.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Does the meta description affect SEO rankings?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Google has confirmed that meta descriptions are not a direct ranking factor. However, they indirectly affect SEO through click-through rate (CTR). A compelling description that drives more clicks sends a positive engagement signal to Google. Also, Google may bold keywords in your description that match the search query, making your snippet more visually prominent even without a higher ranking position.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What are rich results and how do I get them?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Rich results are enhanced SERP listings that include additional visual elements like star ratings, FAQ dropdowns, how-to steps, breadcrumbs, sitelinks, or product prices. They're generated from structured data (schema markup) added to your page's HTML. Adding schema markup doesn't guarantee rich results — Google decides if and when to display them based on data quality and search context. Implement schema using JSON-LD in your page's &lt;head&gt; section.</div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/serp-snippet-previewer.html">SERP Previewer</a> · <a href="/internal-link-analyzer.html">Internal Links</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ── NAV ── */
+function toggleNavDropdown(id){var dd=document.getElementById(id),menu=document.getElementById(id+'-menu'),btn=dd.querySelector('.nav-dropdown-toggle'),open=menu.classList.contains('open');document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});if(!open){menu.classList.add('open');btn.classList.add('open');}}
+function toggleDdGroup(id){document.getElementById(id).classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-dropdown')){document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});}});
+function toggleMobileNav(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile-menu').classList.remove('open');document.getElementById('nav-hamburger').classList.remove('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-toggle').classList.toggle('open');document.getElementById(id+'-submenu').classList.toggle('open');}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── STATE ── */
+var currentDevice='desktop';
+var schemaOn=false;
+var dateOn=false;
+
+function setDevice(d){
+  currentDevice=d;
+  document.getElementById('btn-desktop').classList.toggle('active',d==='desktop');
+  document.getElementById('btn-mobile').classList.toggle('active',d==='mobile');
+  document.getElementById('preview-desktop').style.display=d==='desktop'?'block':'none';
+  document.getElementById('preview-mobile').style.display=d==='mobile'?'block':'none';
+  document.getElementById('mode-badge').textContent=d==='desktop'?'Desktop':'Mobile';
+  updatePreview();
+}
+
+function toggleSchema(){
+  schemaOn=!schemaOn;
+  document.getElementById('schema-toggle').classList.toggle('on',schemaOn);
+  updatePreview();
+}
+
+function toggleDate(){
+  dateOn=!dateOn;
+  document.getElementById('date-toggle').classList.toggle('on',dateOn);
+  updatePreview();
+}
+
+/* ── PIXEL WIDTH ESTIMATOR ── */
+/* Approximate Google's Roboto/Arial rendering at 20px for titles, 14px for descriptions */
+var WIDE_CHARS='WwMm'; var NARROW_CHARS='iIlfjrt1 ';
+function estimatePixelWidth(text,fontSize){
+  /* Average char widths relative to font-size for Arial/Roboto */
+  var avgWidth=0.55; /* base multiplier */
+  var total=0;
+  for(var i=0;i<text.length;i++){
+    var c=text[i];
+    if(WIDE_CHARS.indexOf(c)>-1) total+=fontSize*0.72;
+    else if(NARROW_CHARS.indexOf(c)>-1) total+=fontSize*0.32;
+    else total+=fontSize*avgWidth;
+  }
+  return Math.round(total);
+}
+
+/* Title: Google uses ~20px Roboto, limit ~580px */
+/* Desc: ~14px, limit ~920px */
+var TITLE_PX_LIMIT=580;
+var DESC_PX_LIMIT=920;
+var TITLE_FONT=20;
+var DESC_FONT=14;
+
+/* ── MAIN UPDATE ── */
+function updatePreview(){
+  var title=document.getElementById('title-input').value;
+  var desc=document.getElementById('desc-input').value;
+  var urlRaw=document.getElementById('url-input').value.trim();
+
+  /* Parse URL */
+  var domain='ranksorcery.com';
+  var pathParts=[];
+  var urlValid=false;
+  if(urlRaw){
+    try{
+      var parsed=new URL(urlRaw.startsWith('http')?urlRaw:'https://'+urlRaw);
+      domain=parsed.hostname;
+      var pathStr=parsed.pathname.replace(/^\/|\/$/g,'');
+      pathParts=pathStr?pathStr.split('/'):[];
+      urlValid=true;
+    }catch(e){}
+  }
+
+  var faviconLetter=(domain[0]||'R').toUpperCase();
+  var breadcrumbPath=pathParts.length>0?'› '+pathParts.join(' › '):'';
+  var displayTitle=title||'Your Page Title Here';
+  var displayDesc=desc||'Your meta description will appear here. Write a compelling 120–160 character summary that encourages searchers to click on your result.';
+
+  /* Title pixel width */
+  var titlePx=estimatePixelWidth(displayTitle,TITLE_FONT);
+  var descPx=estimatePixelWidth(displayDesc,DESC_FONT);
+  var titleOver=titlePx>TITLE_PX_LIMIT;
+  var descOver=descPx>DESC_PX_LIMIT;
+
+  /* Update desktop preview */
+  document.getElementById('favicon-desktop').textContent=faviconLetter;
+  document.getElementById('serp-domain-desktop').textContent=domain;
+  document.getElementById('serp-path-desktop').textContent=breadcrumbPath;
+  document.getElementById('serp-title-desktop').textContent=displayTitle;
+  document.getElementById('serp-desc-desktop').textContent=displayDesc;
+  document.getElementById('schema-stars-desktop').style.display=schemaOn?'block':'none';
+  document.getElementById('rich-badge-desktop').style.display=schemaOn?'block':'none';
+  document.getElementById('serp-date-desktop').style.display=dateOn?'inline':'none';
+  setVisible('trunc-title-desktop',titleOver);
+  setVisible('trunc-desc-desktop',descOver);
+
+  /* Update mobile preview */
+  document.getElementById('favicon-mobile').textContent=faviconLetter;
+  document.getElementById('serp-domain-mobile').textContent=domain;
+  document.getElementById('serp-path-mobile').textContent=breadcrumbPath;
+  document.getElementById('serp-title-mobile').textContent=displayTitle;
+  document.getElementById('serp-desc-mobile').textContent=displayDesc;
+  document.getElementById('schema-stars-mobile').style.display=schemaOn?'block':'none';
+  document.getElementById('serp-date-mobile').style.display=dateOn?'inline':'none';
+  setVisible('trunc-title-mobile',title.length>55);
+  setVisible('trunc-desc-mobile',desc.length>130);
+
+  /* Search bar keyword (first 3 words of title) */
+  var kw=title.split(' ').slice(0,3).join(' ')||'your keyword here';
+  document.getElementById('search-text-desktop').textContent=kw;
+  document.getElementById('search-text-mobile').textContent=kw;
+
+  /* Field counters + progress */
+  updateField('title',title.length,50,60,200,'title-counter','title-progress','title-hint',titlePx,TITLE_PX_LIMIT);
+  updateField('desc',desc.length,120,160,500,'desc-counter','desc-progress','desc-hint',descPx,DESC_PX_LIMIT);
+
+  /* Score bars */
+  updateScoreBar('title',title.length,50,60,'bar-title','val-title');
+  updateScoreBar('desc',desc.length,120,160,'bar-desc','val-desc');
+  updatePxBar('bar-title-px','val-title-px',titlePx,TITLE_PX_LIMIT);
+  updatePxBar('bar-desc-px','val-desc-px',descPx,DESC_PX_LIMIT);
+  updateUrlBar(urlRaw,urlValid);
+
+  /* SEO checks */
+  renderChecks(title,desc,urlRaw,urlValid,titlePx,descPx,titleOver,descOver);
+}
+
+function setVisible(id,show){
+  var el=document.getElementById(id);
+  if(el) el.classList.toggle('visible',show);
+}
+
+function updateField(type,len,idealMin,idealMax,hardMax,counterId,progressId,hintId,px,pxLimit){
+  var counter=document.getElementById(counterId);
+  var progress=document.getElementById(progressId);
+  var hint=document.getElementById(hintId);
+  var pct=Math.min(100,Math.round(len/hardMax*100));
+  var st=len===0?'':'good';
+  var color='#34d399';
+  if(len<idealMin&&len>0){st='warn';color='#fbbf24';}
+  if(len>idealMax){st='over';color='#f87171';}
+  if(len>idealMax&&len<=hardMax){st='over';}
+  counter.textContent=len+' / '+idealMax;
+  counter.className='field-counter '+(len===0?'':st);
+  progress.style.width=pct+'%';
+  progress.style.background=len===0?'var(--bg4)':color;
+  if(hint){
+    if(len===0) hint.textContent='Ideal: '+idealMin+'\u2013'+idealMax+' characters';
+    else if(len<idealMin) hint.textContent='Too short \u2014 aim for at least '+idealMin+' characters';
+    else if(len>idealMax) hint.textContent='Too long \u2014 may be truncated in search results';
+    else hint.textContent='Length is ideal \u2713 (\u223c'+px+'px / '+pxLimit+'px limit)';
+  }
+  var input=document.getElementById(type+'-input');
+  if(input){input.className='field-input'+(len>0&&st?' '+st:'');}
+}
+
+function updateScoreBar(type,len,idealMin,idealMax,barId,valId){
+  var bar=document.getElementById(barId);
+  var val=document.getElementById(valId);
+  var pct=len===0?0:Math.min(100,Math.round(len/idealMax*100));
+  var st='good'; var color='#34d399';
+  if(len<idealMin&&len>0){st='warn';color='#fbbf24';}
+  if(len>idealMax){st='over';color='#f87171';}
+  bar.style.width=pct+'%'; bar.style.background=color;
+  val.textContent=len+' ch'; val.className='score-metric-val '+st;
+}
+
+function updatePxBar(barId,valId,px,limit){
+  var bar=document.getElementById(barId);
+  var val=document.getElementById(valId);
+  var pct=Math.min(100,Math.round(px/limit*100));
+  var st=px<=limit*0.9?'good':px<=limit?'warn':'over';
+  var color=st==='good'?'#34d399':st==='warn'?'#fbbf24':'#f87171';
+  bar.style.width=pct+'%'; bar.style.background=color;
+  val.textContent=px+'px'; val.className='score-metric-val '+st;
+}
+
+function updateUrlBar(url,valid){
+  var bar=document.getElementById('bar-url');
+  var val=document.getElementById('val-url');
+  if(!url){bar.style.width='0%';val.textContent='—';val.className='score-metric-val';return;}
+  var hasParams=url.indexOf('?')>-1;
+  var hasUnderscores=url.indexOf('_')>-1;
+  var isShort=url.length<80;
+  var isHttps=url.startsWith('https://');
+  var score=(valid?25:0)+(isHttps?25:0)+(!hasParams?25:10)+(isShort?25:10);
+  var st=score>=85?'good':score>=60?'warn':'over';
+  var color=st==='good'?'#34d399':st==='warn'?'#fbbf24':'#f87171';
+  bar.style.width=score+'%'; bar.style.background=color;
+  val.textContent=st==='good'?'Clean':st==='warn'?'OK':'Issues';
+  val.className='score-metric-val '+st;
+}
+
+function renderChecks(title,desc,url,urlValid,titlePx,descPx,titleOver,descOver){
+  var hasKeyword=title.length>0&&title.split(' ').length>=2;
+  var titleLen=title.length;
+  var descLen=desc.length;
+  var hasCTA=/(get|try|learn|discover|find|see|start|download|free|now|today)/i.test(desc);
+  var hasNumber=/\d/.test(title);
+  var hasBracket=/[\[\(\|]/.test(title);
+  var hasHttps=url.startsWith('https://');
+  var hasParams=url.indexOf('?')>-1;
+  var hasUnderscores=url.indexOf('_')>-1;
+  var titleWords=title.split(' ').filter(function(w){return w.length>0;});
+  var isKeywordFirst=titleWords.length>0&&titleWords[0].length>3;
+  var descUnique=desc.length>0&&desc.toLowerCase()!==title.toLowerCase();
+  var urlLength=url.length;
+
+  var checks=[
+    {
+      name:'Title Length',
+      desc:titleLen===0?'No title entered yet.':titleLen<50?'Title is too short ('+titleLen+' chars). Aim for 50\u201360 characters to maximize SERP real estate.':titleOver?'Title is too long and will be truncated (~'+titlePx+'px / '+TITLE_PX_LIMIT+'px limit). Shorten to prevent cutoff.':'Title length is ideal at '+titleLen+' characters (~'+titlePx+'px).',
+      st:titleLen===0?'info':titleLen<50?'warn':titleOver?'fail':'pass',
+      value:titleLen===0?'No title':titleLen+' chars · '+titlePx+'px'+(titleOver?' — truncated':'')
+    },
+    {
+      name:'Description Length',
+      desc:descLen===0?'No description entered yet.':descLen<120?'Description is short ('+descLen+' chars). Aim for 120\u2013160 characters to fill available SERP space.':descOver?'Description is too long and will be cut off. Trim to under 160 characters.':'Description length is ideal at '+descLen+' characters.',
+      st:descLen===0?'info':descLen<120?'warn':descOver?'fail':'pass',
+      value:descLen===0?'No description':descLen+' chars · '+descPx+'px'+(descOver?' — truncated':'')
+    },
+    {
+      name:'HTTPS URL',
+      desc:!url?'No URL entered yet.':hasHttps?'URL correctly uses HTTPS — good for security and trust signals.':'URL is using HTTP. Switch to HTTPS for security, SEO, and user trust.',
+      st:!url?'info':hasHttps?'pass':'fail',
+      value:!url?'No URL':hasHttps?'HTTPS ✓':'HTTP — switch to HTTPS'
+    },
+    {
+      name:'URL Parameters',
+      desc:!url?'No URL entered yet.':hasParams?'URL contains query parameters (?). Consider using clean, parameter-free URLs for better readability and SEO.':'No URL parameters detected — clean and SEO-friendly.',
+      st:!url?'info':hasParams?'warn':'pass',
+      value:!url?'No URL':hasParams?'Parameters detected':'Clean URL ✓'
+    },
+    {
+      name:'Title Uses Numbers/Power Words',
+      desc:title.length===0?'Enter a title to check.':hasNumber||hasBracket?'Great \u2014 your title includes numbers or formatting characters that typically improve click-through rate.':'Consider adding a number, year, or bracket notation to your title (e.g. "10 Tips", "[2025]", "| Brand") to improve CTR.',
+      st:title.length===0?'info':hasNumber||hasBracket?'pass':'warn',
+      value:title.length===0?'No title':hasNumber||hasBracket?'Has number/brackets ✓':'No numbers or brackets'
+    },
+    {
+      name:'Description Has a CTA',
+      desc:desc.length===0?'Enter a description to check.':hasCTA?'Description contains action-oriented language which encourages clicks.':'Add a call-to-action phrase (e.g. "Get started free", "Learn more today", "See how it works") to increase CTR.',
+      st:desc.length===0?'info':hasCTA?'pass':'warn',
+      value:desc.length===0?'No description':hasCTA?'CTA detected ✓':'No CTA found'
+    },
+    {
+      name:'Title & Description Are Unique',
+      desc:title.length===0||desc.length===0?'Enter both title and description to check.':descUnique?'Title and description contain different text \u2014 good, they should complement each other.':'Description appears to repeat or closely mirror the title. Rewrite to add additional context and value.',
+      st:title.length===0||desc.length===0?'info':descUnique?'pass':'warn',
+      value:title.length===0||desc.length===0?'Incomplete':descUnique?'Unique ✓':'Too similar to title'
+    },
+    {
+      name:'URL Length',
+      desc:!url?'No URL entered yet.':urlLength<80?'URL is a good length \u2014 short and readable.':urlLength<120?'URL is moderately long. Shorter URLs are generally preferred in search results.':'URL is quite long. Very long URLs may be truncated in the breadcrumb display.',
+      st:!url?'info':urlLength<80?'pass':urlLength<120?'warn':'fail',
+      value:!url?'No URL':urlLength+' characters'+(urlLength<80?' ✓':'')
+    }
+  ];
+
+  document.getElementById('checks-grid').innerHTML=checks.map(function(c){
+    var ic={pass:'✓',warn:'⚠',fail:'✕',info:'ℹ'};
+    return '<div class="check-card"><div class="check-card-status '+c.st+'">'+ic[c.st]+'</div><div class="check-card-body"><div class="check-card-name">'+c.name+'</div><div class="check-card-desc">'+c.desc+'</div><div class="check-card-value '+c.st+'">'+c.value+'</div></div></div>';
+  }).join('');
+}
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded',function(){
+  updatePreview();
+});
+</script>
+</body>
+</html>
