@@ -376,6 +376,8 @@ footer a:hover { color:var(--accent); }
           <option value="academic">Academic &amp; Scholarly</option>
           <option value="storytelling">Storytelling &amp; Narrative</option>
           <option value="journalistic">Journalistic &amp; News</option>
+          <option value="filipino_slang">🇵🇭 Filipino Slang (Taglish)</option>
+          <option value="filipino_formal">🇵🇭 Filipino Formal (English)</option>
         </select>
       </div>
       <div>
@@ -693,7 +695,9 @@ function buildHumanizePrompt(text, style, level, type) {
     casual: 'casual, friendly and relaxed',
     academic: 'academic but with natural human voice',
     storytelling: 'narrative and storytelling style',
-    journalistic: 'journalistic news-writing style'
+    journalistic: 'journalistic news-writing style',
+    filipino_slang: 'Filipino Taglish — a natural mix of English and Filipino/Tagalog slang. Naturally weave in common Filipino expressions and slang words throughout the text such as: "naman", "talaga", "grabe", "char", "charot", "lodi", "petmalu", "sana all", "eme", "jowa", "werpa", "luh", "bet", "ngl", "lowkey", "tbh", "mare/pare", "basta", "daw/raw", "kasi", "eh", "po/opo" (for respectful tone), "ano ba", "sus", "kaloka", "gigil", and similar. Mix English and Tagalog naturally in the same sentence the way Filipinos actually speak and write online. Keep the core meaning intact but make it sound like a Filipino writing casually on social media or in a blog. Do not translate everything to Tagalog — keep it English-dominant with Filipino flavor sprinkled throughout',
+    filipino_formal: 'formal English writing style used by professional Filipino writers — clear, structured, and grammatically correct with occasional Filipino cultural references or context where appropriate',
   };
 
   return `You are an expert content humanizer. Your job is to rewrite the following AI-generated ${type} content so that it reads as 100% natural human writing that will bypass all AI detection tools including Turnitin, GPTZero, Originality.ai, and Copyleaks.
@@ -714,7 +718,8 @@ HUMANIZATION INSTRUCTIONS:
 - Use first-person perspective naturally if appropriate
 - Preserve all factual information, key points, and the overall meaning
 - Do NOT add fictional facts or change the core message
-- Output ONLY the humanized text — no explanations, no labels, no preamble`;
+- Output ONLY the humanized text — no explanations, no labels, no preamble
+${style === 'filipino_slang' ? `\nFILIPINO SLANG RULES (strictly follow these):\n- This is Taglish — English text with Filipino slang naturally woven in\n- Use words like: grabe, naman, talaga, char/charot, lodi, petmalu, sana all, eme, jowa, werpa, luh, bet, basta, kasi, eh, sus, kaloka, ano ba yan, lowkey, ngl, tbh, mare/pare, diba, parang, actually hindi, ganun talaga, goes to show naman, for real grabe, which is honestly relatable\n- Start some sentences with Filipino interjections: "Grabe,", "Ano ba,", "Luh,", "Sana all,", "Sus,", "Char,"\n- Mix English sentences with Tagalog/Filipino filler words naturally mid-sentence\n- Keep the meaning 100% intact — only the style changes\n- Sound like a Filipino blogger or social media user, not a textbook` : ''}`;
 }
 
 // ── Main analysis ──────────────────────────────────────────────
@@ -835,7 +840,7 @@ async function runAnalysis() {
 
       // Add meta badges
       const levelLabels = { light:'Light Humanization', moderate:'Moderate Humanization', aggressive:'Full Rewrite' };
-      const styleLabels = { natural:'Natural Voice', professional:'Professional', casual:'Casual', academic:'Academic', storytelling:'Storytelling', journalistic:'Journalistic' };
+      const styleLabels = { natural:'Natural Voice', professional:'Professional', casual:'Casual', academic:'Academic', storytelling:'Storytelling', journalistic:'Journalistic', filipino_slang:'🇵🇭 Filipino Slang', filipino_formal:'🇵🇭 Filipino Formal' };
       document.getElementById('humanize-meta').innerHTML = `
         <div class="humanize-meta-item">✅ 0% AI Target</div>
         <div class="humanize-meta-item">🎯 ${levelLabels[level] || 'Moderate'}</div>
