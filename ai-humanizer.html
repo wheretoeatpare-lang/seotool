@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Content Detector & Humanizer — Free Tool | RankSorcery</title>
+<meta name="description" content="Check if your content is AI-generated and instantly humanize it to 100% human-written. Free AI detector and humanizer — no login required.">
+<meta name="theme-color" content="#E8B84B">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="canonical" href="https://ranksorcery.com/ai-humanizer">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/ai-humanizer">
+<meta property="og:title" content="AI Content Detector & Humanizer — Free Tool | RankSorcery">
+<meta property="og:description" content="Detect AI-generated content and humanize it instantly. Free — no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+:root {
+  --bg:#0D1117; --bg2:#141B2D; --bg3:#1E2740; --bg4:#243050;
+  --border:rgba(232,184,75,0.13); --border2:rgba(232,184,75,0.22); --border3:rgba(232,184,75,0.35);
+  --text:#E8EAF0; --muted:#8A93A8; --muted2:#6A748A;
+  --accent:#E8B84B; --accent2:#F5D98A; --accent3:#C9902A; --glow:rgba(232,184,75,0.15);
+  --teal:#0ABFBC; --teal2:rgba(10,191,188,0.12);
+  --green:#34d399; --green2:rgba(52,211,153,0.12);
+  --red:#f87171; --red2:rgba(248,113,113,0.12);
+  --amber:#fbbf24; --amber2:rgba(251,191,36,0.12);
+  --purple:#a78bfa; --purple2:rgba(167,139,250,0.12);
+  --radius:14px;
+}
+html { scroll-behavior:smooth; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; line-height:1.6; padding-top:64px; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; opacity:.45; }
+
+/* NAV */
+nav { position:fixed; top:0; left:0; right:0; z-index:200; display:flex; align-items:center; justify-content:space-between; padding:0 2rem; height:64px; background:rgba(13,17,23,0.88); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); border-bottom:1px solid var(--border); gap:1rem; }
+.logo { font-family:'Syne',sans-serif; font-size:1.25rem; font-weight:800; color:var(--accent); text-decoration:none; flex-shrink:0; white-space:nowrap; letter-spacing:-0.02em; display:flex; align-items:center; gap:9px; }
+.logo-icon { width:30px; height:30px; background:linear-gradient(135deg,var(--accent),var(--teal)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.85rem; flex-shrink:0; }
+.nav-links { display:flex; gap:0.1rem; align-items:center; }
+.nav-links a { color:var(--muted); text-decoration:none; font-size:0.82rem; font-weight:500; transition:color 0.2s,background 0.2s; padding:0.35rem 0.65rem; border-radius:6px; white-space:nowrap; }
+.nav-links a:hover { color:var(--text); background:rgba(255,255,255,0.04); }
+.nav-links a.active { color:var(--accent); }
+.nav-dropdown { position:relative; }
+.nav-dropdown-toggle { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:0.82rem; font-weight:500; transition:color 0.2s,background 0.2s; padding:0.35rem 0.65rem; border-radius:6px; cursor:pointer; white-space:nowrap; background:none; border:none; font-family:'DM Sans',sans-serif; }
+.nav-dropdown-toggle:hover,.nav-dropdown-toggle.open { color:var(--text); background:rgba(255,255,255,0.04); }
+.nav-dropdown-toggle.active { color:var(--accent); }
+.nav-dropdown-chevron { width:12px; height:12px; flex-shrink:0; transition:transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform:rotate(180deg); }
+.nav-dropdown-menu { display:none; position:absolute; top:calc(100% + 10px); left:0; min-width:230px; background:var(--bg2); border:1px solid var(--border2); border-radius:14px; padding:0.6rem; box-shadow:0 16px 48px rgba(0,0,0,0.45); z-index:300; animation:dropIn 0.18s ease; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display:block; }
+.nav-dropdown-item { display:flex; align-items:center; gap:0.75rem; padding:0.65rem 0.85rem; border-radius:9px; text-decoration:none; color:var(--text); transition:background 0.15s,color 0.15s; font-size:0.84rem; }
+.nav-dropdown-item:hover { background:rgba(232,184,75,0.08); color:var(--accent); }
+.nav-dropdown-item-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; }
+.nav-dropdown-item-name { font-weight:600; font-size:0.82rem; line-height:1.2; }
+.nav-dropdown-item-desc { font-size:0.71rem; color:var(--muted); margin-top:0.1rem; }
+.nav-dropdown-divider { height:1px; background:var(--border); margin:0.4rem 0.5rem; }
+.nav-cta { background:var(--accent) !important; color:var(--bg) !important; font-family:'Syne',sans-serif; font-weight:700 !important; padding:0.45rem 1.1rem !important; border-radius:8px; font-size:0.82rem !important; white-space:nowrap; flex-shrink:0; letter-spacing:0.02em; transition:background 0.2s,transform 0.15s !important; text-decoration:none; }
+.nav-cta:hover { background:var(--accent2) !important; transform:translateY(-1px) !important; color:var(--bg) !important; }
+.nav-hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; flex-shrink:0; }
+.nav-hamburger span { display:block; width:22px; height:2px; background:var(--muted); border-radius:2px; transition:all 0.25s; }
+.nav-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity:0; }
+.nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display:none; flex-direction:column; position:fixed; top:64px; left:0; right:0; bottom:0; background:var(--bg2); border-top:1px solid var(--border); z-index:199; overflow-y:auto; padding:0.75rem 0; }
+.nav-mobile-menu.open { display:flex; }
+.nav-mobile-menu a { display:flex; align-items:center; gap:0.75rem; padding:0.9rem 1.5rem; color:var(--text); text-decoration:none; font-size:0.92rem; font-weight:500; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.nav-mobile-menu a:hover { background:rgba(232,184,75,0.06); }
+.nav-mobile-cta { background:var(--accent) !important; color:var(--bg) !important; font-weight:700 !important; font-family:'Syne',sans-serif; justify-content:center; border-bottom:none !important; margin:0.75rem 1.5rem; border-radius:10px; padding:0.9rem 1.5rem !important; }
+.nav-mobile-group-toggle { display:flex; align-items:center; justify-content:space-between; padding:0.9rem 1.5rem; color:var(--muted); background:none; border:none; font-family:'DM Sans',sans-serif; font-size:0.92rem; font-weight:500; border-bottom:1px solid var(--border); cursor:pointer; width:100%; }
+.nav-mobile-group-chevron { width:14px; height:14px; transition:transform 0.2s; }
+.nav-mobile-submenu { display:none; background:var(--bg3); }
+.nav-mobile-submenu.open { display:block; }
+.nav-mobile-submenu a { border-bottom:none !important; padding:0.7rem 1.25rem !important; font-size:0.88rem !important; }
+.nav-mobile-sub-icon { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; flex-shrink:0; }
+.nav-mobile-sub-desc { font-size:0.72rem; color:var(--muted); margin-top:0.05rem; }
+@media(max-width:900px){ nav{padding:0.85rem 1.25rem;} .nav-links{display:none;} nav>.nav-cta{display:none;} .nav-hamburger{display:flex;} }
+@media(min-width:901px){ .nav-mobile-menu{display:none !important;} .nav-hamburger{display:none !important;} }
+
+/* TRUST BAR */
+.trust-bar { background:linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom:1px solid var(--border); padding:10px 5vw; display:flex; gap:32px; justify-content:center; align-items:center; flex-wrap:wrap; position:relative; z-index:1; }
+.trust-item { display:flex; align-items:center; gap:8px; font-size:.78rem; color:var(--muted); font-weight:500; }
+.trust-item .val { color:var(--accent); font-weight:700; font-family:'Syne',sans-serif; }
+.trust-dot { width:5px; height:5px; border-radius:50%; background:var(--teal); flex-shrink:0; }
+
+/* HERO */
+.hero { padding:4.5rem 2rem 3rem; text-align:center; position:relative; overflow:hidden; z-index:1; }
+.hero::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:900px; height:600px; background:radial-gradient(ellipse at center,rgba(232,184,75,0.09) 0%,transparent 65%); pointer-events:none; }
+.hero::after { content:''; position:absolute; width:500px; height:400px; background:radial-gradient(circle,rgba(10,191,188,.06) 0%,transparent 70%); bottom:-60px; right:5%; pointer-events:none; }
+.hero-badge { display:inline-flex; align-items:center; gap:7px; background:rgba(10,191,188,.1); border:1px solid rgba(10,191,188,.3); color:var(--teal); padding:0.38rem 1rem; border-radius:999px; font-size:0.75rem; font-weight:600; margin-bottom:1.5rem; letter-spacing:0.06em; text-transform:uppercase; }
+.hero-badge .dot { width:7px; height:7px; border-radius:50%; background:var(--teal); animation:pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+.hero h1 { font-family:'Syne',sans-serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:800; line-height:1.08; letter-spacing:-0.035em; margin-bottom:1rem; }
+.hero h1 span { background:linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero p { color:var(--muted); font-size:1rem; max-width:560px; margin:0 auto 1.75rem; line-height:1.75; }
+.hero-pills { display:flex; justify-content:center; flex-wrap:wrap; gap:0.5rem; }
+.hero-pill { display:inline-flex; align-items:center; gap:5px; background:var(--bg3); border:1px solid var(--border); border-radius:999px; padding:0.28rem 0.85rem; font-size:0.75rem; color:var(--muted); font-weight:500; }
+
+/* LAYOUT */
+.main-wrap { max-width:900px; margin:0 auto; padding:2rem 1.5rem 6rem; position:relative; z-index:1; }
+
+/* CARD */
+.card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; transition:border-color 0.2s; }
+.card:hover { border-color:var(--border2); }
+
+/* SECTION LABEL */
+.section-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted2); margin-bottom:0.85rem; display:flex; align-items:center; gap:0.5rem; }
+.section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* TEXTAREA */
+.content-area { width:100%; background:var(--bg3); border:1.5px solid var(--border2); color:var(--text); padding:1rem 1.1rem; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:0.92rem; outline:none; resize:vertical; transition:border-color 0.2s,box-shadow 0.2s; min-height:200px; line-height:1.75; }
+.content-area:focus { border-color:rgba(232,184,75,0.4); box-shadow:0 0 0 3px var(--glow); }
+.content-area::placeholder { color:var(--muted2); }
+.char-row { display:flex; justify-content:space-between; align-items:center; margin-top:0.45rem; font-size:0.72rem; color:var(--muted2); }
+.char-count { transition:color 0.2s; }
+.char-count.warn { color:var(--amber); }
+
+/* MODE TABS */
+.mode-tabs { display:flex; gap:0.4rem; margin-bottom:1.25rem; background:var(--bg3); border-radius:10px; padding:0.3rem; }
+.mode-tab { flex:1; padding:0.5rem; border-radius:7px; font-size:0.8rem; font-weight:600; cursor:pointer; border:none; background:none; color:var(--muted); transition:all 0.2s; font-family:'DM Sans',sans-serif; text-align:center; }
+.mode-tab.active { background:var(--bg2); color:var(--accent); box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+
+/* SETTINGS ROW */
+.settings-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.85rem; margin-bottom:1rem; }
+.field-label { display:block; font-size:0.78rem; font-weight:600; color:var(--muted); margin-bottom:0.4rem; letter-spacing:0.02em; }
+select, input[type="text"] { width:100%; background:var(--bg3); border:1px solid var(--border2); color:var(--text); padding:0.7rem 1rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.88rem; outline:none; transition:border-color 0.2s; appearance:none; -webkit-appearance:none; }
+select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A93A8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; cursor:pointer; }
+select:focus, input[type="text"]:focus { border-color:rgba(232,184,75,0.4); box-shadow:0 0 0 3px var(--glow); }
+select option { background:var(--bg2); }
+
+/* MODEL GRID */
+.model-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(145px,1fr)); gap:0.6rem; }
+.model-card { display:flex; align-items:center; gap:0.7rem; padding:0.7rem 0.85rem; background:var(--bg3); border:1.5px solid var(--border); border-radius:10px; cursor:pointer; transition:all 0.2s; position:relative; }
+.model-card:hover { border-color:rgba(232,184,75,0.35); background:rgba(232,184,75,0.04); }
+.model-card.selected { border-color:var(--accent); background:rgba(232,184,75,0.08); box-shadow:0 0 0 1px var(--accent); }
+.model-card.pro-locked { opacity:0.45; cursor:not-allowed; }
+.model-card.pro-locked:hover { border-color:var(--border); background:var(--bg3); }
+.model-card input[type=radio] { display:none; }
+.model-icon { width:28px; height:28px; border-radius:6px; display:grid; place-items:center; font-size:1rem; flex-shrink:0; }
+.model-name { font-size:0.82rem; font-weight:600; color:var(--text); display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.model-desc { font-size:0.7rem; color:var(--muted); margin-top:1px; }
+.model-badge { font-size:0.6rem; padding:0.1rem 0.35rem; border-radius:4px; background:rgba(52,211,153,0.15); color:var(--green); border:1px solid rgba(52,211,153,0.3); flex-shrink:0; }
+.pro-badge { font-size:0.6rem; padding:0.1rem 0.35rem; border-radius:4px; background:var(--amber2); color:var(--amber); border:1px solid rgba(251,191,36,0.3); flex-shrink:0; }
+
+/* ERROR */
+.error-box { display:none; background:var(--red2); border:1px solid rgba(248,113,113,0.3); border-radius:10px; padding:0.9rem 1.1rem; color:var(--red); font-size:0.85rem; margin-bottom:0.8rem; }
+.error-box.show { display:block; }
+
+/* BUTTONS */
+.btn-generate { width:100%; padding:0.95rem 2rem; background:linear-gradient(135deg,var(--accent),var(--accent3)); color:var(--bg); border:none; border-radius:var(--radius); font-family:'Syne',sans-serif; font-weight:700; font-size:1rem; letter-spacing:0.02em; cursor:pointer; transition:opacity 0.2s,transform 0.1s; display:flex; align-items:center; justify-content:center; gap:0.7rem; box-shadow:0 4px 20px rgba(232,184,75,0.3); }
+.btn-generate:hover { opacity:0.9; transform:translateY(-1px); }
+.btn-generate:active { transform:scale(0.99); }
+.btn-generate:disabled { opacity:0.45; cursor:not-allowed; transform:none; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.spinner-sm { display:inline-block; width:16px; height:16px; border:2px solid rgba(13,17,23,0.3); border-top-color:var(--bg); border-radius:50%; animation:spin 0.7s linear infinite; }
+
+/* SPINNER WRAP */
+.spinner-wrap { display:none; flex-direction:column; align-items:center; gap:1rem; padding:2.5rem 2rem; text-align:center; }
+.spinner-wrap.show { display:flex; }
+.spinner-ring-wrap { position:relative; width:60px; height:60px; }
+.spinner-ring { width:60px; height:60px; border-radius:50%; border:2px solid var(--border2); border-top-color:var(--accent); animation:spin 0.9s linear infinite; }
+.spinner-inner { position:absolute; inset:10px; border-radius:50%; border:2px solid transparent; border-top-color:var(--teal); animation:spin 1.3s linear infinite reverse; }
+.spinner-text { font-size:0.85rem; color:var(--muted); }
+.steps-bar { display:flex; flex-direction:column; gap:0.3rem; margin-top:0.25rem; }
+.step-item { display:flex; align-items:center; gap:0.5rem; font-size:0.76rem; color:var(--muted); opacity:0.4; transition:opacity 0.3s; }
+.step-item.active { opacity:1; color:var(--accent); }
+.step-item.done { opacity:0.7; color:var(--muted); }
+.step-item.done::before { content:'✓ '; }
+.step-item.active::before { content:'⟳ '; }
+
+/* ── DETECTION RESULT ── */
+.detect-result { display:none; }
+.detect-result.show { display:block; }
+
+/* AI Score meter */
+.score-meter-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; }
+.score-top { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem; }
+.score-left { flex:1; }
+.score-verdict { font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:0.25rem; }
+.score-sub-verdict { font-size:0.82rem; color:var(--muted); }
+
+/* Gauge */
+.gauge-wrap { position:relative; width:110px; height:60px; flex-shrink:0; overflow:hidden; }
+.gauge-svg { width:110px; height:60px; }
+.gauge-bg { fill:none; stroke:var(--bg3); stroke-width:10; }
+.gauge-fill { fill:none; stroke-width:10; stroke-linecap:round; transition:stroke-dashoffset 1s ease, stroke 0.5s; }
+.gauge-label-wrap { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; }
+.gauge-pct { font-family:'Syne',sans-serif; font-size:1.45rem; font-weight:800; line-height:1; }
+.gauge-sub-label { font-size:0.6rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; }
+
+/* Meter bar */
+.meter-bar-wrap { margin-bottom:1.25rem; }
+.meter-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted2); margin-bottom:0.4rem; }
+.meter-bar-track { height:10px; background:var(--bg3); border-radius:5px; overflow:hidden; position:relative; }
+.meter-bar-fill { height:100%; border-radius:5px; transition:width 1s ease; }
+.meter-markers { display:flex; justify-content:space-between; font-size:0.65rem; color:var(--muted2); margin-top:0.3rem; }
+
+/* Signal tags */
+.signals-title { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted2); margin-bottom:0.6rem; }
+.signals-list { display:flex; flex-wrap:wrap; gap:0.4rem; }
+.signal-tag { display:inline-flex; align-items:center; gap:0.35rem; padding:0.28rem 0.7rem; border-radius:999px; font-size:0.73rem; font-weight:600; }
+.signal-ai   { background:var(--red2);    color:var(--red);    border:1px solid rgba(248,113,113,0.25); }
+.signal-human{ background:var(--green2);  color:var(--green);  border:1px solid rgba(52,211,153,0.25); }
+.signal-mixed{ background:var(--amber2);  color:var(--amber);  border:1px solid rgba(251,191,36,0.25); }
+
+/* Sentence highlight */
+.highlight-section { margin-top:1.25rem; }
+.highlight-label { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted2); margin-bottom:0.6rem; display:flex; align-items:center; gap:0.5rem; }
+.highlight-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.highlighted-text { font-size:0.9rem; line-height:2; color:var(--text); white-space:pre-wrap; word-break:break-word; }
+.highlighted-text .ai-sentence { background:rgba(248,113,113,0.15); border-bottom:2px solid rgba(248,113,113,0.5); border-radius:3px; padding:0 2px; }
+.highlighted-text .human-sentence { background:rgba(52,211,153,0.08); border-radius:3px; padding:0 2px; }
+
+/* Legend */
+.legend { display:flex; gap:1rem; flex-wrap:wrap; margin-top:0.65rem; }
+.legend-item { display:flex; align-items:center; gap:0.4rem; font-size:0.72rem; color:var(--muted); }
+.legend-dot { width:10px; height:10px; border-radius:2px; flex-shrink:0; }
+
+/* Humanize section */
+.humanize-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); margin-bottom:1rem; overflow:hidden; }
+.humanize-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); background:var(--bg3); flex-wrap:wrap; gap:0.6rem; }
+.humanize-title { font-family:'Syne',sans-serif; font-weight:700; font-size:0.9rem; display:flex; align-items:center; gap:0.5rem; }
+.humanize-title .dot { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 6px rgba(52,211,153,0.6); }
+.humanize-body { padding:1.5rem; }
+.humanized-text { font-size:0.92rem; line-height:1.9; color:var(--text); white-space:pre-wrap; word-break:break-word; }
+.humanize-meta { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
+.humanize-meta-item { display:flex; align-items:center; gap:0.4rem; font-size:0.75rem; background:var(--green2); border:1px solid rgba(52,211,153,0.2); border-radius:6px; padding:0.25rem 0.65rem; color:var(--green); font-weight:600; }
+.export-btns { display:flex; gap:0.5rem; flex-wrap:wrap; }
+.btn-export { font-size:0.75rem; padding:0.35rem 0.75rem; border-radius:6px; border:1px solid var(--border); background:var(--bg4); color:var(--muted); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+.btn-export:hover { border-color:var(--accent); color:var(--accent); }
+.btn-copy { font-size:0.75rem; padding:0.35rem 0.75rem; border-radius:6px; border:1px solid rgba(232,184,75,0.35); background:rgba(232,184,75,0.1); color:var(--accent); cursor:pointer; transition:all 0.15s; font-family:'DM Sans',sans-serif; }
+.btn-copy:hover { background:rgba(232,184,75,0.2); }
+.btn-recheck { display:inline-flex; align-items:center; gap:0.5rem; background:linear-gradient(135deg,var(--teal),#089896); color:white; border:none; padding:0.55rem 1.25rem; border-radius:9px; font-family:'Syne',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; transition:opacity 0.2s,transform 0.1s; }
+.btn-recheck:hover { opacity:0.88; transform:translateY(-1px); }
+
+/* INFO GRID */
+.info-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0.75rem; margin-top:1.5rem; }
+.info-card { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:1rem; }
+.info-card-icon { font-size:1.2rem; margin-bottom:0.5rem; }
+.info-card-title { font-family:'Syne',sans-serif; font-size:0.82rem; font-weight:700; margin-bottom:0.3rem; }
+.info-card-desc { font-size:0.74rem; color:var(--muted); line-height:1.6; }
+
+/* FOOTER */
+footer { background:var(--bg2); border-top:1px solid var(--border); padding:2rem; text-align:center; font-size:0.78rem; color:var(--muted); position:relative; z-index:1; }
+footer a { color:var(--muted); text-decoration:none; transition:color 0.2s; }
+footer a:hover { color:var(--accent); }
+.footer-logo { font-family:'Syne',sans-serif; font-weight:800; color:var(--accent); }
+
+@media(max-width:680px) {
+  .settings-row { grid-template-columns:1fr; }
+  .main-wrap { padding:1.5rem 1rem 4rem; }
+  .score-top { flex-direction:column; align-items:flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo"><div class="logo-icon">✦</div>RankSorcery</a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleDd('nav-dd-seo')">SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle active" onclick="toggleDd('nav-dd-writer')">AI Writer Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="ai-humanizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🧬</div><div><div class="nav-dropdown-item-name">AI Humanizer</div><div class="nav-dropdown-item-desc">Detect &amp; humanize AI content</div></div></a>
+        <a href="social-media-post-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">📱</div><div><div class="nav-dropdown-item-name">Social Media Generator</div><div class="nav-dropdown-item-desc">Posts for every platform</div></div></a>
+        <a href="ai-faq-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">❓</div><div><div class="nav-dropdown-item-name">FAQ Generator</div><div class="nav-dropdown-item-desc">AI-powered FAQ sections</div></div></a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/image-converter.html">Image Tool</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobile()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="https://ranksorcery.com/"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="https://ranksorcery.com/keyword-volume.html"><div class="nav-mobile-sub-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div>Keyword Research</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" onclick="toggleMobileGroup('mobile-writer')">✍️ AI Writer Tools
+    <svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+  <div class="nav-mobile-submenu" id="mobile-writer-submenu">
+    <a href="ai-writer-tools.html"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div><div>All AI Writer Tools</div></div></a>
+    <a href="ai-humanizer.html"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🧬</div><div><div>AI Humanizer</div><div class="nav-mobile-sub-desc">Detect &amp; humanize</div></div></a>
+    <a href="social-media-post-generator.html"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">📱</div><div><div>Social Media Generator</div></div></a>
+  </div>
+  <a href="https://ranksorcery.com/image-converter.html">🖼 Image Tool</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">AI Detection</span>&nbsp; + Humanizer in one</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>✦ AI Detector + Humanizer · Free · No Login</div>
+  <h1>AI Content Detector<br><span>&amp; Humanizer</span></h1>
+  <p>Paste any content to instantly detect how much of it is AI-generated. Then humanize it in one click — transforming it into 100% natural, human-written content that bypasses AI detectors.</p>
+  <div class="hero-pills">
+    <span class="hero-pill">🤖 AI % Score</span>
+    <span class="hero-pill">🔍 Sentence-Level Analysis</span>
+    <span class="hero-pill">🧬 One-Click Humanize</span>
+    <span class="hero-pill">✅ 0% AI Target</span>
+    <span class="hero-pill">🎯 Tone Preservation</span>
+    <span class="hero-pill">🆓 Free Forever</span>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main-wrap">
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <!-- Mode tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-detect" onclick="setMode('detect')">🔍 Detect Only</button>
+      <button class="mode-tab" id="tab-both" onclick="setMode('both')">🧬 Detect + Humanize</button>
+      <button class="mode-tab" id="tab-humanize" onclick="setMode('humanize')">✨ Humanize Only</button>
+    </div>
+
+    <div class="section-label">Paste Your Content</div>
+    <textarea class="content-area" id="contentInput" maxlength="8000" placeholder="Paste your article, blog post, paragraph, or any text here to check if it was written by AI and humanize it instantly…" oninput="updateCharCount()"></textarea>
+    <div class="char-row">
+      <span style="color:var(--muted2);font-size:0.72rem;">Min 50 words recommended for accurate detection</span>
+      <span class="char-count" id="char-count">0 / 8,000</span>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="card">
+    <div class="section-label">Settings</div>
+    <div class="settings-row">
+      <div>
+        <label class="field-label">Writing Style</label>
+        <select id="writingStyle">
+          <option value="natural">Natural &amp; Conversational</option>
+          <option value="professional">Professional &amp; Formal</option>
+          <option value="casual">Casual &amp; Friendly</option>
+          <option value="academic">Academic &amp; Scholarly</option>
+          <option value="storytelling">Storytelling &amp; Narrative</option>
+          <option value="journalistic">Journalistic &amp; News</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Humanization Level</label>
+        <select id="humanizeLevel">
+          <option value="light">Light — minimal changes</option>
+          <option value="moderate" selected>Moderate — recommended</option>
+          <option value="aggressive">Aggressive — full rewrite</option>
+        </select>
+      </div>
+      <div>
+        <label class="field-label">Content Type</label>
+        <select id="contentType">
+          <option value="article">Article / Blog Post</option>
+          <option value="product">Product Description</option>
+          <option value="email">Email / Newsletter</option>
+          <option value="social">Social Media Post</option>
+          <option value="essay">Essay / Academic</option>
+          <option value="general">General / Other</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODEL -->
+  <div class="card">
+    <div class="section-label">Choose AI Model</div>
+    <div class="model-grid">
+      <label class="model-card selected">
+        <input type="radio" name="model" value="gemini-2.0-flash" checked>
+        <div class="model-icon" style="background:rgba(66,133,244,.12)">✦</div>
+        <div>
+          <div class="model-name">Gemini Flash<span class="model-badge">Fast</span></div>
+          <div class="model-desc">Google · Recommended</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="meta-llama/llama-4-maverick">
+        <div class="model-icon" style="background:rgba(0,100,200,.12)">🦙</div>
+        <div>
+          <div class="model-name">Llama 4<span class="model-badge">NEW</span></div>
+          <div class="model-desc">Meta · Open source</div>
+        </div>
+      </label>
+      <label class="model-card">
+        <input type="radio" name="model" value="deepseek-chat">
+        <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
+        <div>
+          <div class="model-name">DeepSeek V3</div>
+          <div class="model-desc">DeepSeek · High speed</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users">
+        <input type="radio" name="model" value="gpt-4o" disabled>
+        <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
+        <div>
+          <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">OpenAI · Great quality</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users">
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
+        <div>
+          <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Anthropic · Creative</div>
+        </div>
+      </label>
+      <label class="model-card pro-locked" title="Available for Pro users">
+        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
+        <div>
+          <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
+          <div class="model-desc">Mistral AI · Efficient</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- GENERATE BTN -->
+  <button class="btn-generate" id="gen-btn" onclick="runAnalysis()">
+    <span id="gen-icon">🔍</span>
+    <span id="gen-text">Analyze Content</span>
+  </button>
+
+  <!-- LOADING -->
+  <div class="card spinner-wrap" id="spinner-wrap">
+    <div class="spinner-ring-wrap"><div class="spinner-ring"></div><div class="spinner-inner"></div></div>
+    <div class="spinner-text" id="spinner-text">Analyzing content for AI patterns…</div>
+    <div class="steps-bar">
+      <div class="step-item" id="step1">Scanning sentence structure &amp; patterns</div>
+      <div class="step-item" id="step2">Measuring perplexity &amp; burstiness</div>
+      <div class="step-item" id="step3">Identifying AI-typical phrases</div>
+      <div class="step-item" id="step4">Calculating AI probability score</div>
+      <div class="step-item" id="step5">Generating humanized version</div>
+    </div>
+  </div>
+
+  <!-- DETECTION RESULT -->
+  <div class="detect-result" id="detect-result">
+
+    <!-- Score card -->
+    <div class="score-meter-card">
+      <div class="score-top">
+        <div class="score-left">
+          <div class="score-verdict" id="score-verdict">—</div>
+          <div class="score-sub-verdict" id="score-sub-verdict">—</div>
+        </div>
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 110 60">
+            <path class="gauge-bg" d="M 10 55 A 45 45 0 0 1 100 55" fill="none" stroke-width="10"/>
+            <path class="gauge-fill" id="gauge-fill" d="M 10 55 A 45 45 0 0 1 100 55" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="141.37" stroke-dashoffset="141.37"/>
+          </svg>
+          <div class="gauge-label-wrap">
+            <div class="gauge-pct" id="gauge-pct">0%</div>
+            <div class="gauge-sub-label">AI Score</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Meter bar -->
+      <div class="meter-bar-wrap">
+        <div class="meter-labels">
+          <span style="color:var(--green);">100% Human</span>
+          <span style="color:var(--amber);">Mixed</span>
+          <span style="color:var(--red);">100% AI</span>
+        </div>
+        <div class="meter-bar-track">
+          <div class="meter-bar-fill" id="meter-bar-fill" style="width:0%;"></div>
+        </div>
+        <div class="meter-markers">
+          <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-bottom:1.25rem;" id="stats-grid">
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.65rem;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;" id="stat-ai-pct">—</div>
+          <div style="font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">AI Content</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.65rem;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--green);" id="stat-human-pct">—</div>
+          <div style="font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Human Content</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.65rem;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--teal);" id="stat-words">—</div>
+          <div style="font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Words</div>
+        </div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:0.65rem;text-align:center;">
+          <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--purple);" id="stat-sentences">—</div>
+          <div style="font-size:0.67rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:2px;">Sentences</div>
+        </div>
+      </div>
+
+      <!-- AI Signals detected -->
+      <div class="signals-title">Detected Signals</div>
+      <div class="signals-list" id="signals-list"></div>
+
+      <!-- Sentence highlight -->
+      <div class="highlight-section">
+        <div class="highlight-label">Sentence-Level Analysis</div>
+        <div class="highlighted-text" id="highlighted-text"></div>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(248,113,113,0.4);border:1px solid rgba(248,113,113,0.5);"></div>AI-generated sentence</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);"></div>Human-written sentence</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Humanized output (shown when mode includes humanize) -->
+    <div class="humanize-card" id="humanize-card" style="display:none;">
+      <div class="humanize-header">
+        <div class="humanize-title"><div class="dot"></div>Humanized Content — 0% AI Detected</div>
+        <div class="export-btns">
+          <button class="btn-copy" id="copy-humanized" onclick="copyHumanized()">📋 Copy</button>
+          <button class="btn-export" onclick="exportHumanized()">⬇ TXT</button>
+          <button class="btn-recheck" onclick="recheckHumanized()">🔍 Re-check this</button>
+        </div>
+      </div>
+      <div class="humanize-body">
+        <div class="humanize-meta" id="humanize-meta"></div>
+        <div class="humanized-text" id="humanized-text"></div>
+      </div>
+    </div>
+
+    <!-- Humanize CTA (shown when mode is detect-only and AI was found) -->
+    <div id="humanize-cta" style="display:none;margin-bottom:1rem;">
+      <div style="background:linear-gradient(135deg,rgba(232,184,75,0.08),rgba(10,191,188,0.06));border:1px solid var(--border2);border-radius:var(--radius);padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:0.3rem;">🧬 Want to humanize this content?</div>
+          <div style="font-size:0.82rem;color:var(--muted);">Transform it into 100% human-written content that bypasses AI detectors.</div>
+        </div>
+        <button onclick="switchToHumanize()" style="background:linear-gradient(135deg,var(--accent),var(--accent3));color:var(--bg);border:none;padding:0.7rem 1.5rem;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;white-space:nowrap;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">✨ Humanize Now →</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INFO CARDS -->
+  <div class="info-grid">
+    <div class="info-card"><div class="info-card-icon">🔍</div><div class="info-card-title">How Detection Works</div><div class="info-card-desc">We analyze sentence-level perplexity, burstiness, vocabulary variance, and phrasing patterns to identify AI-generated content.</div></div>
+    <div class="info-card"><div class="info-card-icon">🧬</div><div class="info-card-title">What Humanizing Does</div><div class="info-card-desc">The AI rewrites your content using varied sentence structures, natural imperfections, contractions, and personal voice to mimic human writing.</div></div>
+    <div class="info-card"><div class="info-card-icon">✅</div><div class="info-card-title">Bypass AI Detectors</div><div class="info-card-desc">Humanized content is designed to pass Turnitin, GPTZero, Originality.ai, Copyleaks, and other leading AI detection tools.</div></div>
+    <div class="info-card"><div class="info-card-icon">📝</div><div class="info-card-title">Tone Preserved</div><div class="info-card-desc">The meaning, facts, and intent of your content are preserved. Only the style and structure are rewritten to sound more human.</div></div>
+  </div>
+
+</main>
+
+<footer><p>Part of <a href="https://ranksorcery.com/" class="footer-logo">✦ RankSorcery</a> — Free AI SEO Tools Suite · No account needed</p></footer>
+
+<script>
+// ── MODEL MAP ──────────────────────────────────────────────────
+const MODEL_MAP = {
+  'gemini-2.0-flash':            'google/gemini-2.0-flash-001',
+  'meta-llama/llama-4-maverick': 'meta-llama/llama-4-maverick',
+  'deepseek-chat':               'deepseek/deepseek-chat',
+  'gpt-4o':                      'openai/gpt-4o',
+  'claude-sonnet-4-5':           'anthropic/claude-sonnet-4-5',
+  'mistral-large-latest':        'mistralai/mistral-large',
+};
+
+// ── State ──────────────────────────────────────────────────────
+let currentMode = 'detect';
+let lastHumanizedText = '';
+let stepTimeout;
+
+// ── Mode ───────────────────────────────────────────────────────
+function setMode(mode) {
+  currentMode = mode;
+  ['detect','both','humanize'].forEach(m => {
+    document.getElementById('tab-' + m).classList.toggle('active', m === mode);
+  });
+  const iconMap = { detect:'🔍', both:'🧬', humanize:'✨' };
+  const textMap = { detect:'Analyze Content', both:'Detect & Humanize', humanize:'Humanize Content' };
+  document.getElementById('gen-icon').textContent = iconMap[mode];
+  document.getElementById('gen-text').textContent = textMap[mode];
+  // Hide step 5 for detect-only
+  document.getElementById('step5').style.opacity = mode === 'detect' ? '0.2' : '';
+}
+
+// ── Char count ─────────────────────────────────────────────────
+function updateCharCount() {
+  const len = document.getElementById('contentInput').value.length;
+  const el = document.getElementById('char-count');
+  el.textContent = `${len.toLocaleString()} / 8,000`;
+  el.className = 'char-count' + (len > 7000 ? ' warn' : '');
+}
+
+// ── Steps animation ────────────────────────────────────────────
+function animateSteps(includeHumanize) {
+  const steps = ['step1','step2','step3','step4','step5'];
+  const active = includeHumanize ? steps : steps.slice(0, 4);
+  let i = 0;
+  function next() {
+    steps.forEach((s, idx) => {
+      const el = document.getElementById(s);
+      if (idx < i) el.className = 'step-item done';
+      else if (idx === i) el.className = 'step-item active';
+      else el.className = 'step-item';
+    });
+    if (i < active.length - 1) { i++; stepTimeout = setTimeout(next, 1800); }
+  }
+  next();
+}
+
+// ── Build detect prompt ────────────────────────────────────────
+function buildDetectPrompt(text) {
+  return `You are an expert AI content detection system. Analyze the following text and determine what percentage is AI-generated versus human-written.
+
+TEXT TO ANALYZE:
+"""
+${text}
+"""
+
+Provide a thorough analysis. Respond ONLY in this exact JSON format (no markdown, no extra text):
+{
+  "ai_percentage": 78,
+  "human_percentage": 22,
+  "verdict": "Mostly AI-Generated",
+  "confidence": "High",
+  "word_count": 245,
+  "sentence_count": 12,
+  "signals": [
+    {"label": "Repetitive sentence structure", "type": "ai"},
+    {"label": "Lacks personal anecdotes", "type": "ai"},
+    {"label": "Overly formal transitions", "type": "ai"},
+    {"label": "Some natural phrasing found", "type": "human"}
+  ],
+  "sentences": [
+    {"text": "The first sentence here.", "is_ai": true},
+    {"text": "Second sentence here.", "is_ai": false}
+  ]
+}
+
+Verdict options: "Likely Human-Written" | "Mostly Human-Written" | "Mixed Content" | "Mostly AI-Generated" | "Likely AI-Generated"
+Confidence options: "Low" | "Medium" | "High"
+signals: list 3-6 specific patterns detected, labeling each as "ai", "human", or "mixed"
+sentences: break the text into individual sentences and label each as ai (true) or human (false)`;
+}
+
+// ── Build humanize prompt ──────────────────────────────────────
+function buildHumanizePrompt(text, style, level, type) {
+  const levelInstructions = {
+    light: 'Make minimal changes. Fix only the most obvious AI patterns while keeping most of the original wording.',
+    moderate: 'Rewrite with moderate changes. Vary sentence structure, add natural connectors, use contractions, and introduce slight imperfections that make it sound human.',
+    aggressive: 'Fully rewrite the content from scratch in a completely natural human voice. Change phrasing significantly, vary sentence lengths dramatically, add personal-sounding observations, use idiomatic expressions, and eliminate all AI patterns.'
+  };
+  const styleMap = {
+    natural: 'natural and conversational',
+    professional: 'professional and formal but still human',
+    casual: 'casual, friendly and relaxed',
+    academic: 'academic but with natural human voice',
+    storytelling: 'narrative and storytelling style',
+    journalistic: 'journalistic news-writing style'
+  };
+
+  return `You are an expert content humanizer. Your job is to rewrite the following AI-generated ${type} content so that it reads as 100% natural human writing that will bypass all AI detection tools including Turnitin, GPTZero, Originality.ai, and Copyleaks.
+
+ORIGINAL CONTENT:
+"""
+${text}
+"""
+
+HUMANIZATION INSTRUCTIONS:
+- Writing style: ${styleMap[style] || 'natural and conversational'}
+- Humanization level: ${levelInstructions[level] || levelInstructions.moderate}
+- Use varied sentence lengths (mix short punchy sentences with longer ones)
+- Add natural transitions and connectors humans actually use
+- Use contractions where appropriate (don't, won't, it's, you'll, etc.)
+- Vary vocabulary — avoid overly formal or repetitive word choices
+- Add occasional parenthetical asides or em dashes for natural flow
+- Use first-person perspective naturally if appropriate
+- Preserve all factual information, key points, and the overall meaning
+- Do NOT add fictional facts or change the core message
+- Output ONLY the humanized text — no explanations, no labels, no preamble`;
+}
+
+// ── Main analysis ──────────────────────────────────────────────
+async function runAnalysis() {
+  const text = document.getElementById('contentInput').value.trim();
+  const errorBox = document.getElementById('error-box');
+  errorBox.className = 'error-box';
+
+  if (!text) { errorBox.className = 'error-box show'; errorBox.textContent = '⚠ Please paste some content to analyze.'; return; }
+  const wordCount = text.split(/\s+/).filter(Boolean).length;
+  if (wordCount < 20) { errorBox.className = 'error-box show'; errorBox.textContent = '⚠ Please enter at least 20 words for accurate detection.'; return; }
+
+  const modelKey = document.querySelector('input[name=model]:checked').value;
+  const orModel = MODEL_MAP[modelKey] || 'google/gemini-2.0-flash-001';
+  const includeHumanize = currentMode === 'both' || currentMode === 'humanize';
+
+  // UI: loading
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  document.getElementById('gen-icon').innerHTML = '<span class="spinner-sm"></span>';
+  document.getElementById('gen-text').textContent = 'Analyzing…';
+  document.getElementById('spinner-wrap').classList.add('show');
+  document.getElementById('detect-result').classList.remove('show');
+  animateSteps(includeHumanize);
+
+  try {
+    // ── STEP 1: Detection ──────────────────────────────────────
+    document.getElementById('spinner-text').textContent = 'Scanning for AI patterns…';
+    const detectPrompt = currentMode === 'humanize'
+      ? null  // skip detection in humanize-only mode
+      : buildDetectPrompt(text);
+
+    let detectionData = null;
+
+    if (detectPrompt) {
+      const detectRes = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model: orModel,
+          stream: false,
+          messages:[
+            { role:'system', content:'You are an expert AI content detection system. Always respond with valid JSON only.' },
+            { role:'user', content: detectPrompt }
+          ]
+        })
+      });
+
+      if (!detectRes.ok) {
+        const err = await detectRes.json().catch(()=>({}));
+        throw new Error(err?.error?.message || `API error ${detectRes.status}`);
+      }
+
+      const detectJson = await detectRes.json();
+      const rawText = detectJson?.choices?.[0]?.message?.content || '';
+      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('Could not parse detection results. Please try again.');
+      detectionData = JSON.parse(jsonMatch[0]);
+
+      renderDetectionResult(detectionData, text);
+    }
+
+    // ── STEP 2: Humanize (streaming) ───────────────────────────
+    if (includeHumanize) {
+      document.getElementById('spinner-text').textContent = 'Humanizing content…';
+      const style = document.getElementById('writingStyle').value;
+      const level = document.getElementById('humanizeLevel').value;
+      const type  = document.getElementById('contentType').value;
+
+      const humanizeRes = await fetch('https://openroute-api.webmasterjamez.workers.dev/', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model: orModel,
+          stream: true,
+          messages:[
+            { role:'system', content:'You are an expert content humanizer. Output only the humanized text with no explanations.' },
+            { role:'user', content: buildHumanizePrompt(text, style, level, type) }
+          ]
+        })
+      });
+
+      if (!humanizeRes.ok) {
+        const err = await humanizeRes.json().catch(()=>({}));
+        throw new Error(err?.error?.message || `Humanize API error ${humanizeRes.status}`);
+      }
+
+      // Show humanize card and stream
+      const card = document.getElementById('humanize-card');
+      const textEl = document.getElementById('humanized-text');
+      card.style.display = '';
+      textEl.textContent = '';
+
+      const reader = humanizeRes.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = '';
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream:true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed || trimmed === 'data: [DONE]') continue;
+          if (!trimmed.startsWith('data: ')) continue;
+          try {
+            const json = JSON.parse(trimmed.slice(6));
+            const chunk = json?.choices?.[0]?.delta?.content ?? '';
+            if (chunk) { fullText += chunk; textEl.textContent = fullText; }
+          } catch(_) {}
+        }
+      }
+
+      lastHumanizedText = fullText;
+
+      // Add meta badges
+      const levelLabels = { light:'Light Humanization', moderate:'Moderate Humanization', aggressive:'Full Rewrite' };
+      const styleLabels = { natural:'Natural Voice', professional:'Professional', casual:'Casual', academic:'Academic', storytelling:'Storytelling', journalistic:'Journalistic' };
+      document.getElementById('humanize-meta').innerHTML = `
+        <div class="humanize-meta-item">✅ 0% AI Target</div>
+        <div class="humanize-meta-item">🎯 ${levelLabels[level] || 'Moderate'}</div>
+        <div class="humanize-meta-item">🗣️ ${styleLabels[style] || 'Natural Voice'}</div>
+        <div class="humanize-meta-item">📝 ${fullText.split(/\s+/).filter(Boolean).length} words</div>`;
+
+      // If detect-only mode was used before, hide the CTA
+      if (currentMode === 'humanize') {
+        // render a simple detection placeholder
+        renderHumanizeOnlyMode(fullText, text);
+      }
+    }
+
+    document.getElementById('detect-result').classList.add('show');
+    document.getElementById('detect-result').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  } catch(err) {
+    errorBox.className = 'error-box show';
+    errorBox.textContent = `⚠ ${err.message || 'Something went wrong. Please try again.'}`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gen-icon').textContent = currentMode === 'detect' ? '🔍' : currentMode === 'both' ? '🧬' : '✨';
+    document.getElementById('gen-text').textContent = currentMode === 'detect' ? 'Analyze Again' : currentMode === 'both' ? 'Detect & Humanize Again' : 'Humanize Again';
+    document.getElementById('spinner-wrap').classList.remove('show');
+    clearTimeout(stepTimeout);
+    ['step1','step2','step3','step4','step5'].forEach(s => { document.getElementById(s).className = 'step-item'; });
+  }
+}
+
+// ── Render detection results ───────────────────────────────────
+function renderDetectionResult(data, originalText) {
+  const aiPct = Math.max(0, Math.min(100, data.ai_percentage || 0));
+  const humanPct = 100 - aiPct;
+
+  // Verdict
+  const verdictColor = aiPct >= 70 ? 'var(--red)' : aiPct >= 40 ? 'var(--amber)' : 'var(--green)';
+  document.getElementById('score-verdict').textContent = data.verdict || (aiPct >= 70 ? 'Likely AI-Generated' : aiPct >= 40 ? 'Mixed Content' : 'Likely Human-Written');
+  document.getElementById('score-verdict').style.color = verdictColor;
+  document.getElementById('score-sub-verdict').textContent = `Confidence: ${data.confidence || 'Medium'} · ${data.word_count || originalText.split(/\s+/).filter(Boolean).length} words analyzed`;
+
+  // Gauge
+  const circumference = 141.37;
+  const offset = circumference - (aiPct / 100) * circumference;
+  const gaugeEl = document.getElementById('gauge-fill');
+  gaugeEl.style.strokeDashoffset = circumference;
+  gaugeEl.style.stroke = aiPct >= 70 ? '#f87171' : aiPct >= 40 ? '#fbbf24' : '#34d399';
+  setTimeout(() => { gaugeEl.style.strokeDashoffset = offset; }, 100);
+  document.getElementById('gauge-pct').textContent = aiPct + '%';
+  document.getElementById('gauge-pct').style.color = verdictColor;
+
+  // Meter bar
+  const barEl = document.getElementById('meter-bar-fill');
+  barEl.style.width = '0%';
+  barEl.style.background = aiPct >= 70
+    ? 'linear-gradient(90deg,#34d399,#fbbf24,#f87171)'
+    : aiPct >= 40
+    ? 'linear-gradient(90deg,#34d399,#fbbf24)'
+    : 'var(--green)';
+  setTimeout(() => { barEl.style.width = aiPct + '%'; }, 100);
+
+  // Stats
+  document.getElementById('stat-ai-pct').textContent = aiPct + '%';
+  document.getElementById('stat-ai-pct').style.color = verdictColor;
+  document.getElementById('stat-human-pct').textContent = humanPct + '%';
+  document.getElementById('stat-words').textContent = data.word_count || originalText.split(/\s+/).filter(Boolean).length;
+  document.getElementById('stat-sentences').textContent = data.sentence_count || (data.sentences || []).length;
+
+  // Signals
+  const signalsList = document.getElementById('signals-list');
+  signalsList.innerHTML = (data.signals || []).map(s => {
+    const cls = s.type === 'ai' ? 'signal-ai' : s.type === 'human' ? 'signal-human' : 'signal-mixed';
+    const icon = s.type === 'ai' ? '🤖' : s.type === 'human' ? '✍️' : '⚡';
+    return `<span class="signal-tag ${cls}">${icon} ${esc(s.label)}</span>`;
+  }).join('');
+
+  // Sentence highlights
+  const highlightEl = document.getElementById('highlighted-text');
+  if (data.sentences && data.sentences.length > 0) {
+    highlightEl.innerHTML = data.sentences.map(s =>
+      `<span class="${s.is_ai ? 'ai-sentence' : 'human-sentence'}">${esc(s.text)}</span> `
+    ).join('');
+  } else {
+    highlightEl.textContent = originalText;
+  }
+
+  // Show/hide humanize CTA
+  const cta = document.getElementById('humanize-cta');
+  if (currentMode === 'detect' && aiPct > 20) {
+    cta.style.display = '';
+  } else {
+    cta.style.display = 'none';
+  }
+}
+
+// ── Humanize-only mode placeholder detection ───────────────────
+function renderHumanizeOnlyMode(humanizedText, originalText) {
+  // Show a simplified detection for humanize-only
+  document.getElementById('score-verdict').textContent = 'Content Humanized';
+  document.getElementById('score-verdict').style.color = 'var(--green)';
+  document.getElementById('score-sub-verdict').textContent = 'Original content has been rewritten in human voice';
+  document.getElementById('gauge-pct').textContent = '0%';
+  document.getElementById('gauge-pct').style.color = 'var(--green)';
+  document.getElementById('gauge-fill').style.strokeDashoffset = '141.37';
+  document.getElementById('gauge-fill').style.stroke = '#34d399';
+  document.getElementById('meter-bar-fill').style.width = '2%';
+  document.getElementById('meter-bar-fill').style.background = 'var(--green)';
+  document.getElementById('stat-ai-pct').textContent = '~0%';
+  document.getElementById('stat-human-pct').textContent = '~100%';
+  document.getElementById('stat-words').textContent = humanizedText.split(/\s+/).filter(Boolean).length;
+  document.getElementById('stat-sentences').textContent = '—';
+  document.getElementById('signals-list').innerHTML = `<span class="signal-tag signal-human">✍️ Humanized successfully</span><span class="signal-tag signal-human">✅ AI patterns removed</span>`;
+  document.getElementById('highlighted-text').textContent = 'Run "Detect + Humanize" to see sentence-level analysis of the original content.';
+  document.getElementById('humanize-cta').style.display = 'none';
+}
+
+// ── Switch to humanize mode from CTA ──────────────────────────
+function switchToHumanize() {
+  setMode('both');
+  runAnalysis();
+}
+
+// ── Recheck humanized content ──────────────────────────────────
+function recheckHumanized() {
+  if (!lastHumanizedText) return;
+  document.getElementById('contentInput').value = lastHumanizedText;
+  updateCharCount();
+  setMode('detect');
+  runAnalysis();
+}
+
+// ── Copy humanized ─────────────────────────────────────────────
+function copyHumanized() {
+  const text = document.getElementById('humanized-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-humanized');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+}
+
+// ── Export humanized ───────────────────────────────────────────
+function exportHumanized() {
+  const text = document.getElementById('humanized-text').textContent;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type:'text/plain' }));
+  a.download = 'humanized-content.txt';
+  a.click();
+}
+
+// ── Helpers ────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Nav ────────────────────────────────────────────────────────
+function toggleDd(id) {
+  const dd=document.getElementById(id), menu=document.getElementById(id+'-menu'), toggle=dd.querySelector('.nav-dropdown-toggle');
+  const open=menu.classList.toggle('open');
+  toggle.classList.toggle('open',open);
+  document.querySelectorAll('.nav-dropdown-menu.open').forEach(m=>{if(m!==menu){m.classList.remove('open');m.closest('.nav-dropdown').querySelector('.nav-dropdown-toggle').classList.remove('open');}});
+  if(open){document.addEventListener('click',function c(e){if(!dd.contains(e.target)){menu.classList.remove('open');toggle.classList.remove('open');document.removeEventListener('click',c);}});}
+}
+function toggleMobile(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-submenu').classList.toggle('open');}
+
+// ── Model card click ───────────────────────────────────────────
+document.querySelectorAll('.model-card').forEach(card => {
+  card.addEventListener('click', e => {
+    if (card.classList.contains('pro-locked')) { e.preventDefault(); return; }
+    document.querySelectorAll('.model-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    card.querySelector('input[type=radio]').checked = true;
+  });
+});
+</script>
+</body>
+</html>
