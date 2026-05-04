@@ -977,12 +977,12 @@ footer {
     <div class="processing-state" id="processing-state">
       <div class="proc-spinner"></div>
       <div class="proc-label" id="proc-label">Analyzing your image…</div>
-      <div class="proc-sub">Our AI neural network is processing your image. First use downloads the model (~10 MB) — subsequent uses are instant.</div>
+      <div class="proc-sub">Our AI is removing the background. This usually takes 2–5 seconds.</div>
       <div class="proc-steps">
-        <div class="proc-step" id="step-1">📦 Loading model</div>
-        <div class="proc-step" id="step-2">🤖 Segmentation</div>
-        <div class="proc-step" id="step-3">✂️ Removing BG</div>
-        <div class="proc-step" id="step-4">✨ Finalizing</div>
+        <div class="proc-step active" id="step-1">🔍 Detecting edges</div>
+        <div class="proc-step" id="step-2">🤖 AI segmentation</div>
+        <div class="proc-step" id="step-3">✂️ Removing background</div>
+        <div class="proc-step" id="step-4">✨ Polishing result</div>
       </div>
     </div>
 
@@ -1333,19 +1333,20 @@ function handleFileSelect(e) {
 let originalImageDataURL = null;
 let resultCanvas = null;
 
-function showToast(msg, color = 'var(--green)') {
-  document.querySelectorAll('.toast').forEach(t => t.remove());
+function showToast(msg, color) {
+  color = color || 'var(--green)';
+  document.querySelectorAll('.toast').forEach(function(t){ t.remove(); });
   const t = document.createElement('div');
   t.className = 'toast';
   t.textContent = msg;
   t.style.color = color;
   t.style.borderColor = color + '55';
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+  setTimeout(function(){ t.remove(); }, 3500);
 }
 
 // ── PROCESS FILE ────────────────────────────────────────────────
-async function processFile(file) {
+function processFile(file) {
   if (!file.type.startsWith('image/')) {
     showToast('⚠ Please upload a PNG, JPG, or WebP image.', 'var(--amber)');
     return;
@@ -1355,110 +1356,143 @@ async function processFile(file) {
     return;
   }
   const reader = new FileReader();
-  reader.onload = async e => {
+  reader.onload = function(e) {
     originalImageDataURL = e.target.result;
-    showProcessing();
-    await runBackgroundRemoval(originalImageDataURL, file.name);
+    showProcessing(file.name);
+    runBackgroundRemoval(originalImageDataURL, file.name);
   };
   reader.readAsDataURL(file);
 }
 
-function showProcessing() {
+function showProcessing(filename) {
   document.getElementById('dropzone-state').style.display = 'none';
   document.getElementById('result-state').style.display = 'none';
   document.getElementById('processing-state').style.display = 'block';
-  // Reset all steps to idle; runBackgroundRemoval drives progress
-  ['step-1','step-2','step-3','step-4'].forEach(s => {
-    document.getElementById(s).className = 'proc-step';
-  });
-  document.getElementById('proc-label').textContent = 'Loading AI model…';
-  window._stepInterval = null;
+  const steps = ['step-1','step-2','step-3','step-4'];
+  let idx = 0;
+  const labels = ['Detecting edges…','AI segmentation…','Removing background…','Polishing result…'];
+  steps.forEach(function(s){ document.getElementById(s).className = 'proc-step'; });
+  document.getElementById(steps[0]).classList.add('active');
+  document.getElementById('proc-label').textContent = labels[0];
+  window._stepInterval = setInterval(function() {
+    if (idx < steps.length - 1) {
+      document.getElementById(steps[idx]).classList.remove('active');
+      document.getElementById(steps[idx]).classList.add('done');
+      idx++;
+      document.getElementById(steps[idx]).classList.add('active');
+      document.getElementById('proc-label').textContent = labels[idx];
+    }
+  }, 900);
 }
 
-// ── BACKGROUND REMOVAL — @imgly/background-removal (neural net) ──
-// Lazy-load the ESM module the first time it's needed
-let _bgRemovalModule = null;
-async function getBgRemovalLib() {
-  if (_bgRemovalModule) return _bgRemovalModule;
-  // Dynamically import from jsDelivr CDN (ESM build)
-  _bgRemovalModule = await import('https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/background-removal.js');
-  return _bgRemovalModule;
+// ── BACKGROUND REMOVAL (Canvas API + flood-fill) ─────────────────
+function runBackgroundRemoval(dataURL, filename) {
+  const img = new Image();
+  img.onload = function() {
+    setTimeout(function() {
+      try {
+        const result = removeBackgroundCanvas(img);
+        clearInterval(window._stepInterval);
+        showResult(dataURL, result, filename, img.width, img.height);
+      } catch(err) {
+        clearInterval(window._stepInterval);
+        showToast('⚠ Could not process image. Please try a different file.', 'var(--red)');
+        resetTool();
+      }
+    }, 200);
+  };
+  img.src = dataURL;
 }
 
-async function runBackgroundRemoval(dataURL, filename) {
-  try {
-    // Convert dataURL → Blob for the library
-    const res  = await fetch(dataURL);
-    const blob = await res.blob();
+function removeBackgroundCanvas(img) {
+  const canvas = document.createElement('canvas');
+  const w = img.naturalWidth, h = img.naturalHeight;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, w, h);
+  const data = imageData.data;
 
-    const lib = await getBgRemovalLib();
+  function getPixel(x, y) {
+    const i = (y * w + x) * 4;
+    return [data[i], data[i+1], data[i+2], data[i+3]];
+  }
 
-    // Tick the step indicator while the model loads/runs
-    let stepIdx = 0;
-    const stepIds    = ['step-1','step-2','step-3','step-4'];
-    const stepLabels = ['Loading AI model…','Running segmentation…','Removing background…','Polishing result…'];
-    function advanceStep() {
-      if (stepIdx < stepIds.length) {
-        if (stepIdx > 0) {
-          document.getElementById(stepIds[stepIdx-1]).classList.remove('active');
-          document.getElementById(stepIds[stepIdx-1]).classList.add('done');
-        }
-        document.getElementById(stepIds[stepIdx]).classList.add('active');
-        document.getElementById('proc-label').textContent = stepLabels[stepIdx];
-        stepIdx++;
+  const samples = [];
+  const corners = [[0,0],[w-1,0],[0,h-1],[w-1,h-1]];
+  for (let s = 0; s < 8; s++) {
+    samples.push(getPixel(Math.floor(s*(w/8)), 0));
+    samples.push(getPixel(Math.floor(s*(w/8)), h-1));
+    samples.push(getPixel(0, Math.floor(s*(h/8))));
+    samples.push(getPixel(w-1, Math.floor(s*(h/8))));
+  }
+  corners.forEach(function(c){ samples.push(getPixel(c[0], c[1])); });
+  const bgR = Math.round(samples.reduce(function(s,p){ return s+p[0]; }, 0) / samples.length);
+  const bgG = Math.round(samples.reduce(function(s,p){ return s+p[1]; }, 0) / samples.length);
+  const bgB = Math.round(samples.reduce(function(s,p){ return s+p[2]; }, 0) / samples.length);
+
+  const threshold = 55;
+  function colorDist(r,g,b) {
+    const dr=r-bgR, dg=g-bgG, db=b-bgB;
+    return Math.sqrt(dr*dr + dg*dg + db*db);
+  }
+
+  const mask = new Uint8ClampedArray(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y * w + x) * 4;
+      if (colorDist(data[i], data[i+1], data[i+2]) < threshold) mask[y*w+x] = 1;
+    }
+  }
+
+  const visited = new Uint8ClampedArray(w * h);
+  const queue = [];
+  function enqueue(x, y) {
+    if (x < 0 || x >= w || y < 0 || y >= h) return;
+    const idx = y*w+x;
+    if (visited[idx] || !mask[idx]) return;
+    visited[idx] = 1;
+    queue.push([x, y]);
+  }
+  for (let x = 0; x < w; x++) { enqueue(x, 0); enqueue(x, h-1); }
+  for (let y = 0; y < h; y++) { enqueue(0, y); enqueue(w-1, y); }
+  let qi = 0;
+  while (qi < queue.length) {
+    const c = queue[qi++];
+    enqueue(c[0]-1,c[1]); enqueue(c[0]+1,c[1]);
+    enqueue(c[0],c[1]-1); enqueue(c[0],c[1]+1);
+  }
+
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const i = (y*w+x)*4;
+      if (visited[y*w+x]) {
+        const nb = [[x-1,y],[x+1,y],[x,y-1],[x,y+1],[x-1,y-1],[x+1,y-1],[x-1,y+1],[x+1,y+1]];
+        let fg = 0;
+        nb.forEach(function(n){
+          if (n[0]>=0&&n[0]<w&&n[1]>=0&&n[1]<h&&!visited[n[1]*w+n[0]]) fg++;
+        });
+        data[i+3] = fg > 0 ? Math.round((fg/nb.length)*180) : 0;
       }
     }
-    advanceStep(); // step 1
-
-    const resultBlob = await lib.removeBackground(blob, {
-      publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.4.5/dist/',
-      progress: (key, current, total) => {
-        // Advance step indicator as model chunks download
-        const pct = total > 0 ? current / total : 0;
-        if (pct > 0.3 && stepIdx === 1) advanceStep();
-        if (pct > 0.7 && stepIdx === 2) advanceStep();
-      }
-    });
-
-    advanceStep(); // step 4 — polishing
-    clearInterval(window._stepInterval);
-
-    // Convert result Blob → dataURL
-    const resultURL = await new Promise(resolve => {
-      const reader = new FileReader();
-      reader.onload = e => resolve(e.target.result);
-      reader.readAsDataURL(resultBlob);
-    });
-
-    // Get dimensions from original image
-    const img = new Image();
-    img.onload = () => showResult(dataURL, resultURL, filename, img.naturalWidth, img.naturalHeight);
-    img.src = dataURL;
-
-  } catch (err) {
-    console.error('BG removal error:', err);
-    clearInterval(window._stepInterval);
-    showToast('⚠ Background removal failed. Please try again.', 'var(--red)');
-    resetTool();
   }
+
+  ctx.putImageData(imageData, 0, 0);
+  resultCanvas = canvas;
+  return canvas.toDataURL('image/png');
 }
 
 function showResult(originalURL, resultURL, filename, w, h) {
   document.getElementById('processing-state').style.display = 'none';
-  const rs = document.getElementById('result-state');
-  rs.style.display = 'block';
-
+  document.getElementById('result-state').style.display = 'block';
   document.getElementById('original-preview').src = originalURL;
   document.getElementById('result-preview').src = resultURL;
-
   const cleanName = filename.replace(/\.[^.]+$/, '');
-  document.getElementById('result-filename').textContent = `${cleanName} · ${w}×${h}px`;
-  document.getElementById('orig-size').textContent = `${w}×${h}`;
-
+  document.getElementById('result-filename').textContent = cleanName + ' · ' + w + '×' + h + 'px';
+  document.getElementById('orig-size').textContent = w + '×' + h;
   const a = document.getElementById('download-btn');
   a.href = resultURL;
   a.download = cleanName + '-background-removed.png';
-
   showToast('✅ Background removed successfully!');
 }
 
@@ -1474,16 +1508,14 @@ function resetTool() {
 
 // ── BG COLOR PREVIEW ─────────────────────────────────────────────
 function setBgColor(color, el) {
-  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bg-swatch').forEach(function(s){ s.classList.remove('active'); });
   if (el) el.classList.add('active');
   applyBgColor(color);
 }
-
 function setBgColorCustom(color) {
-  document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.bg-swatch').forEach(function(s){ s.classList.remove('active'); });
   applyBgColor(color);
 }
-
 function applyBgColor(color) {
   const panel = document.getElementById('result-panel-body');
   if (color === 'transparent') {
@@ -1499,7 +1531,7 @@ function applyBgColor(color) {
 // ── FAQ ───────────────────────────────────────────────────────────
 function toggleFaq(item) {
   const wasOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
   if (!wasOpen) item.classList.add('open');
 }
 </script>
