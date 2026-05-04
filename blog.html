@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — RankSorcery | SEO Tips, AI Tools & Growth Strategies</title>
+<meta name="description" content="Expert SEO insights, AI tool guides, and digital marketing strategies from the RankSorcery team. No fluff, just rankings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --bg3: #13131f;
+    --card: #111120;
+    --card-hover: #161628;
+    --border: rgba(139,92,246,0.15);
+    --border-hover: rgba(139,92,246,0.4);
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --purple-dim: rgba(139,92,246,0.08);
+    --cyan: #22d3ee;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --accent: #f59e0b;
+    --radius: 12px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: .5;
+  }
+
+  /* ── TOP GLOW ── */
+  .top-glow {
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(139,92,246,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    gap: 24px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: -0.02em;
+    flex-shrink: 0;
+  }
+  .logo-icon { color: var(--purple); font-size: 1.1rem; }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+  .nav-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: color .2s, background .2s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { color: var(--text); background: var(--purple-dim); }
+  .nav-links a.active { color: var(--purple-light); }
+  .nav-cta {
+    background: var(--purple);
+    color: #fff !important;
+    padding: 6px 14px !important;
+    border-radius: 7px !important;
+    font-weight: 600 !important;
+    font-size: 0.8rem !important;
+    transition: background .2s, transform .15s !important;
+  }
+  .nav-cta:hover { background: var(--purple-light) !important; transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 72px 24px 56px;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-dim);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--purple-light);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeUp .5s ease both;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 16px;
+    animation: fadeUp .5s .1s ease both;
+  }
+  .hero h1 span { color: var(--purple-light); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 540px;
+    margin: 0 auto 36px;
+    animation: fadeUp .5s .2s ease both;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 48px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    animation: fadeUp .5s .3s ease both;
+  }
+  .filter-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 4px;
+  }
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .filter-btn:hover { border-color: var(--border-hover); color: var(--text); background: var(--card-hover); }
+  .filter-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; font-weight: 600; }
+
+  /* ── FEATURED POST ── */
+  .featured-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 56px;
+    animation: fadeUp .5s .35s ease both;
+  }
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin-bottom: 20px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .featured-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color .25s, transform .25s, box-shadow .25s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .featured-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(139,92,246,0.12);
+  }
+  .featured-image {
+    background: linear-gradient(135deg, #1a1040 0%, #0d1a2e 50%, #0a1520 100%);
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .featured-image .img-graphic {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 30% 40%, rgba(139,92,246,0.35) 0%, transparent 50%),
+      radial-gradient(circle at 75% 70%, rgba(34,211,238,0.2) 0%, transparent 45%);
+  }
+  .featured-image .img-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(139,92,246,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139,92,246,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .img-icon {
+    position: relative;
+    z-index: 1;
+    font-size: 4rem;
+    filter: drop-shadow(0 0 30px rgba(139,92,246,0.6));
+  }
+  .featured-body {
+    padding: 40px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tag-purple { background: rgba(139,92,246,0.15); color: var(--purple-light); border: 1px solid rgba(139,92,246,0.25); }
+  .tag-cyan { background: rgba(34,211,238,0.1); color: var(--cyan); border: 1px solid rgba(34,211,238,0.2); }
+  .tag-amber { background: rgba(245,158,11,0.1); color: var(--accent); border: 1px solid rgba(245,158,11,0.2); }
+  .tag-green { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+  .featured-body h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.65rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--text);
+  }
+  .featured-body p {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.77rem;
+    color: var(--text-dim);
+    flex-wrap: wrap;
+  }
+  .post-meta span { display: flex; align-items: center; gap: 4px; }
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--purple-light);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 4px;
+    transition: gap .2s, color .2s;
+  }
+  .read-more:hover { color: #fff; gap: 10px; }
+  .read-more-arrow { transition: transform .2s; }
+  .read-more:hover .read-more-arrow { transform: translateX(4px); }
+
+  /* ── GRID ── */
+  .grid-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .post-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color .25s, transform .25s, box-shadow .25s;
+    text-decoration: none;
+    color: inherit;
+    animation: fadeUp .5s ease both;
+  }
+  .post-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(139,92,246,0.1);
+  }
+  .card-thumb {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-thumb .t-grad { position: absolute; inset: 0; }
+  .card-thumb .t-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .card-thumb-icon { position: relative; z-index: 1; font-size: 2.4rem; filter: drop-shadow(0 0 16px rgba(139,92,246,0.5)); }
+  .card-body { padding: 22px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .card-body h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    color: var(--text);
+  }
+  .card-body p { color: var(--text-muted); font-size: 0.83rem; line-height: 1.6; flex: 1; }
+  .card-footer {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* ── SIDEBAR LAYOUT ── */
+  .main-with-sidebar {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    align-items: start;
+  }
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    position: sticky;
+    top: 84px;
+  }
+  .sidebar-widget {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+  }
+  .widget-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .popular-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .popular-list li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.82rem;
+  }
+  .popular-list li:last-child { border-bottom: none; padding-bottom: 0; }
+  .popular-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--purple);
+    line-height: 1;
+    min-width: 24px;
+    opacity: .5;
+  }
+  .popular-list a { color: var(--text); text-decoration: none; font-weight: 500; line-height: 1.4; }
+  .popular-list a:hover { color: var(--purple-light); }
+  .topics-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+  .topic-chip {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .topic-chip:hover { border-color: var(--purple); color: var(--purple-light); }
+  .newsletter-widget { text-align: center; }
+  .newsletter-widget p { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 14px; }
+  .nl-input {
+    width: 100%;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .nl-input:focus { border-color: var(--purple); }
+  .nl-btn {
+    width: 100%;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .nl-btn:hover { background: var(--purple-light); }
+
+  /* ── PAGINATION ── */
+  .pagination {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+  .page-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .page-btn:hover { border-color: var(--border-hover); color: var(--text); }
+  .page-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--purple-light); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .featured-card { grid-template-columns: 1fr; }
+    .featured-image { min-height: 200px; }
+    .main-with-sidebar { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .posts-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .posts-grid { grid-template-columns: 1fr; }
+    .hero { padding: 48px 20px 36px; }
+    .featured-body { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-glow"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="https://ranksorcery.com/" class="logo">
+      <span class="logo-icon">✦</span> RankSorcery
+    </a>
+    <ul class="nav-links">
+      <li><a href="https://ranksorcery.com/">SEO Auditor</a></li>
+      <li><a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a></li>
+      <li><a href="https://ranksorcery.com/competitor.html">Competitor Analysis</a></li>
+      <li><a href="https://ranksorcery.com/ai-writer-tools.html">AI Writer Tools</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">✦ RankSorcery Blog</div>
+  <h1>SEO Insights &amp;<br><span>AI-Powered</span> Growth Tips</h1>
+  <p>Tactics, tool guides, and ranking strategies from the team behind the free SEO toolkit. No fluff, just results.</p>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="setFilter(this)">🔥 All Posts</button>
+  <button class="filter-btn" onclick="setFilter(this)">🔍 Technical SEO</button>
+  <button class="filter-btn" onclick="setFilter(this)">✍️ AI Writing</button>
+  <button class="filter-btn" onclick="setFilter(this)">📊 Keyword Research</button>
+  <button class="filter-btn" onclick="setFilter(this)">⚔️ Competitor Analysis</button>
+  <button class="filter-btn" onclick="setFilter(this)">🤖 AI Search</button>
+  <button class="filter-btn" onclick="setFilter(this)">⚡ Core Web Vitals</button>
+</div>
+
+<!-- FEATURED -->
+<div class="featured-wrap">
+  <div class="section-label">✦ Featured Post</div>
+  <a href="blog/how-to-rank-with-ai-search-visibility.html" class="featured-card">
+    <div class="featured-image">
+      <div class="img-graphic"></div>
+      <div class="img-grid"></div>
+      <span class="img-icon">🤖</span>
+    </div>
+    <div class="featured-body">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <span class="tag tag-purple">🤖 AI Search</span>
+        <span class="tag tag-cyan">⭐ New</span>
+      </div>
+      <h2>How to Rank in AI Search Results: The Complete 2025 Guide</h2>
+      <p>ChatGPT, Perplexity, and Gemini are now significant traffic sources. Learn how to optimize your content for AI Overview presence and track your brand mentions across all major AI platforms — with our free AI Search Visibility tool.</p>
+      <div class="post-meta">
+        <span>📅 May 2, 2025</span>
+        <span>⏱ 9 min read</span>
+        <span>👁 4,812 views</span>
+      </div>
+      <span class="read-more">Read Full Guide <span class="read-more-arrow">→</span></span>
+    </div>
+  </a>
+</div>
+
+<!-- MAIN + SIDEBAR -->
+<div class="main-with-sidebar">
+
+  <!-- POSTS GRID -->
+  <div>
+    <div class="section-label" style="margin-bottom:20px;">✦ Latest Posts</div>
+    <div class="posts-grid">
+
+      <!-- Card 1 -->
+      <a href="blog/technical-seo-audit-checklist-2025.html" class="post-card" style="animation-delay:.05s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#1a0d40,#0d0d28);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">🧪</span>
+        </div>
+        <div class="card-body">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="tag tag-purple">🔍 Technical SEO</span>
+          </div>
+          <h3>The Ultimate Technical SEO Audit Checklist for 2025</h3>
+          <p>60+ factors to check before your next Google Core Update — from canonical tags to Core Web Vitals.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 28, 2025</span>
+            <span>⏱ 11 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="blog/keyword-research-free-tools.html" class="post-card" style="animation-delay:.1s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#0d1f3a,#081420);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">📊</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-cyan">📊 Keywords</span></div>
+          <h3>Free Keyword Research Tools That Actually Beat Ahrefs</h3>
+          <p>We tested 14 free keyword research tools and ranked them honestly. The winner might surprise you.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 22, 2025</span>
+            <span>⏱ 7 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="blog/ai-blog-writer-seo-content.html" class="post-card" style="animation-delay:.15s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#1f0d35,#150d30);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">✍️</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-purple">✍️ AI Writing</span></div>
+          <h3>How to Write SEO Blog Posts with AI (Without Getting Penalized)</h3>
+          <p>Google's stance on AI content is nuanced. Here's how to use our AI Blog Writer to create content that ranks — not gets filtered.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 18, 2025</span>
+            <span>⏱ 8 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="blog/core-web-vitals-guide-2025.html" class="post-card" style="animation-delay:.2s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#0d2a1f,#081a12);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">⚡</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-green">⚡ Performance</span></div>
+          <h3>Core Web Vitals in 2025: What Changed and How to Fix LCP Fast</h3>
+          <p>Google's latest CWV update shifted how LCP is measured on single-page apps. Here's what to do right now.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 14, 2025</span>
+            <span>⏱ 6 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 5 -->
+      <a href="blog/competitor-seo-gap-analysis.html" class="post-card" style="animation-delay:.25s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#2a1a0d,#1a1008);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">⚔️</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-amber">⚔️ Competitor</span></div>
+          <h3>Competitor SEO Gap Analysis: Steal Rankings in 30 Days</h3>
+          <p>A step-by-step framework using our free Competitor Analysis tool to identify and capture gaps in any niche.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 9, 2025</span>
+            <span>⏱ 10 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 6 -->
+      <a href="blog/schema-markup-complete-guide.html" class="post-card" style="animation-delay:.3s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#1a1040,#10082a);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">🧩</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-purple">🧩 Schema</span></div>
+          <h3>Schema Markup 101: Get Rich Results Without Coding</h3>
+          <p>Walk through every schema type Google supports and generate correct JSON-LD instantly using our Schema Markup Writer.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Apr 3, 2025</span>
+            <span>⏱ 8 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 7 -->
+      <a href="blog/eeat-signals-build-authority.html" class="post-card" style="animation-delay:.35s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#1a0820,#0f0515);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">🏆</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-purple">🏆 E-E-A-T</span></div>
+          <h3>Building E-E-A-T Signals That Google Actually Trusts</h3>
+          <p>Experience, Expertise, Authoritativeness, Trustworthiness — how to demonstrate all four with practical on-page changes.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Mar 28, 2025</span>
+            <span>⏱ 9 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 8 -->
+      <a href="blog/internal-linking-strategy.html" class="post-card" style="animation-delay:.4s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#0d1f3a,#071020);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">🕸️</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-cyan">🔗 Link Building</span></div>
+          <h3>The Internal Linking Strategy That Doubled Our Organic Traffic</h3>
+          <p>How we used topical clusters and our Internal Link Analyzer to build authority across 80+ blog posts in 3 months.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Mar 21, 2025</span>
+            <span>⏱ 7 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 9 -->
+      <a href="blog/redirect-chain-seo-impact.html" class="post-card" style="animation-delay:.45s">
+        <div class="card-thumb">
+          <div class="t-grad" style="background:linear-gradient(135deg,#1f0d10,#140509);"></div>
+          <div class="t-grid"></div>
+          <span class="card-thumb-icon">↪️</span>
+        </div>
+        <div class="card-body">
+          <div><span class="tag tag-amber">⚠️ Technical</span></div>
+          <h3>Redirect Chains Are Killing Your Rankings — Here's How to Fix Them</h3>
+          <p>Even a 3-hop redirect chain leaks significant PageRank. Diagnose and resolve redirect issues in minutes.</p>
+          <div class="post-meta" style="margin-top:4px;">
+            <span>📅 Mar 15, 2025</span>
+            <span>⏱ 5 min</span>
+          </div>
+          <div class="card-footer">
+            <span class="read-more" style="margin-top:0;">Read More <span class="read-more-arrow">→</span></span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <!-- Popular Posts -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔥 Most Popular</div>
+      <ul class="popular-list">
+        <li>
+          <span class="popular-num">01</span>
+          <a href="blog/technical-seo-audit-checklist-2025.html">The Ultimate Technical SEO Audit Checklist for 2025</a>
+        </li>
+        <li>
+          <span class="popular-num">02</span>
+          <a href="blog/how-to-rank-with-ai-search-visibility.html">How to Rank in AI Search Results: The 2025 Guide</a>
+        </li>
+        <li>
+          <span class="popular-num">03</span>
+          <a href="blog/competitor-seo-gap-analysis.html">Competitor SEO Gap Analysis: Steal Rankings in 30 Days</a>
+        </li>
+        <li>
+          <span class="popular-num">04</span>
+          <a href="blog/core-web-vitals-guide-2025.html">Core Web Vitals 2025: What Changed and How to Fix LCP</a>
+        </li>
+        <li>
+          <span class="popular-num">05</span>
+          <a href="blog/ai-blog-writer-seo-content.html">Write SEO Posts with AI Without Getting Penalized</a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Topics -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🏷️ Browse Topics</div>
+      <div class="topics-cloud">
+        <a href="#" class="topic-chip">Technical SEO</a>
+        <a href="#" class="topic-chip">AI Writing</a>
+        <a href="#" class="topic-chip">Keywords</a>
+        <a href="#" class="topic-chip">E-E-A-T</a>
+        <a href="#" class="topic-chip">Core Web Vitals</a>
+        <a href="#" class="topic-chip">Schema</a>
+        <a href="#" class="topic-chip">Competitor Analysis</a>
+        <a href="#" class="topic-chip">Link Building</a>
+        <a href="#" class="topic-chip">AI Search</a>
+        <a href="#" class="topic-chip">On-Page SEO</a>
+        <a href="#" class="topic-chip">Site Speed</a>
+        <a href="#" class="topic-chip">Content Strategy</a>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="sidebar-widget newsletter-widget">
+      <div class="widget-title" style="justify-content:center;">📩 Weekly SEO Tips</div>
+      <p>Get the best SEO tips and tool updates delivered free every week. No spam, unsubscribe anytime.</p>
+      <input class="nl-input" type="email" placeholder="your@email.com">
+      <button class="nl-btn">✦ Subscribe Free</button>
+    </div>
+
+    <!-- CTA -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(34,211,238,0.06));border-color:rgba(139,92,246,0.3);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--purple);color:#fff;font-size:0.82rem;font-weight:600;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Audit My Site →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- PAGINATION -->
+<div class="pagination">
+  <button class="page-btn active">1</button>
+  <button class="page-btn">2</button>
+  <button class="page-btn">3</button>
+  <button class="page-btn" style="width:auto;padding:0 12px;">Next →</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1200px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Tools</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/ai-writer-tools.html">AI Writer Tools</a> &nbsp;·&nbsp;
+    <a href="blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO Tools
+  </div>
+</footer>
+
+<script>
+  function setFilter(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // Stagger card animations on load
+  document.querySelectorAll('.post-card').forEach((card, i) => {
+    card.style.animationDelay = (0.05 + i * 0.06) + 's';
+  });
+</script>
+</body>
+</html>
