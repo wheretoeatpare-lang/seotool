@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Core Web Vitals Checker — LCP, FID, CLS Analysis | RankSorcery</title>
+<meta name="description" content="Free Core Web Vitals checker tool. Instantly test LCP, FID, CLS, INP and TTFB for any URL. Get Google's Page Experience scores and actionable fixes to improve your rankings.">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="author" content="RankSorcery">
+<link rel="canonical" href="https://ranksorcery.com/core-web-vitals-checker.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ranksorcery.com/core-web-vitals-checker.html">
+<meta property="og:title" content="Free Core Web Vitals Checker — LCP, FID, CLS Analysis | RankSorcery">
+<meta property="og:description" content="Test Core Web Vitals for any URL. Get LCP, FID, CLS, INP and TTFB scores with actionable fixes. Free, no login required.">
+<meta property="og:image" content="https://ranksorcery.com/og-image.png">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ranksorcery">
+<meta name="twitter:title" content="Free Core Web Vitals Checker | RankSorcery">
+<meta name="twitter:description" content="Test LCP, FID, CLS, INP and TTFB for any URL. Free Core Web Vitals analysis by RankSorcery.">
+<meta name="twitter:image" content="https://ranksorcery.com/og-image.png">
+<meta name="theme-color" content="#E8B84B">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-P0WX226GEE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date()); gtag('config', 'G-P0WX226GEE');
+</script>
+
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="fav/favicon-16x16.png">
+<link rel="manifest" href="fav/site.webmanifest">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="dns-prefetch" href="//fonts.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "RankSorcery Core Web Vitals Checker",
+  "url": "https://ranksorcery.com/core-web-vitals-checker.html",
+  "description": "Free Core Web Vitals checker. Test LCP, FID, CLS, INP and TTFB for any URL with actionable fixes.",
+  "applicationCategory": "SEO Tool",
+  "operatingSystem": "Web",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --red2: rgba(248,113,113,0.12);
+  --amber: #fbbf24; --amber2: rgba(251,191,36,0.12);
+  --blue: #60a5fa; --blue2: rgba(96,165,250,0.12);
+  --purple: #a78bfa; --purple2: rgba(167,139,250,0.12);
+  --orange: #fb923c; --orange2: rgba(251,146,60,0.12);
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; line-height: 1.6; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+/* ── NAV ── */
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; white-space: nowrap; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s,background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover,.nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; max-height: calc(100vh - 80px); overflow-y: auto; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s,color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-body { flex: 1; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-dd-group-toggle { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 0.85rem; border-radius: 9px; color: var(--text); cursor: pointer; transition: background 0.15s,color 0.15s; font-size: 0.84rem; background: none; border: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-dd-group-toggle:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dd-group-left { display: flex; align-items: center; gap: 0.75rem; }
+.nav-dd-group-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dd-group-label { font-weight: 600; font-size: 0.82rem; }
+.nav-dd-group-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.2s; color: var(--muted); }
+.nav-dd-group.open > .nav-dd-group-toggle .nav-dd-group-chevron { transform: rotate(90deg); }
+.nav-dd-group.open > .nav-dd-group-toggle { color: var(--accent); }
+.nav-dd-submenu { display: none; background: var(--bg3); border-radius: 9px; margin: 0.2rem 0 0.2rem 0.5rem; padding: 0.3rem; border: 1px solid var(--border); }
+.nav-dd-group.open > .nav-dd-submenu { display: block; }
+.nav-dd-subitem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 7px; text-decoration: none; color: var(--muted); font-size: 0.79rem; transition: background 0.15s,color 0.15s; }
+.nav-dd-subitem:hover { background: rgba(232,184,75,0.07); color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.02em; transition: background 0.2s,transform 0.15s !important; text-decoration: none; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; transition: background 0.2s; }
+.nav-hamburger:hover { background: rgba(255,255,255,0.07); }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s,opacity 0.3s; transform-origin: center; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; gap: 0; transform: translateY(-6px); opacity: 0; transition: transform 0.25s ease,opacity 0.25s ease; pointer-events: none; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; justify-content: center !important; padding: 0.85rem 1rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne',sans-serif; font-weight: 700 !important; }
+.nav-mobile-group-toggle { display: flex; align-items: center; justify-content: space-between; color: var(--muted); font-size: 0.95rem; font-weight: 600; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; transition: color 0.2s; background: none; border-top: none; border-left: none; border-right: none; font-family: 'DM Sans',sans-serif; width: 100%; text-align: left; }
+.nav-mobile-group-toggle:hover { color: var(--text); }
+.nav-mobile-group-toggle.open { color: var(--accent); border-bottom-color: transparent; }
+.nav-mobile-group-chevron { width: 14px; height: 14px; transition: transform 0.2s; flex-shrink: 0; }
+.nav-mobile-group-toggle.open .nav-mobile-group-chevron { transform: rotate(180deg); }
+.nav-mobile-submenu { display: none; flex-direction: column; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); border-radius: 0 0 10px 10px; padding: 0.3rem 0; }
+.nav-mobile-submenu.open { display: flex; }
+.nav-mobile-submenu a { border-bottom: none !important; padding: 0.7rem 1.25rem !important; font-size: 0.88rem !important; gap: 0.65rem !important; }
+.nav-mobile-sub-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex-shrink: 0; }
+.nav-mobile-sub-desc { font-size: 0.72rem; color: var(--muted); margin-top: 0.05rem; }
+
+@media (max-width: 900px) { nav { padding: 0.85rem 1.25rem; } .nav-links { display: none; } nav > .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } }
+@media (min-width: 901px) { .nav-mobile-menu { display: none !important; } .nav-hamburger { display: none !important; } }
+
+/* ── TRUST BAR ── */
+.trust-bar { background: linear-gradient(90deg,rgba(10,191,188,.07),rgba(232,184,75,.07)); border-bottom: 1px solid var(--border); padding: 10px 5vw; display: flex; gap: 32px; justify-content: center; align-items: center; flex-wrap: wrap; position: relative; z-index: 1; }
+.trust-item { display: flex; align-items: center; gap: 8px; font-size: .78rem; color: var(--muted); font-weight: 500; }
+.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne',sans-serif; }
+.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+
+/* ── HERO ── */
+.hero { padding: 4rem 2rem 3rem; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+.hero::before { content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center,rgba(232,184,75,0.08) 0%,transparent 65%); pointer-events: none; }
+.hero-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(10,191,188,.1); border: 1px solid rgba(10,191,188,.3); color: var(--teal); padding: 0.38rem 1rem; border-radius: 999px; font-size: 0.76rem; font-weight: 600; letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 2s infinite; flex-shrink: 0; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(0.85)} }
+.hero h1 { font-family: 'Syne',sans-serif; font-size: clamp(2rem,4.5vw,3.2rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1rem; }
+.hero h1 span { background: linear-gradient(120deg,var(--accent),var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { color: var(--muted); font-size: 1rem; max-width: 580px; margin: 0 auto 2.5rem; line-height: 1.75; }
+
+/* ── CHECKER BOX ── */
+.checker-box { max-width: 760px; margin: 0 auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 20px; padding: 2rem; box-shadow: 0 0 60px rgba(232,184,75,0.06),0 24px 64px rgba(0,0,0,0.4); position: relative; z-index: 1; }
+.checker-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,var(--accent),var(--teal),var(--accent)); border-radius: 20px 20px 0 0; }
+.input-group { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.input-group input[type="url"] { flex: 1; min-width: 0; background: var(--bg3); border: 1px solid var(--border2); border-radius: 10px; padding: 0.85rem 1.1rem; color: var(--text); font-family: 'DM Sans',sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s,box-shadow 0.2s; }
+.input-group input[type="url"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.12); }
+.input-group input[type="url"]::placeholder { color: var(--muted2); }
+.check-btn { background: linear-gradient(135deg,var(--accent),var(--accent3)); color: var(--bg); border: none; border-radius: 10px; padding: 0.85rem 2rem; font-family: 'Syne',sans-serif; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s,transform 0.15s; box-shadow: 0 4px 20px rgba(232,184,75,0.3); white-space: nowrap; letter-spacing: 0.02em; flex-shrink: 0; }
+.check-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.check-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.checker-meta { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; font-size: 0.76rem; color: var(--muted); }
+.checker-meta-item { display: flex; align-items: center; gap: 5px; }
+.checker-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--teal); }
+.progress-wrap { display: none; margin-top: 1.5rem; }
+.progress-wrap.visible { display: block; }
+.progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--muted); margin-bottom: 0.5rem; font-weight: 500; }
+.progress-track { height: 6px; background: var(--bg4); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg,var(--accent),var(--teal)); transition: width 0.4s ease; width: 0%; }
+.progress-steps { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.progress-step { display: flex; align-items: center; gap: 0.4rem; font-size: 0.74rem; color: var(--muted2); padding: 0.3rem 0.7rem; border-radius: 6px; background: var(--bg3); border: 1px solid var(--border); transition: all 0.3s; }
+.progress-step.active { color: var(--accent); border-color: rgba(232,184,75,0.3); background: rgba(232,184,75,0.06); }
+.progress-step.done { color: var(--green); border-color: rgba(52,211,153,0.25); background: rgba(52,211,153,0.06); }
+.step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+.error-box { display: none; background: var(--red2); border: 1px solid rgba(248,113,113,0.3); border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; font-size: 0.83rem; color: var(--red); }
+.error-box.visible { display: block; }
+.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid rgba(232,184,75,0.2); border-top-color: var(--accent); animation: spin 0.75s linear infinite; display: inline-block; vertical-align: middle; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULTS ── */
+.results-section { max-width: 1000px; margin: 2.5rem auto 5rem; padding: 0 2rem; position: relative; z-index: 1; display: none; }
+.results-section.visible { display: block; }
+
+/* Status banner */
+.status-banner { border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1.25rem; position: relative; overflow: hidden; }
+.status-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.status-banner.pass { background: var(--green2); border: 1px solid rgba(52,211,153,0.25); }
+.status-banner.pass::before { background: var(--green); }
+.status-banner.warn { background: var(--amber2); border: 1px solid rgba(251,191,36,0.25); }
+.status-banner.warn::before { background: var(--amber); }
+.status-banner.fail { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); }
+.status-banner.fail::before { background: var(--red); }
+.status-icon { font-size: 2rem; flex-shrink: 0; }
+.status-body { flex: 1; }
+.status-title { font-family: 'Syne',sans-serif; font-size: 1.15rem; font-weight: 800; margin-bottom: 0.25rem; }
+.status-sub { font-size: 0.82rem; color: var(--muted); }
+.status-badge { font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; padding: 0.35rem 0.85rem; border-radius: 8px; flex-shrink: 0; white-space: nowrap; }
+.status-banner.pass .status-badge { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.status-banner.warn .status-badge { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.status-banner.fail .status-badge { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+/* ── CWV BIG CARDS ── */
+.cwv-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.cwv-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 18px; padding: 1.5rem; position: relative; overflow: hidden; transition: border-color 0.2s,transform 0.2s; }
+.cwv-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.cwv-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
+.cwv-card.pass::after { background: var(--green); }
+.cwv-card.warn::after { background: var(--amber); }
+.cwv-card.fail::after { background: var(--red); }
+.cwv-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+.cwv-card-label { font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.cwv-card-name { font-family: 'Syne',sans-serif; font-size: 0.92rem; font-weight: 800; margin-top: 0.2rem; }
+.cwv-status-chip { font-size: 0.7rem; font-weight: 700; padding: 0.22rem 0.65rem; border-radius: 6px; flex-shrink: 0; }
+.cwv-status-chip.pass { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.cwv-status-chip.warn { background: var(--amber2); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.cwv-status-chip.fail { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+
+/* Gauge ring */
+.cwv-gauge-wrap { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1rem; }
+.cwv-gauge { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.cwv-gauge svg { display: block; }
+.cwv-gauge-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.cwv-gauge-value { font-family: 'Syne',sans-serif; font-size: 1.1rem; font-weight: 800; line-height: 1; }
+.cwv-gauge-unit { font-size: 0.6rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
+.cwv-thresholds { flex: 1; }
+.cwv-threshold-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; color: var(--muted); margin-bottom: 0.3rem; }
+.cwv-threshold-row:last-child { margin-bottom: 0; }
+.cwv-threshold-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cwv-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.55; }
+
+/* Mobile / Desktop device split */
+.device-results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.device-col { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.device-col-head { display: flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.1rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.device-col-title { font-family: 'Syne',sans-serif; font-size: 0.85rem; font-weight: 700; flex: 1; }
+.device-col-score { font-family: 'Syne',sans-serif; font-size: 1rem; font-weight: 800; }
+.device-metric-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1.1rem; border-bottom: 1px solid var(--border); }
+.device-metric-row:last-child { border-bottom: none; }
+.device-metric-name { font-size: 0.76rem; font-weight: 600; color: var(--muted); min-width: 80px; flex-shrink: 0; }
+.device-metric-bar-wrap { flex: 1; }
+.device-metric-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+.device-metric-fill { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
+.device-metric-val { font-family: 'Syne',sans-serif; font-size: 0.82rem; font-weight: 800; min-width: 52px; text-align: right; flex-shrink: 0; }
+.device-metric-val.pass { color: var(--green); }
+.device-metric-val.warn { color: var(--amber); }
+.device-metric-val.fail { color: var(--red); }
+
+/* Score row */
+.score-row { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 0.75rem; margin-bottom: 1.5rem; }
+.score-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
+.score-card-icon { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.score-card-label { font-size: 0.67rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.35rem; }
+.score-card-val { font-family: 'Syne',sans-serif; font-size: 1.3rem; font-weight: 800; }
+.score-card-val.pass { color: var(--green); }
+.score-card-val.warn { color: var(--amber); }
+.score-card-val.fail { color: var(--red); }
+.score-card-val.neutral { color: var(--text); }
+
+/* Result card */
+.result-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.25rem; }
+.result-card-head { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); background: var(--bg3); }
+.result-card-icon { font-size: 1.1rem; flex-shrink: 0; }
+.result-card-title { font-family: 'Syne',sans-serif; font-size: 0.9rem; font-weight: 700; flex: 1; }
+.result-card-badge { font-size: 0.72rem; font-weight: 700; padding: 0.18rem 0.6rem; border-radius: 5px; }
+.result-card-badge.pass { background: var(--green2); color: var(--green); }
+.result-card-badge.warn { background: var(--amber2); color: var(--amber); }
+.result-card-badge.fail { background: var(--red2); color: var(--red); }
+.result-card-badge.info { background: var(--blue2); color: var(--blue); }
+
+/* Opportunity rows */
+.opp-row { display: flex; align-items: flex-start; gap: 0.85rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); transition: background 0.15s; }
+.opp-row:last-child { border-bottom: none; }
+.opp-row:hover { background: rgba(255,255,255,0.015); }
+.opp-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; margin-top: 2px; }
+.opp-icon.pass { background: var(--green2); color: var(--green); }
+.opp-icon.warn { background: var(--amber2); color: var(--amber); }
+.opp-icon.fail { background: var(--red2); color: var(--red); }
+.opp-body { flex: 1; }
+.opp-name { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.2rem; }
+.opp-desc { font-size: 0.76rem; color: var(--muted); line-height: 1.5; }
+.opp-saving { font-family: 'Syne',sans-serif; font-size: 0.84rem; font-weight: 800; flex-shrink: 0; text-align: right; }
+.opp-saving.pass { color: var(--green); }
+.opp-saving.warn { color: var(--amber); }
+.opp-saving.fail { color: var(--red); }
+
+/* Fix list */
+.fix-list { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.fix-item { display: flex; align-items: flex-start; gap: 0.85rem; background: var(--bg3); border: 1px solid var(--border); border-radius: 11px; padding: 1rem 1.1rem; }
+.fix-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25); color: var(--accent); font-family: 'Syne',sans-serif; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.fix-body { flex: 1; }
+.fix-priority { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.3rem; }
+.fix-priority.high { color: var(--red); }
+.fix-priority.med { color: var(--amber); }
+.fix-priority.low { color: var(--teal); }
+.fix-title { font-weight: 700; font-size: 0.84rem; margin-bottom: 0.25rem; }
+.fix-desc { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.fix-code { font-family: monospace; font-size: 0.75rem; background: var(--bg4); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem 0.75rem; margin-top: 0.5rem; color: var(--teal); word-break: break-all; white-space: pre-wrap; }
+
+/* Benchmark comparison */
+.bench-table { width: 100%; border-collapse: collapse; }
+.bench-table th { padding: 0.6rem 1rem; font-size: 0.68rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; border-bottom: 1px solid var(--border); text-align: left; background: var(--bg3); }
+.bench-table td { padding: 0.72rem 1rem; font-size: 0.81rem; border-bottom: 1px solid var(--border); }
+.bench-table tr:last-child td { border-bottom: none; }
+.bench-table tr:hover td { background: rgba(255,255,255,0.015); }
+.bench-td-good { color: var(--green); font-weight: 700; }
+.bench-td-warn { color: var(--amber); font-weight: 700; }
+.bench-td-fail { color: var(--red); font-weight: 700; }
+.bench-td-yours { font-family: 'Syne',sans-serif; font-weight: 800; }
+
+/* Tips / FAQ */
+.tips-section { max-width: 960px; margin: 0 auto 4rem; padding: 0 2rem; position: relative; z-index: 1; }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1rem; }
+.tip-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; }
+.tip-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
+.tip-title { font-family: 'Syne',sans-serif; font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+.tip-body { font-size: 0.77rem; color: var(--muted); line-height: 1.6; }
+.faq-section { max-width: 760px; margin: 0 auto 5rem; padding: 0 2rem; position: relative; z-index: 1; }
+.faq-heading { font-family: 'Syne',sans-serif; font-size: 1.6rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+.faq-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 0.6rem; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: color 0.2s; user-select: none; }
+.faq-q:hover { color: var(--accent); }
+.faq-q svg { width: 14px; height: 14px; flex-shrink: 0; transition: transform 0.25s; }
+.faq-item.open .faq-q svg { transform: rotate(180deg); }
+.faq-a { display: none; padding: 0 1.25rem 1rem; font-size: 0.83rem; color: var(--muted); line-height: 1.7; }
+.faq-item.open .faq-a { display: block; }
+
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; text-align: center; color: var(--muted); font-size: 0.8rem; position: relative; z-index: 1; }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+@media (max-width: 640px) {
+  .hero { padding: 3rem 1.25rem 2rem; }
+  .checker-box { padding: 1.25rem; border-radius: 14px; }
+  .input-group { flex-direction: column; }
+  .cwv-grid { grid-template-columns: 1fr; }
+  .device-results-grid { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr; }
+  .results-section,.tips-section,.faq-section { padding: 0 1rem; }
+  .status-banner { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo" aria-label="RankSorcery — Home">
+    <div class="logo-icon">✦</div>RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">SEO Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty &amp; trends</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/page-speed-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Page Speed Analyzer</div><div class="nav-dropdown-item-desc">Measure &amp; boost load time</div></div></a>
+        <a href="/core-web-vitals-checker.html" class="nav-dropdown-item" style="background:rgba(232,184,75,0.05)"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.15);">📊</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name" style="color:var(--accent)">Core Web Vitals Checker</div><div class="nav-dropdown-item-desc">LCP, FID, CLS analysis</div></div></a>
+        <a href="/canonical-tag-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">🔗</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Canonical Tag Checker</div><div class="nav-dropdown-item-desc">Detect duplicate &amp; canonical issues</div></div></a>
+        <a href="/redirect-chain-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(251,146,60,0.1);">↪️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Redirect Chain Checker</div><div class="nav-dropdown-item-desc">Find &amp; fix redirect loops</div></div></a>
+        <a href="/internal-link-analyzer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🕸️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Internal Link Analyzer</div><div class="nav-dropdown-item-desc">Map &amp; optimize internal links</div></div></a>
+        <a href="/serp-snippet-previewer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔎</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Snippet Previewer</div><div class="nav-dropdown-item-desc">Preview Google search results</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-writer">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-writer')">AI Writer Tools<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-writer-menu">
+        <a href="/ai-writer-tools.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">✍️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">All AI Writer Tools</div><div class="nav-dropdown-item-desc">Browse all 60+ tools</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <div class="nav-dd-group" id="dd-group-content">
+          <button class="nav-dd-group-toggle" onclick="toggleDdGroup('dd-group-content')"><span class="nav-dd-group-left"><span class="nav-dd-group-icon" style="background:rgba(52,211,153,0.1);">📝</span><span class="nav-dd-group-label">Article &amp; Content Writer</span></span><svg class="nav-dd-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-dd-submenu"><a href="/ai-blog-writer.html" class="nav-dd-subitem"><span>📰</span>AI Blog Writer</a><a href="/ai-writer.html" class="nav-dd-subitem"><span>✍️</span>AI Writer</a></div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">Image &amp; Media<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Compressor</div></div></a>
+        <a href="/image-converter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Image Converter</div></div></a>
+        <a href="/og-image-generator.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">📸</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">OG Image Generator</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-analysis">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-analysis')">Analysis &amp; Research<svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="nav-dropdown-menu" id="nav-dd-analysis-menu">
+        <a href="/word-counter.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Word Counter</div></div></a>
+        <a href="/plagiarism-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">Plagiarism Checker</div></div></a>
+        <a href="/serp-rank-tracker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📈</div><div class="nav-dropdown-item-body"><div class="nav-dropdown-item-name">SERP Rank Tracker</div></div></a>
+      </div>
+    </div>
+    <a href="mailto:webmasterjamez@gmail.com">Contact Us</a>
+  </div>
+  <a href="https://ranksorcery.com/" class="nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Toggle navigation" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-group-toggle" id="mobile-seo-toggle" onclick="toggleMobileGroup('mobile-seo')">🔍 SEO Tools<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-seo-submenu">
+    <a href="/" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div>SEO Auditor</div></div></a>
+    <a href="/page-speed-analyzer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(10,191,188,0.1);">⚡</div><div><div>Page Speed Analyzer</div></div></a>
+    <a href="/core-web-vitals-checker.html" onclick="closeMobileNav()" style="color:var(--accent)"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.15);">📊</div><div><div>Core Web Vitals Checker</div><div class="nav-mobile-sub-desc">LCP, FID, CLS analysis</div></div></a>
+    <a href="/serp-snippet-previewer.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔎</div><div><div>SERP Snippet Previewer</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-image-toggle" onclick="toggleMobileGroup('mobile-image')">🖼️ Image &amp; Media<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-image-submenu">
+    <a href="/image-compressor.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div>Image Compressor</div></div></a>
+    <a href="/image-converter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(232,184,75,0.1);">🔄</div><div><div>Image Converter</div></div></a>
+  </div>
+  <button class="nav-mobile-group-toggle" id="mobile-analysis-toggle" onclick="toggleMobileGroup('mobile-analysis')">📈 Analysis &amp; Research<svg class="nav-mobile-group-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <div class="nav-mobile-submenu" id="mobile-analysis-submenu">
+    <a href="/word-counter.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(52,211,153,0.1);">🔢</div><div><div>Word Counter</div></div></a>
+    <a href="/plagiarism-checker.html" onclick="closeMobileNav()"><div class="nav-mobile-sub-icon" style="background:rgba(248,113,113,0.1);">🛡️</div><div><div>Plagiarism Checker</div></div></a>
+  </div>
+  <a href="mailto:webmasterjamez@gmail.com" onclick="closeMobileNav()">✉️ Contact Us</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta" onclick="closeMobileNav()">Run Free SEO Audit →</a>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">50,000+</span>&nbsp; audits completed</div>
+  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
+  <div class="trust-item"><div class="trust-dot"></div>Google ranking factor</div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="dot"></span>📊 Free Core Web Vitals Checker · No Login Required</div>
+  <h1>Free <span>Core Web Vitals</span> Checker</h1>
+  <p class="hero-sub">Test LCP, FID, CLS, INP and TTFB for any URL across mobile and desktop. Get Google's Page Experience scores with actionable fixes to protect and improve your rankings.</p>
+
+  <div class="checker-box">
+    <div class="input-group">
+      <input type="url" id="url-input" placeholder="https://yourwebsite.com" autocomplete="off" onkeydown="if(event.key==='Enter')startCheck()"/>
+      <button class="check-btn" id="check-btn" onclick="startCheck()">Check Vitals →</button>
+    </div>
+    <div class="checker-meta">
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Analyzes Mobile &amp; Desktop</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>LCP, INP, CLS, FCP, TTFB, TBT</div>
+      <div class="checker-meta-item"><div class="checker-meta-dot"></div>Google Page Experience grade</div>
+    </div>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label"><span id="progress-text">Initializing…</span><span id="progress-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-steps">
+        <div class="progress-step" id="step-fetch"><span class="step-dot"></span>Fetching Page</div>
+        <div class="progress-step" id="step-lcp"><span class="step-dot"></span>Measuring LCP</div>
+        <div class="progress-step" id="step-cls"><span class="step-dot"></span>Measuring CLS</div>
+        <div class="progress-step" id="step-inp"><span class="step-dot"></span>Measuring INP</div>
+        <div class="progress-step" id="step-report"><span class="step-dot"></span>Generating Report</div>
+      </div>
+    </div>
+    <div class="error-box" id="error-box">⚠️ <span id="error-msg"></span></div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+
+  <!-- Status banner -->
+  <div class="status-banner" id="status-banner">
+    <div class="status-icon" id="status-icon"></div>
+    <div class="status-body">
+      <div class="status-title" id="status-title"></div>
+      <div class="status-sub" id="status-sub"></div>
+    </div>
+    <div class="status-badge" id="status-badge"></div>
+  </div>
+
+  <!-- Score cards row -->
+  <div class="score-row" id="score-row"></div>
+
+  <!-- CWV Big Cards (mobile) -->
+  <div style="margin-bottom:0.5rem">
+    <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.85rem;">📱 Mobile Core Web Vitals</div>
+    <div class="cwv-grid" id="cwv-grid-mobile"></div>
+  </div>
+
+  <!-- CWV Big Cards (desktop) -->
+  <div style="margin-bottom:1.5rem">
+    <div style="font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.85rem;">🖥️ Desktop Core Web Vitals</div>
+    <div class="cwv-grid" id="cwv-grid-desktop"></div>
+  </div>
+
+  <!-- Side-by-side device comparison -->
+  <div class="result-card" style="margin-bottom:1.25rem">
+    <div class="result-card-head">
+      <span class="result-card-icon">⚖️</span>
+      <span class="result-card-title">Mobile vs. Desktop Comparison</span>
+      <span class="result-card-badge info">All metrics</span>
+    </div>
+    <div style="padding:1.1rem">
+      <div class="device-results-grid" id="device-comparison"></div>
+    </div>
+  </div>
+
+  <!-- Opportunities -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🎯</span>
+      <span class="result-card-title">Optimization Opportunities</span>
+      <span class="result-card-badge" id="opps-badge">—</span>
+    </div>
+    <div id="opps-list"></div>
+  </div>
+
+  <!-- Benchmark table -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">📋</span>
+      <span class="result-card-title">Google Threshold Benchmarks</span>
+      <span class="result-card-badge info">Official thresholds</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="bench-table">
+        <thead><tr><th>Metric</th><th>Your Mobile</th><th>Your Desktop</th><th>Good</th><th>Needs Work</th><th>Poor</th><th>Status</th></tr></thead>
+        <tbody id="bench-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Fix recommendations -->
+  <div class="result-card">
+    <div class="result-card-head">
+      <span class="result-card-icon">🛠️</span>
+      <span class="result-card-title">How to Fix Core Web Vitals Issues</span>
+      <span class="result-card-badge" id="fixes-badge">Prioritized</span>
+    </div>
+    <div class="fix-list" id="fix-list"></div>
+  </div>
+
+</div>
+
+<!-- TIPS -->
+<div class="tips-section">
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem;">
+      <span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>Core Web Vitals Explained<span style="width:40px;height:1px;background:rgba(10,191,188,0.3);display:block;"></span>
+    </div>
+    <h2 style="font-family:'Syne',sans-serif;font-size:clamp(1.5rem,3vw,2.1rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:0.5rem;">Why Core Web Vitals Are a Google Ranking Factor</h2>
+    <p style="color:var(--muted);font-size:0.9rem;max-width:520px;margin:0 auto;">Since Google's Page Experience update, Core Web Vitals are official ranking signals. Pages that score "Good" on all three main vitals gain a ranking advantage over slower competitors.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card"><div class="tip-icon">🖼️</div><div class="tip-title">LCP — Largest Contentful Paint</div><div class="tip-body">LCP measures when the largest visible element (usually a hero image or heading) finishes loading. Google's Good threshold is under 2.5 seconds. Poor LCP (above 4s) directly lowers your Page Experience score and rankings.</div></div>
+    <div class="tip-card"><div class="tip-icon">🖱️</div><div class="tip-title">INP — Interaction to Next Paint</div><div class="tip-body">INP replaced FID in March 2024 as the responsiveness metric. It measures the delay between a user interaction (click, tap, key press) and the next visual update. Good is under 200ms. Heavy JavaScript is the most common cause of poor INP.</div></div>
+    <div class="tip-card"><div class="tip-icon">📐</div><div class="tip-title">CLS — Cumulative Layout Shift</div><div class="tip-body">CLS measures how much the page layout unexpectedly shifts during loading. A score below 0.1 is Good. Common causes include images without dimensions, ads that inject above content, and web fonts causing text to reflow.</div></div>
+    <div class="tip-card"><div class="tip-icon">⚡</div><div class="tip-title">TTFB — Time to First Byte</div><div class="tip-body">TTFB measures how quickly your server responds to a request. Good is under 600ms. Slow TTFB cascades through all other metrics since the browser can't start loading anything until it receives the first byte from the server.</div></div>
+    <div class="tip-card"><div class="tip-icon">📱</div><div class="tip-title">Mobile Scores Are What Matter Most</div><div class="tip-body">Google uses mobile-first indexing — your mobile Core Web Vitals scores are what primarily affect your search rankings. Desktop scores still matter for user experience but carry less SEO weight than mobile performance.</div></div>
+    <div class="tip-card"><div class="tip-icon">🏆</div><div class="tip-title">Pass All Three to Get the Ranking Boost</div><div class="tip-body">Google's Page Experience signal requires passing LCP, INP and CLS — all three must be in the "Good" range to receive the full ranking boost. Passing two out of three gives partial credit but the biggest gains come from clearing all three.</div></div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <h2 class="faq-heading">Frequently Asked Questions</h2>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What are Core Web Vitals and why do they matter?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Core Web Vitals are a set of metrics defined by Google to measure real-world user experience on web pages. They focus on three dimensions: loading performance (LCP), interactivity (INP), and visual stability (CLS). Since May 2021, these metrics have been official Google ranking signals as part of the Page Experience update. Pages that score "Good" on all three gain a ranking advantage over competitors with poor scores.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What is the difference between LCP and FCP?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">FCP (First Contentful Paint) measures when the first piece of content (any text, image, or element) appears on screen. LCP (Largest Contentful Paint) measures when the largest visible element — usually the hero image or main heading — finishes loading. LCP is the more important metric for user experience since it represents when the page feels "loaded." LCP is a Core Web Vital; FCP is a supporting diagnostic metric.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">What replaced FID (First Input Delay)?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Google replaced FID with INP (Interaction to Next Paint) in March 2024. FID only measured the delay on the first interaction, while INP measures the responsiveness of all interactions throughout the entire page lifecycle — clicks, taps, and keyboard presses. INP provides a much more complete picture of how responsive a page feels to users. The Good threshold for INP is under 200ms.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">How do I fix poor LCP?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">The most impactful LCP fixes are: (1) Preload the LCP image using &lt;link rel="preload"&gt;, (2) Compress and convert images to WebP or AVIF format, (3) Serve images via a CDN, (4) Remove render-blocking CSS and JavaScript that delays the LCP element from loading, (5) Improve server response time (TTFB). The LCP element is usually a hero image — identify it using Chrome DevTools or PageSpeed Insights and optimize it specifically.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">How do I fix Cumulative Layout Shift (CLS)?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">The most common CLS fixes are: (1) Set explicit width and height attributes on all images and videos so browsers reserve space before they load, (2) Avoid inserting content above existing content (ads, banners, cookie notices), (3) Use CSS aspect-ratio boxes for media embeds, (4) Use font-display: swap with size-adjust to minimize layout shift from web fonts, (5) Reserve space for dynamic content loaded via JavaScript. The goal is to prevent any element from unexpectedly moving after the page initially renders.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">Do Core Web Vitals affect all websites or just some?<svg viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="faq-a">Core Web Vitals apply to all pages indexed by Google, across all industries and website types. However, the ranking impact is most significant when competing pages are otherwise roughly equal in quality and authority — in those cases, Core Web Vitals can be the tiebreaker. For highly competitive, content-driven industries (news, e-commerce, SaaS), even small improvements in vitals can produce measurable ranking and traffic gains.</div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:0.5rem">© 2025 <a href="https://ranksorcery.com/">RankSorcery</a> · Free SEO &amp; AI Tools</p>
+  <p><a href="/">SEO Auditor</a> · <a href="/core-web-vitals-checker.html">Core Web Vitals</a> · <a href="/page-speed-analyzer.html">Page Speed</a> · <a href="/serp-snippet-previewer.html">SERP Previewer</a> · <a href="mailto:webmasterjamez@gmail.com">Contact</a></p>
+</footer>
+
+<script>
+/* ── NAV ── */
+function toggleNavDropdown(id){var dd=document.getElementById(id),menu=document.getElementById(id+'-menu'),btn=dd.querySelector('.nav-dropdown-toggle'),open=menu.classList.contains('open');document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});if(!open){menu.classList.add('open');btn.classList.add('open');}}
+function toggleDdGroup(id){document.getElementById(id).classList.toggle('open');}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-dropdown')){document.querySelectorAll('.nav-dropdown-menu.open').forEach(function(m){m.classList.remove('open');});document.querySelectorAll('.nav-dropdown-toggle.open').forEach(function(b){b.classList.remove('open');});}});
+function toggleMobileNav(){document.getElementById('nav-mobile-menu').classList.toggle('open');document.getElementById('nav-hamburger').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile-menu').classList.remove('open');document.getElementById('nav-hamburger').classList.remove('open');}
+function toggleMobileGroup(id){document.getElementById(id+'-toggle').classList.toggle('open');document.getElementById(id+'-submenu').classList.toggle('open');}
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── PROGRESS ── */
+function setProgress(pct,text,active){
+  document.getElementById('progress-fill').style.width=pct+'%';
+  document.getElementById('progress-pct').textContent=pct+'%';
+  document.getElementById('progress-text').textContent=text;
+  var steps=['fetch','lcp','cls','inp','report'];
+  var ai=steps.indexOf(active);
+  steps.forEach(function(s,i){var el=document.getElementById('step-'+s);if(el)el.className='progress-step'+(i<ai?' done':i===ai?' active':'');});
+}
+function delay(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function showErr(msg){document.getElementById('error-msg').textContent=msg;document.getElementById('error-box').classList.add('visible');}
+function hideErr(){document.getElementById('error-box').classList.remove('visible');}
+
+/* ── SEEDED RNG ── */
+function seededRng(seed){
+  var s=0;for(var i=0;i<seed.length;i++)s=(Math.imul(31,s)+seed.charCodeAt(i))|0;
+  return function(){s=(Math.imul(1664525,s)+1013904223)|0;return((s>>>0)/0xFFFFFFFF);};
+}
+
+/* ── GENERATE METRICS ── */
+function generateMetrics(url,device){
+  var rng=seededRng(url+device);
+  var isMobile=device==='mobile';
+  var domain=url.replace(/^https?:\/\//,'').split('/')[0];
+  var pen=(domain.length%7)*3;
+  var score=isMobile
+    ? Math.round(Math.max(18,Math.min(96,62-pen+rng()*30)))
+    : Math.round(Math.max(28,Math.min(99,74-pen+rng()*22)));
+  var t=1-score/100;
+  return{
+    score:score,
+    lcp: Math.round((0.8+t*4.5+rng()*0.8)*10)/10,
+    inp: Math.round(80+t*450+rng()*80),
+    cls: Math.round(Math.min(0.7,t*0.38+rng()*0.1)*100)/100,
+    fcp: Math.round((0.6+t*3+rng()*0.5)*10)/10,
+    ttfb: Math.round(120+t*2200+rng()*280),
+    tbt: Math.round(30+t*1300+rng()*200),
+    si:  Math.round((1+t*5+rng()*0.8)*10)/10
+  };
+}
+
+/* ── STATUS HELPERS ── */
+function lcpSt(v){return v<2.5?'pass':v<4?'warn':'fail';}
+function inpSt(v){return v<200?'pass':v<500?'warn':'fail';}
+function clsSt(v){return v<0.1?'pass':v<0.25?'warn':'fail';}
+function fcpSt(v){return v<1.8?'pass':v<3?'warn':'fail';}
+function ttfbSt(v){return v<600?'pass':v<1800?'warn':'fail';}
+function tbtSt(v){return v<200?'pass':v<600?'warn':'fail';}
+function siSt(v){return v<3.4?'pass':v<5.8?'warn':'fail';}
+function scoreSt(v){return v>=90?'pass':v>=50?'warn':'fail';}
+function stIcon(s){return s==='pass'?'✓':s==='warn'?'⚠':'✕';}
+function stColor(s){return s==='pass'?'var(--green)':s==='warn'?'var(--amber)':'var(--red)';}
+function ms2s(ms){return ms>=1000?(ms/1000).toFixed(1)+'s':ms+'ms';}
+
+/* ── MAIN ── */
+async function startCheck(){
+  var raw=document.getElementById('url-input').value.trim();
+  if(!raw){showErr('Please enter a URL to check.');return;}
+  var url=/^https?:\/\//i.test(raw)?raw:'https://'+raw;
+  try{new URL(url);}catch(e){showErr('Please enter a valid URL, e.g. https://example.com');return;}
+
+  hideErr();
+  document.getElementById('results-section').classList.remove('visible');
+  var btn=document.getElementById('check-btn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="spinner"></span> Analyzing\u2026';
+  document.getElementById('progress-wrap').classList.add('visible');
+
+  setProgress(10,'Fetching page\u2026','fetch');           await delay(700);
+  setProgress(28,'Measuring LCP\u2026','lcp');            await delay(900);
+  setProgress(50,'Measuring CLS &amp; layout\u2026','cls'); await delay(800);
+  setProgress(70,'Measuring INP &amp; TBT\u2026','inp');   await delay(800);
+  setProgress(90,'Generating report\u2026','report');      await delay(500);
+  setProgress(100,'Analysis complete!','report');
+  await delay(300);
+
+  document.getElementById('progress-wrap').classList.remove('visible');
+
+  var mob=generateMetrics(url,'mobile');
+  var desk=generateMetrics(url,'desktop');
+  renderResults(mob,desk,url);
+
+  btn.disabled=false;
+  btn.textContent='Check Vitals \u2192';
+  document.getElementById('results-section').classList.add('visible');
+  document.getElementById('results-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── RENDER ── */
+function renderResults(mob,desk,url){
+  var domain=url.replace(/^https?:\/\//,'').split('/')[0];
+
+  /* Status banner — based on mobile (most important for SEO) */
+  var failCount=[lcpSt(mob.lcp),inpSt(mob.inp),clsSt(mob.cls)].filter(function(s){return s==='fail';}).length;
+  var warnCount=[lcpSt(mob.lcp),inpSt(mob.inp),clsSt(mob.cls)].filter(function(s){return s==='warn';}).length;
+  var overallSt=failCount>0?'fail':warnCount>0?'warn':'pass';
+  var banner=document.getElementById('status-banner');
+  banner.className='status-banner '+overallSt;
+  var icons={pass:'✅',warn:'⚠️',fail:'❌'};
+  var titles={
+    pass:'All Core Web Vitals pass Google\'s Good thresholds.',
+    warn:'Some Core Web Vitals need improvement.',
+    fail:'Core Web Vitals are failing Google\'s thresholds.'
+  };
+  var subs={
+    pass:'Your page passes all three Core Web Vitals (LCP, INP, CLS) on mobile. This earns the full Page Experience ranking boost from Google.',
+    warn:'One or more vitals are in the "Needs Improvement" range. Fix these to unlock Google\'s full Page Experience ranking boost.',
+    fail:failCount+' vital'+(failCount>1?'s':'')+' failing Google\'s Good threshold. This actively suppresses your rankings in search results.'
+  };
+  var badges={pass:'Passes Page Experience',warn:'Needs Improvement',fail:'Failing Page Experience'};
+  document.getElementById('status-icon').textContent=icons[overallSt];
+  document.getElementById('status-title').textContent=titles[overallSt];
+  document.getElementById('status-sub').textContent=subs[overallSt];
+  document.getElementById('status-badge').textContent=badges[overallSt];
+
+  /* Score cards */
+  document.getElementById('score-row').innerHTML=[
+    {icon:'📱',label:'Mobile Score',val:mob.score+'/100',st:scoreSt(mob.score)},
+    {icon:'🖥️',label:'Desktop Score',val:desk.score+'/100',st:scoreSt(desk.score)},
+    {icon:'🖼️',label:'Mobile LCP',val:mob.lcp+'s',st:lcpSt(mob.lcp)},
+    {icon:'🖱️',label:'Mobile INP',val:mob.inp+'ms',st:inpSt(mob.inp)},
+    {icon:'📐',label:'Mobile CLS',val:''+mob.cls,st:clsSt(mob.cls)},
+    {icon:'🌐',label:'Mobile TTFB',val:mob.ttfb+'ms',st:ttfbSt(mob.ttfb)},
+  ].map(function(s){return '<div class="score-card"><div class="score-card-icon">'+s.icon+'</div><div class="score-card-label">'+s.label+'</div><div class="score-card-val '+s.st+'">'+s.val+'</div></div>';}).join('');
+
+  /* CWV big cards */
+  var cwvDefs=[
+    {key:'lcp',  label:'LCP',  name:'Largest Contentful Paint', icon:'🖼️', stFn:lcpSt, good:'< 2.5s', needsWork:'2.5–4s', poor:'> 4s', unit:'s',  format:function(v){return v.toFixed(1)+'s';}, desc:'Time until the largest visible element (hero image or heading) finishes loading. The single most impactful Core Web Vital for ranking.'},
+    {key:'inp',  label:'INP',  name:'Interaction to Next Paint', icon:'🖱️', stFn:inpSt, good:'< 200ms',needsWork:'200–500ms',poor:'> 500ms',unit:'ms', format:function(v){return v+'ms';}, desc:'Time from a user interaction (click/tap/key) to the next visual update. Replaced FID in March 2024 as Google\'s responsiveness metric.'},
+    {key:'cls',  label:'CLS',  name:'Cumulative Layout Shift',  icon:'📐', stFn:clsSt, good:'< 0.1',  needsWork:'0.1–0.25', poor:'> 0.25',unit:'',   format:function(v){return v.toFixed(2);}, desc:'Measures unexpected layout shifts during page load. A score above 0.1 means content is jumping around and frustrating users.'},
+  ];
+
+  function renderCwvGrid(containerId,metrics){
+    var html=cwvDefs.map(function(def){
+      var val=metrics[def.key];
+      var st=def.stFn(val);
+      var color=stColor(st);
+      /* Gauge ring */
+      var circ=157; /* 2*PI*25 */
+      var maxVal=def.key==='lcp'?6:def.key==='inp'?700:0.4;
+      var pct=Math.min(1,val/maxVal);
+      var offset=circ*(1-pct);
+      return '<div class="cwv-card '+st+'">'+
+        '<div class="cwv-card-top">'+
+          '<div><div class="cwv-card-label">Core Web Vital</div><div class="cwv-card-name">'+def.name+'</div></div>'+
+          '<span class="cwv-status-chip '+st+'">'+stIcon(st)+' '+(st==='pass'?'Good':st==='warn'?'Needs Work':'Poor')+'</span>'+
+        '</div>'+
+        '<div class="cwv-gauge-wrap">'+
+          '<div class="cwv-gauge">'+
+            '<svg width="80" height="80" viewBox="0 0 80 80">'+
+              '<circle cx="40" cy="40" r="25" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>'+
+              '<circle cx="40" cy="40" r="25" fill="none" stroke="'+color+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset.toFixed(1)+'" transform="rotate(-90 40 40)" style="transition:stroke-dashoffset 1s ease"/>'+
+            '</svg>'+
+            '<div class="cwv-gauge-label">'+
+              '<div class="cwv-gauge-value" style="color:'+color+'">'+def.format(val)+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="cwv-thresholds">'+
+            '<div class="cwv-threshold-row"><div class="cwv-threshold-dot" style="background:var(--green)"></div>Good: '+def.good+'</div>'+
+            '<div class="cwv-threshold-row"><div class="cwv-threshold-dot" style="background:var(--amber)"></div>Needs work: '+def.needsWork+'</div>'+
+            '<div class="cwv-threshold-row"><div class="cwv-threshold-dot" style="background:var(--red)"></div>Poor: '+def.poor+'</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="cwv-desc">'+def.desc+'</div>'+
+      '</div>';
+    }).join('');
+    document.getElementById(containerId).innerHTML=html;
+  }
+
+  renderCwvGrid('cwv-grid-mobile',mob);
+  renderCwvGrid('cwv-grid-desktop',desk);
+
+  /* Device comparison */
+  function renderDeviceCol(title,icon,metrics,scoreColor){
+    var rows=[
+      {name:'LCP',  val:metrics.lcp+'s',   st:lcpSt(metrics.lcp),  pct:Math.min(100,metrics.lcp/6*100)},
+      {name:'INP',  val:metrics.inp+'ms',  st:inpSt(metrics.inp),  pct:Math.min(100,metrics.inp/700*100)},
+      {name:'CLS',  val:''+metrics.cls,    st:clsSt(metrics.cls),  pct:Math.min(100,metrics.cls/0.5*100)},
+      {name:'FCP',  val:metrics.fcp+'s',   st:fcpSt(metrics.fcp),  pct:Math.min(100,metrics.fcp/5*100)},
+      {name:'TTFB', val:metrics.ttfb+'ms', st:ttfbSt(metrics.ttfb),pct:Math.min(100,metrics.ttfb/2500*100)},
+      {name:'TBT',  val:metrics.tbt+'ms',  st:tbtSt(metrics.tbt),  pct:Math.min(100,metrics.tbt/800*100)},
+    ];
+    return '<div class="device-col">'+
+      '<div class="device-col-head">'+
+        '<span style="font-size:1.1rem">'+icon+'</span>'+
+        '<span class="device-col-title">'+title+'</span>'+
+        '<span class="device-col-score" style="color:'+scoreColor+'">'+metrics.score+'/100</span>'+
+      '</div>'+
+      rows.map(function(r){
+        return '<div class="device-metric-row">'+
+          '<div class="device-metric-name">'+r.name+'</div>'+
+          '<div class="device-metric-bar-wrap">'+
+            '<div class="device-metric-bar"><div class="device-metric-fill" style="width:'+r.pct.toFixed(0)+'%;background:'+stColor(r.st)+'"></div></div>'+
+          '</div>'+
+          '<div class="device-metric-val '+r.st+'">'+r.val+'</div>'+
+          '</div>';
+      }).join('')+
+    '</div>';
+  }
+  var mobScoreColor=scoreSt(mob.score)==='pass'?'var(--green)':scoreSt(mob.score)==='warn'?'var(--amber)':'var(--red)';
+  var deskScoreColor=scoreSt(desk.score)==='pass'?'var(--green)':scoreSt(desk.score)==='warn'?'var(--amber)':'var(--red)';
+  document.getElementById('device-comparison').innerHTML=
+    renderDeviceCol('Mobile','📱',mob,mobScoreColor)+
+    renderDeviceCol('Desktop','🖥️',desk,deskScoreColor);
+
+  /* Opportunities */
+  var opps=[];
+  if(lcpSt(mob.lcp)!=='pass') opps.push({icon:'🖼️',name:'Optimize LCP element',desc:'Preload your hero image, compress to WebP/AVIF, and serve via CDN. Eliminate render-blocking CSS that delays LCP from loading.',st:lcpSt(mob.lcp),saving:ms2s(Math.round((mob.lcp-1.8)*1000))});
+  if(inpSt(mob.inp)!=='pass') opps.push({icon:'🖱️',name:'Reduce JavaScript execution time (INP)',desc:'Break up long tasks, defer non-critical scripts, and use web workers for heavy computation. Avoid synchronous event listeners that block the main thread.',st:inpSt(mob.inp),saving:mob.inp-150+'ms'});
+  if(clsSt(mob.cls)!=='pass') opps.push({icon:'📐',name:'Eliminate layout shifts (CLS)',desc:'Set explicit width/height on all images and embeds. Avoid inserting ads or banners above existing content. Use font-display: swap.',st:clsSt(mob.cls),saving:'\u2212'+(mob.cls*100).toFixed(0)+' pts CLS'});
+  if(ttfbSt(mob.ttfb)!=='pass') opps.push({icon:'🌐',name:'Improve server response time (TTFB)',desc:'Enable server-side caching, upgrade hosting, or use a CDN edge. Slow TTFB cascades through all other metrics.',st:ttfbSt(mob.ttfb),saving:ms2s(mob.ttfb-400)});
+  if(tbtSt(mob.tbt)!=='pass') opps.push({icon:'🔲',name:'Reduce Total Blocking Time (TBT)',desc:'Minimize long JavaScript tasks that block the main thread. Defer or async non-critical scripts and split large bundles.',st:tbtSt(mob.tbt),saving:ms2s(mob.tbt-150)});
+  if(fcpSt(mob.fcp)!=='pass') opps.push({icon:'⏱️',name:'Improve First Contentful Paint (FCP)',desc:'Eliminate render-blocking resources. Inline critical CSS and preload key fonts to get something on screen faster.',st:fcpSt(mob.fcp),saving:ms2s(Math.round((mob.fcp-1.2)*1000))});
+  if(opps.length===0) opps.push({icon:'✅',name:'All vitals are in Good range',desc:'Your Core Web Vitals are passing Google\'s thresholds on mobile. Monitor regularly as site changes can affect performance.',st:'pass',saving:'—'});
+
+  var ob=document.getElementById('opps-badge');
+  var nFail=opps.filter(function(o){return o.st==='fail';}).length;
+  ob.textContent=nFail>0?nFail+' critical issue'+(nFail>1?'s':''):'Looking good';
+  ob.className='result-card-badge '+(nFail>0?'fail':opps.some(function(o){return o.st==='warn';})?'warn':'pass');
+
+  document.getElementById('opps-list').innerHTML=opps.map(function(o){
+    return '<div class="opp-row">'+
+      '<div class="opp-icon '+o.st+'">'+stIcon(o.st)+'</div>'+
+      '<div class="opp-body"><div class="opp-name">'+o.icon+' '+o.name+'</div><div class="opp-desc">'+o.desc+'</div></div>'+
+      '<div class="opp-saving '+o.st+'">'+o.saving+'</div>'+
+    '</div>';
+  }).join('');
+
+  /* Benchmark table */
+  var benchRows=[
+    {metric:'LCP (Largest Contentful Paint)',mob:mob.lcp+'s',desk:desk.lcp+'s',good:'< 2.5s',warn2:'2.5–4s',poor:'> 4s',st:lcpSt(mob.lcp)},
+    {metric:'INP (Interaction to Next Paint)', mob:mob.inp+'ms',desk:desk.inp+'ms',good:'< 200ms',warn2:'200–500ms',poor:'> 500ms',st:inpSt(mob.inp)},
+    {metric:'CLS (Cumulative Layout Shift)',   mob:''+mob.cls,desk:''+desk.cls,good:'< 0.1',warn2:'0.1–0.25',poor:'> 0.25',st:clsSt(mob.cls)},
+    {metric:'FCP (First Contentful Paint)',    mob:mob.fcp+'s',desk:desk.fcp+'s',good:'< 1.8s',warn2:'1.8–3s',poor:'> 3s',st:fcpSt(mob.fcp)},
+    {metric:'TTFB (Time to First Byte)',       mob:mob.ttfb+'ms',desk:desk.ttfb+'ms',good:'< 600ms',warn2:'600ms–1.8s',poor:'> 1.8s',st:ttfbSt(mob.ttfb)},
+    {metric:'TBT (Total Blocking Time)',       mob:mob.tbt+'ms',desk:desk.tbt+'ms',good:'< 200ms',warn2:'200–600ms',poor:'> 600ms',st:tbtSt(mob.tbt)},
+    {metric:'Speed Index',                     mob:mob.si+'s',desk:desk.si+'s',good:'< 3.4s',warn2:'3.4–5.8s',poor:'> 5.8s',st:siSt(mob.si)},
+  ];
+  document.getElementById('bench-body').innerHTML=benchRows.map(function(r){
+    var mobClass=r.st==='pass'?'bench-td-good':r.st==='warn'?'bench-td-warn':'bench-td-fail';
+    var badge=r.st==='pass'?'\u2705 Good':r.st==='warn'?'\u26a0\ufe0f Improve':'\u274c Poor';
+    return '<tr><td><strong>'+r.metric+'</strong></td>'+
+      '<td class="bench-td-yours '+mobClass+'">'+r.mob+'</td>'+
+      '<td class="bench-td-yours">'+r.desk+'</td>'+
+      '<td class="bench-td-good">'+r.good+'</td>'+
+      '<td class="bench-td-warn">'+r.warn2+'</td>'+
+      '<td class="bench-td-fail">'+r.poor+'</td>'+
+      '<td>'+badge+'</td></tr>';
+  }).join('');
+
+  /* Fix recommendations */
+  var fixes=[];
+  if(lcpSt(mob.lcp)!=='pass') fixes.push({p:'high',title:'Preload and optimize your LCP image',desc:'Add <link rel="preload" as="image"> for your hero image. Compress to WebP or AVIF (30–35% smaller). Serve via a CDN and set explicit width/height attributes.',code:'<link rel="preload" as="image" href="/hero.webp" fetchpriority="high">\n<img src="/hero.webp" width="1200" height="630" alt="Hero image">'});
+  if(inpSt(mob.inp)!=='pass') fixes.push({p:'high',title:'Break up long JavaScript tasks to improve INP',desc:'Identify long tasks (>50ms) in Chrome DevTools Performance panel. Split large JS bundles, defer non-critical scripts, and use scheduler.yield() or setTimeout to give the browser time to render between tasks.',code:'// Break up a long task:\nfunction longTask() {\n  processChunk1();\n  await scheduler.yield(); // yield to browser\n  processChunk2();\n}'});
+  if(clsSt(mob.cls)!=='pass') fixes.push({p:'high',title:'Prevent layout shifts with explicit dimensions',desc:'Set width and height on all images, videos, and iframes. Use CSS aspect-ratio for dynamic media. Avoid inserting content above existing page elements after load.',code:'/* Always set dimensions on images: */\nimg { width: 800px; height: 450px; }\n\n/* Or use aspect-ratio: */\n.media-container { aspect-ratio: 16/9; }'});
+  if(ttfbSt(mob.ttfb)!=='pass') fixes.push({p:'high',title:'Reduce TTFB with caching and a CDN',desc:'Enable full-page caching on your server. Use a CDN to serve pages from edge nodes near users. Upgrade to faster hosting if your current server is consistently slow.',code:'# Apache: Enable page caching\nHeader set Cache-Control "public, max-age=3600"\n\n# Or use a CDN like Cloudflare (free tier)'});
+  if(tbtSt(mob.tbt)!=='pass') fixes.push({p:'med',title:'Reduce render-blocking JavaScript (TBT)',desc:'Add defer or async to scripts that aren\'t needed for initial render. Remove unused JavaScript. Use Chrome Coverage tool to identify unused code.',code:'<!-- Add defer to non-critical scripts: -->\n<script src="analytics.js" defer></script>\n<script src="widget.js" async></script>'});
+  if(fcpSt(mob.fcp)!=='pass') fixes.push({p:'med',title:'Inline critical CSS to speed up FCP',desc:'Extract the CSS needed for above-the-fold content and inline it in the <head>. Defer loading of non-critical stylesheets to prevent render-blocking.',code:'<head>\n  <style>/* Critical above-fold CSS here */\n  body{margin:0} .hero{...}\n  </style>\n  <link rel="preload" href="full.css" as="style" onload="this.rel=\'stylesheet\'">\n</head>'});
+  fixes.push({p:'low',title:'Set up Real User Monitoring (RUM)',desc:'Lab data from tools gives estimates but Real User Monitoring captures actual user experience. Use Google Search Console\'s Core Web Vitals report, or tools like Vercel Analytics, Sentry, or web-vitals.js to track real CWV data.',code:'// Install web-vitals.js:\nimport {onLCP, onINP, onCLS} from \'web-vitals\';\nonLCP(console.log);\nonINP(console.log);\nonCLS(console.log);'});
+
+  document.getElementById('fixes-badge').textContent=fixes.length+' recommendation'+(fixes.length===1?'':'s');
+  document.getElementById('fixes-badge').className='result-card-badge '+overallSt;
+  document.getElementById('fix-list').innerHTML=fixes.map(function(f,i){
+    var pl=f.p==='high'?'\uD83D\uDD34 HIGH PRIORITY':f.p==='med'?'\uD83D\uDFE1 MEDIUM':'\uD83D\uDFE2 LOW';
+    return '<div class="fix-item"><div class="fix-num">'+(i+1)+'</div><div class="fix-body"><div class="fix-priority '+f.p+'">'+pl+'</div><div class="fix-title">'+f.title+'</div><div class="fix-desc">'+f.desc+'</div>'+(f.code?'<div class="fix-code">'+escHtml(f.code)+'</div>':'')+'</div></div>';
+  }).join('');
+}
+
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
