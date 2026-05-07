@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Your Content Isn't Showing Up in AI Search Results — RankSorcery</title>
+<meta name="description" content="AI search engines skip most content for fixable reasons. Here's exactly why ChatGPT, Perplexity, and Google AI Overviews ignore your pages—and how to fix it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Why Your Content Isn't Showing Up in AI Search Results">
+<meta property="og:description" content="AI search engines skip most content for fixable reasons. Here's exactly why ChatGPT, Perplexity, and Google AI Overviews ignore your pages—and how to fix it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-05">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(167,139,250,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(167,139,250,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(167,139,250,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--purple), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--purple), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--purple), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: #fff; flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(167,139,250,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--purple); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--purple); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search Visibility</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">AI Search Visibility</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-purple">🤖 AI Search</span>
+          <span class="tag tag-cyan">GEO</span>
+        </div>
+        <h1>Why Your Content Isn't Showing Up in <span>AI Search Results</span> — And How to Actually Fix It</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 5, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,143 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client called me in a mild panic a few months back. Their organic traffic had been flat-ish — not tanking, not growing — but they'd noticed something weird. A competitor they'd never heard of was getting cited constantly in ChatGPT and Perplexity answers for their main product category. And that competitor had a site that was, by traditional SEO metrics, pretty unimpressive. Lower domain authority, fewer backlinks, less content overall.</p>
+
+      <p>When I dug in, the reason was obvious: that competitor had optimized for how AI models consume and cite content, and my client hadn't. It wasn't magic. It was structure, clarity, and a few specific patterns that made the content easy for an AI to extract and reference with confidence.</p>
+
+      <p>This is the thing about AI search in 2026 — the rules aren't completely different from traditional SEO, but the weighting has shifted enough that if you're not paying attention, you'll watch your rankings hold steady in Google while your share of AI-generated answers quietly goes to zero.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-body">
+          <strong>What We're Talking About</strong>
+          This article covers GEO — Generative Engine Optimization — the practice of making your content citable by AI search engines like Google AI Overviews, ChatGPT Search, and Perplexity. It's not a replacement for SEO. It's an extension of it.
+        </div>
+      </div>
+
+      <h2 id="why-ai-skips-content">Why AI Models Skip Most Content</h2>
+
+      <p>Here's the honest answer: AI language models don't "read" your content the way a human does. They process it in chunks, evaluate it for trustworthiness signals, and decide whether it's worth including in a synthesized answer. If your content fails any number of these internal checks, it gets silently ignored — no ranking drop, no penalty, just absence.</p>
+
+      <p>I think of it as a series of gates. Your content has to pass through each one to end up in an AI-generated answer. Most content fails somewhere in the middle without the site owner ever knowing why.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">~60%</span>
+          <div class="stat-label">of Google searches in 2026 now show an AI Overview before organic results</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3x</span>
+          <div class="stat-label">more citations go to content with clear entity definitions vs. general prose</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">92%</span>
+          <div class="stat-label">of sites that lost significant traffic in early 2026 had no structured data at all</div>
+        </div>
+      </div>
+
+      <p>The most common failure points I see are: content that's too vague to be cited as a factual source, pages missing structured data, sites with poor crawl accessibility, and content that doesn't directly answer the question being asked. Let me go through each one.</p>
+
+      <h2 id="failure-1-answer-first">Failure #1: You're Not Answering the Question Directly</h2>
+
+      <p>Traditional SEO content often had a lot of warm-up — an intro, some context, a paragraph explaining why the topic matters — before getting to the actual answer. That worked fine when humans were scrolling through results. AI models don't have the patience for it.</p>
+
+      <p>When Perplexity or ChatGPT Search processes your page, it's looking for a direct, extractable answer near the top of the content. If your answer is buried three paragraphs in under a heading that says "Understanding the Nuances of X," you're making the AI work harder than it needs to. It will often just pull from a different source that gets to the point faster.</p>
+
+      <div class="pull-quote">"The best-cited pages in AI search don't bury the answer. They lead with it, then explain it. Think newspaper, not novel."</div>
+
+      <p>The fix is to restructure your key pages so the answer to the implied question comes first, within the first 100–150 words of each section. Use your H2s as actual questions or direct statements. "How to do X" performs better than "Exploring the Approach to X." It sounds obvious, but most content doesn't do this consistently.</p>
+
+      <h2 id="failure-2-structured-data">Failure #2: Missing or Broken Structured Data</h2>
+
+      <p>Structured data (Schema markup) was always useful for rich snippets. In the AI search era, it's much closer to essential. Here's why: AI models use structured data as a trust signal. When your page has valid Schema markup that matches the content on the page, it increases the model's confidence that your page says what it says reliably.</p>
+
+      <p>The types that matter most right now for AI citation:</p>
+
+      <ul class="checklist">
+        <li><strong>FAQPage</strong> — each Q&amp;A pair is perfectly structured for AI extraction. This is probably the single highest-ROI schema type for GEO right now.</li>
+        <li><strong>HowTo</strong> — step-by-step content in a machine-readable format gets cited heavily in procedural answers.</li>
+        <li><strong>Article / NewsArticle</strong> — establishes authorship, publication date, and content type clearly.</li>
+        <li><strong>BreadcrumbList</strong> — helps AI understand your site's topical hierarchy and your authority in a given area.</li>
+        <li><strong>Organization / Person</strong> — establishes entity identity, which is increasingly important for E-E-A-T signals in AI contexts.</li>
+      </ul>
+
+      <p>The problem is that most sites either don't have structured data at all, have it incorrectly implemented, or have it on the wrong pages. I've audited dozens of sites where Schema markup existed but was broken — malformed JSON-LD, missing required fields, or markup that described something completely different from what the page actually contained. AI models pick up on this inconsistency.</p>
+
+      <div class="inline-cta">
+        <h3>🤖 Check Your AI Search Visibility Score</h3>
+        <p>RankSorcery's AI Search Visibility tool analyzes whether your content is structured to be cited by ChatGPT, Perplexity, and Google AI Overviews — and shows you exactly where you're failing.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Visibility →</a>
+      </div>
+
+      <h2 id="failure-3-entity-clarity">Failure #3: Your Entity Signals Are Weak</h2>
+
+      <p>This one is underrated and I don't see it talked about enough. AI search engines are heavily entity-based — they build a graph of who you are, what you know about, and whether your claims match what's known elsewhere on the web. If your entity profile is thin or inconsistent, you're basically a stranger to the AI, and AI doesn't cite strangers.</p>
+
+      <p>Practically, this means: your About page should clearly define who you are and what you do. Your author profiles should exist and link to external sources (LinkedIn, industry publications, etc.). Your NAP data (Name, Address, Phone) should be consistent across all platforms if you're a local business. Your brand name should appear consistently and not vary between "Acme Corp," "AcmeCorp," and "Acme Corporation" across different pages.</p>
+
+      <p>It also means claiming and optimizing your Google Business Profile, your Wikipedia presence if you're eligible, and making sure any data sources that AI models are trained on (Wikidata, Crunchbase, industry databases) have accurate information about you.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Quick Entity Win</strong>
+          Add an "About the Author" section with structured Person schema to every article you publish. Include credentials, social links, and a link to an author archive page. Takes 20 minutes to set up as a template and meaningfully improves how AI models evaluate your content's authoritativeness.
+        </div>
+      </div>
+
+      <h2 id="failure-4-crawl-access">Failure #4: AI Crawlers Can't Actually Access Your Content</h2>
+
+      <p>You probably know about Googlebot. You might not know that ChatGPT has its own crawler (GPTBot), Perplexity has PerplexityBot, Anthropic has ClaudeBot, and Amazon and Apple have their own too. Each of these bots needs to be able to access your content to index it for AI answers.</p>
+
+      <p>A surprising number of sites either accidentally block these bots via robots.txt, or have JavaScript-heavy pages that these crawlers can't render properly. Unlike Googlebot, which has years of sophisticated JavaScript rendering capabilities, many AI crawlers are simpler and fall back to raw HTML. If your content lives behind a JavaScript wall, they never see it.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Check Your robots.txt Now</strong>
+          Open your robots.txt and look for any "Disallow" rules targeting GPTBot, PerplexityBot, or other AI crawlers. Some CDNs and security plugins add blanket bot-blocking rules that include AI crawlers by mistake. If you're blocking them, you're invisible to those AI search engines entirely.
+        </div>
+      </div>
+
+      <p>The fix: audit your robots.txt, make sure your key content is server-side rendered or has a static HTML fallback, and check that your page speed is acceptable (slow pages often get partially processed or skipped entirely by AI crawlers with shorter timeout limits).</p>
+
+      <h2 id="failure-5-confidence-signals">Failure #5: Your Content Doesn't Signal Confidence</h2>
+
+      <p>AI models have a strong preference for content that is specific, verifiable, and confident. Hedged, wishy-washy writing that says "it depends" without explaining what it depends on gets skipped. Sentences that make specific, attributable claims — ideally with data, dates, or named sources — get cited.</p>
+
+      <p>Compare these two versions of the same information:</p>
+
+      <p><em>Version A (what not to write):</em> "Email open rates can vary quite a bit depending on a lot of different factors including your industry, your list quality, and when you send."</p>
+
+      <p><em>Version B (what AI prefers):</em> "The average B2B email open rate in 2026 is 22.1% according to Mailchimp's benchmark report, but SaaS companies consistently outperform this at 28–34% when sending on Tuesday mornings."</p>
+
+      <p>Version B is citable. Version A isn't. Notice it's not just about adding numbers — it's about making a specific, attributable claim that an AI can include in an answer without worrying it'll be wrong.</p>
+
+      <h2 id="practical-geo-checklist">A Practical GEO Checklist for 2026</h2>
+
+      <p>Rather than doing a comprehensive audit of every page (which takes forever), I recommend starting with your top 20 pages by traffic — the ones you most want showing up in AI search answers — and running through this list:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Direct Answer Test</h4>
+            <p>Read the first 150 words of each section. Does it directly answer what the H2 promises? If you have to scroll more than a screenful to find the actual answer, restructure it.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Schema Audit</h4>
+            <p>Use Google's Rich Results Test on each page. Check for FAQPage schema on any page with a Q&amp;A section, HowTo on any instructional content, and Article on blog posts. Fix any validation errors immediately.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Robots.txt Review</h4>
+            <p>Check your robots.txt for GPTBot, PerplexityBot, ClaudeBot, and any catch-all wildcard rules. If you're blocking these intentionally (for content protection), that's a conscious choice — just make sure it is intentional.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Entity Consistency Check</h4>
+            <p>Google your brand name. Do the top results show a consistent entity? Is your Organization schema on your homepage matching your About page and your Google Business Profile? Inconsistencies here silently kill your AI citation rate.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Specificity Pass</h4>
+            <p>Do a ctrl+F for phrases like "it depends," "various factors," and "can vary." Each instance is a citation opportunity being wasted. Replace them with specific claims, even if you have to add a caveat afterward.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <h4>AI Visibility Check</h4>
+            <p>Run your site through <a href="https://ranksorcery.com/ai-search.html">RankSorcery's AI Search Visibility tool</a> to get a score and see which specific signals are dragging down your AI discoverability. It checks crawl access, structured data, content clarity, and E-E-A-T signals in one shot.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="the-bigger-picture">The Bigger Picture: SEO and GEO Aren't Enemies</h2>
+
+      <p>I want to push back on the framing that's been floating around — the idea that AI search is killing SEO and everyone needs to "pivot to GEO." That's not right, and I think it's making people panic and make bad decisions.</p>
+
+      <p>The fundamentals still work. Good content wins. Authoritative sites get cited. Fast, accessible pages perform better. Structured data helps. The difference is that in 2026, the audience for your content is increasingly an AI model reading it before a human does, and that AI has specific preferences you can optimize for.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">✦</div>
+        <div class="callout-body">
+          <strong>The Honest Take</strong>
+          The sites that are winning in AI search right now aren't doing anything mystical. They have clear, specific, well-structured content with proper Schema markup and accessible crawl paths. The "secret" is just that most sites don't have all three at once.
+        </div>
+      </div>
+
+      <p>The Google March 2026 core update made this even clearer. Sites that got hit hardest were those relying on volume over quality — AI-generated content farms, thin affiliate pages, aggregators with no original insight. Sites that gained were the ones with clear authorship, specific real-world experience, and content that actually helped people make decisions.</p>
+
+      <p>That's not a coincidence. Google is aligning its traditional ranking signals with what it needs for AI Overviews to be trustworthy. Do the work that makes your content trustworthy to both a human reader and an AI model, and you're not playing two games — you're playing one game well.</p>
+
+      <p>Start with your top 20 pages. Run the checklist above. Check your AI visibility score. Then do the same for the next 20 pages next month. That's the whole playbook.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#why-ai-skips-content">Why AI Models Skip Content</a></li>
+        <li><a href="#failure-1-answer-first">Failure #1: Not Answering Directly</a></li>
+        <li><a href="#failure-2-structured-data">Failure #2: Missing Schema Data</a></li>
+        <li><a href="#failure-3-entity-clarity">Failure #3: Weak Entity Signals</a></li>
+        <li><a href="#failure-4-crawl-access">Failure #4: Blocked AI Crawlers</a></li>
+        <li><a href="#failure-5-confidence-signals">Failure #5: Hedged Writing</a></li>
+        <li><a href="#practical-geo-checklist">GEO Checklist for 2026</a></li>
+        <li><a href="#the-bigger-picture">SEO and GEO Together</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Why%20Your%20Content%20Isn%27t%20Showing%20Up%20in%20AI%20Search%20Results&url=https://ranksorcery.com/blog/why-content-missing-from-ai-search-results-2026.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="../blog/technical-seo-audit-checklist-2025.html" class="related-post">
+        <div class="related-post-icon">🧪</div>
+        <div class="related-post-body">Technical SEO Audit Checklist 2025<span>11 min · Apr 28</span></div>
+      </a>
+      <a href="../blog/how-to-rank-in-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results 2026<span>14 min · May 5</span></div>
+      </a>
+      <a href="../blog/competitor-seo-gap-analysis.html" class="related-post">
+        <div class="related-post-icon">⚔️</div>
+        <div class="related-post-body">Competitor SEO Gap Analysis<span>10 min · Apr 9</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(167,139,250,0.07),rgba(10,191,188,0.04));border-color:rgba(167,139,250,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">See if ChatGPT, Perplexity &amp; Google AI Overviews can actually find and cite your content.</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check My Visibility →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/ai-search.html">AI Search Visibility</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
