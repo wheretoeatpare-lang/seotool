@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image SEO in 2026: Why Your Images Are Silently Costing You Rankings — RankSorcery</title>
+<meta name="description" content="Most sites are leaving 20–30% of their potential traffic on the table because of bad image SEO. Here's the honest, practical guide to fixing it in 2026.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Image SEO in 2026: Why Your Images Are Silently Costing You Rankings">
+<meta property="og:description" content="From alt text that gets cited by AI to WebP formats that fix your LCP — a no-fluff guide to image SEO that actually moves the needle.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-05">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+
+/* ── NAV ── */
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--muted); font-size: 0.82rem; font-weight: 500;
+  transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem;
+  border-radius: 6px; cursor: pointer; white-space: nowrap;
+  background: none; border: none; font-family: 'DM Sans', sans-serif;
+}
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu {
+  display: none; position: absolute; top: calc(100% + 10px); left: 0;
+  min-width: 230px; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45);
+  z-index: 300; animation: dropIn 0.18s ease;
+}
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item {
+  display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem;
+  border-radius: 9px; text-decoration: none; color: var(--text);
+  transition: background 0.15s, color 0.15s; font-size: 0.84rem;
+}
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+  transition: background 0.2s, transform 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+  max-height: calc(100vh - 64px); overflow-y: auto;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta {
+  margin-top: 0.75rem !important; background: var(--accent) !important;
+  color: var(--bg) !important; text-align: center; padding: 0.85rem !important;
+  border-radius: 10px !important; border-bottom: none !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+}
+
+/* ── ARTICLE LAYOUT ── */
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+
+/* ── ARTICLE HERO ── */
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner {
+  position: relative; z-index: 1;
+  padding: 52px 48px 44px;
+}
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.article-hero-meta .author {
+  display: flex; align-items: center; gap: 8px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.meta-sep { color: var(--border2); }
+.reading-bar {
+  height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden;
+}
+.reading-progress {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--green), var(--teal));
+  border-radius: 999px; transition: width 0.1s;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+
+/* ── ARTICLE BODY ── */
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body p:last-child { margin-bottom: 0; }
+
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; line-height: 1.2;
+  color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+
+/* Callout boxes */
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+
+/* Stat blocks */
+.stat-row {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1rem; margin: 2rem 0;
+}
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--border2); }
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+
+/* Checklist */
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  font-size: 0.95rem; line-height: 1.6;
+}
+.checklist li::before {
+  content: '✓'; flex-shrink: 0;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+
+/* Numbered steps */
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+  transition: border-color 0.2s;
+}
+.step:hover { border-color: var(--border2); }
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800;
+  color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+
+/* Comparison table */
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(232,184,75,0.03); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+
+/* Pull quote */
+.pull-quote {
+  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+
+/* Code / example */
+.example-block {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+  font-family: monospace; font-size: 0.84rem; color: var(--teal);
+  line-height: 1.7; overflow-x: auto;
+}
+.example-label {
+  font-family: 'DM Sans', sans-serif; font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2);
+  margin-bottom: 0.6rem; display: block;
+}
+
+/* CTA inline */
+.inline-cta {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
+  margin-bottom: 0.5rem; color: var(--text);
+}
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 4px 16px rgba(232,184,75,0.25);
+}
+.inline-cta a:hover { background: var(--accent2); transform: translateY(-1px); color: var(--bg); }
+
+/* ── SIDEBAR ── */
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 24px; }
+.sidebar-widget {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px;
+}
+.widget-title {
+  font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
+}
+
+/* TOC */
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list li a {
+  display: block; padding: 6px 10px; border-radius: 7px;
+  text-decoration: none; font-size: 0.82rem; color: var(--muted);
+  transition: all 0.2s; border-left: 2px solid transparent;
+}
+.toc-list li a:hover { color: var(--accent); background: rgba(232,184,75,0.05); border-left-color: var(--accent); }
+.toc-list li a.active { color: var(--accent); border-left-color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 22px; font-size: 0.78rem; }
+
+/* Related posts */
+.related-post {
+  display: flex; gap: 10px; align-items: flex-start;
+  text-decoration: none; color: var(--text);
+  padding: 10px 0; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post:hover { color: var(--accent); }
+.related-post-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: var(--bg3); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.related-post-body { font-size: 0.8rem; line-height: 1.4; font-weight: 500; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted2); margin-top: 3px; }
+
+/* Share */
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn {
+  flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+  text-decoration: none; transition: all 0.2s; cursor: pointer; border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.share-btn-twitter { background: rgba(29,161,242,0.1); color: #1da1f2; border: 1px solid rgba(29,161,242,0.2); }
+.share-btn-twitter:hover { background: rgba(29,161,242,0.18); }
+.share-btn-copy { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+
+/* ── AUTHOR BOX ── */
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg);
+}
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+
+/* ── FOOTER ── */
+footer {
+  position: relative; z-index: 1; border-top: 1px solid var(--border);
+  padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2);
+}
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; }
+  .article-sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-mobile-menu { display: flex; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+}
+@media (max-width: 600px) {
+  .stat-row { grid-template-columns: 1fr; }
+  .step { flex-direction: column; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty & trends</div></div></a>
+        <a href="/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <a href="/ai-search.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">
+        Image &amp; Media
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="/background-remover.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">✂️</div><div><div class="nav-dropdown-item-name">Background Remover</div><div class="nav-dropdown-item-desc">AI-powered BG removal</div></div></a>
+        <a href="/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="/image-resizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">↔️</div><div><div class="nav-dropdown-item-name">Image Resizer</div></div></a>
+      </div>
+    </div>
+    <a href="blog.html" class="active">Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <a href="/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="/">🧪 SEO Auditor</a>
+  <a href="/keyword-volume.html">📊 Keyword Research</a>
+  <a href="/background-remover.html">✂️ Background Remover</a>
+  <a href="/image-compressor.html">🗜️ Image Compressor</a>
+  <a href="blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+
+  <!-- ── ARTICLE MAIN ── -->
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Image SEO 2026</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-green">🖼️ Image SEO</span>
+          <span class="tag tag-cyan">⚡ Core Web Vitals</span>
+          <span class="tag tag-amber">🔥 May 2026</span>
+        </div>
+        <h1>Image SEO in 2026: Why Your Images Are <span>Silently Costing You Rankings</span></h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">JR</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 5, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 10 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,190 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>Here's something I keep running into when I do site audits: a business owner who's done everything right. Good content, solid backlinks, clean technical setup. And their Core Web Vitals are still failing. Their LCP is 4.8 seconds on mobile. Their page is slow. And every single time, when I trace it back, the culprit is the same thing — images.</p>
+
+      <p>Not missing alt text. Not wrong file formats. Just big, unoptimised, uncompressed image files sitting on their product pages and blog posts, slowly suffocating their rankings one PageSpeed point at a time.</p>
+
+      <p>Image SEO in 2026 is more layered than it's ever been. It's not just about file size anymore — it's about alt text that gets you cited by AI systems, format choices that affect your visual search presence, and background clutter in product photos that's quietly tanking your conversion rate and your Google Shopping visibility. This guide covers all of it.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">53%</span>
+          <div class="stat-label">of mobile users abandon a page that takes more than 3 seconds to load</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">38%</span>
+          <div class="stat-label">of Google image searches now include an AI-generated overview panel</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">4.2×</span>
+          <div class="stat-label">more Google Shopping clicks go to product images with clean white backgrounds</div>
+        </div>
+      </div>
+
+      <h2 id="why-images-matter">Why images matter more in 2026 than they did two years ago</h2>
+
+      <p>There are a few things happening at once that have pushed image SEO up the priority list.</p>
+
+      <p>First, Google's visual search has gotten genuinely good. Google Lens now handles product discovery in a way that didn't exist at scale two years ago. If your product images aren't properly optimised — clean backgrounds, descriptive filenames, accurate alt text — you're invisible in that channel. It's a whole additional search surface that most SEOs are still ignoring.</p>
+
+      <p>Second, Core Web Vitals scoring has gotten stricter. The 2026 CWV update tightened the LCP thresholds and added new INP (Interaction to Next Paint) metrics that images directly affect. Images above the fold that aren't properly lazy-loaded or sized for viewport can fail your INP score even if your LCP is technically acceptable. More things to break, more ways your images are hurting you.</p>
+
+      <p>Third — and this is the one most people haven't caught up with yet — AI systems now actively parse image alt text as content context. It's not just accessibility anymore. When Perplexity or Google's AI Overviews are trying to understand what a page is about, they're reading your alt text. Thin alt text or missing alt text means they have less signal. More signal means more citations.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>The compounding problem</strong>
+          Bad image SEO doesn't just hurt you in one way. A 2MB unoptimised PNG on your product page is simultaneously hurting your LCP, your Google Shopping ranking, your visual search visibility, and your AI citation potential. Fix one image properly and you fix four problems at once.
+        </div>
+      </div>
+
+      <h2 id="format-wars">The format wars: WebP vs AVIF vs JPEG in 2026</h2>
+
+      <p>Let me just say what everyone's thinking but not writing clearly: JPEG is still fine. Not great, not optimal, but fine. The people who told you JPEG was dead were wrong, and the people now telling you AVIF is mandatory are also getting ahead of themselves.</p>
+
+      <p>Here's the actual state of image formats in 2026, without the hype:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Format</th>
+            <th>Browser Support</th>
+            <th>Compression</th>
+            <th>Best Use Case</th>
+            <th>SEO Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>JPEG</strong></td>
+            <td class="good">Universal</td>
+            <td class="mid">Good</td>
+            <td>Photos, hero images</td>
+            <td class="mid">Neutral</td>
+          </tr>
+          <tr>
+            <td><strong>WebP</strong></td>
+            <td class="good">98%+ support</td>
+            <td class="good">25–35% smaller than JPEG</td>
+            <td>Most web images</td>
+            <td class="good">Positive — LCP improvement</td>
+          </tr>
+          <tr>
+            <td><strong>AVIF</strong></td>
+            <td class="mid">~85% support</td>
+            <td class="good">40–50% smaller than JPEG</td>
+            <td>High-quality photography</td>
+            <td class="good">Positive with fallback</td>
+          </tr>
+          <tr>
+            <td><strong>PNG</strong></td>
+            <td class="good">Universal</td>
+            <td class="bad">Large file sizes</td>
+            <td>Logos, icons, transparency</td>
+            <td class="bad">Negative if overused</td>
+          </tr>
+          <tr>
+            <td><strong>SVG</strong></td>
+            <td class="good">Universal</td>
+            <td class="good">Tiny for vector graphics</td>
+            <td>Icons, illustrations, logos</td>
+            <td class="good">Excellent for icons</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>My actual recommendation: use WebP for 90% of your web images. It has near-universal browser support now, delivers meaningful file size reductions without quality loss, and the conversion process is straightforward. AVIF is worth it for high-traffic photography-heavy pages where you can serve it with a JPEG fallback — but it's not worth the complexity for most sites.</p>
+
+      <p>And please, stop using PNGs for photographs. I see this constantly. Someone takes a product shot, saves it as a PNG because "it looks better," and ends up with a 3.4MB file for what should be a 180KB WebP. That's not a quality decision — that's just not knowing the difference.</p>
+
+      <div class="inline-cta">
+        <h3>🗜️ Compress your images without losing quality</h3>
+        <p>Our free Image Compressor converts and optimises your images in seconds — WebP conversion, quality control, batch processing. No upload limits, no login.</p>
+        <a href="https://ranksorcery.com/image-compressor.html">Compress My Images Free →</a>
+      </div>
+
+      <h2 id="alt-text">Writing alt text that actually does something in 2026</h2>
+
+      <p>Alt text has two audiences in 2026: screen readers and AI systems. The advice for both is similar, but the emphasis is different enough that it's worth breaking down separately.</p>
+
+      <h3>For accessibility (screen readers)</h3>
+
+      <p>This hasn't changed much. Describe what the image actually shows. Be specific but not overwrought. A photo of a red ceramic mug on a wooden table is "Red ceramic coffee mug on a light oak table" — not "mug" and not "beautiful artisan handcrafted red ceramic beverage container perfect for your morning coffee ritual."</p>
+
+      <h3>For AI systems and SEO</h3>
+
+      <p>This is where it gets interesting. AI systems reading your alt text are trying to understand the context of the image in relation to your page content. The question they're asking is: does this image support and extend what the surrounding text is saying?</p>
+
+      <p>That means your alt text should include the subject, the context, and ideally one piece of information the surrounding text doesn't already state. If your article is about LCP optimisation and you have a screenshot of a PageSpeed Insights report, your alt text shouldn't just be "PageSpeed Insights screenshot" — it should be "PageSpeed Insights report showing LCP of 1.8 seconds after WebP image conversion."</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">✏️</div>
+        <div class="callout-body">
+          <strong>Alt text before and after</strong>
+          <strong style="color:var(--red);font-size:0.82rem;display:block;margin-top:6px;">❌ Weak alt text:</strong> "product image" or "photo of shoes" or leaving it blank entirely<br><br>
+          <strong style="color:var(--green);font-size:0.82rem;display:block;margin-top:6px;">✅ Strong alt text:</strong> "Men's white leather running shoes on a white background, side profile view, showing cushioned sole" — specific, contextual, useful to both screen reader users and AI systems parsing visual content.
+        </div>
+      </div>
+
+      <h3>What about keyword stuffing in alt text?</h3>
+
+      <p>Don't. It worked briefly in 2019 and got rolled back hard. Google specifically flags alt text that reads like a keyword list rather than an image description, and it will hurt you more than help you. AI systems are particularly good at detecting this — the alt text pattern of "buy red shoes cheap discount affordable men's shoes online" is about as useful to Perplexity's understanding of your page as it sounds.</p>
+
+      <h2 id="background-removal">Clean backgrounds and Google Shopping — the connection most people miss</h2>
+
+      <p>If you sell physical products online, your product images are doing SEO work whether you're thinking about it that way or not.</p>
+
+      <p>Google Shopping uses image quality signals as a ranking factor. It's not just about price and reviews — Google is actively evaluating whether your product images meet their quality standards. And one of those standards is background consistency. Clean white or neutral backgrounds on product photos correlate strongly with higher Shopping placement.</p>
+
+      <p>There's also a conversion angle that feeds back into SEO: pages with better-converting product images get more clicks, lower bounce rates, and longer session times. All of those are positive signals. A 1.2% improvement in CTR on a Shopping listing, compounded across thousands of impressions, is meaningful.</p>
+
+      <div class="pull-quote">
+        "The product photo you took on your kitchen counter with your phone — and forgot to crop — is competing against a studio-grade image from a brand with a $40,000 photography budget. Background removal is how you close that gap for free."
+      </div>
+
+      <p>We built RankSorcery's Background Remover specifically for this. It's AI-powered, it handles complex edges well (hair, fur, product details with fine edges), and it takes about three seconds per image. If you're running a product-heavy site and you're not using a tool like this on every single listing image, you're competing at a disadvantage that's 100% fixable.</p>
+
+      <div class="inline-cta">
+        <h3>✂️ Remove image backgrounds instantly — free</h3>
+        <p>AI-powered background removal that handles complex edges. Upload your product photo and get a clean transparent PNG in seconds. No login, no limits on free tier.</p>
+        <a href="https://ranksorcery.com/background-remover.html">Remove Background Free →</a>
+      </div>
+
+      <h2 id="image-sizing">Image sizing: the LCP problem you don't know you have</h2>
+
+      <p>Largest Contentful Paint is measured against the largest visible element when a page first loads. On most pages, that element is an image — usually the hero image, a product photo, or a featured image at the top of a blog post.</p>
+
+      <p>The problem I see most often: images that are served at their full original resolution and scaled down via CSS. So a 2400×1600 pixel image gets uploaded to WordPress or a CMS, then displayed at 800×533 via CSS width styling. The browser downloads the full 2400px image, renders the page slowly, and your LCP tanks — even though the image visually looks fine.</p>
+
+      <p>The fix is to serve images at the size they're actually displayed. Which means you need appropriately-sized versions for different breakpoints. This is exactly what an image resizer is for — not cropping the image, but creating correctly-sized versions for desktop, tablet, and mobile that you serve conditionally.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Identify your actual display sizes</h4>
+            <p>Open Chrome DevTools on your page, inspect the hero image, and check what size it's actually rendering at on desktop vs mobile. You'll often find a 2400px image rendering at 780px — serving nearly 10× the necessary data.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Create correctly-sized versions</h4>
+            <p>Use RankSorcery's Image Resizer to create versions at your target display sizes. For a typical blog hero, you usually need a 1200px version for desktop and a 640px version for mobile. Both should be WebP or AVIF.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Implement responsive images with srcset</h4>
+            <p>Use the HTML <code>srcset</code> attribute to serve the right version to the right device. A modern browser will pick the smallest version that still looks sharp at the rendered display size.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Add explicit width and height attributes</h4>
+            <p>Always include <code>width</code> and <code>height</code> attributes on your <code>&lt;img&gt;</code> tags. Without them, the browser doesn't know the image's aspect ratio until it downloads it, causing layout shifts that tank your CLS score.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Lazy load everything below the fold</h4>
+            <p>Add <code>loading="lazy"</code> to any image that's not visible in the initial viewport. This defers their download until the user scrolls near them, dramatically improving Time to First Byte and perceived load speed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">⚡</div>
+        <div class="callout-body">
+          <strong>Quick LCP win</strong>
+          Add <code>fetchpriority="high"</code> to your hero image or above-the-fold product photo. This tells the browser to prioritise loading that image over other resources. It's a one-line change that often moves LCP scores by 0.3–0.6 seconds, which can flip you from "needs improvement" to "good" on PageSpeed Insights.
+        </div>
+      </div>
+
+      <h2 id="filenames">Image filenames: the SEO signal hiding in plain sight</h2>
+
+      <p>Here's one I still see on large, well-resourced websites: images named IMG_20240318_092341.jpg. Or DSC_0047.png. Or screenshot-2025-11-04.webp.</p>
+
+      <p>Your image filename is a ranking signal. Not the biggest signal in the world, but it's free — it costs you nothing to name your images properly, and it's an incremental positive signal that adds up across a whole site. Google reads filenames when it indexes images, and AI systems read them as contextual data too.</p>
+
+      <p>The rule is simple: name your image the same way you'd write its alt text, in kebab-case (hyphens between words). A photo of a ceramic pour-over coffee dripper in matte black should be <code>ceramic-pour-over-coffee-dripper-matte-black.webp</code> — not <code>IMG_3847.jpg</code>.</p>
+
+      <div class="example-block">
+        <span class="example-label">Filename examples — bad vs good</span>
+        ❌  IMG_9823.jpg<br>
+        ❌  product-image-1.png<br>
+        ❌  photo (1).jpg<br>
+        ❌  untitled.webp<br>
+        <br>
+        ✅  ceramic-pour-over-dripper-black-500ml.webp<br>
+        ✅  ranksorcery-image-compressor-before-after.webp<br>
+        ✅  seo-audit-checklist-2026-screenshot.webp<br>
+        ✅  background-removed-product-photo-example.webp
+      </div>
+
+      <h2 id="image-sitemaps">Image sitemaps and why most sites skip them</h2>
+
+      <p>An image sitemap tells Google about images on your site that it might not discover through standard crawling — particularly images loaded via JavaScript, CSS background images, or images behind interactive elements.</p>
+
+      <p>Most sites don't have one. That's a missed opportunity, especially if you have product galleries, portfolio pages, or image-heavy blog content. It's not complicated to implement — you're either extending your existing XML sitemap with image tags, or generating a separate image sitemap.</p>
+
+      <p>The format looks like this:</p>
+
+      <div class="example-block">
+        <span class="example-label">Image sitemap entry format</span>
+        &lt;url&gt;<br>
+        &nbsp;&nbsp;&lt;loc&gt;https://yoursite.com/products/ceramic-mug&lt;/loc&gt;<br>
+        &nbsp;&nbsp;&lt;image:image&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&lt;image:loc&gt;https://yoursite.com/images/ceramic-mug-black.webp&lt;/image:loc&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&lt;image:caption&gt;Handmade ceramic mug in matte black, 12oz&lt;/image:caption&gt;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&lt;image:title&gt;Black Ceramic Mug — RankSorcery Store&lt;/image:title&gt;<br>
+        &nbsp;&nbsp;&lt;/image:image&gt;<br>
+        &lt;/url&gt;
+      </div>
+
+      <p>It's low-effort and it gives Google's image crawler explicit, clean data to work with. For e-commerce sites in particular, this is one of the highest-ROI technical SEO tasks you can do in an afternoon.</p>
+
+      <h2 id="visual-search">Visual search and AI Overviews — the emerging image opportunity</h2>
+
+      <p>This one's worth calling out separately because the opportunity is real and most content creators aren't thinking about it yet.</p>
+
+      <p>Google Lens visual search is now integrated into the main Google search interface on mobile. When someone photographs a product they want to buy, Google Lens tries to identify and match it. The images that surface in those results are pulled from Google's standard image index, but they're filtered by visual clarity, metadata quality, and structured data.</p>
+
+      <p>This means your product images need to be:</p>
+
+      <ul class="checklist">
+        <li>High enough resolution that Google's vision model can clearly identify the product (minimum 800px on the longer edge)</li>
+        <li>On clean or white backgrounds so the subject isn't visually confused with background elements</li>
+        <li>Accompanied by accurate Product schema markup that Google can cross-reference with the visual data</li>
+        <li>Served from a fast, reliable CDN so Google's crawler can access them without timeouts</li>
+        <li>Named and alt-tagged with specific product identifiers (model numbers, colour names, material descriptions)</li>
+      </ul>
+
+      <p>None of this is wildly new advice, but the urgency has changed. Visual search used to be a niche edge case. In 2026, it's a mainstream traffic source for physical product searches, and the brands that have their images in order are capturing a disproportionate share of it.</p>
+
+      <div class="callout callout-green">
+        <div class="callout-icon">📸</div>
+        <div class="callout-body">
+          <strong>The three-tool image workflow</strong>
+          Here's the workflow we recommend for any product photo: (1) Remove the background with RankSorcery's Background Remover for a clean transparent base. (2) Resize to your target display dimensions with the Image Resizer. (3) Compress and convert to WebP with the Image Compressor. Three tools, about 90 seconds per image, and you've addressed every major image SEO signal in one pass.
+        </div>
+      </div>
+
+      <h2 id="checklist">The image SEO audit checklist for 2026</h2>
+
+      <p>If you want to run a quick audit of your own site's image health, here's what to look at:</p>
+
+      <ul class="checklist">
+        <li>Run a PageSpeed Insights test and check whether "Properly size images" or "Serve images in next-gen formats" appear in the opportunities section</li>
+        <li>Check your hero/above-the-fold image for LCP — it should be under 2.5 seconds on a 4G mobile connection</li>
+        <li>Audit your image filenames — any with camera default names (IMG_, DSC_, screenshot-) need renaming</li>
+        <li>Check alt text coverage — an empty src="" or missing alt attribute on any visible image is a problem</li>
+        <li>Verify all product images use clean backgrounds, especially for Google Shopping listings</li>
+        <li>Check that you have <code>width</code> and <code>height</code> attributes on all images to prevent CLS</li>
+        <li>Confirm all below-the-fold images have <code>loading="lazy"</code></li>
+        <li>Add <code>fetchpriority="high"</code> to your LCP image if it's not already there</li>
+        <li>Check whether your sitemap includes image data, or create an image sitemap</li>
+        <li>Run your site through our <a href="https://ranksorcery.com/">free SEO Auditor</a> — it flags image issues automatically as part of the 60+ factor check</li>
+      </ul>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>One thing that trips people up</strong>
+          WebP is great, but don't serve WebP images to older browsers that don't support it without a fallback. Use the HTML <code>&lt;picture&gt;</code> element with a <code>&lt;source type="image/webp"&gt;</code> and a JPEG fallback <code>&lt;img&gt;</code> tag. Modern CMS platforms (WordPress with a caching plugin, Shopify, most headless setups) handle this automatically — but if you're hand-coding your image delivery, don't skip the fallback.
+        </div>
+      </div>
+
+      <h2 id="summary">Short version if you're skimming</h2>
+
+      <p>Image SEO in 2026 matters more than it did because it touches four separate things at once: Core Web Vitals and LCP, visual search and Google Lens, AI search citation potential, and conversion rates. Bad images hurt you in all four places. Good image practice helps you in all four simultaneously.</p>
+
+      <p>The practical priorities, in order of impact:</p>
+
+      <ul class="checklist">
+        <li>Convert JPEG and PNG photos to WebP — it's the single highest-ROI format change and takes minutes</li>
+        <li>Serve images at their actual display size, not scaled down via CSS — your LCP will thank you immediately</li>
+        <li>Write descriptive, contextual alt text that tells a complete story about the image and its role on the page</li>
+        <li>Remove backgrounds from product photos for Google Shopping and visual search visibility</li>
+        <li>Name your image files properly — hyphenated, descriptive, specific</li>
+        <li>Add <code>loading="lazy"</code> to everything below the fold and <code>fetchpriority="high"</code> to your LCP image</li>
+        <li>Build or extend your sitemap to include image data for any image-heavy pages</li>
+      </ul>
+
+      <p>You don't need to tackle all of this at once. Pick the item that's clearly the biggest problem on your site right now and fix that first. A single afternoon fixing your hero image delivery chain often has more impact than a month of other optimisation work.</p>
+
+      <p>If you want a fast starting point, run your site through our free SEO Auditor — it checks image-related issues as part of its 60+ factor scan, and it'll tell you pretty quickly what's actually worth your time versus what's already fine.</p>
+
+      <div class="inline-cta">
+        <h3>🧪 See exactly what's wrong with your site's images</h3>
+        <p>Our free SEO Auditor checks image formats, sizing issues, missing alt text, LCP problems, and more — in about 30 seconds. No login, no install.</p>
+        <a href="https://ranksorcery.com/">Run Your Free Image SEO Audit →</a>
+      </div>
+
+      <!-- Author -->
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO since before Google killed keyword density as a metric. He runs RankSorcery and writes about the parts of search marketing that don't get covered in listicles. His favourite hobby is showing people how many megabytes their homepage doesn't need to be.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#why-images-matter">Why images matter more in 2026</a></li>
+        <li><a href="#format-wars">WebP vs AVIF vs JPEG</a></li>
+        <li class="sub"><a href="#format-wars">Format comparison table</a></li>
+        <li><a href="#alt-text">Alt text in 2026</a></li>
+        <li class="sub"><a href="#alt-text">Writing for AI systems</a></li>
+        <li><a href="#background-removal">Clean backgrounds & Shopping</a></li>
+        <li><a href="#image-sizing">Image sizing & LCP</a></li>
+        <li class="sub"><a href="#image-sizing">5-step sizing workflow</a></li>
+        <li><a href="#filenames">Image filenames</a></li>
+        <li><a href="#image-sitemaps">Image sitemaps</a></li>
+        <li><a href="#visual-search">Visual search & AI Overviews</a></li>
+        <li><a href="#checklist">Full audit checklist</a></li>
+        <li><a href="#summary">TL;DR Summary</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Image+SEO+in+2026+%E2%80%94+Why+Your+Images+Are+Silently+Costing+You+Rankings&url=https://ranksorcery.com/image-seo-guide-2026.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="how-to-rank-in-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results: 2026 Guide<span>14 min · May 5</span></div>
+      </a>
+      <a href="blog/core-web-vitals-guide-2025.html" class="related-post">
+        <div class="related-post-icon">⚡</div>
+        <div class="related-post-body">Core Web Vitals 2025: Fix LCP Fast<span>6 min · Apr 14</span></div>
+      </a>
+      <a href="blog/technical-seo-audit-checklist-2025.html" class="related-post">
+        <div class="related-post-icon">🧪</div>
+        <div class="related-post-body">Technical SEO Audit Checklist 2025<span>11 min · Apr 28</span></div>
+      </a>
+      <a href="blog/competitor-seo-gap-analysis.html" class="related-post">
+        <div class="related-post-icon">⚔️</div>
+        <div class="related-post-body">Competitor Gap Analysis: Steal Rankings in 30 Days<span>10 min · Apr 9</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(52,211,153,0.07),rgba(10,191,188,0.04));border-color:rgba(52,211,153,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🗜️</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free Image Compressor</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">WebP conversion · Batch compress · No login</p>
+      <a href="https://ranksorcery.com/image-compressor.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Compress Images →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/image-compressor.html">Image Compressor</a> &nbsp;·&nbsp;
+    <a href="/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+// Nav
+function toggleNavDropdown(id) {
+  const wrapper = document.getElementById(id);
+  const menu = wrapper.querySelector('.nav-dropdown-menu');
+  const toggle = wrapper.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  if (!isOpen) { menu.classList.add('open'); toggle.classList.add('open'); }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  }
+});
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+
+// Reading progress bar
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+
+  // TOC active state
+  const sections = ['why-images-matter','format-wars','alt-text','background-removal','image-sizing','filenames','image-sitemaps','visual-search','checklist','summary'];
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 120) current = id;
+  });
+  document.querySelectorAll('.toc-list a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+
+// Copy link
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
