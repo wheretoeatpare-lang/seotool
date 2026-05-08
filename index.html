@@ -2477,6 +2477,14 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.stats-bar-animated .stat-num.done {
+  animation: numBlink 0.8s ease 0s 3;
+}
+@keyframes numBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
 
 .stats-bar-animated .cycle-strip {
   display: flex;
@@ -3292,7 +3300,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
         <div class="stat-num cycling">
           <div class="cycle-strip" id="ai-cycle"><span class="cycle-word">AI</span></div>
         </div>
-        <div class="stat-label">Powered</div>
+        <div class="stat-label">AI Powered</div>
       </div>
     </div>
   </div>
@@ -4446,6 +4454,14 @@ function exportReport() {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+.stats-bar-animated .stat-num.done {
+  animation: numBlink 0.8s ease 0s 3;
+}
+@keyframes numBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
 
 .stats-bar-animated .cycle-strip {
   display: flex;
@@ -7229,8 +7245,17 @@ async function _fetchAndRenderBrokenLinks(url, hostname, el) {
       var eased = 1 - Math.pow(1 - progress, 3);
       var current = Math.round(target * eased);
       el.textContent = current;
-      if (progress < 1) requestAnimationFrame(tick);
-      else el.textContent = target;
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        el.textContent = target;
+        var numEl = el.closest('.stat-num');
+        if (numEl) {
+          numEl.classList.remove('done');
+          void numEl.offsetWidth; // force reflow to restart animation
+          numEl.classList.add('done');
+        }
+      }
     }
     requestAnimationFrame(tick);
   }
