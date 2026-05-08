@@ -2449,16 +2449,16 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .stats-bar-animated {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2rem;
   padding: 2rem 0 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   animation: fadeSlideUp 0.8s 0.4s ease both;
 }
 
 .stats-bar-animated .stat-item {
   text-align: center;
   position: relative;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .stats-bar-animated .stat-num {
@@ -2471,8 +2471,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   position: relative;
 }
 
-.stats-bar-animated .stat-num.counting,
-.stats-bar-animated .stat-num.cycling {
+.stats-bar-animated .stat-num.counting {
   background: linear-gradient(135deg, var(--accent), var(--teal));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -2513,7 +2512,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 @media (max-width: 680px) {
-  .stats-bar-animated { gap: 1.5rem; }
+  .stats-bar-animated { gap: 1rem; flex-wrap: wrap; }
   .stats-bar-animated .stat-num { font-size: 1.5rem; height: 2rem; line-height: 2rem; }
   .stats-bar-animated .cycle-word { font-size: 1.25rem; height: 2rem; line-height: 2rem; }
 }
@@ -4419,16 +4418,16 @@ function exportReport() {
 .stats-bar-animated {
   display: flex;
   justify-content: center;
-  gap: 3rem;
+  gap: 2rem;
   padding: 2rem 0 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   animation: fadeSlideUp 0.8s 0.4s ease both;
 }
 
 .stats-bar-animated .stat-item {
   text-align: center;
   position: relative;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.75rem;
 }
 
 .stats-bar-animated .stat-num {
@@ -4441,8 +4440,7 @@ function exportReport() {
   position: relative;
 }
 
-.stats-bar-animated .stat-num.counting,
-.stats-bar-animated .stat-num.cycling {
+.stats-bar-animated .stat-num.counting {
   background: linear-gradient(135deg, var(--accent), var(--teal));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -4483,7 +4481,7 @@ function exportReport() {
 }
 
 @media (max-width: 680px) {
-  .stats-bar-animated { gap: 1.5rem; }
+  .stats-bar-animated { gap: 1rem; flex-wrap: wrap; }
   .stats-bar-animated .stat-num { font-size: 1.5rem; height: 2rem; line-height: 2rem; }
   .stats-bar-animated .cycle-word { font-size: 1.25rem; height: 2rem; line-height: 2rem; }
 }
