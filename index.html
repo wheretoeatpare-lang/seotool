@@ -2444,6 +2444,80 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   50%      { box-shadow: 0 0 0 5px rgba(232, 184, 75, 0.15); }
 }
 
+
+/* ═══ ANIMATED STATS BAR ═══ */
+.stats-bar-animated {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  padding: 2rem 0 0.5rem;
+  flex-wrap: wrap;
+  animation: fadeSlideUp 0.8s 0.4s ease both;
+}
+
+.stats-bar-animated .stat-item {
+  text-align: center;
+  position: relative;
+  padding: 0.5rem 1rem;
+}
+
+.stats-bar-animated .stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  height: 2.2rem;
+  line-height: 2.2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.stats-bar-animated .stat-num.counting,
+.stats-bar-animated .stat-num.cycling {
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-bar-animated .cycle-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stats-bar-animated .cycle-word {
+  height: 2.2rem;
+  line-height: 2.2rem;
+  font-size: 1.5rem;
+  white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-bar-animated .stat-num .plus {
+  -webkit-text-fill-color: var(--accent);
+  background: none;
+  margin-left: 0.1rem;
+}
+
+.stats-bar-animated .stat-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 680px) {
+  .stats-bar-animated { gap: 1.5rem; }
+  .stats-bar-animated .stat-num { font-size: 1.5rem; height: 2rem; line-height: 2rem; }
+  .stats-bar-animated .cycle-word { font-size: 1.25rem; height: 2rem; line-height: 2rem; }
+}
+
 </style>
 </head>
 <body>
@@ -3196,11 +3270,31 @@ a:focus-visible, button:focus-visible, input:focus-visible {
       </div>
     </div>
 
-    <div class="stats-bar">
-      <div class="stat-item"><div class="stat-num">60+</div><div class="stat-label">SEO Factors</div></div>
-      <div class="stat-item"><div class="stat-num">8</div><div class="stat-label">Audit Categories</div></div>
-      <div class="stat-item"><div class="stat-num">CMS</div><div class="stat-label">Aware Fixes</div></div>
-      <div class="stat-item"><div class="stat-num">AI</div><div class="stat-label">Powered</div></div>
+    <div class="stats-bar-animated" id="stats-bar-animated">
+      <div class="stat-item">
+        <div class="stat-num counting">
+          <span class="counter" data-target="80" data-suffix="+">0</span><span class="plus">+</span>
+        </div>
+        <div class="stat-label">SEO Factors</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num counting">
+          <span class="counter" data-target="9">0</span>
+        </div>
+        <div class="stat-label">Audit Categories</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num cycling">
+          <div class="cycle-strip" id="cms-cycle"><span class="cycle-word">CMS</span></div>
+        </div>
+        <div class="stat-label">Aware Fixes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num cycling">
+          <div class="cycle-strip" id="ai-cycle"><span class="cycle-word">AI</span></div>
+        </div>
+        <div class="stat-label">Powered</div>
+      </div>
     </div>
   </div>
 </section>
@@ -4320,6 +4414,80 @@ function exportReport() {
   h2{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:14px;margin-top:32px}
   table{width:100%;border-collapse:collapse;background:#141B2D;border:1px solid rgba(232,184,75,0.15);border-radius:10px;overflow:hidden}
   .section{background:#141B2D;border:1px solid rgba(232,184,75,0.13);border-radius:14px;padding:24px;margin-bottom:24px}
+
+/* ═══ ANIMATED STATS BAR ═══ */
+.stats-bar-animated {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  padding: 2rem 0 0.5rem;
+  flex-wrap: wrap;
+  animation: fadeSlideUp 0.8s 0.4s ease both;
+}
+
+.stats-bar-animated .stat-item {
+  text-align: center;
+  position: relative;
+  padding: 0.5rem 1rem;
+}
+
+.stats-bar-animated .stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  height: 2.2rem;
+  line-height: 2.2rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.stats-bar-animated .stat-num.counting,
+.stats-bar-animated .stat-num.cycling {
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-bar-animated .cycle-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stats-bar-animated .cycle-word {
+  height: 2.2rem;
+  line-height: 2.2rem;
+  font-size: 1.5rem;
+  white-space: nowrap;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stats-bar-animated .stat-num .plus {
+  -webkit-text-fill-color: var(--accent);
+  background: none;
+  margin-left: 0.1rem;
+}
+
+.stats-bar-animated .stat-label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 680px) {
+  .stats-bar-animated { gap: 1.5rem; }
+  .stats-bar-animated .stat-num { font-size: 1.5rem; height: 2rem; line-height: 2rem; }
+  .stats-bar-animated .cycle-word { font-size: 1.25rem; height: 2rem; line-height: 2rem; }
+}
+
 </style>
 </head>
 <body>
@@ -7034,6 +7202,73 @@ async function _fetchAndRenderBrokenLinks(url, hostname, el) {
   // Fade out hint after 8 seconds
   setTimeout(() => { hint.style.opacity = '0'; }, 8000);
 
+})();
+
+
+// ═══ ANIMATED STATS BAR ═══
+(function() {
+  var CMS_NAMES = [
+    'WordPress','Shopify','Wix','Squarespace','Webflow',
+    'Joomla','Drupal','Ghost','Next.js','Nuxt',
+    'Gatsby','Hugo','Jekyll','Magento','BigCommerce',
+    'Blogger','Contentful','Sanity','Framer','Duda',
+    'Weebly','Strikingly','HubSpot','Kajabi','Thinkific',
+    'Teachable','Notion','Carrd','Bubble','FlutterFlow'
+  ];
+  var AI_MODELS = [
+    'Claude','ChatGPT','Gemini','Llama','Mistral',
+    'Grok','Perplexity','Copilot','DeepSeek','Qwen',
+    'PaLM','Bard','Jasper','Writesonic','Copy.ai',
+    'Anthropic','OpenAI','Google AI','Meta AI','Cohere'
+  ];
+
+  function animateCounter(el, target, duration) {
+    duration = duration || 2000;
+    var startTime = performance.now();
+    function tick(now) {
+      var elapsed = now - startTime;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = Math.round(target * eased);
+      el.textContent = current;
+      if (progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function initCycler(containerId, words, intervalMs) {
+    intervalMs = intervalMs || 2200;
+    var strip = document.getElementById(containerId);
+    if (!strip) return;
+    strip.innerHTML = words.map(function(w) {
+      return '<span class="cycle-word">' + w + '</span>';
+    }).join('');
+    var index = 0;
+    var wordHeight = strip.querySelector('.cycle-word').offsetHeight || 35;
+    strip.style.transform = 'translateY(0px)';
+    setInterval(function() {
+      index = (index + 1) % words.length;
+      strip.style.transform = 'translateY(-' + (index * wordHeight) + 'px)';
+    }, intervalMs);
+  }
+
+  var statsBar = document.getElementById('stats-bar-animated');
+  if (statsBar) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          statsBar.querySelectorAll('.counter').forEach(function(el) {
+            animateCounter(el, parseInt(el.dataset.target, 10));
+          });
+          initCycler('cms-cycle', CMS_NAMES, 2400);
+          initCycler('ai-cycle', AI_MODELS, 2600);
+          observer.unobserve(statsBar);
+        }
+      });
+    }, { threshold: 0.3 });
+    observer.observe(statsBar);
+  }
 })();
 </script>
 </body>
