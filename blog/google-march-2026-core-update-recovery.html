@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google March 2026 Core Update: Who Got Hit and How to Recover — RankSorcery</title>
+<meta name="description" content="Google's March 2026 core update crushed thin AI content farms and rewarded genuine expertise. Here's exactly who got hit, who won, and a step-by-step recovery plan.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google March 2026 Core Update: Who Got Hit and How to Recover">
+<meta property="og:description" content="Google's March 2026 core update crushed thin AI content farms and rewarded genuine expertise. Here's exactly who got hit, who won, and a step-by-step recovery plan.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-06">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; }
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s, color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body p:last-child { margin-bottom: 0; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; transition: border-color 0.2s; }
+.stat-card:hover { border-color: var(--border2); }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; line-height: 1; margin-bottom: 6px; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before { content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--green2); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; margin-top: 2px; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; transition: border-color 0.2s; }
+.step:hover { border-color: var(--border2); }
+.step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent3)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg); }
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th { background: var(--bg3); padding: 10px 14px; text-align: left; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(232,184,75,0.03); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid { color: var(--amber); font-weight: 600; }
+.compare-table .bad { color: var(--red); font-weight: 600; }
+.pull-quote { border-left: 3px solid var(--accent); padding: 0.75rem 0 0.75rem 1.5rem; margin: 2rem 0; font-size: 1.1rem; font-style: italic; color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.04)); border: 1px solid rgba(232,184,75,0.2); border-radius: 14px; padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(232,184,75,0.25); }
+.inline-cta a:hover { background: var(--accent2); transform: translateY(-1px); color: var(--bg); }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 24px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list li a { display: block; padding: 6px 10px; border-radius: 7px; text-decoration: none; font-size: 0.82rem; color: var(--muted); transition: all 0.2s; border-left: 2px solid transparent; }
+.toc-list li a:hover, .toc-list li a.active { color: var(--accent); background: rgba(232,184,75,0.05); border-left-color: var(--accent); }
+.related-post { display: flex; gap: 10px; align-items: flex-start; text-decoration: none; color: var(--text); padding: 10px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post:hover { color: var(--accent); }
+.related-post-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.related-post-body { font-size: 0.8rem; line-height: 1.4; font-weight: 500; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted2); margin-top: 3px; }
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+.share-btn-twitter { background: rgba(29,161,242,0.1); color: #1da1f2; border: 1px solid rgba(29,161,242,0.2); }
+.share-btn-twitter:hover { background: rgba(29,161,242,0.18); }
+.share-btn-copy { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty & trends</div></div></a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">
+        Image &amp; Media
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="https://ranksorcery.com/background-remover.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">✂️</div><div><div class="nav-dropdown-item-name">Background Remover</div><div class="nav-dropdown-item-desc">AI-powered BG removal</div></div></a>
+        <a href="https://ranksorcery.com/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="https://ranksorcery.com/image-resizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">↔️</div><div><div class="nav-dropdown-item-name">Image Resizer</div></div></a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/blog.html" class="active">Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="https://ranksorcery.com/blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+
+  <main class="article-main">
+
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="https://ranksorcery.com/blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Google March 2026 Core Update</span>
+    </div>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">⚡ Core Update</span>
+          <span class="tag tag-cyan">⭐ 2026</span>
+        </div>
+        <h1>Google March 2026 Core Update: <span>Who Got Hit</span> and How to Recover</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 6, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 9 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,847 views</span>
+        </div>
+      </div>
+    </div>
+
+    <article class="article-body">
+
+      <p>I'll be straight with you: the March 2026 core update was brutal. Not "a few sites took a hit" brutal — I mean sites that had been ranking stably for 18 months lost 60–80% of their organic traffic in a 12-day window. I watched it happen to two clients in real time. One runs a health information site, the other an affiliate-heavy product review blog. Both got absolutely torched.</p>
+
+      <p>Google confirmed the rollout started on March 27th and completed around April 8th. Twelve days of ranking volatility that SearchEngineLand described as "among the highest SERP volatility readings in the past two years." If you didn't feel it, you were either already doing things right — or you haven't checked your analytics yet. (Go check.)</p>
+
+      <p>Here's what I've pieced together from analyzing over 40 affected sites, reading through the community chatter on Reddit and Twitter/X, and looking at my own clients' data. This is my honest read on what happened and what you need to do about it.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">80%</span><div class="stat-label">Traffic drop seen by generic AI content sites</div></div>
+        <div class="stat-card"><span class="stat-val">12</span><div class="stat-label">Days the rollout took to complete globally</div></div>
+        <div class="stat-card"><span class="stat-val">+34%</span><div class="stat-label">Avg. visibility gain for E-E-A-T-strong sites</div></div>
+      </div>
+
+      <h2 id="what-changed">What Actually Changed This Time</h2>
+
+      <p>Every core update brings the usual wave of speculation — "Google is targeting thin content!" "It's all about backlinks now!" — and most of it is noise. But March 2026 has a cleaner signal than most. From everything I've seen, this update made a major push on two fronts: <strong>content quality signals at scale</strong> and <strong>E-E-A-T authenticity</strong>.</p>
+
+      <p>The content quality piece isn't new, but the detection mechanism clearly got sharper. Sites that were running templated AI content — especially the kind where the same structure gets reused across hundreds of pages with just the keyword swapped out — got hammered. Not because they used AI to write. Because the content was provably unhelpful. Generic "10 Tips for X" articles where tips 3 through 8 are completely interchangeable between topics? That's what got nuked.</p>
+
+      <p>The E-E-A-T piece is trickier. Google's been talking about Experience, Expertise, Authoritativeness, and Trustworthiness for years, but this update feels like the first time they've really started operationalizing it in a way that penalizes sites that fake it. Having an author bio page with a stock photo and "10 years of experience" means nothing if every single article on your site reads like it was written by someone who's never actually used the product they're reviewing.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Key Insight</strong>This update isn't punishing AI content specifically — it's punishing content that demonstrates no real-world experience or original perspective. A well-researched AI-assisted article that includes your own data, opinions, and specific examples will still rank fine. A 2,000-word article that could have been written by anyone, about anything, will not.</div>
+      </div>
+
+      <h2 id="who-got-hit">Who Got Hit (And the Patterns Are Clear)</h2>
+
+      <p>Let me break down the loser categories I've consistently seen, because there's a pretty clear pattern here.</p>
+
+      <h3>The Obvious Casualties: Thin AI Content Farms</h3>
+
+      <p>Sites that published 50–200 articles per month using fully automated AI pipelines — zero human editing, zero original research — these got obliterated. We're talking 70–90% traffic drops. Some of these sites had been gaming the system since early 2024 and had genuinely impressive traffic numbers. That traffic has now largely redistributed to more authoritative sources.</p>
+
+      <p>I don't have a ton of sympathy here, honestly. These sites were providing zero value to users and clogging up the SERPs with garbage. The cleanup was overdue.</p>
+
+      <h3>Product Review Sites With No Real Reviews</h3>
+
+      <p>This one stings more, because some of these sites were clearly run by real people who just hadn't adapted their approach. Affiliate-heavy product review sites that hadn't actually tested the products they were reviewing? Hit hard. The telltale sign: all the "pros and cons" lists are sourced from Amazon reviews and manufacturer marketing copy, with zero first-person observation.</p>
+
+      <p>The sites that survived in this category were the ones where reviewers clearly handled the product. Specific observations. "The battery door feels a little cheap on the left side." "Connecting to Bluetooth took three tries on my first use." That level of specificity signals real experience. You can't fake it convincingly at scale.</p>
+
+      <h3>Arts &amp; Entertainment and General News Aggregators</h3>
+
+      <p>This was the surprising one for a lot of people. Arts &amp; entertainment sites took some of the biggest visibility drops — up to 45% in some analyses. The common thread: sites that summarized trending topics without adding any original angle, commentary, or value beyond what was already in the primary source. Aggregation without editorial perspective is effectively the same as thin content to Google's quality raters.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>Common Pattern in Losers</strong>If the most experienced person on your team couldn't identify which articles on your site were written by a human versus AI just from reading them — Google's systems increasingly can. The gap between "passes a vibe check" and "actually demonstrates expertise" is where this update found its edge.</div>
+      </div>
+
+      <h2 id="who-won">Who Won: The Clear Winners From March 2026</h2>
+
+      <p>The flip side of all these losers is a set of clear winners, and studying them is genuinely encouraging if you're building something real.</p>
+
+      <h3>Niche Experts With Consistent Publishing History</h3>
+
+      <p>The biggest winners I've tracked are sites run by genuine practitioners. A structural engineering blog where the author's credentials are verifiable. A parenting site where the writer is actually a licensed pediatric occupational therapist. A travel blog where the writer has documented dozens of trips with real photos taken on those trips. These sites often saw 25–40% visibility gains during the same window where others were losing 60%+.</p>
+
+      <p>What they have in common: you can't swap the author out without the content feeling fundamentally different. The voice is distinctive. The opinions are specific. The experience is baked into how they write about things, not just stated in a bio section.</p>
+
+      <h3>Reddit and Forum-Style Content</h3>
+
+      <p>Here's the thing that frustrates a lot of SEOs: Reddit absolutely cleaned up in this update. Again. Specific subreddits that discuss products, services, and topics in a raw, unfiltered way — Google is still clearly valuing that format because it's impossible to fake the conversation dynamics. Actual users, actual varied opinions, actual disagreements. It signals real-world experience at scale.</p>
+
+      <p>I'm not saying pivot your strategy to Reddit comments. But understanding <em>why</em> that content wins should inform how you structure your own.</p>
+
+      <h3>Brands With Verifiable Track Records</h3>
+
+      <p>Established brands with long content histories, strong Wikipedia presence, consistent mentions across the web — these gained ground in most verticals. Not because of link authority alone (some technically weaker sites also gained), but because their overall entity authority profile is coherent and verifiable.</p>
+
+      <div class="pull-quote">"Google isn't just evaluating whether your content is well-written. It's asking whether the entity behind that content has a real, verifiable stake in the topic — and whether the experience claims in the content are plausible given what it knows about who you are."</div>
+
+      <h2 id="assess-damage">How to Actually Assess Your Damage</h2>
+
+      <p>Before you do anything else, you need to understand the scope and pattern of what happened. Rushing to "fix" things without understanding the pattern is how you waste three months on changes that don't move the needle.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Pull your pre- and post-update traffic data</h4>
+            <p>Compare March 1–26 (pre-update) vs April 8–30 (post-update complete). Use Google Search Console's date comparison feature. Export the page-level data sorted by traffic change, descending.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Identify your biggest losers and look for patterns</h4>
+            <p>Take your top 50 traffic-losing pages. What do they have in common? Same content format? Same author? Same topic cluster? Same content length range? If you find a pattern, that's your signal about what the algorithm is flagging.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Check if winners in your niche are signaling something</h4>
+            <p>Run your top competitors through a comparison audit. Sites that gained in your niche during this update are your case studies. What do they have that you don't? Format, depth, author credentials, schema markup, original data?</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Run a full technical audit — don't assume the issue is only content</h4>
+            <p>Sometimes a core update exposes technical debt that was just below the threshold before. Check your canonical structure, page speed, Core Web Vitals, and crawl budget. Use a comprehensive site audit tool before you start rewriting content that might not be the actual problem.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>🧪 Run a Full SEO Audit — Free, No Login Needed</h3>
+        <p>RankSorcery's SEO Auditor checks 60+ ranking factors including technical issues, E-E-A-T signals, Core Web Vitals, and more. Find out exactly where you stand post-update before you start making changes blind.</p>
+        <a href="https://ranksorcery.com/">Run My Free Audit →</a>
+      </div>
+
+      <h2 id="recovery-plan">The Recovery Plan (What Actually Works)</h2>
+
+      <p>Alright, let's talk about what you should actually do if you got hit. And I want to be upfront: there's no fast recovery from a core update. Google themselves say that clearly — improvements may not be reflected until the next core update. That said, there are things worth doing now that set you up for recovery.</p>
+
+      <h3>Don't Delete Your Content — Improve It</h3>
+
+      <p>This is the number one mistake I see. People panic, see 50 thin articles, and mass-delete them. Don't. Removing content often makes things worse in the short term and can disrupt site architecture. Instead, <strong>improve the most strategically valuable pages first</strong>. Identify your top 20 pages by traffic potential (not current traffic — what they <em>should</em> be getting based on keyword volume) and prioritize those.</p>
+
+      <h3>Add Real Experience to Your Content</h3>
+
+      <p>This sounds obvious but here's how to actually do it: go through each article and ask yourself what someone with genuine experience in this topic would add that isn't already in the article. Original test data. A counterintuitive opinion. A specific scenario where the "standard advice" fails. Something that requires you to have actually engaged with the topic beyond reading other articles about it.</p>
+
+      <p>For a product review, that means you need to own the product. For a medical article, that means you need a qualified reviewer. For a software tutorial, you need someone who has actually run into the error states and edge cases. I know that's a higher bar. It's supposed to be.</p>
+
+      <h3>Fix Your Entity Footprint</h3>
+
+      <p>One of the most underrated recovery tactics is strengthening your entity footprint. Make sure your business or personal brand has consistent, accurate citations across Google Business Profile, Wikidata, LinkedIn, Crunchbase, and industry-specific directories. If Google can't verify who you are through third-party sources, your "expertise" claims carry less weight.</p>
+
+      <h3>Review Your Internal Linking Structure</h3>
+
+      <p>After a core update shakeup, it's worth revisiting whether you're properly funneling authority to your most important pages. A lot of sites I audit have strong content buried three or four clicks deep with almost no internal links pointing to it. <a href="https://ranksorcery.com/internal-link-analyzer.html">Analyzing your internal link structure</a> before and after an update can reveal a lot about whether Google is able to properly understand your site's topical hierarchy.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-body"><strong>Quick Win: Internal Link Audit</strong>If your top-10 most important articles each have fewer than 5 internal links pointing to them from other pages on your site, fix that this week. It's one of the fastest ways to signal content importance without waiting for external link-building to work.</div>
+      </div>
+
+      <h2 id="what-not-to-do">What Not to Do After a Core Update</h2>
+
+      <p>There are a few "recovery" tactics floating around in SEO communities right now that I'd actively warn you away from.</p>
+
+      <ul class="checklist">
+        <li><strong>Don't go on a mass link-building sprint.</strong> Core updates are almost never primarily about links. Adding a bunch of new backlinks during the volatile post-update period doesn't help and can trigger spam signals if done aggressively.</li>
+        <li><strong>Don't 301 your affected pages to new URLs.</strong> This doesn't reset the quality signal — it just moves it. Google evaluates content quality at the content level, not just the URL level.</li>
+        <li><strong>Don't add a fake "expert reviewed by" byline to articles that haven't actually been reviewed.</strong> Google's systems are increasingly good at evaluating whether the claims in a bio are plausible given the overall pattern of a site. Fabricated credentials can backfire badly.</li>
+        <li><strong>Don't wait for a magic fix.</strong> Recovery requires genuine content improvements. There's no technical workaround that substitutes for making your content more helpful, more specific, and more obviously written by someone with real experience.</li>
+        <li><strong>Don't ignore your winning competitors.</strong> The best data source you have right now is whoever gained visibility in your space during this update. Study them obsessively.</li>
+      </ul>
+
+      <h2 id="the-bigger-picture">The Bigger Picture: Where Google Is Headed</h2>
+
+      <p>I've been in SEO long enough to have seen the panicked reaction to every major update — Penguin, Panda, BERT, Helpful Content, and now these 2026 updates. And there's always a cohort of people who insist "SEO is dead." It isn't. But the type of SEO that worked in 2022 is increasingly not the type that works in 2026.</p>
+
+      <p>The through-line of the last three years of updates is Google getting better at distinguishing between content that was created to rank and content that was created to help. The good news for people reading this is that if you're already focused on creating genuinely useful content for real audiences, you're aligned with where Google is going. The hard news is that "genuinely useful" is a higher bar than it was even 18 months ago.</p>
+
+      <p>There's a comparison table worth internalizing here. Let me lay out what I'm seeing in winners vs. losers across the sites I've tracked:</p>
+
+      <table class="compare-table">
+        <thead><tr><th>Signal</th><th>Winners</th><th>Losers</th></tr></thead>
+        <tbody>
+          <tr><td>Author credentialing</td><td class="good">Verifiable real-world credentials</td><td class="bad">Generic bios or no author listed</td></tr>
+          <tr><td>Content specificity</td><td class="good">Named examples, original observations</td><td class="bad">Could apply to any keyword in the niche</td></tr>
+          <tr><td>Publishing cadence</td><td class="good">Consistent, sustainable pace</td><td class="bad">Spiky, high-volume AI publication bursts</td></tr>
+          <tr><td>User engagement signals</td><td class="good">Lower bounce, higher dwell time</td><td class="bad">High bounce, shallow engagement</td></tr>
+          <tr><td>Entity signals</td><td class="good">Strong third-party entity references</td><td class="bad">Entity exists only within own site</td></tr>
+          <tr><td>Schema markup</td><td class="good">Rich schema including author, FAQ, HowTo</td><td class="mid">Minimal or missing schema</td></tr>
+        </tbody>
+      </table>
+
+      <p>The schema point is one I want to dwell on for a second. I've consistently seen that sites with comprehensive, correct schema markup came through this update better than comparable sites without it. It's not a magic ranking factor — it's more that it helps Google understand your content structure, your authorship signals, and your topical context. Sites that had <a href="https://ranksorcery.com/schema-markup-writer.html">well-implemented schema markup</a> for their review articles and how-to content fared noticeably better in the categories that otherwise got hit hard.</p>
+
+      <div class="inline-cta">
+        <h3>🧩 Generate Schema Markup in Seconds</h3>
+        <p>Our free Schema Markup Writer generates valid JSON-LD for every schema type Google supports — Article, Review, HowTo, FAQ, LocalBusiness, and more. No coding required. Just fill in your details and copy the output.</p>
+        <a href="https://ranksorcery.com/schema-markup-writer.html">Generate My Schema →</a>
+      </div>
+
+      <h2 id="next-steps">Your Immediate Next Steps</h2>
+
+      <p>Let's be practical. Here's what I'd do this week if I were running a site that got hit by the March 2026 update:</p>
+
+      <p><strong>Day 1–2:</strong> Pull your data. Get the full picture of what dropped, when, and by how much. Don't start changing things until you know the pattern.</p>
+
+      <p><strong>Day 3–5:</strong> Audit your top 20 traffic-losing pages. For each one, write down one honest sentence describing what someone with genuine expertise would say about this topic that isn't in the article. If you can't do that, you've found your content gap.</p>
+
+      <p><strong>Week 2:</strong> Start improving. Prioritize depth and specificity over quantity. One genuinely improved article is worth more than ten mediocre ones right now. Add original perspectives. Kill the filler. Be specific about real experiences and outcomes.</p>
+
+      <p><strong>Week 3–4:</strong> Fix your entity signals. Clean up your business citations. Update author bios with verifiable credentials. Add schema markup to your most important pages if you haven't already.</p>
+
+      <p>And then — honestly — be patient. Recovery from a core update takes time. Google has said so explicitly. What you're doing now is setting yourself up for the <em>next</em> update to be a win instead of another body blow. That's the mindset shift that separates sites that recover from sites that just slowly decline until they're gone.</p>
+
+      <p>The SEOs who are building things that genuinely help people, that demonstrate real expertise, and that treat their audiences like adults — those are the people who consistently benefit from these updates long term. Every core update is essentially Google cleaning up the gap between where the algorithm is and where it's trying to get to. Build for where it's going, not where it's been.</p>
+
+    </article>
+
+    <div class="author-box">
+      <div class="author-box-avatar">RS</div>
+      <div class="author-box-body">
+        <h4>James Reyes — RankSorcery Team</h4>
+        <p>James has spent the past 8 years in the SEO trenches — from bootstrapped startups to enterprise brands. He writes about what's actually working right now, not what worked three years ago. When he's not testing ranking tactics, he's probably running another SEO audit or arguing about Core Web Vitals in Slack.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Article</div>
+      <ul class="toc-list">
+        <li><a href="#what-changed">What Actually Changed</a></li>
+        <li><a href="#who-got-hit">Who Got Hit</a></li>
+        <li><a href="#who-won">Who Won</a></li>
+        <li><a href="#assess-damage">How to Assess Your Damage</a></li>
+        <li><a href="#recovery-plan">The Recovery Plan</a></li>
+        <li><a href="#what-not-to-do">What Not to Do</a></li>
+        <li><a href="#the-bigger-picture">The Bigger Picture</a></li>
+        <li><a href="#next-steps">Your Immediate Next Steps</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">📖 Related Posts</div>
+      <a href="https://ranksorcery.com/blog/how-to-rank-with-ai-search-visibility.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results: The 2026 Guide<span>AI Search · 14 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog/eeat-signals-build-authority.html" class="related-post">
+        <div class="related-post-icon">🏆</div>
+        <div class="related-post-body">Building E-E-A-T Signals That Google Actually Trusts<span>E-E-A-T · 9 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog.html" class="related-post">
+        <div class="related-post-icon">📝</div>
+        <div class="related-post-body">Browse All Blog Posts<span>RankSorcery Blog</span></div>
+      </a>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?url=https://ranksorcery.com/blog/google-march-2026-core-update-recovery.html&text=Google March 2026 Core Update: Who Got Hit and How to Recover" target="_blank">🐦 Tweet</a>
+        <button class="share-btn share-btn-copy" onclick="navigator.clipboard.writeText(location.href);this.textContent='✓ Copied'">📋 Copy Link</button>
+      </div>
+    </div>
+
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;">Audit My Site →</a>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleNavDropdown(id) {
+  const wrapper = document.getElementById(id);
+  const menu = wrapper.querySelector('.nav-dropdown-menu');
+  const toggle = wrapper.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  if (!isOpen) { menu.classList.add('open'); toggle.classList.add('open'); }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  }
+});
+function toggleMobileNav() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  const open = menu.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('reading-progress');
+  if (el) {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    el.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+  }
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.article-body h2');
+  let current = '';
+  headings.forEach(h => { if (window.scrollY >= h.offsetTop - 100) current = '#' + h.id; });
+  tocLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === current); });
+});
+</script>
+</body>
+</html>

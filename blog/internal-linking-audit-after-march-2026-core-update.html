@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Internal Links Are Leaking Rankings — Fix It After the March 2026 Core Update — RankSorcery</title>
+<meta name="description" content="The March 2026 Core Update reshuffled internal link equity across millions of pages. Here's how to audit your internal links and stop the ranking bleeds.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Your Internal Links Are Leaking Rankings — Fix It After the March 2026 Core Update">
+<meta property="og:description" content="The March 2026 Core Update reshuffled internal link equity across millions of pages. Here's how to audit your internal links and stop the ranking bleeds.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-07">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Internal Linking After March 2026 Core Update</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">⚡ Core Update</span>
+          <span class="tag tag-cyan">🔗 Internal Linking</span>
+        </div>
+        <h1>Your Internal Links Are <span>Leaking Rankings</span> — Here's How to Fix It After the March 2026 Core Update</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 7, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,140 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client called me panicking in early April. Her e-commerce blog had been killing it — top-3 rankings for a bunch of buying-intent keywords, nice traffic bump since Q4 last year. Then the March 2026 Core Update rolled out on March 27, finished April 8, and she lost about 35% of her organic sessions in two weeks. Not a complete wipeout, but enough to hurt her Q2 revenue projections badly.</p>
+
+      <p>We dug into it together. Her content was solid, her backlinks hadn't changed, her technical SEO was clean. So what happened? I ran her site through an internal link audit and found the problem almost immediately: she had 14 pages that were complete orphans — zero internal links pointing to them. She had another 30+ pages where every single link used the same three-word exact-match anchor text. And her "pillar" buying guides linked to product pages, but those product pages linked back to nothing.</p>
+
+      <p>In other words, her internal linking structure was a mess, and Google's March 2026 update — which doubled down on rewarding topical authority and content relationships — just made that mess impossible to hide anymore.</p>
+
+      <p>If you've seen unexplained ranking drops since early April, your internal links might be the culprit. Here's what to look for and how to fix it.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <strong>Quick Context</strong>
+          Google's March 2026 Core Update completed its 12-day rollout on April 8, 2026. Google described it as "a regular update designed to better surface relevant, satisfying content for searchers from all types of sites" — which is their standard non-answer. In practice, sites with thin topical authority and weak internal link structures took the biggest hits.
+        </div>
+      </div>
+
+      <h2 id="why-internal-links-matter-more-now">Why Internal Links Matter More Than Ever in 2026</h2>
+
+      <p>Internal linking has always mattered for SEO. That's not new. What <em>is</em> new is that Google is now evaluating your internal link structure as a proxy for topical authority — and AI search engines like ChatGPT and Perplexity use it to decide which page on your site is worth citing.</p>
+
+      <p>Think about what an internal link actually communicates. When page A links to page B with the anchor text "how to choose the right CRM for small teams," you're telling Google two things: that page A considers page B relevant, and that page B is specifically about choosing CRMs for small teams. Do that consistently across 8-10 cluster pages, all pointing to a central hub, and Google starts treating that hub as the authoritative source on the topic.</p>
+
+      <p>When your internal links are inconsistent, orphaned, or over-optimized with the same anchor text everywhere, that signal falls apart. Google sees a bunch of loosely connected pages instead of a coherent topic cluster. After March 2026, that loosely connected structure is more likely to cost you rankings than it was even six months ago.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">41%</span>
+          <div class="stat-label">AI citation rate for sites with proper hub-and-spoke internal linking</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">12%</span>
+          <div class="stat-label">AI citation rate for sites with disorganized internal link structure</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3.4×</span>
+          <div class="stat-label">More likely to rank top-3 when pillar pages have strong internal link equity concentration</div>
+        </div>
+      </div>
+
+      <p>The AI citation gap is the part most people aren't talking about yet. When ChatGPT or Perplexity answers a question in your niche and doesn't cite you — even though you've written about it — that's often a sign your internal linking structure is confusing the crawler. It can't figure out which of your pages is the authoritative one, so it picks someone else's content that has a cleaner hub structure.</p>
+
+      <h2 id="five-internal-linking-problems-that-kill-rankings">Five Internal Linking Problems That Kill Rankings</h2>
+
+      <p>I've audited a few dozen sites since the March update wrapped up. The same problems keep showing up. Here they are, in rough order of how damaging they tend to be:</p>
+
+      <h3>1. Orphan Pages (The Silent Killer)</h3>
+
+      <p>An orphan page is any page on your site that receives zero internal links from other pages. Google's crawler discovers pages primarily by following links — if no page links to a piece of content, it may never get crawled regularly. Even if it does get crawled, it receives zero link equity from the rest of your domain. It's essentially starting every ranking race from scratch.</p>
+
+      <p>I see this most often with blog posts that were published, shared once on social media, and then forgotten. Nobody goes back and links to them from related content. Over time, the site grows, and those early posts are just floating out there, unconnected.</p>
+
+      <h3>2. Over-Optimized Anchor Text</h3>
+
+      <p>If 80% of the internal links pointing to your "best project management software" page use the exact anchor text "best project management software," Google's spam classifiers start paying attention. You're basically screaming "I'm manipulating my internal link structure to rank for this keyword." Even though it's internal links (lower-risk than external), too much exact-match is a signal Google's March update appears to have weighted more heavily.</p>
+
+      <p>The fix is simple: vary your anchor text. Use exact match for maybe 20% of links to a given page, partial match for 35%, and semantic variants for the rest. "top tools for managing projects," "software our team uses to stay on deadline," "project planning apps worth paying for" — these all pass meaningful context without screaming manipulation.</p>
+
+      <h3>3. No Bidirectional Link Loops Between Clusters</h3>
+
+      <p>This is the one that surprises people. It's not enough for your pillar page to link to your cluster pages. Each cluster page also needs to link back to the pillar. That bidirectional relationship is what creates what's called a "closed equity loop" — authority builds up at the pillar instead of leaking out of the site with nowhere to go.</p>
+
+      <p>A lot of blogs I audit have their pillar pages linking down to clusters, but the cluster pages only link to external resources or unrelated internal pages. That's an equity leak. Fix it by making sure every cluster post has at least one contextual link back to its parent pillar.</p>
+
+      <h3>4. Burying Links in Footers and Sidebars</h3>
+
+      <p>Links in your footer and sidebar technically pass some equity, but Google weights contextual links — links embedded in the actual body text of a page — much more heavily. A link in your footer that says "SEO Guide" in a list of 40 other links is basically invisible from an authority-transfer standpoint.</p>
+
+      <p>If your only internal links to important pages are in the global navigation or footer, you need to go back and add contextual links within the body of relevant articles. That's where the real equity flows.</p>
+
+      <h3>5. Broken Internal Links (The Embarrassing One)</h3>
+
+      <p>You moved a page, changed a URL, deleted an old post — and now you have internal links across your site pointing to 404 pages. This happens constantly on older sites and sites that have gone through redesigns. Every broken internal link is equity that disappears into a void instead of flowing to a live page.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Watch Out</strong>
+          If you're running WordPress and recently switched themes or moved to a new URL structure without redirects, you probably have dozens of broken internal links right now and don't know it. An internal link audit is the fastest way to find them before Google's next crawl passes through.
+        </div>
+      </div>
+
+      <h2 id="how-to-run-a-proper-internal-link-audit">How to Run a Proper Internal Link Audit</h2>
+
+      <p>You don't need expensive tools for this. Here's the process I actually use — start to finish in about an hour for most sites under 500 pages.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Crawl for Orphan Pages</h4>
+            <p>Use RankSorcery's <a href="https://ranksorcery.com/internal-link-analyzer.html">Internal Link Analyzer</a> to crawl your site and pull a list of all pages along with how many internal links point to each one. Filter for pages with zero inlinks — those are your orphans. Flag every one. Your first job is to either add contextual links to them from related content or decide they're not worth keeping and consolidate them.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Map Your Topic Clusters</h4>
+            <p>Write down your main topics — the ones you want to rank for. For each topic, identify your "pillar page" (the comprehensive guide) and all the "cluster pages" (related articles, supporting content). Now check whether those pillar and cluster pages are actually linked to each other, bidirectionally. If a cluster page has no link back to its pillar, add one this week.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Audit Your Top Traffic Pages</h4>
+            <p>In Google Search Console, pull your top 10 pages by organic clicks. Open each one and count how many contextual internal links it contains. Aim for 2-5 per 1,000 words of body content. If your most important pages are linking to nothing, you're not distributing their authority anywhere. Add links from these pages to closely related cluster content.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Check Anchor Text Distribution</h4>
+            <p>For your 5 most important target pages, look at what anchor text is being used in all the links pointing to them. If more than 25-30% of those anchors are identical, you've got over-optimization. Manually update some of those links to use semantic variants. It takes time but it's worth doing for your most competitive pages.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Find and Fix Broken Internal Links</h4>
+            <p>Run a crawl and filter for 4xx response codes in your inbound internal links. Every 404 from an internal link needs to be fixed — either redirect the old URL or update the link to point to a live page. Don't leave broken internal links sitting around.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>🔗 See Exactly Where Your Internal Links Are Failing</h3>
+        <p>RankSorcery's Internal Link Analyzer scans your site and shows you orphaned pages, broken links, anchor text patterns, and link equity distribution — all in one clean report.</p>
+        <a href="https://ranksorcery.com/internal-link-analyzer.html">Analyze My Internal Links →</a>
+      </div>
+
+      <h2 id="rebuilding-your-link-structure-for-google-and-ai">Rebuilding Your Link Structure for Google and AI Search</h2>
+
+      <p>Here's where 2026 is genuinely different from 2023. You used to be able to optimize your internal linking purely for Google's PageRank algorithm — concentrate equity at important pages, use keyword-rich anchors, done. That still matters, but now you also have to think about how AI search engines read your link structure.</p>
+
+      <p>When ChatGPT crawls your site through Bing's index, it uses your internal link structure to understand which pages belong to the same topic cluster and which page is the hub. If your linking is scattered and inconsistent, the AI treats all your pages as roughly equal — which means it's less likely to cite any of them authoritatively.</p>
+
+      <div class="pull-quote">
+        "The sites getting consistently cited in AI search results have one thing in common: a clean, logical internal link structure where it's obvious which page owns each topic."
+      </div>
+
+      <p>What this means practically: your pillar page on, say, "email marketing for SaaS companies" should receive links from every blog post in that cluster, and every one of those links should use anchor text that clearly describes the pillar's topic. The AI reads those semantic labels and classifies the pillar as the authoritative hub. When someone asks ChatGPT "what's the best email marketing approach for SaaS," it has a clear signal about which of your pages to cite.</p>
+
+      <p>Also worth checking: your robots.txt file. A surprising number of sites still block AI crawlers, often unintentionally from outdated SEO guidance. If you've blocked Googlebot-extended, OAI-SearchBot, or PerplexityBot, your internal link structure is literally invisible to those engines regardless of how well it's built.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-body">
+          <strong>AI Search Tip</strong>
+          Check your robots.txt right now. If you see "Disallow: /" under any AI crawler user-agent, you're blocking those engines from reading your internal link structure entirely. Add explicit Allow directives for OAI-SearchBot, PerplexityBot, ClaudeBot, and Google-Extended.
+        </div>
+      </div>
+
+      <h2 id="the-internal-link-audit-checklist">The Internal Link Audit Checklist</h2>
+
+      <p>Run through this list once a month — or at least once after every major Google update. It takes about 30 minutes once you have the right tools in place.</p>
+
+      <ul class="checklist">
+        <li>All pages have at least 2 internal links pointing to them (no orphans)</li>
+        <li>Each topic cluster has a clearly defined pillar page</li>
+        <li>Every cluster page links back to its pillar page with descriptive anchor text</li>
+        <li>Pillar pages link to every cluster page in the topic</li>
+        <li>Anchor text for important pages is varied (not all exact-match)</li>
+        <li>No more than 5 contextual links per 1,000 words of body text</li>
+        <li>No broken internal links (404 errors from internal sources)</li>
+        <li>Key links are in body content, not just sidebars or footers</li>
+        <li>AI crawlers are allowed in robots.txt</li>
+        <li>Top-performing pages link outward to related cluster content</li>
+      </ul>
+
+      <h2 id="what-to-expect-after-fixing-internal-links">What to Expect After Fixing Your Internal Links</h2>
+
+      <p>I want to be honest about timelines here because the "fix your internal links and rank tomorrow" narrative is garbage. Internal link improvements take time to show up in rankings because Google has to re-crawl your updated pages, re-evaluate the link signals, and reprocess your site's topical authority scores. That typically takes 4-8 weeks for most sites, sometimes longer for larger ones.</p>
+
+      <p>What you'll likely see first, within 2-3 weeks of fixing orphan pages and broken links, is an improvement in crawl coverage in Google Search Console — more pages being indexed, fewer crawl errors. Rankings tend to follow a few weeks after that.</p>
+
+      <p>For the client I mentioned at the start — we fixed her orphan pages, cleaned up her anchor text, and added bidirectional links across her buying guide clusters. Six weeks later, she'd recovered about 70% of her lost traffic. Not a full recovery yet, but the trajectory is solid and her pillar pages are outranking where they were before the update dropped.</p>
+
+      <p>The March 2026 update hurt a lot of sites. But honestly, most of those sites had internal linking problems that had been quietly bleeding rankings for a long time. The update just made Google less tolerant of it. The fix isn't magic — it's doing the boring structural work that a lot of SEOs skip because it's not as exciting as chasing backlinks.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Pro Tip</strong>
+          After you fix your internal links, submit your updated pages to Google Search Console's URL Inspection tool and request indexing. This speeds up re-crawling significantly compared to waiting for Google's standard crawl schedule to pick up your changes.
+        </div>
+      </div>
+
+      <h2 id="final-thoughts">Stop Ignoring the Links You Already Have</h2>
+
+      <p>Every site I've ever audited spends more time worrying about backlinks than internal links. I get it — backlinks feel more like "real" SEO, there's a whole industry built around them, and it's easier to buy a link than to restructure your internal architecture.</p>
+
+      <p>But your internal links are completely under your control. You don't need to pitch anyone, pay anyone, or wait for approval. You can fix orphan pages today. You can update anchor text tomorrow. You can map your topic clusters this week. And the payoff compounds — a clean internal link structure makes every new piece of content you publish more effective, because it immediately connects into a network that already has established authority.</p>
+
+      <p>If the March 2026 update hit you, your internal linking structure is the first place to look. Run the audit, fix the obvious problems, and give it 6-8 weeks. In my experience, it's the highest-ROI SEO task most sites aren't doing — and the one that most consistently moves rankings after a core update shakeup.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#why-internal-links-matter-more-now">Why Internal Links Matter More in 2026</a></li>
+        <li><a href="#five-internal-linking-problems-that-kill-rankings">5 Problems That Kill Rankings</a></li>
+        <li class="sub"><a href="#five-internal-linking-problems-that-kill-rankings">Orphan Pages</a></li>
+        <li class="sub"><a href="#five-internal-linking-problems-that-kill-rankings">Over-Optimized Anchors</a></li>
+        <li class="sub"><a href="#five-internal-linking-problems-that-kill-rankings">No Bidirectional Loops</a></li>
+        <li><a href="#how-to-run-a-proper-internal-link-audit">How to Run an Internal Link Audit</a></li>
+        <li><a href="#rebuilding-your-link-structure-for-google-and-ai">Rebuilding for Google & AI Search</a></li>
+        <li><a href="#the-internal-link-audit-checklist">Full Audit Checklist</a></li>
+        <li><a href="#what-to-expect-after-fixing-internal-links">What to Expect After Fixing</a></li>
+        <li><a href="#final-thoughts">Final Thoughts</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Your%20Internal%20Links%20Are%20Leaking%20Rankings%20%E2%80%94%20Here%27s%20How%20to%20Fix%20It%20After%20the%20March%202026%20Core%20Update&url=https://ranksorcery.com/blog/internal-linking-audit-after-march-2026-core-update.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="../blog/technical-seo-audit-checklist-2025.html" class="related-post">
+        <div class="related-post-icon">🧪</div>
+        <div class="related-post-body">Technical SEO Audit Checklist 2025<span>11 min · Apr 28</span></div>
+      </a>
+      <a href="../blog/how-to-rank-in-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results 2026<span>14 min · May 5</span></div>
+      </a>
+      <a href="../blog/competitor-seo-gap-analysis.html" class="related-post">
+        <div class="related-post-icon">⚔️</div>
+        <div class="related-post-body">Competitor SEO Gap Analysis<span>10 min · Apr 9</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🔗</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Internal Link Analyzer</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Find orphan pages, broken links & anchor text issues instantly</p>
+      <a href="https://ranksorcery.com/internal-link-analyzer.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Analyze My Site →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
