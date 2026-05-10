@@ -408,21 +408,6 @@ nav.main-nav {
   box-shadow: 0 4px 20px rgba(232,184,75,0.35) !important;
 }
 
-/* ── TRUST BAR ── */
-.trust-bar {
-  background: linear-gradient(90deg, rgba(10,191,188,.06), rgba(232,184,75,.06));
-  border-bottom: 1px solid rgba(232,184,75,0.08);
-  padding: 10px 5vw;
-  display: flex; gap: 32px; justify-content: center; align-items: center;
-  flex-wrap: wrap; position: relative; z-index: 1;
-}
-.trust-item {
-  display: flex; align-items: center; gap: 8px;
-  font-size: .78rem; color: var(--muted); font-weight: 500;
-}
-.trust-item .val { color: var(--accent); font-weight: 700; font-family: 'Syne', sans-serif; }
-.trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
-
 /* ── HERO — Three.js canvas fills the background ── */
 .hero {
   position: relative;
@@ -461,9 +446,27 @@ nav.main-nav {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 0%, rgba(8,12,18,0.25) 100%);
+  background: radial-gradient(ellipse 55% 65% at 50% 52%, rgba(8,12,18,0.75) 0%, rgba(8,12,18,0.3) 50%, transparent 100%);
   z-index: 1;
   pointer-events: none;
+}
+
+/* Extra bottom gradient for CTA text readability */
+.hero-content::before {
+  content: '';
+  position: absolute;
+  left: -2rem;
+  right: -2rem;
+  bottom: -3rem;
+  height: 280px;
+  background: linear-gradient(to top, rgba(8,12,18,0.9) 0%, rgba(8,12,18,0.5) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Text shadow for extra contrast */
+h1, .hero-subtitle {
+  text-shadow: 0 2px 20px rgba(8,12,18,0.8), 0 1px 3px rgba(8,12,18,0.6);
 }
 
 .hero-badge {
@@ -1194,6 +1197,23 @@ h1 span {
 
 /* ── FOOTER ── */
 footer { position: relative; z-index: 2; }
+
+/* ── SOLID SECTION BACKGROUNDS ── */
+#cta-section,
+#reviews-section {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+}
+
+#cta-section::before,
+#reviews-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  z-index: -1;
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 900px) {
@@ -2965,13 +2985,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   </button>
 </nav>
 
-<!-- TRUST BAR -->
-<div class="trust-bar">
-  <div class="trust-item"><div class="trust-dot"></div>Trusted by <span class="val">&nbsp;3,400+&nbsp;</span> businesses</div>
-  <div class="trust-item"><div class="trust-dot"></div><span class="val" id="audit-counter">50,000+</span>&nbsp; audits completed</div>
-  <div class="trust-item"><div class="trust-dot"></div><span class="val">★★★★★</span>&nbsp; 4.9 avg rating</div>
-  <div class="trust-item"><div class="trust-dot"></div>No account needed</div>
-</div>
+
 <div class="nav-mobile-menu" id="nav-mobile-menu" aria-label="Mobile navigation">
 
   <!-- SEO Tools accordion -->
@@ -3866,7 +3880,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   </div>
 </div>
 
-<section id="cta-section" aria-labelledby="cta-heading" style="max-width:860px;margin:0 auto 4rem;padding:0 2rem;text-align:center;">
+<section id="cta-section" aria-labelledby="cta-heading" style="max-width:860px;margin:0 auto 4rem;padding:0 2rem;text-align:center;position:relative;z-index:2;">
   <div style="
     background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.04));
     border: 1px solid rgba(232,184,75,0.2);
@@ -3917,7 +3931,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 </section>
 
 <!-- REVIEWS / TESTIMONIALS -->
-<section id="reviews-section" style="max-width:1100px;margin:0 auto 5rem;padding:0 2rem;">
+<section id="reviews-section" style="max-width:1100px;margin:0 auto 5rem;padding:0 2rem;position:relative;z-index:2;">
   <div style="display:flex;align-items:center;gap:0.75rem;color:var(--teal);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.5rem;">
     What Our Users Say
     <span style="flex:1;height:1px;background:rgba(10,191,188,0.25);display:block;"></span>
