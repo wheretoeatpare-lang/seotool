@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Killed FAQ Rich Results: What Every SEO Must Do Now — RankSorcery</title>
+<meta name="description" content="Google killed FAQ rich results on May 7, 2026. Here's what actually changed, what your schema is worth now, and exactly what to do instead to recover lost SERP space.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google Killed FAQ Rich Results: What Every SEO Must Do Now">
+<meta property="og:description" content="Google killed FAQ rich results on May 7, 2026. Here's what actually changed, what your schema is worth now, and exactly what to do instead to recover lost SERP space.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-10">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(248,113,113,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(232,184,75,0.1) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-red { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--amber)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: #fff;
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--amber); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(232,184,75,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Technical SEO</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-red">⚠️ Breaking Change</span>
+          <span class="tag tag-amber">🔥 Trending May 2026</span>
+          <span class="tag tag-cyan">⚡ Action Required</span>
+        </div>
+        <h1>Google Just <span>Killed FAQ Rich Results</span> — Here's What to Do This Week</h1>
+        <div class="article-hero-meta">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 May 10, 2026</span>
+          <span>·</span>
+          <span>⏱ 11 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What Actually Changed on May 7, 2026</a></li>
+        <li><a href="#section2">Why Google Did This (And Why It Matters More Than You Think)</a></li>
+        <li><a href="#section3">The CTR You're Losing Right Now</a></li>
+        <li><a href="#section4">What Your FAQ Schema Is Still Worth in 2026</a></li>
+        <li><a href="#section5">Your Replacement Playbook: What to Do Instead</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>On May 7, 2026 — just three days ago — Google quietly dropped one of the most widely used SERP features in SEO history. FAQ rich results are gone. Not deprecated-with-a-grace-period gone. <strong>Gone gone.</strong> If you've been using FAQPage schema to expand your search snippets and pick up extra SERP real estate, that space closed overnight.</p>
+
+      <p>I've seen plenty of Google announcements come and go without causing real damage. This one is different. FAQ rich results were genuinely useful — pages with them consistently showed up taller in the SERPs, with expandable Q&amp;A pairs that ate up screen space competitors couldn't touch. For a lot of sites, especially in health, finance, and e-commerce, FAQ snippets were quietly doing serious CTR work. Now they're not showing. At all.</p>
+
+      <p>This article covers exactly what changed, why Google made this call, what your existing FAQ schema markup is actually worth right now (hint: it's not completely worthless — just differently valuable), and the specific things you should do this week to make up the lost SERP ground. There's a real playbook here. Let me walk you through it.</p>
+
+      <!-- STAT ROW -->
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">35%</span><div class="stat-label">CTR lift pages with FAQ rich results saw in competitive niches (Search Engine Journal)</div></div>
+        <div class="stat-card"><span class="stat-val">May 7</span><div class="stat-label">2026 — The date Google officially ended all FAQ rich results in search</div></div>
+        <div class="stat-card"><span class="stat-val">Aug '26</span><div class="stat-label">When Google drops Search Console API support for FAQ performance data entirely</div></div>
+      </div>
+
+      <h2 id="section1">What Actually Changed on May 7, 2026</h2>
+
+      <p>Let me be precise about this because the internet is already full of half-accurate takes. Here is what Google actually confirmed:</p>
+
+      <p><strong>FAQ rich results no longer appear in Google Search as of May 7, 2026.</strong> The FAQ "search appearance" category has been dropped entirely. If you open Search Console right now and go to your Search Appearance performance filters, the FAQ entry is either already gone or disappearing in the next few days. The Rich Results Test — the tool you'd use to validate FAQ schema — will drop FAQ support in June 2026. And the Search Console API support for FAQ data ends in August 2026.</p>
+
+      <p>What this means practically: those nice expandable accordion dropdowns under your search snippet? Gone. The extra 100–200 pixels of SERP real estate your FAQ sections used to occupy? Someone else now fills that space — probably your competitor whose page didn't rely on rich results to look substantial.</p>
+
+      <p>Here's the thing a lot of people are missing in the coverage: Google isn't saying FAQPage schema is invalid or harmful. They're saying they won't render it as a visual SERP feature anymore. The schema can still exist in your HTML. It's just invisible in the traditional search results. We'll get into why that distinction matters in a minute.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Timeline to Know</strong>
+          May 7, 2026: FAQ rich results stop appearing in Search. June 2026: Rich Results Test drops FAQ validation. August 2026: Search Console API removes FAQ performance data. You have a narrow window to audit and adapt before your historical data disappears.
+        </div>
+      </div>
+
+      <h2 id="section2">Why Google Did This (And Why It Matters More Than You Think)</h2>
+
+      <p>Google doesn't kill popular features for no reason. The official statement was characteristically vague — something about "simplifying the search experience" — but if you read between the lines and follow what's happened across the last six months of Google updates, the real reason is pretty obvious: <strong>FAQ rich results were being gamed into the ground.</strong></p>
+
+      <p>I've seen this a hundred times. A new SERP feature appears, savvy SEOs use it legitimately to add value, then every content farm and thin-content operation discovers it and hammers it. By late 2025, half the FAQ schemas appearing in search results were on pages where the "frequently asked questions" were clearly written by someone who had never met a customer. They were just question-shaped keyword targets. Google's quality filters struggled to separate genuinely helpful FAQ content from manufactured FAQ fluff, and the easiest fix was to turn off the visual feature entirely.</p>
+
+      <p>The timing also lines up with something bigger. Google's entire March 2026 Core Update was built around rewarding real expertise and punishing content that exists to manipulate rankings rather than help people. Killing FAQ rich results is consistent with that direction. If a feature can't be reliably used well, and it's being abused at scale, Google would rather remove it than spend engineering resources playing whack-a-mole with bad actors.</p>
+
+      <h3>What This Signals About Structured Data's Future</h3>
+
+      <p>Nobody talks about this but the FAQ deprecation is the third structured data feature Google has scaled back in the past 18 months. HowTo rich results lost their visual appearance for most query types in late 2024. Q&amp;A schema stopped generating visual enhancements earlier this year. Now FAQ is gone. The pattern suggests Google is becoming more selective about which schema types earn visual SERP treatment — not abandoning structured data, but reserving the visual payoff for types it can verify against high-quality signals.</p>
+
+      <p>What's still holding strong? Product schema, Article schema, Review schema, Recipe schema, Event schema, and JobPosting schema. These are either transactional (where Google has clear verification signals) or content-type specific (where the schema maps to a defined content format). The Q&amp;A and FAQ types were too easy to manufacture on any page for any purpose, which is why they're gone.</p>
+
+      <p>The lesson here isn't "structured data is dying." It's "structured data that can't be verified is dying." That's actually fine if you're building for real users. But it means the SEO playbook around FAQ schema needs a complete rewrite.</p>
+
+      <h2 id="section3">The CTR You're Losing Right Now</h2>
+
+      <p>Let me be honest with you about the damage. If your site had FAQ rich results showing regularly, you've just lost something that was working. Pages in competitive niches were seeing CTR lifts of up to 35% from FAQ snippets, according to Search Engine Journal data. Rotten Tomatoes reported a 25% higher click-through rate on pages with schema versus equivalent pages without. These numbers are real.</p>
+
+      <p>The mechanics are simple: FAQ snippets made your result physically larger on the page. On mobile — where more than 60% of searches happen — a result with two or three expanded FAQ rows took up nearly the entire visible screen. Users couldn't miss it. Competing results were below the fold. That visual dominance translated directly into clicks.</p>
+
+      <p>Now everyone's result is the same size again. Your title, your URL, your meta description. Same as every other organic result. If your title and meta description aren't doing heavy lifting on their own, you're going to feel this change in your analytics within 30 days.</p>
+
+      <h3>How to Diagnose Your Exposure</h3>
+
+      <p>The first thing to do is figure out how reliant you actually are. Pull your Search Console performance data right now — filter by "Search appearance: FAQ rich result" — before that filter disappears. Export the data. Look at which pages were generating FAQ impressions and what their CTR was compared to your non-FAQ pages in the same position range. That gap is your exposure. That's the number you need to make up with other optimizations.</p>
+
+      <p>If you don't have Search Console access set up properly, or if your site has technical issues that have been silently suppressing your appearance data, there's never been a more urgent moment to get a proper audit done. You can't fix what you can't measure.</p>
+
+      <div class="inline-cta">
+        <h3>🔍 Find Out Which Pages Lost FAQ Rich Results</h3>
+        <p>Run a full site audit to identify every page carrying FAQPage schema, check for technical issues affecting your structured data, and see exactly where your SERP visibility stands after the May 7 change.</p>
+        <a href="/seo-auditor">Audit My Site Free →</a>
+      </div>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Schema Type</th>
+            <th>Visual SERP Feature</th>
+            <th>AI Citation Value</th>
+            <th>Still Worth Implementing?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>FAQPage</td><td class="bad">✗ Removed May 2026</td><td class="good">✓ High (AI answers)</td><td class="mid">~ Only for AI/GEO</td></tr>
+          <tr><td>Product</td><td class="good">✓ Active</td><td class="good">✓ High</td><td class="good">✓ Absolutely</td></tr>
+          <tr><td>Article</td><td class="good">✓ Active</td><td class="good">✓ Very High</td><td class="good">✓ Absolutely</td></tr>
+          <tr><td>Review / Rating</td><td class="good">✓ Active</td><td class="mid">~ Moderate</td><td class="good">✓ Yes</td></tr>
+          <tr><td>HowTo</td><td class="bad">✗ Limited visibility</td><td class="good">✓ High (AI steps)</td><td class="mid">~ For AI only</td></tr>
+          <tr><td>Event</td><td class="good">✓ Active</td><td class="mid">~ Moderate</td><td class="good">✓ If relevant</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="section4">What Your FAQ Schema Is Still Worth in 2026</h2>
+
+      <p>Here's where most of the coverage is getting it wrong. Just because FAQ rich results are gone from Google's visual search results doesn't mean the schema is worthless. There's a completely separate reason to keep your FAQPage markup — and if you're thinking about AI search at all, this is actually the more important reason.</p>
+
+      <p>AI search tools — ChatGPT, Perplexity, Google's own AI Overviews, and the dozen other AI answer engines that have gained serious traction in 2026 — pull structured data when assembling their answers. FAQPage schema is one of the clearest signals you can give an AI system that your content directly answers a specific question. Several studies tracking AI citation rates found that content using FAQPage structured data appeared in AI-generated answers at a significantly higher rate than equivalent unstructured content covering the same topics.</p>
+
+      <div class="pull-quote">"The search result you lost in Google's blue links is showing up in AI overviews instead — and FAQ schema is still one of the fastest ways to get there."</div>
+
+      <p>Let me be clear about what this means strategically. The FAQ schema you've spent time implementing isn't dead — its audience has shifted. You're no longer writing FAQ schema to impress Google's visual rendering system. You're writing it for AI citation engines that are increasingly answering questions before users ever click a link. That changes how you write the questions and answers, but it doesn't change whether you should use the schema at all.</p>
+
+      <p>The sites that will win over the next 12 months are the ones that understand this duality: traditional SEO for getting into organic results, and structured data optimization for getting cited in AI answers. FAQ schema was built for the second job. It's still very good at it.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Don't Strip Your FAQ Schema</strong>
+          Before you go deleting FAQPage markup from your pages, think twice. Google won't penalize it — they've confirmed it doesn't count against you. And for AI search citations, it's still one of your strongest signals. The right move is to reframe how you're writing it, not to remove it.
+        </div>
+      </div>
+
+      <h2 id="section5">Your Replacement Playbook: What to Do This Week</h2>
+
+      <p>Okay, enough background. Here's what I'd actually do if I woke up this week with a site that had been relying on FAQ rich results for SERP visibility. This isn't theory — it's the checklist I'd run through personally.</p>
+
+      <p>The goal isn't to "replace" FAQ rich results with something equivalent. That's the wrong framing. The goal is to identify the specific pages where FAQ snippets were doing CTR work and shore up their organic performance through other means. In some cases that means title tag work. In some cases it means targeting richer schema types. In some cases it means going after the AI citation game more directly.</p>
+
+      <ul class="checklist">
+        <li><strong>Export your FAQ impressions from Search Console before June</strong> — That filter is going away. Screenshot or export the data now. You'll need it to know which pages are affected.</li>
+        <li><strong>Audit pages that had FAQ rich results for title/meta quality</strong> — Your title and meta description are now your only SERP real estate. If they're weak, they need a rewrite immediately. Aim for titles that answer the searcher's intent, not just match the keyword.</li>
+        <li><strong>Review your FAQ content quality for AI citation potential</strong> — Go through your existing FAQ sections. Are the questions written in natural language the way someone would actually ask them? Are the answers specific and direct? If yes, keep the schema. If they look like keyword placeholders, rewrite them before keeping the markup.</li>
+        <li><strong>Upgrade your Article and Product schema</strong> — If you have blog posts or product pages that aren't using Article or Product schema, get that in place now. These are the structured data types Google is still rendering visually, and they help with AI citations too.</li>
+        <li><strong>Look at People Also Ask (PAA) as your new CTR lever</strong> — Google's PAA boxes are still alive and well. They serve almost exactly the same content purpose as FAQ rich results — answering specific questions inline in the SERP. Structuring your content to target PAA triggers is now your primary path to that question-answer visibility in traditional search.</li>
+        <li><strong>Check your keyword targeting against question-intent queries</strong> — Use a keyword volume tool to find which question-based queries in your niche have meaningful search volume. These are your PAA targets and your AI citation targets simultaneously.</li>
+      </ul>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Run a Full Structured Data Audit</h4>
+            <p>Find every page on your site carrying FAQPage schema. Evaluate each one: does the FAQ content genuinely answer real user questions, or was it implemented purely to trigger rich results? Pages in the first category keep their schema. Pages in the second need content work before the schema is worth keeping.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Rewrite Title Tags on High-Impression FAQ Pages</h4>
+            <p>For the pages that were generating the most FAQ impressions, your title tag is now doing all the heavy lifting. Run an A/B test if you can. At minimum, make sure your title communicates a clear answer or benefit — not just a keyword match. "How to Fix [Problem]: 5 Methods That Actually Work" beats "[Keyword] Guide" every time when there's no FAQ accordion to compensate.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Target People Also Ask Triggers Deliberately</h4>
+            <p>Look at the PAA boxes currently showing for your target keywords. Write or restructure content sections that directly answer those specific questions in 40–60 words — enough to be a clean, citable answer. Google pulls PAA content from pages where it finds a question-like heading followed by a clear, concise answer. This is your FAQ rich result replacement in traditional search.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Optimize FAQ Schema for AI Citations, Not SERP Display</h4>
+            <p>If you're keeping FAQ schema (and you probably should), rewrite the questions in natural conversational language — exactly how someone would type or speak the query to an AI assistant. Answers should be 2–4 sentences of direct, specific information. Vague answers don't get cited. Specific, verifiable answers do. Think of your FAQ sections as a direct feed to Perplexity, ChatGPT, and Google AI Overviews.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Explore Other Visual SERP Features Still Available</h4>
+            <p>Recipe schema, Event schema, Product schema, Video schema — these still generate visual SERP enhancements. If any of your content maps to these types, now is the time to implement them properly. A video schema on a page with embedded video can earn a video thumbnail in search results. A product schema on an e-commerce page can earn star ratings and pricing. These are your FAQ replacement in terms of visual differentiation.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>The Keyword Research Angle Most People Are Missing</h3>
+
+      <p>Here's something practical that's getting overlooked in the discussion: if FAQ rich results were earning you impressions on question-based queries, you now need to understand which of those question queries actually have real search volume and commercial intent worth chasing. Not all question-based traffic is created equal.</p>
+
+      <p>There's a meaningful difference between "what is [product]" (awareness-stage, hard to monetize) and "how do I fix [problem with product]" (action-intent, much more likely to convert). Your FAQ sections probably targeted both without distinguishing between them. Now that you're rebuilding your question-content strategy from scratch, you have an opportunity to be more intentional — focus your energy on the question queries that lead somewhere.</p>
+
+      <p>Use a keyword volume checker to validate which question-based terms in your niche are worth targeting before you invest time restructuring content around them. It takes 10 minutes and will save you weeks of working on pages that will never drive meaningful traffic regardless of how well they're optimized.</p>
+
+      <div class="inline-cta">
+        <h3>📊 Find the Question Keywords Worth Targeting</h3>
+        <p>Check real search volume on question-based queries in your niche before rewriting content around them — takes 60 seconds and saves hours of misplaced effort.</p>
+        <a href="/keyword-volume">Check Keyword Volume Free →</a>
+      </div>
+
+      <p>One more thing before the wrap-up: don't panic-delete your FAQ sections from pages just because the rich result is gone. I've already seen a few people in SEO communities suggesting you strip out FAQ content entirely since it "no longer works." That's bad advice. FAQ content written for real users still helps people who land on your page. It still gets picked up for AI citations. And if Google ever reverses course on this feature (it's happened before), you'll be in a much better position than sites that pulled everything.</p>
+
+      <p>The move is adapt, not retreat. Update your strategy, keep what works for AI and user experience, replace what was purely display-driven with better title and meta work. That's it.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          FAQ rich results are gone from Google's visual SERPs as of May 7, 2026. Don't delete your FAQ schema — repurpose it for AI citations. Audit which pages were affected, sharpen their title tags and meta descriptions, and shift your question-content strategy toward People Also Ask targeting and AI answer engine optimization. The sites that adapt fast will absorb the traffic that panicking competitors leave behind.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO & Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
+      </a>
+      <a href="/competitor-analyzer" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">⚔️</div>
+        <div><div class="tool-card-sm-name">Competitor Analyzer</div><div class="tool-card-sm-desc">See what's beating you and why</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/schema-markup-ai-search-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Schema Markup in 2026: The Fastest Path to AI Search Citations →
+        </a>
+        <a href="/how-to-rank-in-ai-search-results-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          How to Rank in AI Search Results: The Complete 2026 Guide →
+        </a>
+        <a href="/blog/core-web-vitals-seo-rankings-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Core Web Vitals in 2026: What Google Actually Measures →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
