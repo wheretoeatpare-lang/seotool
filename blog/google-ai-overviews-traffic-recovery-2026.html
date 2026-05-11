@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google AI Overviews Are Stealing Your Clicks — Here's How to Fight Back — RankSorcery</title>
+<meta name="description" content="Google AI Overviews now hit 30%+ of all searches and have cut clicks to top-ranking pages by up to 58%. Here's exactly how to adapt and protect your traffic in 2026.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google AI Overviews Are Stealing Your Clicks — Here's How to Fight Back">
+<meta property="og:description" content="Google AI Overviews now hit 30%+ of all searches and have cut clicks to top-ranking pages by up to 58%. Here's exactly how to adapt and protect your traffic in 2026.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-09">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; }
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s, color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body p:last-child { margin-bottom: 0; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; transition: border-color 0.2s; }
+.stat-card:hover { border-color: var(--border2); }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; line-height: 1; margin-bottom: 6px; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before { content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--green2); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; margin-top: 2px; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; transition: border-color 0.2s; }
+.step:hover { border-color: var(--border2); }
+.step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--accent), var(--accent3)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg); }
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.pull-quote { border-left: 3px solid var(--accent); padding: 0.75rem 0 0.75rem 1.5rem; margin: 2rem 0; font-size: 1.1rem; font-style: italic; color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.04)); border: 1px solid rgba(232,184,75,0.2); border-radius: 14px; padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(232,184,75,0.25); }
+.inline-cta a:hover { background: var(--accent2); transform: translateY(-1px); color: var(--bg); }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 24px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list li a { display: block; padding: 6px 10px; border-radius: 7px; text-decoration: none; font-size: 0.82rem; color: var(--muted); transition: all 0.2s; border-left: 2px solid transparent; }
+.toc-list li a:hover, .toc-list li a.active { color: var(--accent); background: rgba(232,184,75,0.05); border-left-color: var(--accent); }
+.related-post { display: flex; gap: 10px; align-items: flex-start; text-decoration: none; color: var(--text); padding: 10px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post:hover { color: var(--accent); }
+.related-post-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.related-post-body { font-size: 0.8rem; line-height: 1.4; font-weight: 500; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted2); margin-top: 3px; }
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+.share-btn-twitter { background: rgba(29,161,242,0.1); color: #1da1f2; border: 1px solid rgba(29,161,242,0.2); }
+.share-btn-twitter:hover { background: rgba(29,161,242,0.18); }
+.share-btn-copy { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty & trends</div></div></a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">
+        Image &amp; Media
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="https://ranksorcery.com/background-remover.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">✂️</div><div><div class="nav-dropdown-item-name">Background Remover</div><div class="nav-dropdown-item-desc">AI-powered BG removal</div></div></a>
+        <a href="https://ranksorcery.com/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="https://ranksorcery.com/image-resizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">↔️</div><div><div class="nav-dropdown-item-name">Image Resizer</div></div></a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/blog.html" class="active">Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="https://ranksorcery.com/blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+
+  <main class="article-main">
+
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="https://ranksorcery.com/blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">AI Search</span>
+    </div>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">🤖 AI Search</span>
+          <span class="tag tag-cyan">⭐ 2026</span>
+        </div>
+        <h1>Google AI Overviews Are <span>Stealing Your Clicks</span> — Here's How to Fight Back</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 9, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 9 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,184 views</span>
+        </div>
+      </div>
+    </div>
+
+    <article class="article-body">
+
+      <p>I'm going to say the quiet part out loud: if your site lives and dies on informational traffic from Google, you're already bleeding. Not slowly — fast. My own analytics for a client site I manage showed a 34% YoY drop in organic clicks between Q1 2025 and Q1 2026, even while rankings held steady at positions 1–3. Same URLs, same rankings, way fewer clicks. The culprit isn't a penalty. It's AI Overviews.</p>
+
+      <p>Google's AI Overview (formerly SGE) now surfaces on over a third of all search queries. For question-based searches — the "how to," "what is," "best way to" queries that used to be gold for SEO content — that number is even higher. Google answers the question directly, above the fold, and the user never scrolls down to click your blue link. You ranked. You just didn't win anything for it.</p>
+
+      <p>Here's the thing though: this isn't actually a death sentence for SEO. It's a restructuring. The sites losing the most traffic are the ones who built their entire strategy on being Wikipedia for their niche — broad, shallow informational pages with no real differentiation. If that's you, yeah, it's bad. But there's a real path forward, and it doesn't require abandoning organic search entirely.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">58%</span><div class="stat-label">Average click drop for top-ranking pages when AI Overview appears</div></div>
+        <div class="stat-card"><span class="stat-val">32%</span><div class="stat-label">Of all Google searches now trigger an AI Overview response</div></div>
+        <div class="stat-card"><span class="stat-val">3×</span><div class="stat-label">More likely to appear in AI Overviews if your page is already in top 5</div></div>
+      </div>
+
+      <h2 id="what-ai-overviews-do">What AI Overviews Are Actually Doing to Your Traffic</h2>
+
+      <p>Let me break down what's actually happening mechanically. When a user types a query that Google's system classifies as "answerable," the AI Overview generates a synthesized response from multiple sources — often including your content. Your site might literally be cited in the Overview. But cited doesn't mean clicked.</p>
+
+      <p>The click drop isn't uniform across all queries. Transactional queries — "buy running shoes," "best CRM software 2026" — are largely unaffected. People shopping don't trust a text summary to make a purchase decision. Same with local queries. "Pizza near me" isn't going anywhere. It's the informational middle — the stuff like "how does canonicalization work" or "what is a good bounce rate" — where AI Overviews are absolutely eating clicks.</p>
+
+      <p>I tested this personally. I have a page ranking #1 for a how-to query with about 3,400 monthly searches. Before AI Overviews expanded to that query type, I was getting roughly 580 clicks per month from it. Now? 190. Same rank. The Overview appeared in early 2025, and that traffic never came back. The Overview literally quotes two sentences from my page. Google used my content to replace my traffic. Charming.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>The Hard Truth</strong>If your SEO strategy is built entirely around ranking for informational "what is / how to" queries, you need to reassess now. AI Overviews have structurally reduced the click value of those rankings, possibly permanently. This isn't a Google update you can recover from — it's a product change.</div>
+      </div>
+
+      <h2 id="content-types-featured">The Content Types That Get Featured vs. Buried</h2>
+
+      <p>Here's where it gets interesting — and honestly, a little hopeful. AI Overviews don't treat all content equally. They heavily favor certain formats and content structures. And if you're producing that kind of content, you don't just avoid the click-drain, you actually get cited inside the Overview, which keeps your brand visible even when users don't click.</p>
+
+      <h3>What Gets Featured</h3>
+
+      <p>Step-by-step content with clear numbered structures gets pulled constantly. If I search "how to set up a robots.txt file," the Overview will almost always assemble a list of steps — and it pulls those steps from pages that have them structured as actual numbered procedures, not just buried in prose. Same with FAQ-format content. Structured Q&amp;A is extremely easy for the Overview to extract and cite.</p>
+
+      <p>Original data also performs disproportionately well. If your page has a statistic, a study result, or a proprietary finding — something that can't be replicated by synthesizing a dozen generic articles — the Overview will cite you specifically. Not paraphrase you. Cite you with your brand name in the source list. That brand exposure matters more than you'd think.</p>
+
+      <h3>What Gets Buried</h3>
+
+      <p>Generic listicles. You know the type — "10 tips for better SEO." Walls of text with no structure. Thin 600-word posts that mostly restate what everyone already knows. The AI can synthesize five of those in 0.3 seconds and produce a better summary than any individual one. If your content is replaceable, the Overview will replace it.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Content Differentiation = Survival</strong>Ask yourself honestly: could the AI Overview have written my article from existing web content? If yes, you need to add something it can't — original research, personal experience, case study data, or a genuinely contrarian take. That's what makes you quotable, not replaceable.</div>
+      </div>
+
+      <h2 id="optimize-for-ai-overviews">How to Optimize for AI Overview Inclusion</h2>
+
+      <p>I want to be clear: I think optimizing purely for Overview citations is a short-term play. Your real goal is to make content so specific and so authoritative that people want to click through to read it in full. But while you're building toward that, here's what actually gets you cited inside Overviews right now.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Structure Your Content With Semantic Headers</h4>
+            <p>Every major question your article addresses should have its own H2 or H3. Google's AI extracts answers at the section level — not the page level. If you bury your best insight in paragraph four of a 1,500-word section, it won't get featured. Put answers right after their heading, in the first 2–3 sentences.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Add a Dedicated FAQ Section</h4>
+            <p>This is probably the single most reliable trigger for Overview citations I've found. A FAQ section using FAQPage schema markup gets pulled into AI Overviews at a much higher rate than body content. Write 4–6 tight, direct questions and answers at the bottom of your key articles. Use RankSorcery's <a href="https://ranksorcery.com/ai-faq-generator.html">AI FAQ Generator</a> to produce these quickly and in the right format.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Implement FAQPage and HowTo Schema</h4>
+            <p>Schema markup doesn't guarantee inclusion in AI Overviews, but it makes your content structurally legible to Google's systems. FAQPage, HowTo, and Article schema are your most useful types here. Generate and validate correct JSON-LD using RankSorcery's <a href="https://ranksorcery.com/schema-markup-writer.html">Schema Markup Writer</a> — it takes about two minutes per page.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Include First-Person Experience and Specific Examples</h4>
+            <p>The AI can't fake lived experience. Sentences starting with "When I tested this on a 50,000-page e-commerce site..." or "In my own analytics, I saw..." add a layer of specificity that generic content can't replicate. These passages also tend to survive the Overview synthesis because they contain something provably non-generic.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Go Longer on Intent Alignment, Not Word Count</h4>
+            <p>Stop chasing word count. Write until you've fully satisfied the searcher's intent, then stop. A 900-word article that perfectly addresses one specific problem will outperform a 3,000-word article that half-heartedly covers six related topics. More isn't better — more aligned is better.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>🤖 Check Your AI Search Visibility Right Now</h3>
+        <p>RankSorcery's AI Search Visibility tool shows you which of your pages are being cited in AI Overviews, ChatGPT, Perplexity, and Gemini — and where you're invisible to AI answers entirely.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Visibility →</a>
+      </div>
+
+      <h2 id="traffic-diversification">Building Traffic That Doesn't Depend on Google Clicks</h2>
+
+      <p>Let me be straight with you: the era of building a business entirely on informational Google traffic is over. That doesn't mean SEO is dead — it means the SEO that was lazy and interchangeable is dead. The smart move right now is to treat organic search as one channel in a diversified acquisition mix, not the entire foundation.</p>
+
+      <p>Email is having a genuine renaissance. Every click you got from Google last year that didn't convert to a subscriber was a wasted visit. Build the list aggressively. A subscriber who opted in is worth 10x a drive-by Google visitor, because you own that relationship and AI can't intercept it.</p>
+
+      <p>YouTube and short-form video are also relatively AI-proof — for now. Google isn't going to synthesize video content into text Overviews. Same with interactive tools and calculators. If your site offers something people actually have to use, that's a click Google can't replace with a text summary. Which, not coincidentally, is a big part of why tool-based sites like RankSorcery are relatively well-positioned right now.</p>
+
+      <div class="pull-quote">"The content Google can summarize in three sentences was never going to build a durable business anyway. AI Overviews just made that obvious faster."</div>
+
+      <p>I'll also say this: brand search is completely immune to AI Overviews. If someone types "RankSorcery SEO audit" into Google, AI is not going to give them a text answer instead of sending them to the site. Building brand awareness — through content, community, partnerships, and just being consistently good at what you do — creates search demand that bypasses the whole problem.</p>
+
+      <h2 id="tracking-ai-presence">Tracking Where You Appear (and Don't) in AI Search</h2>
+
+      <p>You can't optimize what you can't measure. Most SEO tools are still catching up to the AI search reality — traditional rank trackers show your position in the blue link results, but they don't tell you whether an AI Overview is appearing above you, or whether your content is being cited inside it.</p>
+
+      <p>Here's what I actually track for AI search presence right now:</p>
+
+      <ul class="checklist">
+        <li>Which queries trigger AI Overviews for my target keywords (manually check in Chrome incognito)</li>
+        <li>Whether my domain appears as a source citation inside those Overviews</li>
+        <li>Brand mention tracking across ChatGPT, Perplexity, and Gemini (ask each AI directly about your niche)</li>
+        <li>CTR changes in Google Search Console filtered by query type — question queries vs. navigational</li>
+        <li>Impressions vs. clicks ratio per page — a widening gap signals an Overview is eating your clicks</li>
+        <li>Whether FAQ and HowTo schema is being picked up (use Google's Rich Results Test)</li>
+      </ul>
+
+      <p>The impressions vs. clicks ratio in Search Console is honestly the most useful diagnostic. If a page has 10,000 impressions per month but only 180 clicks, something is absorbing those impressions above you — and in 2026, that something is almost certainly an AI Overview.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">📊</div>
+        <div class="callout-body"><strong>Search Console Hack</strong>In Google Search Console, filter by query type. Sort by CTR ascending. Your lowest-CTR pages with high impressions are almost certainly being hit by AI Overviews. Those are your highest-priority pages to restructure — add FAQ sections, better headers, and original data to fight back into the citation pool.</div>
+      </div>
+
+      <h2 id="content-moats">Build a Content Moat AI Can't Cross</h2>
+
+      <p>The longer I think about this, the more I believe the answer is actually simpler than most SEO advice suggests. Forget gaming Overviews. Build content that is genuinely, demonstrably better than what the AI can synthesize from the web.</p>
+
+      <p>That means primary research — surveys, experiments, A/B tests you ran yourself. It means strong opinions backed by specific evidence. It means case studies with actual client data (anonymized if needed, but real). It means writing about things you've personally done, failed at, and learned from. None of that can be scraped and synthesized, because it doesn't exist anywhere else on the web.</p>
+
+      <p>And yeah, that means publishing less content, more carefully. I'd rather publish four deeply original 2,000-word pieces per month than twenty thin 800-word articles. The era of content volume as SEO strategy is genuinely over. Quality and specificity are the only moats that work in an AI search world.</p>
+
+      <div class="inline-cta">
+        <h3>🧪 Run a Full SEO Audit on Your Site</h3>
+        <p>See exactly which of your pages are most vulnerable — technical issues, thin content flags, schema problems, and more — with RankSorcery's free 60-factor site audit.</p>
+        <a href="https://ranksorcery.com/">Run My Free SEO Audit →</a>
+      </div>
+
+      <h2 id="bottom-line">The Bottom Line</h2>
+
+      <p>AI Overviews are not going away. If anything, they're going to expand to more query types as Google's confidence in the technology grows. Fighting them by trying to rank higher won't work — you can be #1 and still lose 50% of your clicks to the Overview sitting above you.</p>
+
+      <p>What actually works: structure your content for AI extraction (headers, FAQs, schema), add things only you can know (data, experience, opinions), diversify beyond Google clicks, track your AI visibility actively, and start building a brand that people search for by name.</p>
+
+      <p>It's more work than churning out generic posts. But the sites doing this right are actually growing their traffic — not from the same query types as before, but from higher-intent visitors who clicked because the AI Overview made them curious enough to dig deeper. That's a better visitor anyway.</p>
+
+      <p>The search landscape changed. The SEO practitioners who adapt early will have a significant head start on everyone still optimizing for a web that no longer exists.</p>
+
+    </article>
+
+    <div class="author-box">
+      <div class="author-box-avatar">RS</div>
+      <div class="author-box-body">
+        <h4>James Reyes — RankSorcery Team</h4>
+        <p>James has spent the past 8 years in the SEO trenches — from bootstrapped startups to enterprise brands. He writes about what's actually working right now, not what worked three years ago. When he's not testing ranking tactics, he's probably running another SEO audit or arguing about Core Web Vitals in Slack.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Article</div>
+      <ul class="toc-list">
+        <li><a href="#what-ai-overviews-do">What AI Overviews Are Actually Doing</a></li>
+        <li><a href="#content-types-featured">Content That Gets Featured vs. Buried</a></li>
+        <li><a href="#optimize-for-ai-overviews">How to Optimize for AI Overviews</a></li>
+        <li><a href="#traffic-diversification">Traffic Channels Beyond Google Clicks</a></li>
+        <li><a href="#tracking-ai-presence">Tracking Your AI Search Presence</a></li>
+        <li><a href="#content-moats">Build a Content Moat AI Can't Cross</a></li>
+        <li><a href="#bottom-line">The Bottom Line</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">📖 Related Posts</div>
+      <a href="https://ranksorcery.com/blog/how-to-rank-in-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results: The 2026 Guide<span>AI Search · 14 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog/google-march-2026-core-update-recovery.html" class="related-post">
+        <div class="related-post-icon">📉</div>
+        <div class="related-post-body">Google March 2026 Core Update: Who Got Hit and How to Recover<span>Technical SEO · 9 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog.html" class="related-post">
+        <div class="related-post-icon">📝</div>
+        <div class="related-post-body">Browse All Blog Posts<span>RankSorcery Blog</span></div>
+      </a>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?url=https://ranksorcery.com/blog/google-ai-overviews-traffic-recovery-2026.html&text=Google AI Overviews Are Stealing Your Clicks — Here's How to Fight Back" target="_blank">🐦 Tweet</a>
+        <button class="share-btn share-btn-copy" onclick="navigator.clipboard.writeText(location.href);this.textContent='✓ Copied'">📋 Copy Link</button>
+      </div>
+    </div>
+
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;">Audit My Site →</a>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleNavDropdown(id) {
+  const wrapper = document.getElementById(id);
+  const menu = wrapper.querySelector('.nav-dropdown-menu');
+  const toggle = wrapper.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  if (!isOpen) { menu.classList.add('open'); toggle.classList.add('open'); }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  }
+});
+function toggleMobileNav() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  const open = menu.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('reading-progress');
+  if (el) {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    el.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+  }
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.article-body h2');
+  let current = '';
+  headings.forEach(h => { if (window.scrollY >= h.offsetTop - 100) current = '#' + h.id; });
+  tocLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === current); });
+});
+</script>
+</body>
+</html>
