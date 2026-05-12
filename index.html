@@ -7071,6 +7071,8 @@ async function _fetchAndRenderBrokenLinks(url, hostname, el) {
   let autoRotate = true;
 
   document.addEventListener('keydown', (e) => {
+    const activeTag = document.activeElement?.tagName;
+    if (activeTag === 'INPUT' || activeTag === 'TEXTAREA') return;
     if (e.code === 'Space') {
       e.preventDefault();
       wireframeMode = !wireframeMode;
