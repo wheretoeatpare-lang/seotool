@@ -41,10 +41,8 @@ Keep responses concise — 2-4 sentences for simple questions, slightly more for
 
 If a user wants to contact the owner, speak to a real person, or needs direct help, share these contact details:
 - 📧 Email: webmasterjamez@gmail.com
-- 💬 WhatsApp: https://wa.me/639190047872
-- 💼 LinkedIn: https://www.linkedin.com/in/james-carla-966abb2a9/
 
-Always present all options and encourage them to reach out — the owner is happy to help!`;
+Always present this option and encourage them to reach out — the owner is happy to help!`;
 
   const WELCOME_MSG = "Hey! I'm your RankSorcery AI assistant ✦ I can help with SEO audits, web development, web applications, AI automation, social media marketing, and anything else to grow your business online. What would you like to tackle?";
 
@@ -60,8 +58,6 @@ Always present all options and encourage them to reach out — the owner is happ
 
   // ─── Owner contact details ────────────────────────────────────────────────
   const OWNER_EMAIL      = 'webmasterjamez@gmail.com';
-  const OWNER_WHATSAPP   = 'https://wa.me/639190047872';
-  const OWNER_LINKEDIN   = 'https://www.linkedin.com/in/james-carla-966abb2a9/';
 
   // ─── Max history to keep (prevents token overflow) ────────────────────────
   const MAX_HISTORY = 10;
@@ -97,9 +93,7 @@ Always present all options and encourage them to reach out — the owner is happ
   // ─── LOCAL FALLBACK BRAIN (rule-based) ───────────────────
   // =========================================================
   const CONTACT_HTML = `Feel free to reach out anytime!<br>
-📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a><br>
-💬 <a href="${OWNER_WHATSAPP}" target="_blank">WhatsApp Jamez here</a><br>
-💼 <a href="${OWNER_LINKEDIN}" target="_blank">LinkedIn</a> — Jamez is happy to help!`;
+📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a> — Jamez is happy to help!`;
 
   const AUDIT_MSG = `You can get a free AI-powered SEO audit in seconds — just paste your URL directly at <a href="https://ranksorcery.com" target="_blank">ranksorcery.com</a>! It checks 60+ SEO factors including Core Web Vitals, schema markup, and E-E-A-T scoring.`;
 
@@ -226,8 +220,8 @@ Always present all options and encourage them to reach out — the owner is happ
     return false;
   }
 
-  // ─── Forward chat to LinkedIn ─────────────────────────────────────────────
-  function forwardToLinkedIn() {
+  // ─── Forward chat via Email ───────────────────────────────────────────────
+  function forwardToEmail() {
     // Build a clean plain-text transcript of the conversation
     const transcript = history
       .map(m => {
@@ -238,36 +232,26 @@ Always present all options and encourage them to reach out — the owner is happ
       })
       .join('\n\n');
 
-    const fullMsg = `Hi Jamez! A visitor from ranksorcery.com wants to continue their chat with you:\n\n──────────────\n${transcript}\n──────────────\n\nPlease follow up when you get a chance! 😊`;
+    const subject = encodeURIComponent('Chat from ranksorcery.com');
+    const body = encodeURIComponent(`Hi Jamez! A visitor from ranksorcery.com wants to continue their chat with you:\n\n──────────────\n${transcript}\n──────────────\n\nPlease follow up when you get a chance! 😊`);
 
-    // Copy transcript to clipboard, then open LinkedIn
-    navigator.clipboard.writeText(fullMsg)
-      .then(() => {
-        addMessage('bot',
-          '✅ <strong>Chat transcript copied to your clipboard!</strong><br><br>' +
-          'Opening LinkedIn now — just send Jamez a message and paste (Ctrl+V) the transcript so he has the full context. He\'ll get right back to you! 🚀'
-        );
-      })
-      .catch(() => {
-        addMessage('bot',
-          '💼 Opening LinkedIn now! Please let Jamez know you were chatting on ranksorcery.com. He\'s happy to help! 😊'
-        );
-      });
+    addMessage('bot',
+      '✅ <strong>Opening your email client!</strong><br><br>' +
+      'Your chat transcript is pre-filled — just hit send and Jamez will get right back to you! 🚀'
+    );
 
-    window.open(OWNER_LINKEDIN, '_blank');
+    window.open(`mailto:${OWNER_EMAIL}?subject=${subject}&body=${body}`, '_blank');
   }
 
-  // ─── Show contact card with LinkedIn forward button ───────────────────────
+  // ─── Show contact card with Email forward button ──────────────────────────
   function showContactCard() {
     const html =
       `Sure thing! 😊 Here's how you can reach <strong>Jamez</strong> directly:<br><br>` +
-      `📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a><br>` +
-      `💬 <a href="${OWNER_WHATSAPP}" target="_blank">WhatsApp Jamez</a><br>` +
-      `💼 <a href="${OWNER_LINKEDIN}" target="_blank">LinkedIn</a><br><br>` +
-      `<em>Would you like me to forward this chat conversation directly to Jamez on LinkedIn?</em>`;
+      `📧 <a href="mailto:${OWNER_EMAIL}">${OWNER_EMAIL}</a><br><br>` +
+      `<em>Would you like me to forward this chat conversation directly to Jamez via email?</em>`;
 
     addMessage('bot', html, null, [
-      { label: '💼 Yes, forward my chat to Jamez', action: 'forward-linkedin' },
+      { label: '📧 Yes, forward my chat to Jamez', action: 'forward-email' },
       { label: '✖ No thanks', action: 'no-forward' }
     ]);
     history.push({ role: 'assistant', content: html });
@@ -394,10 +378,10 @@ Always present all options and encourage them to reach out — the owner is happ
       border: none; transition: opacity 0.2s, transform 0.1s;
     }
     .rs-action-btn:active { transform: scale(0.97); }
-    .rs-action-btn[data-action="forward-linkedin"] {
-      background: #0a66c2; color: #fff;
+    .rs-action-btn[data-action="forward-email"] {
+      background: #f5c842; color: #1a1200;
     }
-    .rs-action-btn[data-action="forward-linkedin"]:hover { opacity: 0.88; }
+    .rs-action-btn[data-action="forward-email"]:hover { opacity: 0.88; }
     .rs-action-btn[data-action="no-forward"] {
       background: #2a2e3a; color: #a0a8be;
     }
@@ -520,7 +504,7 @@ Always present all options and encourage them to reach out — the owner is happ
       div.appendChild(chipsDiv);
     }
 
-    // Action buttons (e.g. forward to LinkedIn)
+    // Action buttons (e.g. forward via email)
     if (actionBtns && actionBtns.length) {
       const btnsDiv = document.createElement('div');
       btnsDiv.className = 'rs-action-btns';
@@ -570,8 +554,8 @@ Always present all options and encourage them to reach out — the owner is happ
       });
     }
 
-    if (action === 'forward-linkedin') {
-      forwardToLinkedIn();
+    if (action === 'forward-email') {
+      forwardToEmail();
     } else if (action === 'no-forward') {
       addMessage('bot',
         'No problem! Feel free to reach out anytime you\'re ready. I\'m always here if you need more help. 😊'
