@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Preferred Sources Is Now a Global SEO Signal: What Publishers Must Do — RankSorcery</title>
+<meta name="description" content="Google's Preferred Sources rolled out globally on April 30, 2026. Users who prefer your site click through 2x more. Here's exactly what to do about it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google Preferred Sources Is Now a Global SEO Signal: What Publishers Must Do">
+<meta property="og:description" content="Google's Preferred Sources feature just went global. Users who mark your site as a preferred source are twice as likely to click through. Here's your action plan.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-11">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Google Preferred Sources</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-green">📡 Google Update</span>
+          <span class="tag tag-cyan">🔥 Trending May 2026</span>
+          <span class="tag tag-amber">⚡ Publisher SEO</span>
+        </div>
+        <h1>Google's <span>Preferred Sources</span> Is Now a Global SEO Signal — Here's Your Action Plan</h1>
+        <div class="article-hero-meta">
+          <div class="author" style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 May 11, 2026</span>
+          <span>·</span>
+          <span>⏱ 12 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What Google Preferred Sources Actually Does (And Doesn't Do)</a></li>
+        <li><a href="#section2">The Numbers Are Real: Why This Matters More Than You Think</a></li>
+        <li><a href="#section3">Who Benefits Most — And Who Gets Left Behind</a></li>
+        <li><a href="#section4">How to Ask Readers to Prefer You Without Annoying Them</a></li>
+        <li><a href="#section5">Your Preferred Sources Action Plan for This Week</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>On April 30, 2026, Google quietly dropped something that could shift how loyal readers find your content — and most SEOs completely missed it. Google's Preferred Sources feature rolled out globally in all supported languages, turning what used to be a niche US/India experiment into a worldwide SEO signal. The short version: users can now tell Google which sites they want to see more often in Top Stories results, and those who do are <strong>twice as likely to click through</strong> to the site they selected.</p>
+
+      <p>Here's the thing — this isn't a ranking factor in the traditional sense, and that's exactly why so many SEO teams are going to misread it. It won't help your informational blog posts rank for generic queries. It won't fix your site if your content is thin. But if you have any kind of loyal readership and you publish news, industry updates, or timely content, ignoring this feature is leaving real, measurable traffic on the table. I've been watching the rollout closely and the data coming out of early adopters is compelling.</p>
+
+      <p>This article covers everything you need to know: what the feature actually does (including its real limits), which types of sites it helps most, how to prompt readers to use it without coming across as desperate, and a concrete checklist to implement this week. We'll also look at how this fits into a broader strategy for surviving in an AI-search world where organic clicks are increasingly hard-won.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">2×</span><div class="stat-label">Click-through rate lift for sites marked as Preferred Source by users</div></div>
+        <div class="stat-card"><span class="stat-val">200K+</span><div class="stat-label">Unique sites already selected as Preferred Sources as of April 2026</div></div>
+        <div class="stat-card"><span class="stat-val">Apr 30</span><div class="stat-label">Date Google completed the global all-language Preferred Sources rollout</div></div>
+      </div>
+
+      <h2 id="section1">What Google Preferred Sources Actually Does (And Doesn't Do)</h2>
+
+      <p>Let me be honest with you about what this feature is, because I've already seen people wildly overhyping it. Preferred Sources is not a magic "always show me first" switch. It's not a Google endorsement of your site. And it's definitely not a replacement for good content. Here's what it actually is: a user-controlled personalization layer that sits on top of Google's Top Stories module.</p>
+
+      <p>When a reader searches for something news-oriented — say, "tech layoffs" or "Fed rate decision" or "local election results" — Google may show a Top Stories box. Within that box, readers can tap a star icon, search for publishers they like, and select sites they want to see more often. Google says those selected sites may then appear more frequently in Top Stories or in a dedicated "From your sources" section. The operative word is "may" — your site still needs to have fresh, relevant content that actually matches the query. You can't bank the preference and coast.</p>
+
+      <p>What it doesn't do: it doesn't affect your standard blue-link rankings at all. It doesn't influence AI Overviews. It doesn't guarantee placement. And it's only active when the user is signed in to a Google account. So right away, you're dealing with a subset of your audience — the signed-in, news-browsing segment who cares enough to manage their preferences. That's actually the good news, because that segment tends to be your most engaged readers anyway.</p>
+
+      <p>The rollout timeline tells an interesting story. Google first tested this in the US and India in August 2025. By December 2025, they'd gone global for English-language users, with roughly 90,000 unique sites selected. Then on April 30, 2026 — literally two weeks before I'm writing this — they expanded to all supported languages worldwide, and the selected sites count jumped past 200,000. The pace of adoption suggests real user interest, not just a niche feature that nobody uses.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Key Distinction</strong>
+          Preferred Sources only works in the Top Stories news module in Search. It does not directly affect standard organic rankings, AI Overviews, Google Discover, or the News tab. Don't conflate these surfaces when measuring results — you'll confuse yourself and your team.
+        </div>
+      </div>
+
+      <p>The domain-level eligibility rule is something a lot of people will trip over. Only root domains (like <code>example.com</code>) and subdomains (like <code>news.example.com</code>) are eligible — subdirectories like <code>example.com/blog</code> are not. If your news content lives at a subdirectory, readers technically can't select just that section. They'd be preferring the whole domain. For most independent blogs or news sites, this isn't a problem. But if you're a big publisher with a blog sitting under a broader corporate domain, it's worth auditing before you start any reader campaign.</p>
+
+      <h2 id="section2">The Numbers Are Real: Why This Matters More Than You Think</h2>
+
+      <p>I've seen people dismiss this as a "feel-good feature" that doesn't move the needle. Those people are wrong, and I'll show you why. The 2× CTR lift Google cites isn't just marketing spin — it makes intuitive sense. Someone who manually goes into their Google preferences and adds your site as a source has demonstrated a level of intent that's way above the average search visitor. They know who you are, they trust you, and they want more of you. Of course they're going to click when you show up.</p>
+
+      <p>Think about the comparison. A random visitor who finds you through a head-term query has no brand loyalty. They clicked because you were in the top results, and they'll bounce if you don't immediately answer their question. A Preferred Source visitor arrived because they already have an opinion about you. That's a fundamentally different relationship, and Google's click data confirms it.</p>
+
+      <h3>The Jump from 90K to 200K+ Tells You Something</h3>
+
+      <p>Between December 2025 and April 2026 — roughly four months — the number of unique selected sites grew from around 90,000 to over 200,000. That's more than a 100% increase. And remember, in December the feature was only available in English globally. The April expansion to all languages essentially opened the floodgates for publishers in Spanish, Portuguese, German, French, Japanese, Hindi, Arabic, and dozens more languages.</p>
+
+      <p>The category breakdown that Google mentioned is also revealing: they said selections range from "niche local blogs to global news desks." This is not a feature that only big media companies can use. A local Filipino news site, a German B2B tech publication, a Brazilian football blog — all of these are fair game. Nobody talks about this but the playing field here is unusually flat. You don't need a PR team or a $10 million marketing budget. You need loyal readers and a clear way to ask them.</p>
+
+      <p>For smaller sites especially, the math is compelling. If you have 5,000 newsletter subscribers and you get even 15% of them to add you as a Preferred Source, that's 750 users who will now see you more often in their Top Stories searches. That's 750 warm, brand-aware readers who already trust you. Over a month of news cycles, that compounds fast.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">📊</div>
+        <div class="callout-body">
+          <strong>Reality Check on Measurement</strong>
+          Google hasn't added Preferred Sources as a specific filter in Search Console (yet). You'll need to track proxy metrics: button click-throughs, deeplink completions, changes in Top Stories impressions for branded or topical queries, and newsletter click rates on your "how to prefer us" campaigns.
+        </div>
+      </div>
+
+      <p>Here's the broader context that makes this even more important: AI Overviews and AI Mode are eating into informational clicks. If someone asks Google "what is core web vitals," they increasingly get a synthesized answer without clicking anything. But breaking news? Local updates? Industry announcements? Those still require clicks because the AI can't fully replace the live, original reporting. Preferred Sources lives exactly in that space — the queries where freshness and source credibility still drive clicks to actual websites. Protecting your traffic in that zone is worth real effort.</p>
+
+      <h2 id="section3">Who Benefits Most — And Who Gets Left Behind</h2>
+
+      <p>Not every site should be spending equal energy on this. Let me break it down honestly. The feature is primarily useful if your site publishes timely, news-oriented content on a recurring basis. If you're a pure evergreen SEO blog that publishes twice a month, Preferred Sources isn't your priority. But if you cover industry news, local events, business developments, sports, politics, or any rapidly-changing topic, this is directly relevant to you.</p>
+
+      <p>The biggest winners are going to be local news publishers. I've seen this dynamic play out before — national outlets parachute in to cover a local story during peak interest, outrank the local newsroom on traffic, and then disappear. The local newsroom keeps covering the follow-ups, the council responses, the longer story arc, but readers find them less reliably in Search. Preferred Sources changes that equation. If a local reader has marked the hometown paper as a preferred source, Google has a direct user signal that says "this person wants the local angle." That's powerful for local publishers who've been fighting uphill against national scale.</p>
+
+      <p>Specialist and niche publications also benefit disproportionately. If you run a site that covers, say, commercial real estate in Southeast Asia, or open-source AI tools, or renewable energy regulation — your readership is small but intensely loyal. Those readers absolutely know your brand, they check your site regularly, and they'd add you as a preferred source if you explained the feature clearly. The question is whether you've ever bothered to ask.</p>
+
+      <h3>Sites That Won't See Much Benefit</h3>
+
+      <p>General, high-volume content farms won't get much from this. If your readers can't name your site after reading one article, they're not going to add you as a preferred source. The feature rewards brand recognition and reader attachment — two things that can't be gamed with keyword stuffing or content spinning. Sites that chased traffic through AI-generated commodity content are going to find this feature essentially useless, because their readers have no reason to prefer them specifically.</p>
+
+      <p>Subscription-only sites with hard paywalls face a nuance too. A reader can prefer your source, but if they click and hit a paywall on every article, the experience breaks down. You're better off making sure your highest-value content — the stuff that demonstrates why you're worth preferring — is accessible before asking for the preference. Think of it as: earn the preference on open articles, convert to subscriptions later.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Publisher Type</th>
+            <th>Preferred Sources Benefit</th>
+            <th>Reader Loyalty Factor</th>
+            <th>Implementation Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Local/regional news</td><td class="good">✓ Very High</td><td class="good">✓ Strong</td><td class="good">✓ Do it now</td></tr>
+          <tr><td>Niche specialist blog</td><td class="good">✓ High</td><td class="good">✓ Very strong</td><td class="good">✓ Do it now</td></tr>
+          <tr><td>Industry newsletter + site</td><td class="good">✓ High</td><td class="good">✓ Strong</td><td class="good">✓ Do it now</td></tr>
+          <tr><td>General news site</td><td class="mid">~ Moderate</td><td class="mid">~ Variable</td><td class="mid">~ Test first</td></tr>
+          <tr><td>Pure evergreen SEO blog</td><td class="bad">✗ Low</td><td class="mid">~ Variable</td><td class="bad">✗ Not priority</td></tr>
+          <tr><td>AI content / content farm</td><td class="bad">✗ Negligible</td><td class="bad">✗ Weak</td><td class="bad">✗ Fix content first</td></tr>
+        </tbody>
+      </table>
+
+      <div class="inline-cta">
+        <h3>Is Your Site Even Showing Up in Top Stories?</h3>
+        <p>Before you run a Preferred Sources campaign, audit whether your pages are actually eligible for Top Stories — check your structured data, news sitemaps, and crawlability issues with a full site audit.</p>
+        <a href="/seo-auditor">Run Your Free SEO Audit →</a>
+      </div>
+
+      <h2 id="section4">How to Ask Readers to Prefer You Without Annoying Them</h2>
+
+      <p>This is where most publishers are going to mess it up. The instinct will be to slap a "Add us as a Preferred Source!" banner at the top of every page, maybe with a pop-up, maybe inline in the article, maybe in every newsletter for the next six months. I get it. You've done the same thing with every other engagement feature. But this one requires a different approach because it's fundamentally a trust ask, not a transactional one.</p>
+
+      <p>The reader has to already value you before they'll take this step. That means the right time to ask is after you've delivered clear value — after a useful explainer, after a breaking news update they actually relied on, after a detailed analysis that saved them an hour of research. The wrong time is the millisecond they land on your page before they've read a single word.</p>
+
+      <div class="pull-quote">"The best Preferred Sources prompt is an earned ask, not a conversion banner. If your readers don't know your name after reading your article, the feature won't save you."</div>
+
+      <p>Google has built an actual deeplink format you can use: <code>https://google.com/preferences/source?q=YourWebsiteURL</code>. This takes users directly to the source preferences tool with your site pre-filled. Use this in your newsletter, on your About page, in subscriber onboarding emails. Make the action as frictionless as possible. The reader should not have to dig through Google settings to find where to add you — that friction kills adoption.</p>
+
+      <p>The copy matters enormously. There's a huge difference between these two versions:</p>
+
+      <ul class="checklist">
+        <li><strong>Bad:</strong> "Make us your #1 Google news source and never miss our stories!" — This overpromises and sounds desperate.</li>
+        <li><strong>Bad:</strong> "Add us as a Preferred Source on Google." — This is accurate but gives the reader no reason to care.</li>
+        <li><strong>Good:</strong> "When we publish news on [topic], add us as a Preferred Source on Google so our coverage shows up more often when you search." — Specific, honest, explains the benefit clearly.</li>
+        <li><strong>Good (for subscribers):</strong> "You already read our reporting — add us as a Preferred Source on Google so you find it faster when you search breaking news." — Connects the action to something they already do.</li>
+      </ul>
+
+      <p>For international publishers, this is where the all-language rollout creates real work. A literal translation of your English CTA into Portuguese or Japanese might land completely flat. Localize the message to match how readers in each market think about news and trust. Someone in Brazil searching breaking news has a different mental model than someone in the UK. Your CTA should reflect that.</p>
+
+      <div class="callout callout-green">
+        <div class="callout-icon">✅</div>
+        <div class="callout-body">
+          <strong>Quick Wins for Your Campaign</strong>
+          Add the deeplink to: (1) your newsletter welcome email, (2) the footer of your highest-traffic news articles, (3) your "About" or "How to follow us" page, (4) your subscriber onboarding flow. That's it for phase one. Don't overwhelm every surface at once.
+        </div>
+      </div>
+
+      <p>One thing to get right from a technical standpoint: verify that your site actually appears in Google's source preferences tool before you campaign. Go to <code>google.com/preferences/source</code> when signed in, search for your domain, and confirm you show up. If you don't, check whether you're on a subdirectory (which isn't eligible) versus a root domain or subdomain. You don't want to run a campaign pointing readers to a search experience where they can't find you.</p>
+
+      <p>For sites with active SEO work, it's also worth checking whether your Top Stories performance in Search Console is healthy before running a Preferred Sources campaign. If you're not appearing in Top Stories at all right now, getting readers to prefer you isn't going to unlock visibility that doesn't exist yet. Fix your eligibility first — that means proper Article structured data, a clean news sitemap, fast mobile performance, and original reporting. Once you're appearing in Top Stories organically, the Preferred Sources layer starts to mean something.</p>
+
+      <h2 id="section5">Your Preferred Sources Action Plan for This Week</h2>
+
+      <p>Here's where I get direct with you: the publishers who implement this in the next two to four weeks have an early-mover advantage. Reader habits form slowly, and the first sites to ask — and explain clearly — are going to accumulate preference signals before this becomes something everyone is doing. Six months from now, your competitors will be running campaigns and fighting for the same readers. Right now, most of them don't even know this rolled out.</p>
+
+      <p>The whole thing doesn't require a big team or a budget. It requires understanding what you're asking for, setting up the technical pieces, and writing honest copy. That's it. Here's how to do it in order:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Verify Your Domain Eligibility</h4>
+            <p>Go to <code>google.com/preferences/source</code> while signed in and search for your domain. Confirm your site appears. If you're on a subdirectory, check if a root domain or subdomain makes more sense for your situation — this may require a quick conversation with your dev team.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Audit Your Top Stories Presence First</h4>
+            <p>Open Search Console, filter for Google News or check Top Stories impressions. If your news content isn't getting impressions in Top Stories, start there — add Article structured data, submit a news sitemap, and make sure your pages are crawlable and fast on mobile.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Build Your Deeplink and Honest CTA Copy</h4>
+            <p>Create your deeplink using <code>https://google.com/preferences/source?q=yourdomain.com</code>. Write two or three versions of your CTA copy — one for newsletters, one for article footers, one for onboarding flows. Keep them specific to what your site covers and honest about what "preferred" actually does.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Launch With Your Warmest Audience First</h4>
+            <p>Start with newsletter subscribers and registered users — people who already have a relationship with you. Add a short explanation and the deeplink to your next newsletter and to your welcome/onboarding email. Give it two weeks before evaluating adoption before expanding to article pages.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>Once you've done those four things, think about the second layer: article-level placement for high-performing news pieces, an explainer page that answers reader questions about what Preferred Sources does, and a quarterly check-in to see whether your Top Stories impressions have changed. Set up UTM tracking on your deeplink so you can count actual clicks to the preference flow, even if you can't see completion rates from Google's side.</p>
+
+      <p>The editorial side matters just as much as the technical side. If you run a campaign and ask readers to prefer you, then publish nothing relevant for three weeks, the signal goes cold. Preferred Sources rewards consistent, timely coverage of topics your audience actually searches. This is a good forcing function to stay disciplined about what you publish and when — only cover topics where you have real expertise and fresh insight, because that's exactly what makes the preference valuable in the first place.</p>
+
+      <p>One final thing: if you're running an <a href="/seo-auditor">SEO audit</a> on your site right now (and you should be), add Preferred Sources eligibility to your checklist. Check that your Top Stories pages have proper structured data, valid timestamps, visible author attribution, and no interstitial issues that would break the experience for a reader who clicks from a news module. The SEO hygiene that makes you eligible for Top Stories is the same hygiene that makes a Preferred Sources preference actually useful.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          Google Preferred Sources went global on April 30, 2026, and the 2× CTR lift for preferred sites is real. If you publish timely, news-oriented content with a loyal audience — local news, niche industry sites, newsletters with a web presence — this is one of the highest-ROI audience moves you can make right now. Verify your eligibility, write honest copy, and ask your warmest readers first.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO & Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
+      </a>
+      <a href="/background-remover" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">✂️</div>
+        <div><div class="tool-card-sm-name">Background Remover</div><div class="tool-card-sm-desc">Remove bg in one click</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/how-to-rank-in-ai-search-results-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          How to Rank in AI Search Results: The Complete 2026 Guide →
+        </a>
+        <a href="/blog/google-faq-rich-results-dead-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google Just Killed FAQ Rich Results — Here's What to Do This Week →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
