@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Search Visibility Tracker — Monitor Brand Mentions in ChatGPT & Perplexity | RankSorcery</title>
-<meta name="description" content="Track when and where your brand appears in ChatGPT, Perplexity, Gemini and other AI search engines. Monitor AI search visibility, protect your brand reputation, and spot new growth opportunities.">
+<title>AI Search Visibility Tracker</title>
+<meta name="description" content="Track brand mentions in AI search engines like ChatGPT &amp; Perplexity. Monitor AI search visibility and protect your brand reputation now.">
 
 <!-- favicon -->
 <link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
@@ -28,7 +26,7 @@
 {"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-search","url":"https://ranksorcery.com/ai-search","name":"AI Search Visibility Tracker — RankSorcery","description":"Track your brand mentions in ChatGPT, Perplexity, Gemini and other AI search engines.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -760,15 +758,15 @@ h1 span {
   <div class="search-box">
     <label class="input-label" for="brand-input">Your Brand / Company Name</label>
     <div class="input-row">
-      <input type="text" id="brand-input" placeholder="e.g. Shopify, Ahrefs, your company name…" autocomplete="off" />
+      <input type="text" id="brand-input" placeholder="e.g. Shopify, Ahrefs, your company name…" autocomplete="off">
       <button id="check-btn" onclick="runCheck()">Check Visibility →</button>
     </div>
     <div class="engines-select-row" id="engine-chips">
-      <label class="engine-chip active"><input type="checkbox" value="ChatGPT" checked> 🤖 ChatGPT</label>
-      <label class="engine-chip active"><input type="checkbox" value="Perplexity" checked> 🔍 Perplexity</label>
-      <label class="engine-chip active"><input type="checkbox" value="Gemini" checked> ✨ Gemini</label>
-      <label class="engine-chip active"><input type="checkbox" value="Claude" checked> 🟠 Claude</label>
-      <label class="engine-chip active"><input type="checkbox" value="Copilot" checked> 🔷 Copilot</label>
+      <label class="engine-chip active"><input type="checkbox" value="ChatGPT" checked=""> 🤖 ChatGPT</label>
+      <label class="engine-chip active"><input type="checkbox" value="Perplexity" checked=""> 🔍 Perplexity</label>
+      <label class="engine-chip active"><input type="checkbox" value="Gemini" checked=""> ✨ Gemini</label>
+      <label class="engine-chip active"><input type="checkbox" value="Claude" checked=""> 🟠 Claude</label>
+      <label class="engine-chip active"><input type="checkbox" value="Copilot" checked=""> 🔷 Copilot</label>
     </div>
     <div class="error-box" id="error-box"></div>
   </div>
@@ -787,7 +785,7 @@ h1 span {
     <li id="step-gemini"><span class="step-icon">○</span> Querying Gemini…</li>
     <li id="step-claude"><span class="step-icon">○</span> Querying Claude…</li>
     <li id="step-copilot"><span class="step-icon">○</span> Querying Copilot…</li>
-    <li id="step-analyze"><span class="step-icon">○</span> Analyzing sentiment & opportunities…</li>
+    <li id="step-analyze"><span class="step-icon">○</span> Analyzing sentiment &amp; opportunities…</li>
   </ul>
 </div>
 
@@ -806,14 +804,12 @@ h1 span {
     <div class="vis-header" id="vis-header">
       <div class="vis-score-ring">
         <svg width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"/>
-          <circle id="score-arc" cx="60" cy="60" r="50" fill="none" stroke="url(#arcGrad)" stroke-width="8"
-            stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"
-            transform="rotate(-90 60 60)" style="transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="8"></circle>
+          <circle id="score-arc" cx="60" cy="60" r="50" fill="none" stroke="url(#arcGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)" style="transition: stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1)"></circle>
           <defs>
             <linearGradient id="arcGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#E8B84B"/>
-              <stop offset="100%" stop-color="#0ABFBC"/>
+              <stop offset="0%" stop-color="#E8B84B"></stop>
+              <stop offset="100%" stop-color="#0ABFBC"></stop>
             </linearGradient>
           </defs>
         </svg>
@@ -868,7 +864,7 @@ h1 span {
     <!-- Tab: Reputation -->
     <div class="tab-panel" id="tab-reputation">
       <div class="section-card">
-        <div class="section-card-head">🛡 Reputation Risks & Alerts</div>
+        <div class="section-card-head">🛡 Reputation Risks &amp; Alerts</div>
         <div class="section-card-body" id="risk-list"></div>
       </div>
     </div>
@@ -1427,5 +1423,6 @@ document.addEventListener('click', e => {
   </div>
 </footer>
 
-</body>
-</html>
+
+
+</body></html>
