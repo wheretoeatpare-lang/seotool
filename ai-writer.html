@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI Writer — Free AI Content Writer | RankSorcery</title>
-<meta name="description" content="Free AI content writer — generate SEO-optimized blog posts, articles, and web copy in seconds. No sign-up required.">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Writer Tool - Free SEO Content Generator</title>
+<meta name="description" content="Get free SEO-optimized content with our AI writer tool. Generate blog posts, articles, and web copy in seconds - no sign-up required, try now">
 
 <!-- favicon -->
 <link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
@@ -24,8 +22,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-writer","url":"https://ranksorcery.com/ai-writer","name":"AI Writer | RankSorcery","description":"Free AI-powered content writer. Generate SEO-optimized articles, blog posts and web copy instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Syne:wght@400;600;700;800&amp;family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -227,17 +225,17 @@ select option{background:var(--bg2)}
       Topic / Title <span class="req">*</span>
       <button class="random-btn" onclick="setRandomTopic()">🎲 Example</button>
     </label>
-    <input type="text" id="topic" placeholder="e.g. The Complete Guide to Intermittent Fasting for Beginners" maxlength="250" oninput="updateCharCount(this,'topic-chars',250)" />
+    <input type="text" id="topic" placeholder="e.g. The Complete Guide to Intermittent Fasting for Beginners" maxlength="250" oninput="updateCharCount(this,'topic-chars',250)">
     <div class="char-count"><span id="topic-chars">0</span> / 250</div>
 
     <div style="margin-top:1.1rem">
       <label class="form-label" for="keyword">Primary Keyword <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional but recommended)</small></label>
-      <input type="text" id="keyword" placeholder="e.g. intermittent fasting for beginners" maxlength="120" />
+      <input type="text" id="keyword" placeholder="e.g. intermittent fasting for beginners" maxlength="120">
     </div>
 
     <div style="margin-top:1.1rem">
       <label class="form-label" for="secondary-keywords">Secondary Keywords <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional, comma-separated)</small></label>
-      <input type="text" id="secondary-keywords" placeholder="e.g. 16:8 fasting, weight loss, fasting schedule" maxlength="300" />
+      <input type="text" id="secondary-keywords" placeholder="e.g. 16:8 fasting, weight loss, fasting schedule" maxlength="300">
     </div>
   </div>
 
@@ -246,7 +244,7 @@ select option{background:var(--bg2)}
     <label class="form-label">Choose AI Model</label>
     <div class="model-grid">
       <label class="model-card selected" onclick="selectModel(this)">
-        <input type="radio" name="model" value="deepseek-chat" checked>
+        <input type="radio" name="model" value="deepseek-chat" checked="">
         <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
         <div class="model-info">
           <div class="model-name">DeepSeek V3</div>
@@ -270,7 +268,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="gpt-4o" disabled>
+        <input type="radio" name="model" value="gpt-4o" disabled="">
         <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
         <div class="model-info">
           <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
@@ -278,7 +276,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled="">
         <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
         <div class="model-info">
           <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
@@ -286,7 +284,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <input type="radio" name="model" value="mistral-large-latest" disabled="">
         <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
         <div class="model-info">
           <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
@@ -316,7 +314,7 @@ select option{background:var(--bg2)}
         <label class="form-label">Content Length</label>
         <select id="content-length">
           <option value="short">Short (~500 words)</option>
-          <option value="medium" selected>Medium (~900 words)</option>
+          <option value="medium" selected="">Medium (~900 words)</option>
           <option value="long">Long (~1,500 words)</option>
           <option value="xl">Extra Long (~2,500 words)</option>
         </select>
@@ -324,7 +322,7 @@ select option{background:var(--bg2)}
       <div>
         <label class="form-label">Tone of Voice</label>
         <select id="tone">
-          <option value="informative" selected>Informative</option>
+          <option value="informative" selected="">Informative</option>
           <option value="professional">Professional</option>
           <option value="casual">Casual &amp; Conversational</option>
           <option value="friendly">Friendly</option>
@@ -373,16 +371,21 @@ select option{background:var(--bg2)}
       <div class="fields-grid">
         <div>
           <label class="form-label" for="audience">Target Audience <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
-          <input type="text" id="audience" placeholder="e.g. beginner fitness enthusiasts, busy professionals" />
+          <input type="text" id="audience" placeholder="e.g. beginner fitness enthusiasts, busy professionals">
         </div>
         <div>
           <label class="form-label" for="brand-name">Brand / Author Name <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
-          <input type="text" id="brand-name" placeholder="e.g. RankSorcery" />
+          <input type="text" id="brand-name" placeholder="e.g. RankSorcery">
         </div>
       </div>
       <div style="margin-top:1rem">
         <label class="form-label" for="outline">Custom Outline / Sections <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
-        <textarea id="outline" placeholder="e.g.&#10;1. What is intermittent fasting?&#10;2. The 16:8 method explained&#10;3. Benefits for weight loss&#10;4. How to get started&#10;5. Common mistakes to avoid" style="min-height:90px"></textarea>
+        <textarea id="outline" placeholder="e.g.
+1. What is intermittent fasting?
+2. The 16:8 method explained
+3. Benefits for weight loss
+4. How to get started
+5. Common mistakes to avoid" style="min-height:90px"></textarea>
       </div>
       <div style="margin-top:1rem">
         <label class="form-label" for="notes">Additional Instructions <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
@@ -883,5 +886,6 @@ function escHtml(str) {
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
