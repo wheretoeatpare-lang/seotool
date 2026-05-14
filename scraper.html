@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ScrapeKit — Web Data Extraction API</title>
+<title>ScrapeKit: Web Data Extraction API</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Epilogue:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&amp;family=Epilogue:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -688,7 +686,7 @@ h1 em {
 ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--muted2); }
 </style>
-</head>
+<meta name="description" content="Extract data from any URL with ScrapeKit's web extraction API. Get contacts, social profiles &amp; more with zero setup. Try now!"></head>
 <body>
 
 <nav>
@@ -713,8 +711,8 @@ h1 em {
     <span class="endpoint">https://api.scrapekit.dev/v2/extract</span>
     <span class="sep">?</span>
     <span class="param-key">url</span><span class="sep">=</span><span class="param-val">https://example.com</span>
-    <span class="sep">&</span><span class="param-key">fields</span><span class="sep">=</span><span class="param-val">emails,phones,social</span>
-    <span class="sep">&</span><span class="param-key">token</span><span class="sep">=</span><span class="param-val">YOUR_KEY</span>
+    <span class="sep">&amp;</span><span class="param-key">fields</span><span class="sep">=</span><span class="param-val">emails,phones,social</span>
+    <span class="sep">&amp;</span><span class="param-key">token</span><span class="sep">=</span><span class="param-val">YOUR_KEY</span>
   </div>
 </section>
 
@@ -747,12 +745,12 @@ h1 em {
 
     <!-- Data Type Chips -->
     <div class="options-grid" id="contact-opts">
-      <label class="opt-chip active" title="Phone numbers"><input type="checkbox" checked><span class="chip-icon">📞</span><span class="chip-label">Phones</span></label>
-      <label class="opt-chip active" title="Email addresses"><input type="checkbox" checked><span class="chip-icon">✉️</span><span class="chip-label">Emails</span></label>
-      <label class="opt-chip active" title="Social media profiles"><input type="checkbox" checked><span class="chip-icon">🔗</span><span class="chip-label">Social</span></label>
-      <label class="opt-chip active" title="Physical address"><input type="checkbox" checked><span class="chip-icon">📍</span><span class="chip-label">Address</span></label>
-      <label class="opt-chip active" title="WhatsApp / Telegram / Viber"><input type="checkbox" checked><span class="chip-icon">💬</span><span class="chip-label">Messaging</span></label>
-      <label class="opt-chip active" title="Business info"><input type="checkbox" checked><span class="chip-icon">🏢</span><span class="chip-label">Business</span></label>
+      <label class="opt-chip active" title="Phone numbers"><input type="checkbox" checked=""><span class="chip-icon">📞</span><span class="chip-label">Phones</span></label>
+      <label class="opt-chip active" title="Email addresses"><input type="checkbox" checked=""><span class="chip-icon">✉️</span><span class="chip-label">Emails</span></label>
+      <label class="opt-chip active" title="Social media profiles"><input type="checkbox" checked=""><span class="chip-icon">🔗</span><span class="chip-label">Social</span></label>
+      <label class="opt-chip active" title="Physical address"><input type="checkbox" checked=""><span class="chip-icon">📍</span><span class="chip-label">Address</span></label>
+      <label class="opt-chip active" title="WhatsApp / Telegram / Viber"><input type="checkbox" checked=""><span class="chip-icon">💬</span><span class="chip-label">Messaging</span></label>
+      <label class="opt-chip active" title="Business info"><input type="checkbox" checked=""><span class="chip-icon">🏢</span><span class="chip-label">Business</span></label>
     </div>
 
     <!-- Advanced Options -->
@@ -760,7 +758,7 @@ h1 em {
       <span class="adv-label">Options</span>
       <select class="adv-select" id="opt-timeout" title="Request timeout">
         <option value="10">timeout: 10s</option>
-        <option value="20" selected>timeout: 20s</option>
+        <option value="20" selected="">timeout: 20s</option>
         <option value="30">timeout: 30s</option>
       </select>
       <div class="adv-divider"></div>
@@ -771,13 +769,13 @@ h1 em {
       </select>
       <div class="adv-divider"></div>
       <label class="adv-toggle" title="Follow all redirects">
-        <input type="checkbox" checked id="opt-redirect">
+        <input type="checkbox" checked="" id="opt-redirect">
         <div class="adv-switch"></div>
         follow redirects
       </label>
       <div class="adv-divider"></div>
       <label class="adv-toggle" title="Pretty JSON output">
-        <input type="checkbox" checked id="opt-pretty">
+        <input type="checkbox" checked="" id="opt-pretty">
         <div class="adv-switch"></div>
         pretty JSON
       </label>
@@ -860,13 +858,13 @@ h1 em {
     </div>
     <div class="feat-card">
       <div class="feat-icon">📦</div>
-      <div class="feat-title">CSV & JSON Export</div>
+      <div class="feat-title">CSV &amp; JSON Export</div>
       <div class="feat-desc">Download results in CSV or JSON instantly, or copy to clipboard.</div>
     </div>
     <div class="feat-card">
       <div class="feat-icon">🔧</div>
       <div class="feat-title">Cloudflare Workers</div>
-      <div class="feat-desc">Deployed globally on edge infrastructure — zero cold starts, <50ms latency worldwide.</div>
+      <div class="feat-desc">Deployed globally on edge infrastructure — zero cold starts, &lt;50ms latency worldwide.</div>
     </div>
   </div>
 </section>
@@ -1228,5 +1226,6 @@ function exportJSON() {
   80% { transform: translateX(-3px); }
 }
 </style>
-</body>
-</html>
+
+
+</body></html>
