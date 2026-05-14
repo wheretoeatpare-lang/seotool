@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AI FAQ Generator — Free Page FAQ Generator | RankSorcery</title>
-<meta name="description" content="Free AI FAQ generator — generate SEO-optimized FAQ sections for any page title or topic in seconds. No sign-up required.">
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI FAQ Generator Tool</title>
+<meta name="description" content="Generate SEO-optimized FAQ sections instantly with our free AI FAQ generator. Get Q&amp;A pairs and schema markup now!">
 
 <!-- favicon -->
 <link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
@@ -24,8 +22,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebPage","@id":"https://ranksorcery.com/ai-faq-generator","url":"https://ranksorcery.com/ai-faq-generator","name":"AI FAQ Generator | RankSorcery","description":"Free AI-powered FAQ generator. Generate SEO-optimized FAQ sections instantly — no login, no limits.","isPartOf":{"@id":"https://ranksorcery.com/#website"}}
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Syne:wght@400;600;700;800&amp;family=Inter:wght@300;400;500&amp;display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0a0c10;--bg2:#111318;--bg3:#1a1d24;--border:#2a2d35;--accent:#4fffb0;--accent2:#0ff;--accent-dim:rgba(79,255,176,0.12);--warn:#ffb74d;--fail:#ff5c5c;--pass:#4fffb0;--text:#e8eaf0;--muted:#6b7280;--card-shadow:0 4px 32px rgba(0,0,0,0.5)}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -240,7 +238,7 @@ select option{background:var(--bg2)}
       Page Title or Topic <span class="req">*</span>
       <button class="random-btn" onclick="setRandomTitle()">🎲 Example</button>
     </label>
-    <input type="text" id="page-title" placeholder="e.g. Best Running Shoes for Flat Feet in 2025" maxlength="300" oninput="updateCharCount(this,'title-chars',300)" />
+    <input type="text" id="page-title" placeholder="e.g. Best Running Shoes for Flat Feet in 2025" maxlength="300" oninput="updateCharCount(this,'title-chars',300)">
     <div class="char-count"><span id="title-chars">0</span> / 300</div>
   </div>
 
@@ -249,7 +247,7 @@ select option{background:var(--bg2)}
     <label class="form-label">Choose AI Model</label>
     <div class="model-grid">
       <label class="model-card selected" onclick="selectModel(this)">
-        <input type="radio" name="model" value="deepseek-chat" checked>
+        <input type="radio" name="model" value="deepseek-chat" checked="">
         <div class="model-icon" style="background:rgba(0,180,150,.12)">🔍</div>
         <div class="model-info">
           <div class="model-name">DeepSeek V3</div>
@@ -273,7 +271,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="gpt-4o" disabled>
+        <input type="radio" name="model" value="gpt-4o" disabled="">
         <div class="model-icon" style="background:rgba(100,200,100,.12)">🤖</div>
         <div class="model-info">
           <div class="model-name">GPT-4o<span class="pro-badge">🔒 Pro</span></div>
@@ -281,7 +279,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="claude-sonnet-4-5" disabled>
+        <input type="radio" name="model" value="claude-sonnet-4-5" disabled="">
         <div class="model-icon" style="background:rgba(210,120,80,.12)">♦</div>
         <div class="model-info">
           <div class="model-name">Claude Sonnet<span class="pro-badge">🔒 Pro</span></div>
@@ -289,7 +287,7 @@ select option{background:var(--bg2)}
         </div>
       </label>
       <label class="model-card pro-locked" title="Available for Pro users only">
-        <input type="radio" name="model" value="mistral-large-latest" disabled>
+        <input type="radio" name="model" value="mistral-large-latest" disabled="">
         <div class="model-icon" style="background:rgba(150,100,255,.12)">⚡</div>
         <div class="model-info">
           <div class="model-name">Mistral Large<span class="pro-badge">🔒 Pro</span></div>
@@ -314,7 +312,7 @@ select option{background:var(--bg2)}
         <label class="form-label">Answer Length</label>
         <select id="answer-length">
           <option value="short">Short (1–2 sentences)</option>
-          <option value="medium" selected>Medium (2–4 sentences)</option>
+          <option value="medium" selected="">Medium (2–4 sentences)</option>
           <option value="detailed">Detailed (4–6 sentences)</option>
         </select>
       </div>
@@ -343,13 +341,13 @@ select option{background:var(--bg2)}
       <div class="fields-grid">
         <div>
           <label class="form-label" for="audience">Target Audience <small style="text-transform:none;letter-spacing:0;color:var(--muted)">(optional)</small></label>
-          <input type="text" id="audience" placeholder="e.g. beginners, small business owners" />
+          <input type="text" id="audience" placeholder="e.g. beginners, small business owners">
         </div>
         <div>
           <label class="form-label" for="tone">Tone of Voice</label>
           <select id="tone">
             <option value="">None (AI decides)</option>
-            <option value="Informative" selected>Informative</option>
+            <option value="Informative" selected="">Informative</option>
             <option value="Professional">Professional</option>
             <option value="Casual">Casual</option>
             <option value="Friendly">Friendly</option>
@@ -802,5 +800,6 @@ function downloadFile(content, filename, type) {
   a.click();
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
