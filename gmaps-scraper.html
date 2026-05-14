@@ -1,11 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MapLeads — Google Maps Business Extractor</title>
+<title>Google Maps Business Scraper - Extract Leads</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Epilogue:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&amp;family=Epilogue:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -681,7 +679,7 @@ h1 em {
   80% { transform: translateX(-3px); }
 }
 </style>
-</head>
+<meta name="description" content="Extract phone numbers, emails &amp; more from Google Maps listings. Try MapLeads, the ultimate Google Maps business extractor. Get started now!"></head>
 <body>
 
 <nav>
@@ -856,7 +854,7 @@ h1 em {
         <div class="select-wrap">
           <select class="field-select" id="max-results">
             <option value="10">10 listings</option>
-            <option value="20" selected>20 listings</option>
+            <option value="20" selected="">20 listings</option>
             <option value="40">40 listings</option>
             <option value="60">60 listings</option>
             <option value="100">100 listings</option>
@@ -868,20 +866,24 @@ h1 em {
     <!-- Cities -->
     <div class="cities-row">
       <div class="field-label" style="margin-bottom:0.4rem;">Cities / Areas <span class="req">*</span></div>
-      <textarea id="cities-input" placeholder="Enter one city per line, e.g.&#10;Makati&#10;Quezon City&#10;Cebu City&#10;Davao"></textarea>
+      <textarea id="cities-input" placeholder="Enter one city per line, e.g.
+Makati
+Quezon City
+Cebu City
+Davao"></textarea>
       <div class="field-hint">💡 Enter one city or area per line. You can also enter neighborhoods or districts (e.g. "BGC Taguig").</div>
     </div>
 
     <!-- What to Extract -->
     <div class="panel-title" style="margin-top:0.25rem;">📋 Data to Extract</div>
     <div class="chips-row">
-      <label class="opt-chip active"><input type="checkbox" data-field="name" checked><span class="chip-icon">🏢</span><span>Business Name</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="phones" checked><span class="chip-icon">📞</span><span>Phone Numbers</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="emails" checked><span class="chip-icon">✉️</span><span>Emails</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="address" checked><span class="chip-icon">📍</span><span>Address</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="website" checked><span class="chip-icon">🌐</span><span>Website</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="social" checked><span class="chip-icon">🔗</span><span>Social Media</span></label>
-      <label class="opt-chip active"><input type="checkbox" data-field="rating" checked><span class="chip-icon">⭐</span><span>Rating</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="name" checked=""><span class="chip-icon">🏢</span><span>Business Name</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="phones" checked=""><span class="chip-icon">📞</span><span>Phone Numbers</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="emails" checked=""><span class="chip-icon">✉️</span><span>Emails</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="address" checked=""><span class="chip-icon">📍</span><span>Address</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="website" checked=""><span class="chip-icon">🌐</span><span>Website</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="social" checked=""><span class="chip-icon">🔗</span><span>Social Media</span></label>
+      <label class="opt-chip active"><input type="checkbox" data-field="rating" checked=""><span class="chip-icon">⭐</span><span>Rating</span></label>
       <label class="opt-chip"><input type="checkbox" data-field="hours"><span class="chip-icon">🕐</span><span>Hours</span></label>
       <label class="opt-chip"><input type="checkbox" data-field="messaging"><span class="chip-icon">💬</span><span>WhatsApp / Messaging</span></label>
     </div>
@@ -903,13 +905,13 @@ h1 em {
       </select>
       <div class="adv-divider"></div>
       <label class="adv-toggle">
-        <input type="checkbox" id="opt-pretty" checked>
+        <input type="checkbox" id="opt-pretty" checked="">
         <div class="adv-switch"></div>
         pretty JSON
       </label>
       <div class="adv-divider"></div>
       <label class="adv-toggle">
-        <input type="checkbox" id="opt-dedup" checked>
+        <input type="checkbox" id="opt-dedup" checked="">
         <div class="adv-switch"></div>
         deduplicate
       </label>
@@ -1398,5 +1400,6 @@ document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runSearch();
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
