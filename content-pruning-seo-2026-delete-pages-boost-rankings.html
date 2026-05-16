@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Pruning in 2026: Why Deleting Bad Pages Boosts Your Rankings — RankSorcery</title>
+<meta name="description" content="After the March 2026 core update, content pruning isn't optional — it's survival. Here's a step-by-step framework to audit, cut, and recover your rankings fast.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Content Pruning in 2026: Why Deleting Bad Pages Boosts Your Rankings">
+<meta property="og:description" content="After the March 2026 core update, content pruning isn't optional — it's survival. Here's a step-by-step framework to audit, cut, and recover your rankings fast.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-14">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Content Strategy</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-green">✂️ Content Strategy</span>
+          <span class="tag tag-amber">🔥 Trending May 2026</span>
+          <span class="tag tag-cyan">⚡ Post-Core Update</span>
+        </div>
+        <h1>Content Pruning in 2026: Why <span>Deleting Bad Pages</span> Boosts Your Rankings</h1>
+        <div class="article-hero-meta">
+          <div class="author" style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 May 14, 2026</span>
+          <span>·</span>
+          <span>⏱ 12 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">Why Content Quantity Is Now Working Against You</a></li>
+        <li><a href="#section2">The Four Categories Every Page on Your Site Falls Into</a></li>
+        <li><a href="#section3">How to Actually Find the Pages That Are Dragging You Down</a></li>
+        <li><a href="#section4">What to Do With Each Category: Cut, Fix, Merge, or Keep</a></li>
+        <li><a href="#section5">The Right Way to Delete a Page Without Tanking Your SEO</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>Here's something most SEO people still refuse to believe: publishing more content can actively make your site rank worse. Not just fail to help — actively hurt. And after the March 2026 core update, that's no longer a fringe opinion. It's sitting right there in the data for anyone willing to look at it honestly.</p>
+
+      <p>The March 2026 update was brutal for sites that had spent the last two years cramming their CMS full of AI-generated articles, keyword-stuffed service pages, and "updated for 2026" posts that were really just the same thing with the year changed in the title. Nearly 80% of top-3 results shifted. One in four pages that ranked in the top 10 dropped out of the top 100 completely. And when researchers dug into what made the losers different from the winners, one theme kept showing up: <strong>the winning sites had less content, not more</strong>.</p>
+
+      <p>This article is about content pruning — the practice of deliberately cutting, consolidating, or redirecting pages that are doing your site more harm than good. I'm going to walk you through how to find those pages, what to actually do with them, and how to remove them cleanly without accidentally torching your traffic in the process. If your site took a hit in the last few months, this is probably the first thing you should be doing — not writing more content.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">79.5%</span><div class="stat-label">of top-3 search results shifted during the March 2026 core update</div></div>
+        <div class="stat-card"><span class="stat-val">+104%</span><div class="stat-label">increase in organic sessions reported by one site after strategic content pruning</div></div>
+        <div class="stat-card"><span class="stat-val">24%</span><div class="stat-label">of pages ranking in the top 10 fell completely out of the top 100 post-update</div></div>
+      </div>
+
+      <h2 id="section1">Why Content Quantity Is Now Working Against You</h2>
+
+      <p>There's a mental model that's been baked into SEO for years: more pages equals more chances to rank. And honestly, for a long time, it wasn't wrong. Long-tail keywords were abundant, Google was happy to index everything, and the marginal cost of producing content was low enough that even thin pages could pull in a trickle of traffic. Scale that up and you had a real business.</p>
+
+      <p>That model is now collapsing. Not slowly eroding — collapsing. The reason is that Google has gotten genuinely better at evaluating whether a page adds anything that doesn't already exist somewhere else. Researchers and practitioners studying the March 2026 update have pointed to something they're calling "information gain" as a primary ranking signal: Google is now explicitly evaluating how much genuinely new information your page contributes compared to what's already ranking. Not whether you covered the topic. Whether you covered it <em>differently</em>.</p>
+
+      <p>Think about what that means for a site that published 400 articles in 2024 using the same AI workflow. Each article technically covers a different keyword, but they all draw from the same training data, follow the same structural templates, and arrive at the same conclusions. From Google's perspective, that's not 400 unique pages — it's one page with 400 slightly different URLs. And Google has increasingly less patience for indexing and ranking all of them.</p>
+
+      <p>I've seen this pattern repeatedly. A client site with 600+ posts, decent domain authority, solid backlinks — and tanking traffic since January 2026. When we dug into their Search Console data, about 65% of their indexed pages had received zero clicks in the last six months. Not low clicks. Zero. Those pages weren't just failing to help the site — they were consuming crawl budget, diluting topical authority, and sending signals to Google that this site publishes a lot of filler. Cleaning them up was the single biggest thing we did to start reversing the decline.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Pro Tip</strong>
+          Before you cut anything, export all your indexed URLs from Google Search Console (Performance report → Pages tab → export). Sort by clicks over the last 12 months. Anything with zero clicks and zero impressions is your first target. That list will be longer than you think.
+        </div>
+      </div>
+
+      <p>The other thing that's changed is how Google handles what's sometimes called "crawl budget" — the amount of time and resources Google allocates to crawling your site. For smaller sites this rarely matters. But once you're past a few hundred pages, it starts to. When Google's crawlers have to wade through hundreds of low-value pages to find your good ones, your good ones get crawled and updated less frequently. Pruning the junk is one of the fastest ways to make your best content more visible to Google's systems.</p>
+
+      <h2 id="section2">The Four Categories Every Page on Your Site Falls Into</h2>
+
+      <p>Before you start deleting things, you need a framework. Random deletion is how people accidentally nuke pages that are quietly generating real value — maybe not tons of traffic, but valuable backlinks, internal link equity, or bottom-of-funnel conversions. The goal is surgical removal, not chaos.</p>
+
+      <p>Every page on your site fits into one of four buckets. Once you've sorted your content, the right action for each bucket becomes obvious.</p>
+
+      <h3>The Four Content Buckets</h3>
+
+      <p><strong>Keep:</strong> Pages that generate meaningful clicks, have real backlinks pointing to them, convert visitors, or support important internal linking structures. These are your assets. Don't touch them except to improve them.</p>
+
+      <p><strong>Improve:</strong> Pages that have some traffic or ranking potential but are currently underperforming — maybe they rank on page 2-3 for good keywords, maybe they get impressions but terrible click-through rates, maybe they're solid but outdated. These pages deserve real editorial attention, not just a date change in the title.</p>
+
+      <p><strong>Consolidate:</strong> Pages that cover the same topic as another page you own, resulting in keyword cannibalization. This is extremely common on sites that have been publishing for a few years. You have three articles about "how to do X" and none of them ranks particularly well because they're competing with each other. The fix is to pick the best one, redirect the others to it, and fold the good content from the losers into the winner.</p>
+
+      <p><strong>Remove:</strong> Pages that have zero traffic, zero backlinks, no realistic path to ever being useful, and serve no structural purpose. These are the ones you delete. They might be old press releases, thin product variations, test posts that somehow got indexed, "year in review" posts from 2019, or automated pages that were never meant to be permanent.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Page Type</th>
+            <th>Has Traffic/Backlinks</th>
+            <th>Has Improvement Potential</th>
+            <th>Recommended Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Strong performing page</td><td class="good">✓ Yes</td><td class="good">✓ Always</td><td class="good">Keep & strengthen</td></tr>
+          <tr><td>Ranking page 2–3, weak CTR</td><td class="mid">~ Some</td><td class="good">✓ Yes</td><td class="mid">Improve & optimize</td></tr>
+          <tr><td>Duplicate / cannibalized</td><td class="mid">~ Split</td><td class="mid">~ One of them</td><td class="mid">Consolidate & redirect</td></tr>
+          <tr><td>Zero clicks, no backlinks</td><td class="bad">✗ None</td><td class="bad">✗ No</td><td class="bad">Delete & redirect</td></tr>
+          <tr><td>Thin auto-generated page</td><td class="bad">✗ None</td><td class="bad">✗ No</td><td class="bad">Delete or noindex</td></tr>
+        </tbody>
+      </table>
+
+      <p>One thing I want to stress: the "improve" bucket tends to get underestimated. Most sites have a ton of pages that are one serious editorial revision away from ranking on page one. Those pages aren't your problem — they're your opportunity. But they only become an opportunity when you've cleared the junk out of the way and Google is spending more of its crawl budget on the things that matter.</p>
+
+      <h2 id="section3">How to Actually Find the Pages That Are Dragging You Down</h2>
+
+      <p>Theory is easy. The hard part is the actual audit — pulling real data, sorting through hundreds or thousands of URLs, and making judgment calls on pages you may not remember writing. Here's the practical process I'd use right now if I were running this audit today.</p>
+
+      <p>Start with Google Search Console. Go to the Performance report, select the last 12 months, click on "Pages," and export the full CSV. You'll have a list of every URL that received at least one impression. Now cross-reference that against your sitemap — anything in your sitemap that's NOT in the Search Console export has received zero impressions in the last year. Those are your first deletion candidates.</p>
+
+      <p>Next, look at everything that got impressions but zero clicks. Filter the Search Console data for pages with 0 clicks across the full 12-month period. If a page showed up in search results and not a single person clicked it in 12 months, either the title and meta description are terrible (in which case fix them), or the page doesn't deserve to rank for what it's ranking for (in which case cut it).</p>
+
+      <div class="inline-cta">
+        <h3>Find Your Weak Pages in Seconds</h3>
+        <p>RankSorcery's free SEO Auditor crawls your site and surfaces thin content, duplicate issues, and pages that are dragging down your overall domain quality score.</p>
+        <a href="/seo-auditor">Run a Free Audit →</a>
+      </div>
+
+      <p>After you've identified zero-performance pages, the next step is to look for cannibalization. Take your top 20-30 most valuable keywords and search for them in Google with a <code>site:yourdomain.com keyword</code> query. If more than one page from your site shows up for the same query, you have a cannibalization problem. Pick one to keep, figure out which one has the best backlinks and history, and consolidate the rest into it.</p>
+
+      <p>The final pass is a quality check on your "some traffic" pages. For each page that gets clicks but not as many as it should, ask one question: what does this page have that the five results currently ranking above it don't have? If you can't answer that question with something specific — not "it's more readable" or "it has a better layout," but genuinely something substantive — that page has an information gain problem. That's your improve list.</p>
+
+      <h3>Using Competitor Data to Prioritize</h3>
+
+      <p>One technique that's criminally underused in content audits is looking at who replaced you in the rankings. After any big core update, there's a really telling pattern: if a government site or a dedicated specialist replaced you, the problem is authority and source depth. If a direct competitor with similar content replaced you, the problem is probably quality differentiation and information gain. If a completely different domain with a slightly different angle replaced you, that's a signal about the intent match of your page.</p>
+
+      <p>You can figure this out manually using Search Console (look at what you're ranking for now vs. what you were ranking for before March 27), or you can use a tool like <a href="/competitor-analyzer">RankSorcery's Competitor Analyzer</a> to see exactly which domains are outranking you for specific keywords and what their content looks like. That comparison is often the fastest way to understand what's actually wrong with your pages.</p>
+
+      <h2 id="section4">What to Do With Each Category: Cut, Fix, Merge, or Keep</h2>
+
+      <p>Let's get concrete about the actual decisions.</p>
+
+      <div class="pull-quote">"The best content audit isn't about finding bad pages — it's about understanding why your good pages aren't winning."</div>
+
+      <p>For pages you're keeping, the immediate action is to run a competitive comparison. Open the top five results for your most important keywords. Read every one of them. Write down three things your page has that none of them have. If you can find three things, your page is in good shape. If you're struggling to find one, your "keep" page just quietly became an "improve" page.</p>
+
+      <p>For pages you're improving, be honest about what improvement actually means. I see a lot of SEOs respond to core updates by doing surface-level editing — adding a few bullet points, updating the stats, tweaking the intro. That's not improvement. Real improvement means adding something that wasn't there before: a first-person account of actually trying the thing you're writing about, real numbers from your own experience, a framework for decision-making that your competitors don't have, a nuanced counterargument to the conventional wisdom. Something that could only come from you and your experience. That's what Google is rewarding right now.</p>
+
+      <p>For consolidation, the technical steps are: pick the page with the best existing performance (backlinks, ranking history, dwell time if you can measure it), redirect all the others to it with 301 redirects, and fold any genuinely useful unique content from the losers into the winner. Update your internal links to point to the new consolidated URL. Then wait — consolidation benefits often take 4-6 weeks to show up in rankings.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Audit your full URL inventory</h4><p>Export from Google Search Console and cross-reference with your sitemap. Flag everything with zero impressions over 12 months — those are your first-pass candidates for removal.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Segment into the four buckets</h4><p>Keep, Improve, Consolidate, Remove. Be ruthless about the Remove bucket. A page with zero impressions and no backlinks has no claim on being kept.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Handle consolidations first</h4><p>Merge overlapping content before you start deleting. Cannibalization is often a bigger drag on performance than thin individual pages. Pick one winner per topic cluster and redirect everything else to it.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Delete and redirect (or noindex)</h4><p>For pages you're removing: if any other site links to them, use a 301 redirect to your closest relevant page. If no external sites link to them, deletion is fine. Don't use noindex as a permanent solution — it still consumes crawl budget.</p></div></div>
+      </div>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Common Mistake</strong>
+          Don't bulk-delete pages from your CMS without checking for backlinks first. Even a page with zero Google traffic can have one or two referring domains that pass real link equity. Use a backlink checker before you delete anything — losing that equity to a 404 is worse than keeping the weak page.
+        </div>
+      </div>
+
+      <p>For pages you're removing, the order of operations is: (1) check for backlinks, (2) set up 301 redirects for anything that has them, (3) remove from sitemap, (4) delete from CMS, (5) request removal in Search Console if you need it indexed out quickly. Don't skip the redirect step even if the page has very few links — a clean redirect is just good practice.</p>
+
+      <h2 id="section5">The Right Way to Delete a Page Without Tanking Your SEO</h2>
+
+      <p>This is where people get scared. And honestly, the fear is understandable — you've seen horror stories about sites that pruned content and saw their traffic drop, not improve. Those stories are real. They're also almost always the result of making one of a handful of avoidable mistakes.</p>
+
+      <p>The biggest mistake is moving too fast. Content pruning done in one massive sweep is riskier than doing it in stages. I'd recommend batching your deletions: do your first round, let things settle for 4-6 weeks, look at what happened to your overall crawl coverage and rankings, then do a second round. This gives you a checkpoint to confirm the pruning is helping before you go deeper.</p>
+
+      <p>The second mistake is treating deletions as permanent immediately. Keep a record of every URL you removed, what you redirected it to, and when. You may discover three months later that a page you deleted was being linked to by a site you didn't notice in your backlink audit. Having the list makes that fixable.</p>
+
+      <p>The third mistake — and this one is sneaky — is not updating your internal links. When you delete or redirect a page, every internal link pointing to that old URL becomes a redirect chain. Google can follow redirect chains, but it's not ideal, and it slows things down. After each pruning pass, do a crawl of your site and fix any internal links that point to redirected URLs.</p>
+
+      <ul class="checklist">
+        <li>Check for backlinks before deleting any page (even low-traffic ones)</li>
+        <li>Set up 301 redirects from deleted URLs to the closest relevant live page</li>
+        <li>Remove deleted URLs from your XML sitemap</li>
+        <li>Update all internal links that pointed to removed pages</li>
+        <li>Monitor crawl coverage in Search Console for 4-6 weeks after each pruning batch</li>
+        <li>Check your Core Web Vitals after pruning — lighter sites often see speed improvements too</li>
+      </ul>
+
+      <p>Here's something that surprised me the first time I saw it: sites often see a short-term ranking dip right after significant pruning, followed by a stronger recovery. The dip happens because Google re-evaluates the site's coverage when it notices large chunks of content have been removed or consolidated. The recovery comes when Google decides the remaining content is higher quality on average. That recovery tends to be stronger and more durable than anything you'd get from the pages you removed.</p>
+
+      <p>There's also an underrated benefit to pruning that has nothing to do with Google: it makes the site easier to use. When visitors land on a site that has 800 pages on 200 slightly different topics with no clear architecture, they bounce. They can't find what they need. Internal search is useless. The navigation is overwhelming. A site with 200 highly focused, well-linked pages on a coherent set of topics is a better site for actual humans — and Google is increasingly good at detecting that difference.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          After the March 2026 core update, more content is not your solution — better content in a cleaner site architecture is. Audit your pages, cut ruthlessly, consolidate intelligently, and improve what's worth improving. Sites that do this consistently will outperform the ones still chasing volume every single time.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO & Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/competitor-analyzer" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">🎯</div>
+        <div><div class="tool-card-sm-name">Competitor Analyzer</div><div class="tool-card-sm-desc">See who's outranking you and why</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/google-march-2026-core-update-recovery" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google March 2026 Core Update: Who Got Hit and How to Recover →
+        </a>
+        <a href="/blog/topical-authority-keyword-clusters-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Topical Authority in 2026: Why Keyword Clusters Are Replacing Single Keywords →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
