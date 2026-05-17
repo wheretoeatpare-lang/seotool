@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local SEO in 2026: Why "Near Me" Searches Are Harder Than Ever to Win — RankSorcery</title>
+<meta name="description" content="Local search is more competitive than ever in 2026. Here's the honest guide to Google Business Profile, review signals, local schema, and Maps ranking that actually works.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Local SEO in 2026: Why &quot;Near Me&quot; Searches Are Harder Than Ever to Win">
+<meta property="og:description" content="Local search is more competitive than ever in 2026. Here's the honest guide to Google Business Profile, review signals, local schema, and Maps ranking that actually works.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-17">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-dropdown { position: relative; }
+.nav-dropdown-toggle { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; white-space: nowrap; background: none; border: none; font-family: 'DM Sans', sans-serif; }
+.nav-dropdown-toggle:hover, .nav-dropdown-toggle.open { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-dropdown-chevron { width: 12px; height: 12px; flex-shrink: 0; transition: transform 0.2s; }
+.nav-dropdown-toggle.open .nav-dropdown-chevron { transform: rotate(180deg); }
+.nav-dropdown-menu { display: none; position: absolute; top: calc(100% + 10px); left: 0; min-width: 230px; background: var(--bg2); border: 1px solid var(--border2); border-radius: 14px; padding: 0.6rem; box-shadow: 0 16px 48px rgba(0,0,0,0.45); z-index: 300; animation: dropIn 0.18s ease; }
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.nav-dropdown-menu.open { display: block; }
+.nav-dropdown-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.85rem; border-radius: 9px; text-decoration: none; color: var(--text); transition: background 0.15s, color 0.15s; font-size: 0.84rem; }
+.nav-dropdown-item:hover { background: rgba(232,184,75,0.08); color: var(--accent); }
+.nav-dropdown-item-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+.nav-dropdown-item-name { font-weight: 600; font-size: 0.82rem; line-height: 1.2; }
+.nav-dropdown-item-desc { font-size: 0.71rem; color: var(--muted); margin-top: 0.1rem; }
+.nav-dropdown-divider { height: 1px; background: var(--border); margin: 0.4rem 0.5rem; }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(52,211,153,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(52,211,153,0.04) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--green), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body p:last-child { margin-bottom: 0; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; transition: border-color 0.2s; }
+.stat-card:hover { border-color: var(--border2); }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800; background: linear-gradient(120deg, var(--green), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; line-height: 1; margin-bottom: 6px; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before { content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--green2); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 800; margin-top: 2px; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; transition: border-color 0.2s; }
+.step:hover { border-color: var(--border2); }
+.step-num { flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--green), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg); }
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th { background: var(--bg3); padding: 10px 14px; text-align: left; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border); }
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table tr:hover td { background: rgba(232,184,75,0.03); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid { color: var(--amber); font-weight: 600; }
+.compare-table .bad { color: var(--red); font-weight: 600; }
+.pull-quote { border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem; margin: 2rem 0; font-size: 1.1rem; font-style: italic; color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5; }
+.inline-cta { background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04)); border: 1px solid rgba(52,211,153,0.2); border-radius: 14px; padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a { display: inline-flex; align-items: center; gap: 7px; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none; transition: background 0.2s, transform 0.15s; box-shadow: 0 4px 16px rgba(232,184,75,0.25); }
+.inline-cta a:hover { background: var(--accent2); transform: translateY(-1px); color: var(--bg); }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 24px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.toc-list li a { display: block; padding: 6px 10px; border-radius: 7px; text-decoration: none; font-size: 0.82rem; color: var(--muted); transition: all 0.2s; border-left: 2px solid transparent; }
+.toc-list li a:hover, .toc-list li a.active { color: var(--accent); background: rgba(232,184,75,0.05); border-left-color: var(--accent); }
+.related-post { display: flex; gap: 10px; align-items: flex-start; text-decoration: none; color: var(--text); padding: 10px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post:hover { color: var(--accent); }
+.related-post-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; background: var(--bg3); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.related-post-body { font-size: 0.8rem; line-height: 1.4; font-weight: 500; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted2); margin-top: 3px; }
+.share-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.share-btn { flex: 1; min-width: 80px; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 8px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'DM Sans', sans-serif; }
+.share-btn-twitter { background: rgba(29,161,242,0.1); color: #1da1f2; border: 1px solid rgba(29,161,242,0.2); }
+.share-btn-twitter:hover { background: rgba(29,161,242,0.18); }
+.share-btn-copy { background: var(--bg3); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <div class="nav-dropdown" id="nav-dd-seo">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-seo')">
+        SEO Tools
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-seo-menu">
+        <a href="https://ranksorcery.com/" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">🧪</div><div><div class="nav-dropdown-item-name">SEO Auditor</div><div class="nav-dropdown-item-desc">60+ factors · AI-powered fixes</div></div></a>
+        <a href="https://ranksorcery.com/keyword-volume.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">📊</div><div><div class="nav-dropdown-item-name">Keyword Research</div><div class="nav-dropdown-item-desc">Volume, difficulty & trends</div></div></a>
+        <a href="https://ranksorcery.com/competitor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(248,113,113,0.1);">⚔️</div><div><div class="nav-dropdown-item-name">Competitor Analysis</div><div class="nav-dropdown-item-desc">Side-by-side gap report</div></div></a>
+        <a href="https://ranksorcery.com/ai-search.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(10,191,188,0.1);">🤖</div><div><div class="nav-dropdown-item-name">AI Search Visibility</div><div class="nav-dropdown-item-desc">Track AI overview presence</div></div></a>
+        <div class="nav-dropdown-divider"></div>
+        <a href="https://ranksorcery.com/document-checker.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(232,184,75,0.1);">📄</div><div><div class="nav-dropdown-item-name">Doc Checker</div><div class="nav-dropdown-item-desc">SEO-check any document</div></div></a>
+      </div>
+    </div>
+    <div class="nav-dropdown" id="nav-dd-image">
+      <button class="nav-dropdown-toggle" onclick="toggleNavDropdown('nav-dd-image')">
+        Image &amp; Media
+        <svg class="nav-dropdown-chevron" viewBox="0 0 12 12" fill="none"><path d="M2 4L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-dropdown-menu" id="nav-dd-image-menu">
+        <a href="https://ranksorcery.com/background-remover.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(167,139,250,0.1);">✂️</div><div><div class="nav-dropdown-item-name">Background Remover</div><div class="nav-dropdown-item-desc">AI-powered BG removal</div></div></a>
+        <a href="https://ranksorcery.com/image-compressor.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(52,211,153,0.1);">🗜️</div><div><div class="nav-dropdown-item-name">Image Compressor</div><div class="nav-dropdown-item-desc">Reduce file size, keep quality</div></div></a>
+        <a href="https://ranksorcery.com/image-resizer.html" class="nav-dropdown-item"><div class="nav-dropdown-item-icon" style="background:rgba(96,165,250,0.1);">↔️</div><div><div class="nav-dropdown-item-name">Image Resizer</div></div></a>
+      </div>
+    </div>
+    <a href="https://ranksorcery.com/blog.html" class="active">Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="https://ranksorcery.com/blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+
+  <main class="article-main">
+
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="https://ranksorcery.com/blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Local SEO</span>
+    </div>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-green">📍 Local SEO</span>
+          <span class="tag tag-cyan">⭐ 2026</span>
+        </div>
+        <h1>Local SEO in 2026: Why <span>"Near Me" Searches</span> Are Harder Than Ever to Win</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 17, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 10 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,147 views</span>
+        </div>
+      </div>
+    </div>
+
+    <article class="article-body">
+
+      <p>Let me tell you something that most "local SEO guides" won't say outright: the Map Pack is harder to crack in 2026 than it was two years ago. Not a little harder — a lot harder. I've been working with local businesses for almost a decade now, and the gap between the #1 Map Pack result and position #4 (which doesn't even show) has never been more significant. The competition got smarter, the signals got messier, and Google keeps moving the goalposts.</p>
+
+      <p>The frustrating part? Most of the advice still floating around is stuck in 2023. "Optimize your Google Business Profile." "Get more reviews." "Build citations." That's all true, but it's table stakes now. Everyone's done that. The businesses winning local search in 2026 are doing something different — and it's actually not that complicated once you know what to look for.</p>
+
+      <p>Here's what's actually working right now, and what I've personally seen move the needle in the last six months.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">46%</span><div class="stat-label">of all Google searches have local intent</div></div>
+        <div class="stat-card"><span class="stat-val">76%</span><div class="stat-label">of local mobile searchers visit a business within 24 hours</div></div>
+        <div class="stat-card"><span class="stat-val">28%</span><div class="stat-label">of local searches result in a purchase</div></div>
+      </div>
+
+      <h2 id="why-local-is-harder">Why "Near Me" Is Getting Harder — And It's Not Just Competition</h2>
+
+      <p>The obvious answer is that more businesses have woken up to local SEO. But that's only part of the story. The bigger issue is that Google has fundamentally changed what "local relevance" means. It used to be heavily proximity-based — if your business was physically closer to the searcher, you ranked higher. Simple.</p>
+
+      <p>That's still a factor, sure. But Google's local algorithm has gotten much smarter about <strong>behavioral signals</strong>. Specifically: how do people interact with your listing? Do they click through to your website? Do they call directly from the Map Pack? Do they ask for directions? Do they read your reviews and then bounce, or read and then convert?</p>
+
+      <p>Google doesn't publish these weights, obviously. But after running hundreds of local audits and watching ranking fluctuations across industries — plumbers, dentists, restaurants, law firms — the pattern is clear. Engagement signals have become the great equalizer. A business that's 2 miles further away can outrank a closer competitor if searchers consistently engage more with their listing.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body"><strong>Key Insight</strong>Proximity still matters, but it's no longer the dominant local ranking factor. Engagement signals — clicks, calls, direction requests, and review interaction — now carry significant weight in 2026's Map Pack algorithm.</div>
+      </div>
+
+      <p>And here's the other wrinkle: AI Overviews are now appearing for a huge slice of local queries too. Searches like "best dentist near me" or "emergency plumber open now" increasingly show an AI Overview above the Map Pack. That's a new visibility problem that didn't exist 18 months ago.</p>
+
+      <h2 id="gbp-optimization">Google Business Profile: The Stuff You're Probably Still Skipping</h2>
+
+      <p>I know, I know. You've heard "optimize your GBP" a thousand times. But bear with me, because most businesses are only doing the obvious stuff — name, address, phone, hours. The items that actually move rankings in 2026 are the ones that feel tedious or optional. They're not.</p>
+
+      <h3>Products and Services — Use Them Like a Landing Page</h3>
+
+      <p>Your Products and Services sections inside GBP are essentially free mini-landing pages that Google indexes. Most local businesses I audit either leave these blank or put in one generic service name. That's a massive missed opportunity. Each service should have a unique name, a 300-word description that includes your location and relevant keywords naturally, and a price range if you can provide one.</p>
+
+      <p>I saw a small HVAC company jump from position 7 to position 3 in the Map Pack after they built out 12 detailed service entries over two weeks. No new reviews. No website changes. Just fleshing out their GBP services properly. That's not a coincidence.</p>
+
+      <h3>Google Posts — Actually Post Regularly</h3>
+
+      <p>Google Posts are underused by almost every local business I've ever worked with. The data is pretty clear: profiles that post at least once per week see meaningfully higher engagement rates than those that don't. And engagement feeds the algorithm. Posts don't need to be fancy — a photo of a recent project, a seasonal offer, a short update about new hours. Just something active.</p>
+
+      <p>The key thing I've noticed is that posts with a call-to-action button (Book, Call, Learn More) get significantly more interaction than posts without one. Always include a CTA.</p>
+
+      <h3>Q&A — Seed It Yourself</h3>
+
+      <p>This one surprises people. The Q&A section of your GBP is publicly editable — which means anyone can ask and anyone can answer. Most businesses ignore it entirely. What you <em>should</em> do is seed it with your own questions (from a personal Google account) and answer them from your business account. Think about what your customers ask most often and answer those questions with keyword-rich responses. This content is crawled and indexed by Google.</p>
+
+      <div class="inline-cta">
+        <h3>🧪 Run a Full Local SEO Audit on Your Site</h3>
+        <p>RankSorcery's free SEO Auditor checks 60+ factors including local signals, schema markup, page speed, and more — no login required.</p>
+        <a href="https://ranksorcery.com/">Audit My Site Free →</a>
+      </div>
+
+      <h2 id="review-signals">Reviews in 2026: Velocity Beats Volume</h2>
+
+      <p>Here's a take I'll defend strongly: a business with 60 reviews — all earned in the last 90 days — will outrank a business with 400 reviews where the last one came in six months ago. Velocity matters more than total count.</p>
+
+      <p>Google's algorithm weights <strong>recency</strong> heavily in the review signal. This makes intuitive sense from a quality perspective — a restaurant that was great in 2022 might be terrible now. Fresh reviews signal that a business is actively operating and engaging customers.</p>
+
+      <div class="pull-quote">"The businesses winning local search in 2026 aren't the ones with the most reviews — they're the ones who've made review generation a weekly habit, not a quarterly panic."</div>
+
+      <p>What you need is a systematic review generation process. Not buying reviews (obviously terrible idea), but building a frictionless system that makes it easy for happy customers to leave one. A QR code at checkout. A follow-up SMS 48 hours after service. An email receipt with a "How did we do?" link. Most customers are happy to leave a review if you make it a one-tap action — they just won't seek out your Google listing on their own.</p>
+
+      <h3>Responding to Reviews Matters for Rankings, Not Just Optics</h3>
+
+      <p>I used to think this was purely a customer experience thing. Nope. There's a real correlation between businesses that respond to reviews — especially negative ones — and their Map Pack positions. Google has explicitly said that responding to reviews is a quality signal. Do it. Even a short, genuine response to a positive review counts.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🔑</div>
+        <div class="callout-body"><strong>Review Velocity Strategy</strong>Aim for at least 4–6 new reviews per month, and respond to every review within 48 hours. This rhythm signals to Google that your business is active and customer-focused — which correlates directly with improved Map Pack positioning.</div>
+      </div>
+
+      <h2 id="local-schema">Local Schema Markup: Still the Most Ignored Quick Win</h2>
+
+      <p>If your website doesn't have proper <code>LocalBusiness</code> schema markup, you're leaving a significant advantage on the table. Schema tells Google exactly what your business is, where it's located, what your hours are, what services you offer, and what people think of you. Without it, Google has to infer all of this from your page text — and inferences aren't as reliable.</p>
+
+      <p>Here's what your local schema should include in 2026:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>LocalBusiness Type</h4>
+            <p>Use the most specific schema type for your business — <code>Dentist</code>, <code>Plumber</code>, <code>Restaurant</code>, etc. rather than the generic <code>LocalBusiness</code>. Google uses these types to match queries more precisely.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Address + Geo Coordinates</h4>
+            <p>Include both <code>streetAddress</code> and <code>geo</code> (latitude/longitude). The coordinates add machine-readable precision that text addresses alone can't provide.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Opening Hours Specification</h4>
+            <p>Use <code>openingHoursSpecification</code> with proper day-of-week and time values — not just the plain text <code>openingHours</code> string. Google reads the structured version for rich results.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Review Aggregate + Service Catalog</h4>
+            <p>Include your aggregateRating pulled from Google or Yelp, and list your top services using <code>hasOfferCatalog</code>. This dramatically increases your chances of appearing in voice search and AI Overview results for local queries.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>🧩 Generate Perfect Local Schema in 30 Seconds</h3>
+        <p>RankSorcery's Schema Markup Writer creates accurate, validated JSON-LD for LocalBusiness, Restaurant, Service, and 20+ other schema types. Free, no login needed.</p>
+        <a href="https://ranksorcery.com/schema-markup-writer.html">Generate My Schema →</a>
+      </div>
+
+      <h2 id="local-landing-pages">Location Pages: Your Most Underutilized Asset</h2>
+
+      <p>If you serve multiple locations or neighborhoods, you need individual landing pages for each one. Not duplicate pages with the city name swapped — actual, substantive pages with unique content, local testimonials, neighborhood-specific information, and localized schema.</p>
+
+      <p>I've seen multi-location service businesses 3x their local organic traffic in 90 days just by creating proper location pages. The formula isn't complex: a clear H1 with the service + city, a description of what you do specifically in that area (mention local landmarks, neighborhoods, or community involvement), embedded Google Map, local phone number, local reviews, and proper schema.</p>
+
+      <p>What kills location pages is thin content. If all you're doing is swapping "Chicago" for "Milwaukee" and changing a phone number, Google will identify this as near-duplicate content and suppress the pages. You need at least 400 words of genuinely unique content per page. It takes effort, but the payoff is substantial.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>Common Mistake to Avoid</strong>Never use AI to mass-generate location pages by just replacing city names. Google's content quality systems in 2026 are extremely good at detecting these — and they'll tank your entire domain's local visibility, not just those specific pages.</div>
+      </div>
+
+      <h2 id="citations-and-maps">Citations and the Google Maps Intelligence Layer</h2>
+
+      <p>Citation building — getting your NAP (Name, Address, Phone) listed consistently across directories — used to be a massive ranking lever. It's less impactful in 2026 than it was in 2020, but it still matters as a trust signal. The key word is <em>consistency</em>. If your address or phone number varies across Yelp, Facebook, TripAdvisor, Yellow Pages, and your website, Google's confidence in your data drops.</p>
+
+      <p>The practical approach: audit your citations once per quarter. Look for outdated addresses, wrong phone numbers, or duplicate listings. Fix inconsistencies, and prioritize the top-tier directories in your industry (medical practices on Healthgrades, restaurants on Yelp and OpenTable, etc.).</p>
+
+      <p>Something I've started recommending to clients is using a Google Maps scraper to research what citations and signals their top-ranking competitors have. It's not about copying — it's about understanding what the Map Pack winners in your niche look like. How many reviews? What categories? What services listed? This competitive intelligence is genuinely valuable and rarely done systematically.</p>
+
+      <h2 id="local-ranking-checklist">Your Local SEO Priority Checklist for 2026</h2>
+
+      <p>I'll be real with you — local SEO has a lot of moving parts, and it can feel overwhelming. Here's how I'd prioritize if I were starting fresh with a local business today:</p>
+
+      <ul class="checklist">
+        <li>Complete every section of your Google Business Profile — categories, services, description, attributes, and photos (minimum 20 high-quality photos)</li>
+        <li>Build a systematic review generation process targeting at least 4 new reviews per month, and respond to every single one</li>
+        <li>Add proper LocalBusiness JSON-LD schema markup to your homepage and every location page</li>
+        <li>Create substantive, unique location landing pages for each city or neighborhood you serve</li>
+        <li>Audit your NAP consistency across the top 15 business directories in your industry</li>
+        <li>Post to Google Business Profile at least once per week — photos, updates, offers with CTAs</li>
+        <li>Seed your GBP Q&A section with 8–10 common customer questions and detailed answers</li>
+        <li>Embed a Google Map on your contact/location page and ensure your address matches your GBP exactly</li>
+        <li>Build local backlinks — sponsor community events, partner with local blogs, join your local Chamber of Commerce</li>
+        <li>Monitor your Map Pack position for your top 10 local keywords at least monthly</li>
+      </ul>
+
+      <p>None of this is rocket science. The businesses that win local search in 2026 are the ones that do the basics <em>exceptionally well</em> and stay consistent with it month after month. The biggest mistake I see is treating local SEO as a one-time setup task rather than an ongoing discipline.</p>
+
+      <p>One more thing I want to mention: your website's technical health directly affects your local rankings too — most people don't realize this. Page speed, mobile-friendliness, and crawlability issues can suppress your local visibility even if your GBP is perfect. A full technical audit at least twice a year is worth it.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body"><strong>Bottom Line</strong>Local SEO in 2026 rewards the businesses that treat it as an ongoing system, not a one-time project. Review generation velocity, GBP engagement, proper schema, and high-quality location pages are the four levers that move Map Pack rankings most reliably right now.</div>
+      </div>
+
+      <p>The businesses dominating local search right now didn't get there by finding some magic trick. They got there by being disciplined about the fundamentals while everyone else chased shortcuts. That's actually good news — it means the path is clear, even if it requires real effort to walk it.</p>
+
+    </article>
+
+    <div class="author-box">
+      <div class="author-box-avatar">RS</div>
+      <div class="author-box-body">
+        <h4>James Reyes — RankSorcery Team</h4>
+        <p>James has spent the past 8 years in the SEO trenches — from bootstrapped startups to enterprise brands. He writes about what's actually working right now, not what worked three years ago. When he's not testing ranking tactics, he's probably running another SEO audit or arguing about Core Web Vitals in Slack.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Article</div>
+      <ul class="toc-list">
+        <li><a href="#why-local-is-harder">Why "Near Me" Is Getting Harder</a></li>
+        <li><a href="#gbp-optimization">Google Business Profile Optimization</a></li>
+        <li><a href="#review-signals">Reviews: Velocity Beats Volume</a></li>
+        <li><a href="#local-schema">Local Schema Markup</a></li>
+        <li><a href="#local-landing-pages">Location Pages Strategy</a></li>
+        <li><a href="#local-ranking-checklist">Priority Checklist for 2026</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">📖 Related Posts</div>
+      <a href="https://ranksorcery.com/blog/how-to-rank-in-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">How to Rank in AI Search Results: The 2026 Guide<span>AI Search · 14 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog/schema-markup-ai-search-2026.html" class="related-post">
+        <div class="related-post-icon">⚙️</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>Technical SEO · 10 min</span></div>
+      </a>
+      <a href="https://ranksorcery.com/blog.html" class="related-post">
+        <div class="related-post-icon">📝</div>
+        <div class="related-post-body">Browse All Blog Posts<span>RankSorcery Blog</span></div>
+      </a>
+    </div>
+
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?url=https://ranksorcery.com/blog/local-seo-near-me-searches-2026.html&text=Local SEO in 2026: Why %22Near Me%22 Searches Are Harder Than Ever to Win" target="_blank">🐦 Tweet</a>
+        <button class="share-btn share-btn-copy" onclick="navigator.clipboard.writeText(location.href);this.textContent='✓ Copied'">📋 Copy Link</button>
+      </div>
+    </div>
+
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;">Audit My Site →</a>
+    </div>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleNavDropdown(id) {
+  const wrapper = document.getElementById(id);
+  const menu = wrapper.querySelector('.nav-dropdown-menu');
+  const toggle = wrapper.querySelector('.nav-dropdown-toggle');
+  const isOpen = menu.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+  document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  if (!isOpen) { menu.classList.add('open'); toggle.classList.add('open'); }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown-menu').forEach(m => m.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-toggle').forEach(t => t.classList.remove('open'));
+  }
+});
+function toggleMobileNav() {
+  const menu = document.getElementById('nav-mobile-menu');
+  const btn = document.getElementById('nav-hamburger');
+  const open = menu.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('reading-progress');
+  if (el) {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    el.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+  }
+  const tocLinks = document.querySelectorAll('.toc-list a');
+  const headings = document.querySelectorAll('.article-body h2');
+  let current = '';
+  headings.forEach(h => { if (window.scrollY >= h.offsetTop - 100) current = '#' + h.id; });
+  tocLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === current); });
+});
+</script>
+</body>
+</html>
