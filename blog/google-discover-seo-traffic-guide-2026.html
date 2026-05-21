@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Discover in 2026: How to Stop Losing Traffic to an Algorithm You Can't Predict — RankSorcery</title>
+<meta name="description" content="Google Discover now drives 70% of Google traffic to publishers — but May 2026 killed it for thousands of sites overnight. Here's what changed and how to adapt.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google Discover in 2026: How to Stop Losing Traffic to an Algorithm You Can't Predict">
+<meta property="og:description" content="Google Discover now drives 70% of Google traffic to publishers — but May 2026 killed it for thousands of sites overnight. Here's what changed and how to adapt.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-18">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Google Discover SEO</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-green">📌 Google Discover</span>
+          <span class="tag tag-purple">🔥 Trending May 2026</span>
+          <span class="tag tag-amber">⚡ Traffic Strategy</span>
+        </div>
+        <h1>Google Discover in 2026: How to Stop Losing Traffic to an <span>Algorithm You Can't Predict</span></h1>
+        <div class="article-hero-meta">
+          <div class="author" style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 May 18, 2026</span>
+          <span>·</span>
+          <span>⏱ 11 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What Google Discover Actually Is (It's Not What Most SEOs Think)</a></li>
+        <li><a href="#section2">Google's First-Ever Dedicated Discover Algorithm Update</a></li>
+        <li><a href="#section3">Why Discover Traffic Went Dead for Thousands of Sites in May 2026</a></li>
+        <li><a href="#section4">The Concrete Optimization Playbook for Discover in 2026</a></li>
+        <li><a href="#section5">The Uncomfortable Truth About Chasing Discover Traffic</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>On May 13, 2026, a lot of site owners woke up to something brutal: their Google Discover traffic had gone completely dead. Not down 20%. Not "slightly reduced." Zero. Gone. Sites that were pulling thousands of clicks a day from Discover suddenly saw flat lines in their Search Console reports. And the maddening part? Google said nothing. No announcement, no explanation, no confirmed update. Just silence.</p>
+
+      <p>Here's the thing — this was predictable. Not in the specific "May 13th" sense, but in the broader sense that Discover has always been wildly unpredictable and most publishers treat it like a stable, reliable traffic channel. It's not. It never was. And now that Discover has become the dominant way Google sends traffic to publishers — driving roughly 70% of all Google-sourced traffic to news and content sites as of late 2025 — the stakes of getting this wrong are enormous. Entire editorial teams have been built around Discover traffic assumptions. Revenue models depend on it. And then one Tuesday morning it just stops.</p>
+
+      <p>This article is about what actually happened, what the February 2026 Discover core update changed, why the May volatility hit so hard, and — most importantly — what you can actually do about it. I'm going to be direct: some of what you've read elsewhere about "Discover optimization" is either outdated or just wrong. Let me give you the real picture.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">800M+</span><div class="stat-label">Monthly active users on Google Discover globally</div></div>
+        <div class="stat-card"><span class="stat-val">70%</span><div class="stat-label">Share of total Google traffic to publishers now coming from Discover (Q4 2025)</div></div>
+        <div class="stat-card"><span class="stat-val">24.1%</span><div class="stat-label">Of top-10 ranked pages dropped out of the top 100 entirely during the March 2026 core update</div></div>
+      </div>
+
+      <h2 id="section1">What Google Discover Actually Is (It's Not What Most SEOs Think)</h2>
+
+      <p>I've seen a lot of SEOs treat Google Discover like it's just "Google Search but without a query." It's not. The mental model matters because if you think of Discover as a search product, you'll optimize for the wrong things and wonder why nothing works.</p>
+
+      <p>Discover is a personalized content feed embedded in the Google app, Android's home screen swipe-right panel, and Chrome's new tab page on mobile. It has no desktop presence. It's entirely mobile. And it's not driven by what users search — it's driven by what Google thinks users <em>want to see</em> based on their browsing history, app usage, location data, and behavioral signals across Google's ecosystem. A user who watches a lot of cooking videos on YouTube and searches for restaurant reviews will see food content in their Discover feed, even if they've never explicitly asked for it.</p>
+
+      <p>This distinction is critical. In traditional search SEO, you optimize around intent — someone types a query, you answer it better than competitors, you rank. With Discover, there's no query. The algorithm is predicting interest before the user expresses it. That means your content isn't competing against other pages answering the same question. It's competing against everything else the algorithm thinks that specific user might want to see at this moment. That's a fundamentally different game.</p>
+
+      <p>Google looks at roughly nine factors when deciding whether to surface your content in Discover: it crawls and indexes the content, reads key metadata including your title and featured image, classifies the content type (breaking news versus evergreen), checks whether the publisher has been blocked by users, matches the content to individual user interest profiles, applies a click-through rate prediction model, builds the feed layout, delivers the content, and records user behavior signals after delivery. The last step feeds directly back into the prediction model. If users consistently scroll past your content without clicking, that's a negative signal. If they click and immediately bounce back, that's worse.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Pro Tip</strong>
+          Google Discover uses a "freshness buckets" system with three tiers. Content less than one week old has the best shot at being featured. Content older than about 30 days drops off significantly. This means Discover is almost entirely a game about consistent, fresh publishing — not evergreen optimization.
+        </div>
+      </div>
+
+      <h2 id="section2">Google's First-Ever Dedicated Discover Algorithm Update</h2>
+
+      <p>For most of its existence, Google Discover didn't have its own dedicated algorithm update cycle. It ran as a kind of appendage to the main search algorithm — changes to core search quality often rippled into Discover, but Google never shipped a formal Discover-specific update. That changed in February 2026.</p>
+
+      <p>The February 2026 Discover core update was notable for a few reasons. First, it was the first time Google formally treated Discover as an independent algorithmic system rather than an extension of web search. Second, it had a very specific stated mission: reduce clickbait content in the Discover feed, surface more locally relevant content, and reward in-depth, original, timely publishing. Third — and this is the part that stung — it explicitly targeted content optimized for Discover clicks rather than for reader value.</p>
+
+      <p>What does "clickbait in Discover" look like? Think headlines that promise something the article doesn't deliver. Think thumbnails cropped to show only the most sensational part of an image. Think articles that are 2,000 words of padding wrapped around a single mediocre observation. Google's Discover algorithm had already been applying predicted click-through rate (pCTR) models to determine what gets surfaced — if your headline is weak, the model predicts nobody will click it and it won't appear. But publishers had gamed this by writing misleading, high-curiosity headlines that drove clicks but disappointed readers who bounced immediately. The February update tightened the feedback loop: now, if users click your Discover card and bounce within a few seconds, that single action can suppress your content across the Discover feed.</p>
+
+      <p>The local relevance component hit non-US publishers hard. One of the reported outcomes was that publishers based outside their target audience geography saw noticeable reach drops. A UK publisher targeting US readers, for example, might see their Discover traffic decline even if their content quality didn't change — because the algorithm started weighting geographic proximity of the publisher to the audience more heavily. This is a real problem for international content teams who built Discover traffic strategies around US audiences.</p>
+
+      <h3>How the pCTR Model Actually Works (And Why Your Title Is Everything)</h3>
+
+      <p>The predicted click-through rate model is probably the most important thing to understand about Discover optimization and most articles completely ignore it. Here's how it works in practice: before your article ever shows up in anyone's Discover feed, Google runs it through a machine learning model that predicts how likely a given user is to click it based on the title, the featured image, and the user's interest profile. If the predicted CTR is below a threshold for a given user, your article simply never appears in their feed.</p>
+
+      <p>This means your headline is being evaluated by a machine before any human ever sees it. A headline that's technically accurate but flat — "New Study Shows Exercise Benefits" — is going to score poorly. A headline that creates genuine curiosity or addresses a specific frustration — "Your Cardio Routine Is Probably Doing Less Than You Think" — scores better. But here's the catch: if your headline over-promises and users bounce, the model updates. It learns that your title generates clicks but not engagement. Over time, your predicted CTR across all your content starts to decline. This is how publishers end up in a Discover death spiral — chasing clicks with sensational titles, generating bounces, training the algorithm that their content disappoints readers.</p>
+
+      <h3>What the February 2026 Update Did to Traffic Patterns</h3>
+
+      <p>Publishers who saw drops after the February 2026 update generally fell into two categories. The first group were clickbait-heavy publishers who had been gaming pCTR with misleading titles — the update hit them immediately and hard. The second group, more interesting, were publishers with genuinely good content but weak image optimization, inconsistent publishing cadence, or poor user experience signals. Google's algorithm had become sophisticated enough to distinguish between these failure modes, which is why some sites saw drops that felt completely inexplicable.</p>
+
+      <p>The publishers who actually gained visibility after February 2026? They shared a consistent profile: regular publishing cadence (daily or near-daily), strong featured images that are both visually compelling and technically correct, headlines that deliver on their promise, and audiences who had actively chosen to follow them through Google's Preferred Sources feature. That last point matters more than most people realize — a user who has explicitly added your publication to their Preferred Sources list is significantly more likely to see your content in their feed, and that user's positive engagement signals carry extra weight in the algorithm.</p>
+
+      <h2 id="section3">Why Discover Traffic Went Dead for Thousands of Sites in May 2026</h2>
+
+      <p>The May 13-14, 2026 volatility event was the worst Discover disruption since the March 2026 core update. Multiple third-party ranking trackers — Semrush, Sistrix, Accuranker, Mozcast, and more — all fired simultaneously with elevated volatility readings. In the community forums, publishers described Discover traffic dropping to zero overnight. One site owner compared it to "arriving in a different world" — the metrics that had been reliable for months just stopped.</p>
+
+      <p>What's important to understand is that this wasn't an isolated event. It followed a pattern. There were unconfirmed ranking movements on April 23, 27, and 28. Another unconfirmed movement on May 8. And running underneath all of it, since at least early April, was an escalating deindexing trend — sites were finding that previously indexed pages were now receiving the "Crawled - currently not indexed" status in Google Search Console. Pages that had been indexed and generating traffic were simply disappearing from Google's index without explanation.</p>
+
+      <p>The working hypothesis in the SEO community — and I think it's a credible one — is that Google is tightening its quality threshold for both indexing and Discover eligibility simultaneously. The volume of AI-generated content flooding the web has forced Google to make tougher calls about what deserves to be indexed at all, and Discover is getting hit with the same quality filters. If your pages are on the margin of Google's quality assessment, they're more vulnerable than they've ever been.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Warning</strong>
+          The May 2026 Discover disruption hit AI-heavy content sites disproportionately hard. If your publishing pipeline relies on AI-generated articles with minimal human editing, review, or original reporting, you're squarely in the crosshairs of where Google's quality filters are tightening.
+        </div>
+      </div>
+
+      <p>Nobody talks about this enough, but Discover traffic and indexed page count are deeply connected. If your pages are getting deindexed or moved to "crawled but not indexed," those pages can't appear in Discover. A site that's losing indexation coverage is automatically losing Discover reach, even if the pages that remain indexed are perfectly optimized. Check your Search Console coverage report right now. If you're seeing a surge in "Crawled - currently not indexed" — and many sites are — that's your Discover problem, not just your search problem.</p>
+
+      <h2 id="section4">The Concrete Optimization Playbook for Discover in 2026</h2>
+
+      <p>Let me be honest with you: there's no trick that guarantees Discover traffic. Anyone who tells you otherwise is selling something. What I can give you is the honest list of things that actually influence whether your content gets surfaced — based on what we know about the algorithm from Google's own documentation, researcher analysis of the Discover SDK, and observed patterns across publishers who've maintained or grown Discover traffic through the 2026 volatility.</p>
+
+      <div class="inline-cta">
+        <h3>Are Your Images Discover-Ready?</h3>
+        <p>Google Discover requires featured images of at least 1,200 pixels wide — and your image file size directly affects page load speed, which affects bounce rate, which feeds back into your Discover signals. Fix your images before anything else.</p>
+        <a href="/image-compressor">Compress Images Free →</a>
+      </div>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Optimization Factor</th>
+            <th>High Impact</th>
+            <th>Medium Impact</th>
+            <th>Common Mistake</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Featured Image Quality</td>
+            <td class="good">✓ 1200px+ wide, compelling visual</td>
+            <td class="mid">~ Correct size, generic stock photo</td>
+            <td class="bad">✗ Under 1200px, logo as thumbnail</td>
+          </tr>
+          <tr>
+            <td>Headline Strategy</td>
+            <td class="good">✓ Curiosity-driven, delivers on promise</td>
+            <td class="mid">~ Accurate but flat and uninspiring</td>
+            <td class="bad">✗ Clickbait that disappoints on click</td>
+          </tr>
+          <tr>
+            <td>Publishing Frequency</td>
+            <td class="good">✓ Daily or near-daily fresh content</td>
+            <td class="mid">~ 3-4 articles per week</td>
+            <td class="bad">✗ Irregular, infrequent publishing</td>
+          </tr>
+          <tr>
+            <td>Content Freshness</td>
+            <td class="good">✓ Published within 7 days</td>
+            <td class="mid">~ Updated content, 7-30 days old</td>
+            <td class="bad">✗ Evergreen content, 30+ days old</td>
+          </tr>
+          <tr>
+            <td>User Engagement Signals</td>
+            <td class="good">✓ Low bounce, high time-on-page</td>
+            <td class="mid">~ Mixed signals, some bounce</td>
+            <td class="bad">✗ High bounce rate, quick exits</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Image Optimization: The Thing Most Publishers Get Completely Wrong</h3>
+
+      <p>I've seen this a hundred times: a publisher does everything right — great headline, excellent content, fresh publishing — and still can't get Discover traction. Nine times out of ten when I dig in, the featured image is the problem. Either it's too small (Google's minimum is 1,200 pixels on the shorter side, but 1,600px wide in 16:9 is the actual target), it's a logo or wordmark, it loads too slowly because the file is 4MB of uncompressed JPEG, or the robots meta tag is missing the <code>max-image-preview:large</code> directive.</p>
+
+      <p>That last one is worth emphasizing. If you don't explicitly tell Google it can display a large preview of your image, it defaults to a small thumbnail. Small thumbnails get dramatically lower predicted CTR than large, full-width image cards. A single missing robots meta tag can be quietly killing your entire Discover performance, and you'd never know by looking at the article itself. Run a quick check on your page source: look for <code>&lt;meta name="robots" content="max-image-preview:large"&gt;</code>. If it's not there, add it to every article page right now.</p>
+
+      <p>Image file size matters too, and more than people realize. A 3MB featured image means a slower page load, which means a worse user experience on mobile — the only platform where Discover exists. When users click your Discover card and your page takes four seconds to load on a 4G connection, they bounce. That bounce signal goes back into the algorithm. You've just trained Google's pCTR model that your content disappoints. Use <a href="/image-compressor">a proper image compressor</a> to get your featured images under 200KB without sacrificing visual quality — it's one of those five-minute fixes that has a disproportionate impact on Discover performance. And if you're pulling images from stock libraries at inconsistent sizes, an <a href="/image-resizer">image resizer</a> keeps them consistently at the right dimensions before you upload.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Fix Your Robot Meta Tags First</h4><p>Add <code>max-image-preview:large</code> to the robots meta tag on every article page. Without this, Google defaults to small thumbnails in Discover — which kills your predicted CTR before you've started.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Audit and Resize Your Featured Images</h4><p>Every article needs a featured image of at least 1,200px wide (ideally 1,600px in 16:9 ratio). Compress them to under 200KB for fast mobile load times. This single fix has recovered Discover traffic for sites that had spent months troubleshooting everything else.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Rewrite Your Weakest Headlines</h4><p>Pull your last 20 articles from Search Console and sort by Discover impressions. Find the ones with high impressions but low clicks — those headlines are generating exposure but failing the pCTR test. Rewrite them to be more specific and to deliver on what they promise.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Check Your Indexation Coverage</h4><p>In Search Console, go to Pages and look at "Crawled — currently not indexed." If this number has grown significantly since April 2026, you have a deeper problem than Discover optimization. Run a full <a href="/seo-auditor">SEO audit</a> to identify technical issues that might be flagging your pages as low-quality to Google's crawlers.</p></div></div>
+      </div>
+
+      <h2 id="section5">The Uncomfortable Truth About Chasing Discover Traffic</h2>
+
+      <p>Here's what I keep coming back to after watching publishers burn through months of energy on Discover optimization: the algorithm is designed to reward audience, not just content. The single most durable signal you can send to Google's Discover system is that real humans want to see your content specifically — not just content on your topic, but your content. And the way you build that signal is through Google's Preferred Sources feature, where users actively add publishers to their trusted feed.</p>
+
+      <p>A user who has added you to their Preferred Sources list is more likely to see your content in their feed, more likely to click it because they already trust you, more likely to stay on the page because they came with the right expectations, and more likely to return. Every one of those behavioral signals feeds positively into the Discover algorithm. Compare that to a user who discovered you randomly, clicked because your title was intriguing, found the content mediocre, and bounced in 12 seconds. That's a net negative signal. The traffic looks the same in your analytics. The algorithm weights them completely differently.</p>
+
+      <div class="pull-quote">"The publishers who survive every Discover algorithm shift are the ones who built audiences, not traffic. The distinction seems subtle until an unannounced update wipes out your traffic overnight and your subscribers still show up anyway."</div>
+
+      <p>What does this mean practically? It means that every time you publish, you should be thinking about whether this piece of content builds or burns reader trust. A piece that slightly over-promises in the headline and slightly under-delivers in the body might get good first-click numbers and terrible return-visit numbers. Over 30 articles, that pattern trains the algorithm that your brand disappoints. A piece that headlines exactly what it delivers and then delivers it exceptionally might get lower initial click rates but much higher engagement and return rates. Over 30 articles, that pattern builds a durable Discover presence that weathers algorithm shifts.</p>
+
+      <ul class="checklist">
+        <li>Add <code>max-image-preview:large</code> to your robots meta tag on every article page</li>
+        <li>Resize all featured images to minimum 1,200px wide (1,600px preferred) and compress to under 200KB</li>
+        <li>Audit your Search Console coverage report for "Crawled - currently not indexed" page surges since April 2026</li>
+        <li>Check your site's technical health — use an <a href="/seo-auditor">SEO auditor</a> to catch crawl issues, broken pages, and slow load times that hurt Discover signals</li>
+        <li>Review your 10 lowest-performing Discover headlines and rewrite them to be more specific and honest about what the article delivers</li>
+        <li>Promote your Google Preferred Sources listing to existing subscribers — email them, add it to your site footer, mention it in your content</li>
+        <li>Publish consistently — even two or three articles per week beats monthly bursts for Discover freshness scoring</li>
+      </ul>
+
+      <p>One more thing worth saying plainly: if the May 2026 disruption hit you hard and your site is now significantly dependent on Discover for revenue, that's a structural problem that no amount of optimization will fully solve. Discover has always been volatile. The publishers who are building sustainable businesses right now are the ones treating Discover traffic as a bonus, not a baseline — while building email lists, direct traffic habits, and social followings that don't disappear when Google's algorithm has a bad week.</p>
+
+      <p>That's not a criticism of using Discover. It's one of the most powerful free traffic channels available, and you should absolutely optimize for it. But the sites that are most stressed right now are the ones that built their entire model around it without hedging. The lesson of May 2026 isn't "optimize better." The lesson is "diversify while you're still ahead."</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          The most important Discover optimization you can do right now isn't tweaking your headlines or chasing freshness signals — it's fixing the technical basics (image size, compression, max-image-preview meta tag) and building reader relationships that make your content the thing users actively want in their feed. The algorithm rewards audience; build that first.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO & Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress images for faster Discover load times</div></div>
+      </a>
+      <a href="/image-resizer" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📐</div>
+        <div><div class="tool-card-sm-name">Image Resizer</div><div class="tool-card-sm-desc">Resize to Discover's 1200px+ requirement</div></div>
+      </a>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Find crawl and indexation issues fast</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/google-preferred-sources-seo-guide-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google Preferred Sources: The 2026 SEO Signal Most Publishers Are Ignoring →
+        </a>
+        <a href="/blog/serp-snippet-ctr-optimization-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Your Rankings Are Lying to You — How to Fix Your SERP Snippets in 2026 →
+        </a>
+        <a href="/blog/google-serp-volatility-may-2026-what-seos-should-do" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google SERP Volatility May 2026: What SEOs Should Do Right Now →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
