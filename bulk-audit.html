@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSorcery — Bulk SEO Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #080C12;
+  --bg2:   #0F1622;
+  --bg3:   #182035;
+  --bg4:   #1E2A45;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.38);
+  --text:  #ECF0F8;
+  --muted: #8A93A8;
+  --muted2:#5C6880;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.18);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --red2:   rgba(248,113,113,0.12);
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --radius: 14px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .55;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(8,12,18,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+  color: var(--accent); text-decoration: none;
+  display: flex; align-items: center; gap: 9px; letter-spacing: -0.02em;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; box-shadow: 0 0 16px rgba(232,184,75,0.3);
+}
+.nav-back {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; padding: 0.35rem 0.75rem; border-radius: 6px;
+  border: 1px solid var(--border); transition: all 0.2s;
+}
+.nav-back:hover { color: var(--accent); border-color: var(--border2); }
+.bulk-badge {
+  background: linear-gradient(135deg, rgba(10,191,188,0.15), rgba(232,184,75,0.1));
+  border: 1px solid rgba(10,191,188,0.3);
+  color: var(--teal); font-size: 0.7rem; font-weight: 700;
+  padding: 0.2rem 0.65rem; border-radius: 999px; letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative; z-index: 2;
+  padding: 4rem 2rem 3rem;
+  text-align: center;
+  max-width: 780px; margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 700; color: var(--teal);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem;
+}
+.hero-eyebrow span { display: inline-block; width: 24px; height: 1px; background: rgba(10,191,188,0.4); }
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.1; margin-bottom: 1rem;
+}
+.hero h1 .grad {
+  background: linear-gradient(120deg, var(--accent), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p {
+  color: var(--muted); font-size: 1rem; max-width: 560px;
+  margin: 0 auto 2rem; line-height: 1.7;
+}
+.hero-stats {
+  display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+  color: var(--accent);
+}
+.hero-stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+
+/* ── INPUT AREA ── */
+.input-section {
+  position: relative; z-index: 2;
+  max-width: 860px; margin: 0 auto 2rem;
+  padding: 0 1.5rem;
+}
+.input-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 0 60px rgba(232,184,75,0.05);
+}
+.input-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.input-card-title {
+  font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700;
+  color: var(--text);
+}
+.input-mode-tabs {
+  display: flex; gap: 0.3rem;
+}
+.mode-tab {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.74rem; font-weight: 600; padding: 0.25rem 0.7rem;
+  border-radius: 6px; cursor: pointer; transition: all 0.2s;
+}
+.mode-tab.active { background: rgba(232,184,75,0.1); border-color: var(--border3); color: var(--accent); }
+
+.textarea-wrap { position: relative; }
+#url-textarea {
+  width: 100%; min-height: 140px; max-height: 320px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 1rem;
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  line-height: 1.6; resize: vertical; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+#url-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(232,184,75,0.1); }
+#url-textarea::placeholder { color: var(--muted2); }
+.textarea-hint {
+  position: absolute; bottom: 0.6rem; right: 0.8rem;
+  font-size: 0.68rem; color: var(--muted2);
+}
+
+.csv-drop {
+  border: 2px dashed var(--border2); border-radius: 12px;
+  padding: 2.5rem; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--bg3);
+}
+.csv-drop:hover, .csv-drop.dragover { border-color: var(--accent); background: rgba(232,184,75,0.04); }
+.csv-drop-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.csv-drop p { font-size: 0.84rem; color: var(--muted); margin-bottom: 0.5rem; }
+.csv-drop label {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: rgba(232,184,75,0.08); border: 1px solid var(--border2);
+  color: var(--accent); font-size: 0.78rem; font-weight: 600;
+  padding: 0.35rem 1rem; border-radius: 7px; cursor: pointer;
+  transition: all 0.2s;
+}
+.csv-drop label:hover { background: rgba(232,184,75,0.15); }
+#csv-file { display: none; }
+
+.settings-row {
+  display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+  margin-top: 1rem;
+}
+.setting-chip {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.35rem 0.75rem;
+  font-size: 0.75rem; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; user-select: none;
+}
+.setting-chip input { display: none; }
+.setting-chip.active { background: rgba(232,184,75,0.08); border-color: var(--border2); color: var(--accent); }
+.concurrency-wrap {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.35rem 0.75rem;
+  font-size: 0.75rem; color: var(--muted);
+}
+.concurrency-wrap select {
+  background: none; border: none; color: var(--accent); font-weight: 700;
+  font-size: 0.78rem; outline: none; cursor: pointer;
+}
+.concurrency-wrap select option { background: var(--bg2); color: var(--text); }
+
+.action-row {
+  display: flex; gap: 0.75rem; align-items: center; margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+.btn-audit {
+  flex: 1; min-width: 200px;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  color: #08080C; font-family: 'Syne', sans-serif;
+  font-weight: 800; font-size: 0.95rem;
+  padding: 0.85rem 2rem; border-radius: 12px;
+  border: none; cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  box-shadow: 0 4px 20px rgba(232,184,75,0.25);
+}
+.btn-audit:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(232,184,75,0.35); }
+.btn-audit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-clear {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; padding: 0.85rem 1.25rem; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-clear:hover { border-color: var(--border2); color: var(--text); }
+.btn-export {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; padding: 0.85rem 1.25rem; border-radius: 12px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-export:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── PROGRESS BAR ── */
+.progress-section {
+  display: none;
+  position: relative; z-index: 2;
+  max-width: 860px; margin: 0 auto 1.5rem;
+  padding: 0 1.5rem;
+}
+.progress-card {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; padding: 1.25rem 1.5rem;
+}
+.progress-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+}
+.progress-title {
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
+}
+.progress-counts {
+  display: flex; gap: 0.75rem; font-size: 0.78rem; align-items: center;
+}
+.pcount { display: flex; align-items: center; gap: 0.3rem; }
+.pcount-dot { width: 8px; height: 8px; border-radius: 50%; }
+.progress-bar-wrap {
+  background: var(--bg3); border-radius: 999px; height: 8px; overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--teal));
+  transition: width 0.4s ease; width: 0%;
+}
+.progress-sub {
+  font-size: 0.74rem; color: var(--muted);
+}
+.active-sites {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem;
+}
+.active-site-pill {
+  display: flex; align-items: center; gap: 0.4rem;
+  background: rgba(10,191,188,0.08); border: 1px solid rgba(10,191,188,0.2);
+  border-radius: 6px; padding: 0.2rem 0.6rem; font-size: 0.7rem; color: var(--teal);
+  animation: pulse-border 1.5s ease-in-out infinite;
+}
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(10,191,188,0.2); }
+  50% { border-color: rgba(10,191,188,0.5); }
+}
+.active-site-spinner {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 1.5px solid rgba(10,191,188,0.3);
+  border-top-color: var(--teal);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESULTS TABLE ── */
+.results-section {
+  display: none;
+  position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto 3rem;
+  padding: 0 1.5rem;
+}
+.results-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;
+}
+.results-title {
+  font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800;
+}
+.summary-chips {
+  display: flex; gap: 0.5rem; flex-wrap: wrap;
+}
+.summary-chip {
+  display: flex; align-items: center; gap: 0.35rem;
+  padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.74rem; font-weight: 700;
+}
+.chip-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
+.chip-amber { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: var(--amber); }
+.chip-red { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+.chip-muted { background: rgba(138,147,168,0.08); border: 1px solid var(--border); color: var(--muted); }
+
+/* Filter bar */
+.filter-bar {
+  display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;
+}
+.filter-select {
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--muted); font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem; padding: 0.35rem 0.75rem; border-radius: 8px; outline: none;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.filter-select:focus, .filter-select:hover { border-color: var(--border2); color: var(--text); }
+.filter-search {
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem; padding: 0.35rem 0.75rem; border-radius: 8px; outline: none;
+  flex: 1; min-width: 160px; transition: border-color 0.2s;
+}
+.filter-search:focus { border-color: var(--accent); }
+.filter-search::placeholder { color: var(--muted2); }
+
+/* Table */
+.results-table-wrap {
+  background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 16px; overflow: hidden;
+}
+.results-table { width: 100%; border-collapse: collapse; }
+.results-table th {
+  padding: 0.75rem 1rem;
+  background: var(--bg3);
+  text-align: left; font-size: 0.7rem; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap; cursor: pointer; user-select: none;
+  transition: color 0.2s;
+}
+.results-table th:hover { color: var(--accent); }
+.results-table th.sorted { color: var(--accent); }
+.results-table th .sort-arrow { display: inline-block; margin-left: 4px; font-size: 0.65rem; }
+.results-table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(232,184,75,0.06);
+  font-size: 0.82rem; vertical-align: middle;
+}
+.results-table tr:last-child td { border-bottom: none; }
+.results-table tr:hover td { background: rgba(232,184,75,0.02); }
+
+/* Score cell */
+.score-cell { display: flex; align-items: center; gap: 0.5rem; }
+.score-num {
+  font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800;
+  min-width: 36px; text-align: right;
+}
+.score-bar-wrap { flex: 1; background: var(--bg4); border-radius: 999px; height: 5px; min-width: 50px; }
+.score-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+.score-green .score-bar-fill { background: var(--green); }
+.score-amber .score-bar-fill { background: var(--amber); }
+.score-red .score-bar-fill { background: var(--red); }
+.score-green .score-num { color: var(--green); }
+.score-amber .score-num { color: var(--amber); }
+.score-red .score-num { color: var(--red); }
+
+/* Status badge */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.15rem 0.5rem; border-radius: 5px; font-size: 0.7rem; font-weight: 700;
+  white-space: nowrap;
+}
+.badge-scanning { background: rgba(10,191,188,0.1); border: 1px solid rgba(10,191,188,0.3); color: var(--teal); }
+.badge-done { background: var(--green2); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
+.badge-error { background: var(--red2); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+.badge-queued { background: rgba(138,147,168,0.08); border: 1px solid var(--border); color: var(--muted); }
+
+/* Site cell */
+.site-cell { display: flex; align-items: center; gap: 0.6rem; }
+.site-favicon { width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+.site-url { font-weight: 600; color: var(--text); white-space: nowrap; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+.site-url a { color: inherit; text-decoration: none; }
+.site-url a:hover { color: var(--accent); }
+
+/* Cat scores mini */
+.cat-mini { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.cat-pill {
+  font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem;
+  border-radius: 4px; white-space: nowrap;
+}
+
+/* Expandable row detail */
+.detail-row { display: none; }
+.detail-row.open { display: table-row; }
+.detail-cell {
+  padding: 0 1rem 1rem !important;
+  background: var(--bg3) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.detail-inner {
+  padding: 1rem;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+}
+.detail-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.detail-metric { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; }
+.detail-metric-label { font-size: 0.65rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.2rem; }
+.detail-metric-val { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--text); }
+
+.expand-btn {
+  background: none; border: none; color: var(--muted2); cursor: pointer;
+  font-size: 0.9rem; padding: 0.2rem; transition: transform 0.2s, color 0.2s;
+  display: flex; align-items: center;
+}
+.expand-btn.open { transform: rotate(180deg); color: var(--accent); }
+
+.sugg-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.sugg-item {
+  display: flex; align-items: flex-start; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); line-height: 1.4;
+}
+.sugg-badge {
+  flex-shrink: 0; font-size: 0.62rem; font-weight: 700;
+  padding: 0.1rem 0.4rem; border-radius: 4px;
+}
+.sugg-high { background: var(--red2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.sugg-med { background: rgba(251,191,36,0.1); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+.sugg-low { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  background: var(--bg3); border: 1px solid var(--border2);
+  color: var(--text); font-size: 0.84rem; font-weight: 500;
+  padding: 0.7rem 1.5rem; border-radius: 10px; z-index: 999;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: slideUp 0.25s ease;
+  white-space: nowrap;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  nav { padding: 0 1rem; }
+  .hero { padding: 2.5rem 1rem 2rem; }
+  .input-section, .progress-section, .results-section { padding: 0 1rem; }
+  .hero h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">
+    <div class="logo-icon">⚡</div>
+    RankSorcery
+  </a>
+  <div style="display:flex;align-items:center;gap:0.75rem">
+    <span class="bulk-badge">⚡ Bulk Mode</span>
+    <a href="/" class="nav-back">← Single Audit</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <span></span>
+    Bulk SEO Auditor
+    <span></span>
+  </div>
+  <h1>Audit <span class="grad">100 Sites</span><br>in Parallel — Fast</h1>
+  <p>Paste a list of URLs or upload a CSV. Me scan all websites at same time — no waiting, no bottleneck. Get scores, suggestions, and CMS data for every site at once.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">60+</div>
+      <div class="hero-stat-label">SEO Factors</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="stat-concurrency">5×</div>
+      <div class="hero-stat-label">Parallel Threads</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">~30s</div>
+      <div class="hero-stat-label">Per Site</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">CSV</div>
+      <div class="hero-stat-label">Export Ready</div>
+    </div>
+  </div>
+</div>
+
+<!-- INPUT -->
+<div class="input-section">
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-title">📋 Enter URLs to Audit</div>
+      <div class="input-mode-tabs">
+        <button class="mode-tab active" onclick="switchMode('paste', this)">Paste URLs</button>
+        <button class="mode-tab" onclick="switchMode('csv', this)">Upload CSV</button>
+      </div>
+    </div>
+
+    <!-- Paste mode -->
+    <div id="paste-mode">
+      <div class="textarea-wrap">
+        <textarea id="url-textarea" placeholder="https://example.com&#10;https://mysite.com&#10;competitor.com&#10;&#10;One URL per line. Up to 100 URLs."></textarea>
+        <div class="textarea-hint" id="url-count">0 URLs</div>
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:0.6rem;flex-wrap:wrap">
+        <button class="btn-clear" style="font-size:0.72rem;padding:0.3rem 0.75rem;border-radius:7px" onclick="loadSampleUrls()">Load Sample URLs</button>
+        <button class="btn-clear" style="font-size:0.72rem;padding:0.3rem 0.75rem;border-radius:7px" onclick="clearUrls()">Clear</button>
+      </div>
+    </div>
+
+    <!-- CSV mode -->
+    <div id="csv-mode" style="display:none">
+      <div class="csv-drop" id="csv-drop" onclick="document.getElementById('csv-file').click()"
+        ondragover="e => { e.preventDefault(); this.classList.add('dragover'); }"
+        ondragleave="this.classList.remove('dragover')"
+        ondrop="handleCsvDrop(event)">
+        <div class="csv-drop-icon">📂</div>
+        <p>Drop a CSV file here or click to browse</p>
+        <p style="font-size:0.72rem;color:var(--muted2);margin-bottom:0.75rem">Must have a column named "url", "website", or "domain"</p>
+        <label for="csv-file">📎 Choose CSV File</label>
+        <input type="file" id="csv-file" accept=".csv" onchange="handleCsvFile(event)">
+      </div>
+      <div id="csv-status" style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted)"></div>
+    </div>
+
+    <div class="settings-row">
+      <label class="setting-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" name="cms" checked> 🏠 CMS Detect
+      </label>
+      <label class="setting-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" name="schema" checked> 🧩 Schema
+      </label>
+      <label class="setting-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" name="cwv" checked> ⚡ Core Web Vitals
+      </label>
+      <label class="setting-chip active" onclick="toggleChip(this)">
+        <input type="checkbox" name="eeat" checked> 🏆 E-E-A-T
+      </label>
+      <div class="concurrency-wrap">
+        ⚡ Parallel:
+        <select id="concurrency-select" onchange="updateConcurrencyLabel()">
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="5" selected>5</option>
+          <option value="8">8</option>
+          <option value="10">10</option>
+        </select>
+        threads
+      </div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-audit" id="audit-btn" onclick="startBulkAudit()">
+        ⚡ Audit All Websites
+      </button>
+      <button class="btn-clear" id="stop-btn" style="display:none;color:var(--red);border-color:rgba(248,113,113,0.3)" onclick="stopAudit()">⏹ Stop</button>
+      <button class="btn-export" id="export-btn" style="display:none" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section" id="progress-section">
+  <div class="progress-card">
+    <div class="progress-header">
+      <div class="progress-title">🔍 Auditing in Progress…</div>
+      <div class="progress-counts">
+        <div class="pcount"><div class="pcount-dot" style="background:var(--teal)"></div><span id="p-scanning">0 scanning</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--green)"></div><span id="p-done">0 done</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--red)"></div><span id="p-failed">0 failed</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--muted2)"></div><span id="p-queued">0 queued</span></div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar"></div>
+    </div>
+    <div class="progress-sub" id="progress-sub">Starting audit…</div>
+    <div class="active-sites" id="active-sites"></div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+  <div class="results-header">
+    <div>
+      <div class="results-title">📊 Bulk Audit Results</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:0.2rem" id="results-subtitle"></div>
+    </div>
+    <div class="summary-chips" id="summary-chips"></div>
+  </div>
+  <div class="filter-bar">
+    <input type="text" class="filter-search" id="filter-search" placeholder="🔍 Search sites…" oninput="applyFilters()">
+    <select class="filter-select" id="filter-score" onchange="applyFilters()">
+      <option value="all">All Scores</option>
+      <option value="good">Good (80+)</option>
+      <option value="ok">Needs Work (60-79)</option>
+      <option value="poor">Poor (&lt;60)</option>
+    </select>
+    <select class="filter-select" id="filter-status" onchange="applyFilters()">
+      <option value="all">All Status</option>
+      <option value="done">Done</option>
+      <option value="error">Errors</option>
+    </select>
+    <select class="filter-select" id="filter-sort" onchange="applyFilters()">
+      <option value="score-desc">Score ↓</option>
+      <option value="score-asc">Score ↑</option>
+      <option value="url">URL</option>
+      <option value="issues">Most Issues</option>
+    </select>
+  </div>
+  <div class="results-table-wrap">
+    <table class="results-table" id="results-table">
+      <thead>
+        <tr>
+          <th style="width:36px">#</th>
+          <th>Site</th>
+          <th>Status</th>
+          <th>SEO Score</th>
+          <th>Tech / CMS</th>
+          <th>Top Issues</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+let auditResults = [];     // { url, status, score, data, error, cms, pageData }
+let auditRunning = false;
+let stopRequested = false;
+let expandedRows = new Set();
+
+// ── URL COUNTER ──────────────────────────────────────────────────────────────
+document.getElementById('url-textarea').addEventListener('input', updateUrlCount);
+function updateUrlCount() {
+  const urls = parseUrlsFromText(document.getElementById('url-textarea').value);
+  document.getElementById('url-count').textContent = urls.length + ' URL' + (urls.length !== 1 ? 's' : '');
+}
+
+function parseUrlsFromText(text) {
+  return text.split('\n')
+    .map(l => l.trim())
+    .filter(l => l && !l.startsWith('#'))
+    .map(l => {
+      const stripped = l.replace(/^[\s"',;]+|[\s"',;]+$/g, '');
+      if (!stripped) return null;
+      return stripped.startsWith('http') ? stripped : 'https://' + stripped;
+    })
+    .filter(Boolean)
+    .filter(u => {
+      try { const h = new URL(u).hostname; return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(h); }
+      catch { return false; }
+    })
+    .slice(0, 100);
+}
+
+function loadSampleUrls() {
+  document.getElementById('url-textarea').value =
+    'https://nytimes.com\nhttps://techcrunch.com\nhttps://smashingmagazine.com\nhttps://moz.com\nhttps://ahrefs.com';
+  updateUrlCount();
+}
+
+function clearUrls() {
+  document.getElementById('url-textarea').value = '';
+  updateUrlCount();
+}
+
+// ── MODE SWITCH ──────────────────────────────────────────────────────────────
+function switchMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('paste-mode').style.display = mode === 'paste' ? '' : 'none';
+  document.getElementById('csv-mode').style.display   = mode === 'csv'   ? '' : 'none';
+}
+
+// ── CSV HANDLING ─────────────────────────────────────────────────────────────
+function handleCsvDrop(e) {
+  e.preventDefault();
+  document.getElementById('csv-drop').classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) parseCsvFile(file);
+}
+function handleCsvFile(e) {
+  const file = e.target.files[0];
+  if (file) parseCsvFile(file);
+}
+function parseCsvFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const lines = ev.target.result.split('\n');
+    const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+    const colIdx = header.findIndex(h => ['url','website','domain','site'].includes(h));
+    if (colIdx < 0) {
+      document.getElementById('csv-status').textContent = '⚠ No "url", "website" or "domain" column found.';
+      return;
+    }
+    const urls = lines.slice(1)
+      .map(l => l.split(',')[colIdx]?.trim().replace(/"/g,''))
+      .filter(Boolean)
+      .slice(0, 100);
+    // Load into textarea and switch to paste mode
+    document.getElementById('url-textarea').value = urls.join('\n');
+    switchMode('paste', document.querySelectorAll('.mode-tab')[0]);
+    updateUrlCount();
+    document.getElementById('csv-status').textContent = `✅ Loaded ${urls.length} URLs from ${file.name}`;
+    showToast(`✅ Loaded ${urls.length} URLs from CSV`);
+  };
+  reader.readAsText(file);
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+function toggleChip(el) {
+  el.classList.toggle('active');
+}
+function getActiveOptions() {
+  return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name);
+}
+function updateConcurrencyLabel() {
+  const val = document.getElementById('concurrency-select').value;
+  document.getElementById('stat-concurrency').textContent = val + '×';
+}
+
+// ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
+async function startBulkAudit() {
+  const urls = parseUrlsFromText(document.getElementById('url-textarea').value);
+  if (!urls.length) {
+    showToast('⚠ Paste at least one valid URL!', 'var(--red)');
+    return;
+  }
+
+  const concurrency = parseInt(document.getElementById('concurrency-select').value);
+  const options = getActiveOptions();
+
+  // Reset state
+  auditResults = urls.map(url => ({ url, status: 'queued', score: null, data: null, error: null, cms: null, pageData: null }));
+  auditRunning = true;
+  stopRequested = false;
+  expandedRows.clear();
+
+  // UI
+  document.getElementById('audit-btn').disabled = true;
+  document.getElementById('audit-btn').textContent = 'Auditing…';
+  document.getElementById('stop-btn').style.display = '';
+  document.getElementById('export-btn').style.display = 'none';
+  document.getElementById('progress-section').style.display = '';
+  document.getElementById('results-section').style.display = '';
+
+  renderResultsTable();
+  updateProgress();
+
+  // Run in batches using a queue + concurrency limit
+  const queue = [...urls];
+  const inFlight = new Set();
+
+  async function runNext() {
+    if (stopRequested || !queue.length) return;
+    const url = queue.shift();
+    const idx = auditResults.findIndex(r => r.url === url);
+    if (idx < 0) return;
+
+    inFlight.add(url);
+    auditResults[idx].status = 'scanning';
+    updateProgress();
+    updateRow(idx);
+
+    try {
+      const [pageData, cmsData] = await Promise.all([
+        fetchPageData(url),
+        detectCMS(url),
+      ]);
+      auditResults[idx].pageData = pageData;
+      auditResults[idx].cms = cmsData;
+
+      const auditData = await runAIAudit(url, options, pageData, cmsData);
+      auditResults[idx].data = auditData;
+      auditResults[idx].score = auditData.seo_score ?? auditData.score ?? null;
+      auditResults[idx].status = 'done';
+    } catch (err) {
+      auditResults[idx].status = 'error';
+      auditResults[idx].error = err.message || 'Failed';
+    }
+
+    inFlight.delete(url);
+    updateProgress();
+    updateRow(idx);
+
+    // Run next
+    await runNext();
+  }
+
+  // Kick off `concurrency` parallel workers
+  const workers = Array.from({ length: concurrency }, () => runNext());
+  await Promise.allSettled(workers);
+
+  auditRunning = false;
+  document.getElementById('audit-btn').disabled = false;
+  document.getElementById('audit-btn').textContent = '⚡ Audit All Websites';
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('export-btn').style.display = '';
+  document.getElementById('progress-section').style.display = 'none';
+
+  renderSummaryChips();
+  applyFilters();
+  showToast('✅ Bulk audit complete!', 'var(--green)');
+}
+
+function stopAudit() {
+  stopRequested = true;
+  showToast('⏹ Stopping after current scans finish…', 'var(--amber)');
+}
+
+// ── API CALLS (same as original single-audit) ────────────────────────────────
+async function fetchPageData(url) {
+  try {
+    const res = await fetch('/api/page-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch { return null; }
+}
+
+async function detectCMS(url) {
+  try {
+    const res = await fetch('/api/detect-cms', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!res.ok) return { cms: 'Unknown', confidence: 0 };
+    return await res.json();
+  } catch { return { cms: 'Unknown', confidence: 0 }; }
+}
+
+async function runAIAudit(url, options, pageData, cmsData) {
+  const res = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, options, pageData, cmsData }),
+    signal: AbortSignal.timeout(60000),
+  });
+  if (!res.ok) {
+    let msg = 'API error ' + res.status;
+    try { const e = await res.json(); if (e.error) msg = e.error; } catch {}
+    throw new Error(msg);
+  }
+  return await res.json();
+}
+
+// ── PROGRESS UI ──────────────────────────────────────────────────────────────
+function updateProgress() {
+  const done     = auditResults.filter(r => r.status === 'done').length;
+  const failed   = auditResults.filter(r => r.status === 'error').length;
+  const scanning = auditResults.filter(r => r.status === 'scanning').length;
+  const queued   = auditResults.filter(r => r.status === 'queued').length;
+  const total    = auditResults.length;
+  const finished = done + failed;
+
+  document.getElementById('p-scanning').textContent = scanning + ' scanning';
+  document.getElementById('p-done').textContent     = done + ' done';
+  document.getElementById('p-failed').textContent   = failed + ' failed';
+  document.getElementById('p-queued').textContent   = queued + ' queued';
+  document.getElementById('progress-bar').style.width = (finished / total * 100) + '%';
+  document.getElementById('progress-sub').textContent = `${finished} of ${total} sites audited · ${queued} in queue`;
+
+  // Active sites pills
+  const activePills = auditResults
+    .filter(r => r.status === 'scanning')
+    .map(r => {
+      let h = r.url;
+      try { h = new URL(r.url).hostname; } catch {}
+      return `<div class="active-site-pill"><div class="active-site-spinner"></div>${h}</div>`;
+    }).join('');
+  document.getElementById('active-sites').innerHTML = activePills;
+}
+
+// ── RESULTS TABLE ─────────────────────────────────────────────────────────────
+function scoreClass(s) {
+  if (s === null || s === undefined) return 'score-muted';
+  if (s >= 80) return 'score-green';
+  if (s >= 60) return 'score-amber';
+  return 'score-red';
+}
+function scoreColor(s) {
+  if (s >= 80) return 'var(--green)';
+  if (s >= 60) return 'var(--amber)';
+  return 'var(--red)';
+}
+
+function renderResultsTable() {
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  auditResults.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    tr.innerHTML = rowHtml(r, i);
+    tbody.appendChild(tr);
+
+    const detailTr = document.createElement('tr');
+    detailTr.id = 'detail-row-' + i;
+    detailTr.className = 'detail-row';
+    detailTr.innerHTML = `<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
+    tbody.appendChild(detailTr);
+  });
+}
+
+function rowHtml(r, i) {
+  let hostname = r.url;
+  try { hostname = new URL(r.url).hostname; } catch {}
+
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+
+  const statusBadge = r.status === 'done'     ? `<span class="status-badge badge-done">✓ Done</span>`
+    : r.status === 'scanning' ? `<span class="status-badge badge-scanning"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(10,191,188,0.4);border-top-color:var(--teal);animation:spin 0.8s linear infinite"></span> Scanning</span>`
+    : r.status === 'error'    ? `<span class="status-badge badge-error">✗ Error</span>`
+    : `<span class="status-badge badge-queued">⏳ Queued</span>`;
+
+  const scoreCell = r.score !== null && r.score !== undefined
+    ? `<div class="score-cell ${scoreClass(r.score)}">
+        <div class="score-num">${r.score}</div>
+        <div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div>
+       </div>`
+    : r.status === 'error' ? `<span style="color:var(--red);font-size:0.75rem">${r.error}</span>`
+    : `<span style="color:var(--muted2);font-size:0.75rem">—</span>`;
+
+  const cms = r.cms?.cms || '—';
+  const cmsColor = r.cms?.cms ? 'var(--teal)' : 'var(--muted2)';
+
+  let topIssues = '—';
+  if (r.data?.suggestions?.length) {
+    const highs = r.data.suggestions.filter(s => s.priority === 'high').slice(0, 2);
+    if (highs.length) {
+      topIssues = highs.map(s => `<div style="font-size:0.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px">${s.title || s.text || ''}</div>`).join('');
+    }
+  } else if (r.status === 'scanning') {
+    topIssues = `<span style="color:var(--muted2);font-size:0.73rem">Analyzing…</span>`;
+  }
+
+  return `
+    <td style="color:var(--muted2);font-size:0.75rem;padding-right:0.25rem">${i + 1}</td>
+    <td>
+      <div class="site-cell">
+        <img class="site-favicon" src="${faviconUrl}" alt="" onerror="this.style.display='none'">
+        <div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${hostname}</a></div>
+      </div>
+    </td>
+    <td>${statusBadge}</td>
+    <td>${scoreCell}</td>
+    <td><span style="color:${cmsColor};font-size:0.78rem;font-weight:600">${cms}</span></td>
+    <td>${topIssues}</td>
+    <td>
+      ${r.status === 'done' ? `<button class="expand-btn" id="expand-btn-${i}" onclick="toggleDetail(${i})" title="Show details">▼</button>` : ''}
+    </td>`;
+}
+
+function updateRow(idx) {
+  const r = auditResults[idx];
+  const tr = document.getElementById('row-' + idx);
+  if (tr) tr.innerHTML = rowHtml(r, idx);
+  if (r.status === 'done' && expandedRows.has(idx)) {
+    renderDetail(idx);
+  }
+  renderSummaryChips();
+}
+
+function toggleDetail(idx) {
+  const detailRow = document.getElementById('detail-row-' + idx);
+  const btn = document.getElementById('expand-btn-' + idx);
+  if (!detailRow) return;
+
+  if (expandedRows.has(idx)) {
+    expandedRows.delete(idx);
+    detailRow.classList.remove('open');
+    if (btn) btn.classList.remove('open');
+  } else {
+    expandedRows.add(idx);
+    detailRow.classList.add('open');
+    if (btn) btn.classList.add('open');
+    renderDetail(idx);
+  }
+}
+
+function renderDetail(idx) {
+  const r = auditResults[idx];
+  if (!r.data) return;
+
+  const inner = document.getElementById('detail-inner-' + idx);
+  if (!inner) return;
+
+  const d = r.data;
+  const cats = d.categories || {};
+
+  const catHtml = Object.entries(cats).map(([k, v]) => {
+    const score = typeof v === 'object' ? (v.score ?? 0) : (typeof v === 'number' ? v : 0);
+    const cls = score >= 80 ? 'score-green' : score >= 60 ? 'score-amber' : 'score-red';
+    const col = score >= 80 ? 'var(--green)' : score >= 60 ? 'var(--amber)' : 'var(--red)';
+    const label = k.replace(/_/g,' ').replace(/\b\w/g, c => c.toUpperCase());
+    return `<div class="detail-metric">
+      <div class="detail-metric-label">${label}</div>
+      <div class="detail-metric-val" style="color:${col}">${score}<span style="font-size:0.6rem;color:var(--muted);font-weight:400">/100</span></div>
+    </div>`;
+  }).join('');
+
+  const topSuggs = (d.suggestions || []).slice(0, 6);
+  const suggHtml = topSuggs.map(s => {
+    const cls = s.priority === 'high' ? 'sugg-high' : s.priority === 'medium' ? 'sugg-med' : 'sugg-low';
+    const label = s.priority === 'high' ? 'HIGH' : s.priority === 'medium' ? 'MED' : 'LOW';
+    return `<div class="sugg-item"><span class="sugg-badge ${cls}">${label}</span> ${s.title || s.text || ''}</div>`;
+  }).join('');
+
+  const pd = r.pageData || {};
+  const metrics = [
+    ['Title Length', pd.title ? pd.title.length + ' chars' : '—'],
+    ['Meta Desc', pd.metaDesc ? pd.metaDesc.length + ' chars' : '—'],
+    ['Word Count', pd.wordCount ? pd.wordCount.toLocaleString() : '—'],
+    ['HTTPS', pd.isHttps !== false ? '✅ Yes' : '❌ No'],
+    ['Mobile', pd.hasViewport ? '✅ Yes' : '❌ No'],
+    ['TTFB', pd.ttfb ? pd.ttfb + 'ms' : '—'],
+  ];
+
+  inner.innerHTML = `
+    <div style="margin-bottom:0.75rem">
+      <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem">📊 Category Scores</div>
+      <div class="detail-grid">${catHtml || '<span style="color:var(--muted2);font-size:0.78rem">No category data</span>'}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:0.75rem">
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem">📈 Page Metrics</div>
+        <div class="detail-grid" style="grid-template-columns:repeat(auto-fill,minmax(120px,1fr))">
+          ${metrics.map(([l,v]) => `<div class="detail-metric"><div class="detail-metric-label">${l}</div><div class="detail-metric-val" style="font-size:0.88rem">${v}</div></div>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.6rem">💡 Top Issues (${topSuggs.length})</div>
+        <div class="sugg-list">${suggHtml || '<div style="color:var(--muted2);font-size:0.78rem">No issues found</div>'}</div>
+      </div>
+    </div>
+    ${d.eeat_summary ? `<div style="background:rgba(244,114,182,0.04);border:1px solid rgba(244,114,182,0.15);border-radius:10px;padding:0.75rem 1rem;font-size:0.78rem;color:var(--muted);line-height:1.6"><span style="color:var(--pink);font-weight:700">🏆 E-E-A-T: </span>${d.eeat_summary}</div>` : ''}
+    <div style="margin-top:0.75rem;text-align:right">
+      <a href="/?url=${encodeURIComponent(r.url)}" target="_blank"
+        style="font-size:0.75rem;color:var(--accent);text-decoration:none;font-weight:600">View Full Report →</a>
+    </div>`;
+}
+
+function renderSummaryChips() {
+  const done    = auditResults.filter(r => r.status === 'done').length;
+  const errors  = auditResults.filter(r => r.status === 'error').length;
+  const good    = auditResults.filter(r => r.score >= 80).length;
+  const needs   = auditResults.filter(r => r.score >= 60 && r.score < 80).length;
+  const poor    = auditResults.filter(r => r.score < 60 && r.score !== null).length;
+
+  document.getElementById('summary-chips').innerHTML = `
+    <div class="summary-chip chip-green">✅ ${good} Good</div>
+    <div class="summary-chip chip-amber">⚠ ${needs} Fair</div>
+    <div class="summary-chip chip-red">❌ ${poor} Poor</div>
+    ${errors ? `<div class="summary-chip chip-muted">✗ ${errors} Errors</div>` : ''}
+  `;
+
+  const total = auditResults.length;
+  document.getElementById('results-subtitle').textContent =
+    `${done} of ${total} sites audited`;
+}
+
+// ── FILTER & SORT ─────────────────────────────────────────────────────────────
+function applyFilters() {
+  const search    = document.getElementById('filter-search').value.toLowerCase();
+  const scoreF    = document.getElementById('filter-score').value;
+  const statusF   = document.getElementById('filter-status').value;
+  const sortF     = document.getElementById('filter-sort').value;
+
+  let rows = auditResults.map((r, i) => ({ r, i }));
+
+  if (search) rows = rows.filter(({ r }) => r.url.toLowerCase().includes(search));
+  if (scoreF === 'good') rows = rows.filter(({ r }) => r.score >= 80);
+  if (scoreF === 'ok')   rows = rows.filter(({ r }) => r.score >= 60 && r.score < 80);
+  if (scoreF === 'poor') rows = rows.filter(({ r }) => r.score < 60);
+  if (statusF === 'done')  rows = rows.filter(({ r }) => r.status === 'done');
+  if (statusF === 'error') rows = rows.filter(({ r }) => r.status === 'error');
+
+  if (sortF === 'score-desc') rows.sort((a, b) => (b.r.score ?? -1) - (a.r.score ?? -1));
+  if (sortF === 'score-asc')  rows.sort((a, b) => (a.r.score ?? 999) - (b.r.score ?? 999));
+  if (sortF === 'url')        rows.sort((a, b) => a.r.url.localeCompare(b.r.url));
+  if (sortF === 'issues')     rows.sort((a, b) => (b.r.data?.suggestions?.length ?? 0) - (a.r.data?.suggestions?.length ?? 0));
+
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(({ r, i }) => {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    tr.innerHTML = rowHtml(r, i);
+    tbody.appendChild(tr);
+
+    const detailTr = document.createElement('tr');
+    detailTr.id = 'detail-row-' + i;
+    detailTr.className = 'detail-row' + (expandedRows.has(i) ? ' open' : '');
+    detailTr.innerHTML = `<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
+    tbody.appendChild(detailTr);
+    if (expandedRows.has(i)) renderDetail(i);
+  });
+}
+
+// ── CSV EXPORT ────────────────────────────────────────────────────────────────
+function exportCSV() {
+  const headers = ['URL','Status','SEO Score','CMS','HTTPS','Mobile','TTFB (ms)','Word Count','Title Len','Meta Desc Len','High Issues','Med Issues','Low Issues','Total Issues'];
+  const rows = auditResults.map(r => {
+    const pd = r.pageData || {};
+    const d  = r.data || {};
+    const suggs = d.suggestions || [];
+    return [
+      r.url,
+      r.status,
+      r.score ?? '',
+      r.cms?.cms ?? '',
+      pd.isHttps !== false ? 'Yes' : 'No',
+      pd.hasViewport ? 'Yes' : 'No',
+      pd.ttfb ?? '',
+      pd.wordCount ?? '',
+      pd.title?.length ?? '',
+      pd.metaDesc?.length ?? '',
+      suggs.filter(s => s.priority === 'high').length,
+      suggs.filter(s => s.priority === 'medium').length,
+      suggs.filter(s => s.priority === 'low').length,
+      suggs.length,
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`);
+  });
+
+  const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ranksorcery-bulk-audit-${Date.now()}.csv`;
+  a.click();
+  showToast('✅ CSV exported!');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, color) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.color = color || 'var(--text)';
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, 3500);
+}
+
+// ── DRAG & DROP on textarea ───────────────────────────────────────────────────
+document.getElementById('csv-drop').addEventListener('dragover', e => {
+  e.preventDefault();
+  e.currentTarget.classList.add('dragover');
+});
+document.getElementById('csv-drop').addEventListener('dragleave', e => {
+  e.currentTarget.classList.remove('dragover');
+});
+document.getElementById('csv-drop').addEventListener('drop', handleCsvDrop);
+</script>
+</body>
+</html>
