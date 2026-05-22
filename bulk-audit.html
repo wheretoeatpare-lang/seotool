@@ -649,53 +649,400 @@ function applyFilters(){
   });
 }
 
-// ── EXCEL EXPORT — calls /api/export-excel on the server ─────────────────────
-// The server generates a properly formatted .xlsx with colours, styled headers,
-// score-coloured cells, hyperlinks, and all 4 sheets. See export-excel-route.js
-async function exportExcel() {
-  if (!auditResults.length) { showToast('⚠ No results to export yet!', 'var(--amber)'); return; }
+// ── EXCEL EXPORT — 100% browser-side, no server needed ───────────────────────
+// Builds a real .xlsx file (ZIP of XML) directly in the browser.
+// Colours, styled headers, 4 sheets — works on Cloudflare Pages with zero backend.
+
+function exportExcel() {
+  const done = auditResults.filter(r => r.status === 'done' || r.status === 'error');
+  if (!done.length) { showToast('⚠ Run an audit first — no results yet!', 'var(--amber)'); return; }
 
   const btn  = document.getElementById('export-btn');
   const btn2 = document.querySelector('.btn-xl-excel');
-  const orig  = btn  ? btn.textContent  : '';
-  const orig2 = btn2 ? btn2.textContent : '';
-  if (btn)  { btn.disabled  = true; btn.textContent  = '⏳ Building report…'; }
-  if (btn2) { btn2.disabled = true; btn2.textContent = '⏳ Building report…'; }
-  showToast('📊 Building your formatted Excel report…', 'var(--teal)', 8000);
+  if (btn)  { btn.disabled  = true; btn.textContent  = '⏳ Building…'; }
+  if (btn2) { btn2.disabled = true; btn2.textContent = '⏳ Building…'; }
+  showToast('📊 Building your Excel report…', 'var(--teal)', 8000);
 
-  try {
-    const today = new Date().toISOString().slice(0, 10);
-
-    const res = await fetch('/api/export-excel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ results: auditResults, auditDate: today }),
-    });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Server error ' + res.status);
+  // Run async so UI updates first
+  setTimeout(() => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const bytes = buildXlsx(auditResults, today);
+      const blob  = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `RankSorcery-Bulk-SEO-Audit-${today}.xlsx`;
+      document.body.appendChild(a); a.click(); a.remove();
+      showToast('✅ Excel report downloaded!', 'var(--green)', 5000);
+    } catch(e) {
+      console.error('[export]', e);
+      showToast('⚠ Export failed: ' + e.message, 'var(--red)', 6000);
+    } finally {
+      if (btn)  { btn.disabled  = false; btn.textContent  = '📊 Export Excel Report'; }
+      if (btn2) { btn2.disabled = false; btn2.textContent = '📊 Download Excel Report'; }
     }
+  }, 50);
+}
 
-    // Stream the blob and trigger download
-    const blob = await res.blob();
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href     = url;
-    a.download = `RankSorcery-Bulk-SEO-Audit-${today}.xlsx`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
+// ── Core xlsx builder ─────────────────────────────────────────────────────────
+function buildXlsx(results, today) {
+  const dateLabel = new Date(today).toLocaleDateString('en-AU', {year:'numeric',month:'long',day:'numeric'});
 
-    showToast('✅ Formatted Excel report downloaded!', 'var(--green)', 5000);
-  } catch (err) {
-    console.error('Export error:', err);
-    showToast('⚠ Export failed: ' + err.message, 'var(--red)', 6000);
-  } finally {
-    if (btn)  { btn.disabled  = false; btn.textContent  = orig;  }
-    if (btn2) { btn2.disabled = false; btn2.textContent = orig2; }
+  // Stats
+  const done      = results.filter(r => r.status === 'done');
+  const scores    = done.map(r => parseInt(r.score)).filter(s => !isNaN(s));
+  const avgScore  = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  const gradeA    = scores.filter(s=>s>=90).length;
+  const gradeB    = scores.filter(s=>s>=80&&s<90).length;
+  const gradeC    = scores.filter(s=>s>=70&&s<80).length;
+  const gradeD    = scores.filter(s=>s>=60&&s<70).length;
+  const gradeF    = scores.filter(s=>s<60).length;
+  const totalIss  = results.reduce((s,r)=>s+(r.data?.suggestions?.length||0),0);
+  const avgIss    = done.length ? Math.round(totalIss/done.length) : 0;
+
+  const issueCounts = {};
+  results.forEach(r => {
+    (r.data?.suggestions||[]).filter(s=>s.priority==='high').slice(0,3).forEach(s=>{
+      const t = s.title||s.text||''; if(t) issueCounts[t]=(issueCounts[t]||0)+1;
+    });
+  });
+  const topIssues = Object.entries(issueCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  function scoreStyle(score) {
+    const s = parseInt(score);
+    if (isNaN(s)) return {fi:0, grade:'—'};
+    if (s>=90) return {fi:5, grade:'A'}; if (s>=80) return {fi:6, grade:'B'};
+    if (s>=70) return {fi:7, grade:'C'}; if (s>=60) return {fi:8, grade:'D'};
+    return {fi:9, grade:'F'};
   }
+
+  // ── Shared strings ──────────────────────────────────────────────────────────
+  const ss=[]; const ssM={};
+  function S(v){ const k=String(v??''); if(ssM[k]===undefined){ssM[k]=ss.length;ss.push(k);} return ssM[k]; }
+
+  // ── Column letter helper ────────────────────────────────────────────────────
+  function CL(n){let s='';while(n>0){n--;s=String.fromCharCode(65+(n%26))+s;n=Math.floor(n/26);}return s;}
+  function CR(c,r){return CL(c)+r;}
+
+  // ── XML cell helpers ────────────────────────────────────────────────────────
+  function numCell(ref,val,si){return `<c r="${ref}" t="n" s="${si}"><v>${val}</v></c>`;}
+  function strCell(ref,val,si){return `<c r="${ref}" t="s" s="${si}"><v>${S(val)}</v></c>`;}
+  function emptyCell(ref,si){return `<c r="${ref}" s="${si}"/>`;}
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  // ── STYLES ──────────────────────────────────────────────────────────────────
+  // Style index constants — must match cellXfs order below
+  // 0=default 1=titleHdr 2=subHdr 3=colHdr 4=kpiLabel 5=kpiTeal 6=kpiGold
+  // 7=kpiRed 8=kpiAmber 9=kpiDesc 10=sectionHdr
+  // 11=gradeA 12=gradeB 13=gradeC 14=gradeD 15=gradeF
+  // 16=greenBold 17=redBold 18=amberBold 19=mutedCtr
+  // 20=bodyLeft 21=bodyCtr 22=bodyRight 23=urlCell
+  // 24=ttfbGreen 25=ttfbAmber 26=ttfbRed
+  // 27=issGreen 28=issAmber 29=issRed
+  // 30=highCell 31=medCell 32=lowCell 33=issueTxt
+  // 34=spacer 35=altRow 36=httpsYes 37=httpsNo
+  // 38=guideLabel 39=guideSect 40=guideDesc 41=dateCel
+
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<fonts count="18">
+<font><sz val="10"/><name val="Arial"/><color rgb="FF1A1A2E"/></font>
+<font><b/><sz val="18"/><name val="Arial"/><color rgb="FFE8B84B"/></font>
+<font><sz val="10"/><name val="Arial"/><color rgb="FF8A93A8"/><i/></font>
+<font><b/><sz val="9"/><name val="Arial"/><color rgb="FFECF0F8"/></font>
+<font><b/><sz val="8"/><name val="Arial"/><color rgb="FF8A93A8"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FF0ABFBC"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFE8B84B"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFE05555"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFF5A623"/></font>
+<font><sz val="8"/><name val="Arial"/><color rgb="FF8A93A8"/><i/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF1A1A2E"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF1A7A4A"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF92640A"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FFC0392B"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FF1A7A4A"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FFC0392B"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FF92640A"/></font>
+<font><sz val="9"/><name val="Arial"/><color rgb="FF1A5FB4"/><u/></font>
+</fonts>
+<fills count="16">
+<fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF080C12"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF182035"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF1E2A45"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFE6F7EF"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFD1F0E2"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFF8E6"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFF3D6"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFEF0F0"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF4F6FA"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFEEF1F8"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF0F2F7"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFAFBFD"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF0F1622"/></patternFill></fill>
+</fills>
+<borders count="2">
+<border><left/><right/><top/><bottom/><diagonal/></border>
+<border><left/><right/><top/><bottom style="thin"><color rgb="FFE2E8F0"/></bottom><diagonal/></border>
+</borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="42">
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="1"  fillId="2"  borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="2"  fillId="2"  borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="3"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="4"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="5"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="6"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="7"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="8"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="9"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="10" fillId="11" borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="11" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="11" fillId="6"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="12" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="12" fillId="8"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="13" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="right"  vertical="center"/></xf>
+<xf numFmtId="0" fontId="17" fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="12" borderId="0" xfId="0"></xf>
+<xf numFmtId="0" fontId="0"  fillId="10" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="10" fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="3"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+</cellXfs>
+</styleSheet>`;
+
+  // ── Sheet builders ──────────────────────────────────────────────────────────
+  function sheet(rowsXml, cols, merges, freeze, autoFilterRef) {
+    const colsXml = cols.map(([mn,mx,w])=>`<col min="${mn}" max="${mx}" width="${w}" customWidth="1"/>`).join('');
+    const mergeXml = merges.length ? `<mergeCells count="${merges.length}">${merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells>` : '';
+    const afXml = autoFilterRef ? `<autoFilter ref="${autoFilterRef}"/>` : '';
+    const viewXml = freeze
+      ? `<sheetViews><sheetView workbookViewId="0"><pane ySplit="2" topLeftCell="A3" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`
+      : `<sheetViews><sheetView showGridLines="0" workbookViewId="0"/></sheetViews>`;
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${viewXml}<cols>${colsXml}</cols><sheetData>${rowsXml}</sheetData>${mergeXml}${afXml}</worksheet>`;
+  }
+
+  function row(r, ht, cells) {
+    const htAttr = ht ? ` ht="${ht}" customHeight="1"` : '';
+    return `<row r="${r}"${htAttr}>${cells}</row>`;
+  }
+
+  // ══ SHEET 1: Summary ════════════════════════════════════════════════════════
+  let s1 = '';
+  s1 += row(1, 48, strCell('A1', `  ⚡  RankSorcery — Bulk SEO Audit Report`, 1));
+  s1 += row(2, 24, strCell('A2', `  Generated: ${dateLabel}  ·  ${done.length} sites audited  ·  Powered by RankSorcery AI`, 2));
+  s1 += row(3, 10, emptyCell('A3', 34));
+
+  // KPI row labels (cols B=2, D=4, F=6, H=8)
+  const kpiL=['Sites Audited','Avg SEO Score','Total Issues','Avg Issues/Site'];
+  const kpiV=[done.length, avgScore, totalIss, avgIss];
+  const kpiS=[5,6,7,8];
+  s1 += row(4, 18, [2,4,6,8].map((c,i)=>strCell(CR(c,4),kpiL[i],4)).join(''));
+  s1 += row(5, 48, [2,4,6,8].map((c,i)=>numCell(CR(c,5),kpiV[i],kpiS[i])).join(''));
+  s1 += row(6, 20, [2,4,6,8].map((c,i)=>strCell(CR(c,6),['Successfully scanned','Average across all sites','Issues found across all sites','Average per site'][i],9)).join(''));
+  s1 += row(7, 14, emptyCell('A7', 34));
+  s1 += row(8, 28, strCell('A8','  SCORE BREAKDOWN',10));
+
+  const bkd=[
+    ['🟢  Grade A  (90–100)',gradeA,11],['🟢  Grade B  (80–89)',gradeB,12],
+    ['🟡  Grade C  (70–79)',gradeC,13],['🟡  Grade D  (60–69)',gradeD,14],
+    ['🔴  Grade F  (0–59)',gradeF,15],
+  ];
+  bkd.forEach(([lbl,cnt,si],i)=>{
+    s1+=row(9+i,26,strCell(CR(1,9+i),lbl,si)+numCell(CR(3,9+i),cnt,si));
+  });
+
+  s1 += row(15,14,emptyCell('A15',34));
+  s1 += row(16,28,strCell('A16','  TOP RECURRING ISSUES (High Priority)',10));
+  topIssues.forEach(([issue,cnt],i)=>{
+    const bg=i%2===0?21:35;
+    s1+=row(17+i,24,strCell(CR(1,17+i),`  ${issue}`,bg)+strCell(CR(8,17+i),`${cnt} sites`,30));
+  });
+
+  const sheet1 = sheet(s1,
+    [[1,1,3],[2,2,22],[3,3,3],[4,4,22],[5,5,3],[6,6,22],[7,7,3],[8,8,22],[9,9,3]],
+    ['A1:I1','A2:I2','A3:I3','A7:I7','A8:I8',
+     'A9:B9','A10:B10','A11:B11','A12:B12','A13:B13',
+     'A15:I15','A16:I16',
+     'A17:G17','A18:G18','A19:G19','A20:G20','A21:G21'],
+    false);
+
+  // ══ SHEET 2: Audit Data ══════════════════════════════════════════════════════
+  const hdrs2=['#','Website URL','SEO Score','Grade','CMS / Platform','HTTPS','Mobile Ready',
+    'TTFB (ms)','Word Count','Title Length','Meta Desc Length','Total Issues',
+    '🔴 High','🟡 Medium','🟢 Low','Top Issue #1','Top Issue #2','Top Issue #3','Audit Date'];
+  let s2='';
+  s2+=row(1,36,strCell('A1','  📋  Full Audit Data — All Sites',1));
+  s2+=row(2,36,hdrs2.map((h,i)=>strCell(CR(i+1,2),h,3)).join(''));
+
+  results.forEach((r,idx)=>{
+    const rn=idx+3; const alt=rn%2===0;
+    const bg=alt?35:21; const bgL=alt?35:20;
+    const pd=r.pageData||{}; const suggs=r.data?.suggestions||[];
+    const highs=suggs.filter(s=>s.priority==='high');
+    const meds=suggs.filter(s=>s.priority==='medium');
+    const lows=suggs.filter(s=>s.priority==='low');
+    const {fi,grade}=scoreStyle(r.score);
+    const scoreSi=[11,12,13,14,15][fi-5]??19;
+    const httpsY=pd.isHttps!==false; const mobY=!!pd.hasViewport;
+    const ttfb=pd.ttfb; const ttfbSi=ttfb<800?24:ttfb<1800?25:(ttfb?26:bg);
+    const tot=suggs.length; const totSi=tot>=15?29:tot>=10?28:tot<=5?27:bg;
+
+    const cells=[
+      numCell(CR(1,rn),idx+1,19),
+      strCell(CR(2,rn),r.url,23),
+      r.score!=null&&!isNaN(parseInt(r.score))?numCell(CR(3,rn),parseInt(r.score),scoreSi):strCell(CR(3,rn),r.status==='error'?'ERROR':'—',scoreSi),
+      strCell(CR(4,rn),r.status==='error'?'—':grade,scoreSi),
+      strCell(CR(5,rn),r.cms?.cms||'—',bg),
+      strCell(CR(6,rn),httpsY?'Yes':'No',httpsY?36:37),
+      strCell(CR(7,rn),mobY?'Yes':'No',mobY?36:37),
+      ttfb?numCell(CR(8,rn),ttfb,ttfbSi):emptyCell(CR(8,rn),bg),
+      pd.wordCount?numCell(CR(9,rn),pd.wordCount,bg):emptyCell(CR(9,rn),bg),
+      pd.title?.length?numCell(CR(10,rn),pd.title.length,bg):emptyCell(CR(10,rn),bg),
+      pd.metaDesc?.length?numCell(CR(11,rn),pd.metaDesc.length,bg):emptyCell(CR(11,rn),bg),
+      numCell(CR(12,rn),tot,totSi),
+      numCell(CR(13,rn),highs.length,highs.length>0?30:bg),
+      numCell(CR(14,rn),meds.length,meds.length>0?31:bg),
+      numCell(CR(15,rn),lows.length,lows.length>0?32:bg),
+      strCell(CR(16,rn),highs[0]?.title||highs[0]?.text||'',33),
+      strCell(CR(17,rn),highs[1]?.title||highs[1]?.text||'',33),
+      strCell(CR(18,rn),highs[2]?.title||highs[2]?.text||'',33),
+      strCell(CR(19,rn),today,41),
+    ].join('');
+    s2+=row(rn,22,cells);
+  });
+
+  const cols2=[[1,1,5],[2,2,36],[3,3,11],[4,4,8],[5,5,18],[6,6,9],[7,7,10],[8,8,11],[9,9,12],[10,10,13],[11,11,15],[12,12,12],[13,13,10],[14,14,10],[15,15,10],[16,16,40],[17,17,40],[18,18,40],[19,19,13]];
+  const sheet2=sheet(s2,cols2,[],true,`A2:S${results.length+2}`);
+
+  // ══ SHEET 3: Quick Wins ═════════════════════════════════════════════════════
+  const highSites=results.filter(r=>(r.data?.suggestions||[]).filter(s=>s.priority==='high').length>0)
+    .sort((a,b)=>(b.data?.suggestions||[]).filter(s=>s.priority==='high').length-(a.data?.suggestions||[]).filter(s=>s.priority==='high').length);
+  let s3='';
+  s3+=row(1,36,strCell('A1','  🎯  Quick Wins — Fix These First',1));
+  s3+=row(2,22,strCell('A2','  Sites with High Priority issues — sorted by most critical first',2));
+  s3+=row(3,32,['#','URL','SEO Score','High Issues','Top Issue'].map((h,i)=>strCell(CR(i+1,3),h,3)).join(''));
+  highSites.forEach((r,idx)=>{
+    const rn=idx+4; const alt=rn%2===0; const bg=alt?35:21;
+    const hi=(r.data?.suggestions||[]).filter(s=>s.priority==='high');
+    const {fi,grade}=scoreStyle(r.score);
+    const scoreSi=[11,12,13,14,15][fi-5]??19;
+    s3+=row(rn,22,[
+      numCell(CR(1,rn),idx+1,19),strCell(CR(2,rn),r.url,23),
+      r.score!=null?numCell(CR(3,rn),parseInt(r.score),scoreSi):strCell(CR(3,rn),'—',scoreSi),
+      numCell(CR(4,rn),hi.length,30),
+      strCell(CR(5,rn),hi[0]?.title||hi[0]?.text||'',33),
+    ].join(''));
+  });
+  const sheet3=sheet(s3,[[1,1,4],[2,2,36],[3,3,11],[4,4,12],[5,5,42]],[],false);
+
+  // ══ SHEET 4: Guide ══════════════════════════════════════════════════════════
+  const guideRows=[
+    ['','',''],
+    ['SCORES','Grade A  (90–100)','Excellent — site is fully optimised. Focus on content strategy.'],
+    ['','Grade B  (80–89)','Good — minor technical fixes needed. Review medium issues.'],
+    ['','Grade C  (70–79)','Fair — moderate gaps. Prioritise all High Priority issues first.'],
+    ['','Grade D  (60–69)','Needs Work — significant issues. Fix all High issues urgently.'],
+    ['','Grade F  (<60)','Poor — site needs a full SEO overhaul. Start immediately.'],
+    ['','',''],
+    ['PRIORITY','🔴 High','Fix immediately — actively suppressing your Google rankings.'],
+    ['','🟡 Medium','Fix this week — meaningful improvements to rankings and UX.'],
+    ['','🟢 Low','Nice to have — smaller gains, do after High and Medium.'],
+    ['','',''],
+    ['COLUMNS','TTFB (ms)','Time To First Byte. Green <800ms · Amber <1800ms · Red 1800ms+'],
+    ['','Title Length','Ideal: 50–60 characters for best Google SERP display.'],
+    ['','Meta Desc Length','Ideal: 120–155 characters. Longer gets cut off in Google.'],
+    ['','Word Count','Content pages should aim for 600+ words minimum.'],
+    ['','HTTPS','Green = secure. Red = no SSL — critical issue, fix immediately.'],
+    ['','Mobile Ready','Green = mobile-optimised. Red = missing viewport meta tag.'],
+    ['','',''],
+    ['EXPORT','How to export','Run audit at ranksorcery.com/bulk-audit → click Download Excel Report'],
+    ['','Daily tracking','Save each export with the date in filename to track scores over time.'],
+  ];
+  let s4='';
+  s4+=row(1,36,strCell('A1','  ℹ️  How To Read This Report',1));
+  guideRows.forEach(([sec,lbl,desc],i)=>{
+    const rn=i+2; const alt=rn%2===0;
+    s4+=row(rn,26,[
+      strCell(CR(1,rn),sec,sec?39:0),
+      strCell(CR(2,rn),lbl,38),
+      strCell(CR(3,rn),desc,40),
+    ].join(''));
+  });
+  const sheet4=sheet(s4,[[1,1,10],[2,2,26],[3,3,56]],[],false);
+
+  // ── Shared strings XML ──────────────────────────────────────────────────────
+  const ssXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${ss.length}" uniqueCount="${ss.length}">${ss.map(s=>`<si><t xml:space="preserve">${esc(s)}</t></si>`).join('')}</sst>`;
+
+  // ── Workbook XML ────────────────────────────────────────────────────────────
+  const wbXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="📊 Summary" sheetId="1" r:id="rId1"/><sheet name="📋 Audit Data" sheetId="2" r:id="rId2"/><sheet name="🎯 Quick Wins" sheetId="3" r:id="rId3"/><sheet name="ℹ️ Guide" sheetId="4" r:id="rId4"/></sheets></workbook>`;
+  const wbRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet4.xml"/><Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/><Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const pkgRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet4.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+
+  // ── ZIP builder ─────────────────────────────────────────────────────────────
+  const enc=new TextEncoder();
+  function crc32(buf){
+    let c=0xFFFFFFFF,t=crc32.t||(crc32.t=(()=>{const T=new Uint32Array(256);for(let i=0;i<256;i++){let x=i;for(let j=0;j<8;j++)x=x&1?(0xEDB88320^(x>>>1)):(x>>>1);T[i]=x;}return T;})());
+    for(let i=0;i<buf.length;i++)c=t[(c^buf[i])&0xFF]^(c>>>8);
+    return(c^0xFFFFFFFF)>>>0;
+  }
+  function u16(n){const b=new Uint8Array(2);new DataView(b.buffer).setUint16(0,n,true);return b;}
+  function u32(n){const b=new Uint8Array(4);new DataView(b.buffer).setUint32(0,n,true);return b;}
+  function cat(...a){const t=a.reduce((s,x)=>s+x.length,0),o=new Uint8Array(t);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length;});return o;}
+
+  const files=[
+    {n:'[Content_Types].xml',       d:enc.encode(ct)},
+    {n:'_rels/.rels',               d:enc.encode(pkgRels)},
+    {n:'xl/workbook.xml',           d:enc.encode(wbXml)},
+    {n:'xl/_rels/workbook.xml.rels',d:enc.encode(wbRels)},
+    {n:'xl/styles.xml',             d:enc.encode(stylesXml)},
+    {n:'xl/sharedStrings.xml',      d:enc.encode(ssXml)},
+    {n:'xl/worksheets/sheet1.xml',  d:enc.encode(sheet1)},
+    {n:'xl/worksheets/sheet2.xml',  d:enc.encode(sheet2)},
+    {n:'xl/worksheets/sheet3.xml',  d:enc.encode(sheet3)},
+    {n:'xl/worksheets/sheet4.xml',  d:enc.encode(sheet4)},
+  ];
+
+  const parts=[]; const cdirs=[]; let off=0;
+  files.forEach(({n,d})=>{
+    const nb=enc.encode(n); const crc=crc32(d);
+    const lh=cat(new Uint8Array([0x50,0x4B,0x03,0x04]),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(d.length),u32(d.length),u16(nb.length),u16(0),nb,d);
+    cdirs.push({nb,crc,sz:d.length,off});
+    parts.push(lh); off+=lh.length;
+  });
+  const cdStart=off;
+  cdirs.forEach(({nb,crc,sz,off:lo})=>{
+    const cd=cat(new Uint8Array([0x50,0x4B,0x01,0x02]),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(lo),nb);
+    parts.push(cd); off+=cd.length;
+  });
+  const eocd=cat(new Uint8Array([0x50,0x4B,0x05,0x06]),u16(0),u16(0),u16(files.length),u16(files.length),u32(off-cdStart),u32(cdStart),u16(0));
+  parts.push(eocd);
+  return cat(...parts);
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
