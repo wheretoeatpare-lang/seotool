@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Favicon Checker 🦴</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --surface: #1a1a1a;
+      --surface2: #242424;
+      --border: #2e2e2e;
+      --accent: #b8ff57;
+      --accent2: #57c8ff;
+      --red: #ff5757;
+      --text: #f0f0f0;
+      --text2: #888;
+      --text3: #555;
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* Noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    header {
+      padding: 48px 40px 32px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .logo {
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+
+    h1 span { color: var(--accent); }
+
+    .tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text2);
+      margin-top: 10px;
+    }
+
+    .header-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 6px 14px;
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text2);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Bulk input area */
+    .input-section {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-label .hint {
+      color: var(--text3);
+      font-size: 10px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+    }
+
+    .textarea-wrap {
+      position: relative;
+    }
+
+    .bulk-textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 13px;
+      padding: 16px 18px;
+      height: 130px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+      line-height: 1.7;
+    }
+
+    .bulk-textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .bulk-textarea::placeholder { color: var(--text3); }
+
+    /* Button row */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .check-btn {
+      height: 44px;
+      padding: 0 28px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: transform 0.1s, opacity 0.1s;
+      white-space: nowrap;
+    }
+
+    .check-btn:hover { opacity: 0.9; }
+    .check-btn:active { transform: scale(0.97); }
+
+    .clear-btn {
+      height: 44px;
+      padding: 0 20px;
+      background: transparent;
+      color: var(--text3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .clear-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .url-count-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      margin-left: auto;
+    }
+
+    .url-count-badge .count-num {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Quick buttons */
+    .quick-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .quick-label {
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .quick-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      color: var(--text2);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .quick-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .quick-btn-all {
+      background: rgba(184,255,87,0.07);
+      border: 1px solid rgba(184,255,87,0.25);
+      border-radius: 100px;
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .quick-btn-all:hover {
+      background: rgba(184,255,87,0.14);
+    }
+
+    /* Results grid */
+    #results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      animation: cardIn 0.3s ease both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-hero {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .icon-wrap img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    .icon-placeholder {
+      font-size: 24px;
+      opacity: 0.4;
+    }
+
+    .card-meta { min-width: 0; }
+
+    .card-host {
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-family: 'Space Mono', monospace;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-weight: 400;
+    }
+
+    .pill-checking { background: var(--surface2); color: var(--text2); }
+    .pill-found { background: rgba(184,255,87,0.12); color: var(--accent); border: 1px solid rgba(184,255,87,0.3); }
+    .pill-missing { background: rgba(255,87,87,0.1); color: var(--red); border: 1px solid rgba(255,87,87,0.25); }
+
+    .dot-blink {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text2);
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+    /* Sources list */
+    .sources {
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .source-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .src-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .src-dot.wait { background: var(--text3); animation: blink 1s infinite; }
+    .src-dot.ok { background: var(--accent); }
+    .src-dot.fail { background: var(--red); }
+
+    .src-name {
+      font-family: 'Space Mono', monospace;
+      color: var(--text2);
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .src-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .src-status.ok { color: var(--accent); }
+    .src-status.fail { color: var(--text3); }
+
+    /* Found URL */
+    .found-url {
+      padding: 10px 20px 16px;
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      word-break: break-all;
+      border-top: 1px solid var(--border);
+    }
+
+    .found-url a { color: var(--accent2); text-decoration: none; }
+    .found-url a:hover { text-decoration: underline; }
+
+    /* Empty state */
+    #empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text3);
+    }
+
+    #empty .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    #empty p { font-family: 'Space Mono', monospace; font-size: 13px; }
+
+    /* Stats bar */
+    #stats {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 20px;
+      display: none;
+      gap: 20px;
+      align-items: center;
+    }
+
+    #stats span { color: var(--text2); }
+    #stats .s-found { color: var(--accent); }
+    #stats .s-missing { color: var(--red); }
+
+    /* Progress bar */
+    .progress-wrap {
+      flex: 1;
+      height: 3px;
+      background: var(--surface2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    /* Dupe warning */
+    .dupe-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      color: var(--text2);
+      z-index: 999;
+      animation: toastIn 0.2s ease;
+      display: none;
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      header, main { padding-left: 20px; padding-right: 20px; }
+      h1 { font-size: 2rem; }
+      .header-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="logo">Cave-Claude Tool v2.0 — BULK EDITION</div>
+      <h1>Favicon<br><span>Checker</span></h1>
+      <p class="tagline">// bulk favicon detection — many sites, one smash</p>
+    </div>
+    <div class="header-badge">🦴 UGH — NOW CHECK MANY SITES!</div>
+  </div>
+</header>
+
+<main>
+  <div class="input-section">
+    <div class="input-label">
+      Paste URLs here — one per line or comma-separated
+      <span class="hint">bulk mode 🦴</span>
+    </div>
+    <div class="textarea-wrap">
+      <textarea
+        class="bulk-textarea"
+        id="url-input"
+        placeholder="https://facebook.com&#10;https://github.com&#10;https://stripe.com&#10;reddit.com, youtube.com, anthropic.com"
+        autocomplete="off"
+        spellcheck="false"
+      ></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="check-btn" onclick="checkAll()">Check All →</button>
+      <button class="clear-btn" onclick="clearResults()">Clear Results</button>
+      <span class="url-count-badge" id="url-count"></span>
+    </div>
+  </div>
+
+  <div class="quick-row">
+    <span class="quick-label">Try:</span>
+    <button class="quick-btn" onclick="addQuick('facebook.com')">facebook.com</button>
+    <button class="quick-btn" onclick="addQuick('youtube.com')">youtube.com</button>
+    <button class="quick-btn" onclick="addQuick('github.com')">github.com</button>
+    <button class="quick-btn" onclick="addQuick('reddit.com')">reddit.com</button>
+    <button class="quick-btn" onclick="addQuick('anthropic.com')">anthropic.com</button>
+    <button class="quick-btn" onclick="addQuick('x.com')">x.com</button>
+    <button class="quick-btn" onclick="addQuick('wikipedia.org')">wikipedia.org</button>
+    <button class="quick-btn" onclick="addQuick('stripe.com')">stripe.com</button>
+    <button class="quick-btn-all" onclick="loadAllSamples()">+ load all samples</button>
+  </div>
+
+  <div id="stats">
+    Checked: <span id="stat-total">0</span> &nbsp;|&nbsp;
+    Found: <span id="stat-found" class="s-found">0</span> &nbsp;|&nbsp;
+    Missing: <span id="stat-missing" class="s-missing">0</span>
+    &nbsp;|&nbsp;
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    &nbsp;<span id="stat-progress" style="white-space:nowrap"></span>
+  </div>
+
+  <div id="results">
+    <div id="empty">
+      <div class="empty-icon">🔍</div>
+      <p>paste urls above and smash that Check All button<br><br>
+      <span style="font-size:11px;color:var(--text3)">caveman support many urls at once. very powerful.</span></p>
+    </div>
+  </div>
+</main>
+
+<div class="dupe-toast" id="dupe-toast"></div>
+
+<script>
+  const checked = new Set();
+  let statTotal = 0, statFound = 0, statMissing = 0;
+  let totalInBatch = 0, doneInBatch = 0;
+
+  const SOURCES = [
+    {
+      key: 'google64',
+      name: 'Google (64px)',
+      url: h => `https://www.google.com/s2/favicons?domain=${h}&sz=64`
+    },
+    {
+      key: 'google32',
+      name: 'Google (32px)',
+      url: h => `https://www.google.com/s2/favicons?domain=${h}&sz=32`
+    },
+    {
+      key: 'duckduckgo',
+      name: 'DuckDuckGo',
+      url: h => `https://icons.duckduckgo.com/ip3/${h}.ico`
+    },
+    {
+      key: 'faviconkit',
+      name: 'FaviconKit',
+      url: h => `https://api.faviconkit.com/${h}/64`
+    },
+    {
+      key: 'direct',
+      name: '/favicon.ico',
+      url: h => `https://${h}/favicon.ico`
+    }
+  ];
+
+  const SAMPLES = ['facebook.com','youtube.com','github.com','reddit.com','anthropic.com','x.com','wikipedia.org','stripe.com'];
+
+  function loadAllSamples() {
+    const ta = document.getElementById('url-input');
+    const existing = parseUrls(ta.value);
+    const existingSet = new Set(existing);
+    const toAdd = SAMPLES.filter(s => !existingSet.has(s));
+    const combined = [...existing, ...toAdd].join('\n');
+    ta.value = combined;
+    updateCount();
+  }
+
+  function addQuick(host) {
+    const ta = document.getElementById('url-input');
+    const val = ta.value.trim();
+    ta.value = val ? val + '\n' + host : host;
+    updateCount();
+    ta.scrollTop = ta.scrollHeight;
+  }
+
+  function parseUrls(raw) {
+    // Split by newlines OR commas, trim, dedupe
+    return raw
+      .split(/[\n,]+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+  }
+
+  function parseHostname(raw) {
+    raw = raw.trim();
+    if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+    try {
+      const u = new URL(raw);
+      return u.hostname.replace(/^www\./, '');
+    } catch(e) { return null; }
+  }
+
+  function updateCount() {
+    const ta = document.getElementById('url-input');
+    const urls = parseUrls(ta.value);
+    const valid = urls.filter(u => parseHostname(u) !== null);
+    const badge = document.getElementById('url-count');
+    badge.innerHTML = valid.length > 0
+      ? `<span class="count-num">${valid.length}</span> url${valid.length !== 1 ? 's' : ''} ready`
+      : '';
+  }
+
+  document.getElementById('url-input').addEventListener('input', updateCount);
+  document.getElementById('url-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) checkAll();
+  });
+
+  function showDupe(msg) {
+    const toast = document.getElementById('dupe-toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => { toast.style.display = 'none'; }, 2500);
+  }
+
+  function checkAll() {
+    const raw = document.getElementById('url-input').value.trim();
+    if (!raw) return;
+
+    const urls = parseUrls(raw);
+    const hostnames = [];
+    const dupes = [];
+    const invalids = [];
+
+    for (const u of urls) {
+      const h = parseHostname(u);
+      if (!h) { invalids.push(u); continue; }
+      if (checked.has(h)) { dupes.push(h); continue; }
+      hostnames.push(h);
+    }
+
+    if (invalids.length) {
+      showDupe(`🦴 ugh! bad url ignored: ${invalids.slice(0,3).join(', ')}${invalids.length > 3 ? '...' : ''}`);
+    } else if (dupes.length && hostnames.length === 0) {
+      showDupe(`already checked: ${dupes.slice(0,3).join(', ')}${dupes.length > 3 ? '...' : ''}`);
+    }
+
+    if (hostnames.length === 0) return;
+
+    // Mark all as checked
+    hostnames.forEach(h => checked.add(h));
+
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('stats').style.display = 'flex';
+    statTotal += hostnames.length;
+    document.getElementById('stat-total').textContent = statTotal;
+
+    // Set up batch progress
+    totalInBatch = hostnames.length;
+    doneInBatch = 0;
+    updateProgress();
+
+    // Fire all checks in parallel — big caveman stampede!
+    hostnames.forEach((h, i) => {
+      setTimeout(() => runCheck(h), i * 60); // stagger 60ms each to avoid overwhelming
+    });
+  }
+
+  function updateProgress() {
+    const pct = totalInBatch > 0 ? Math.round((doneInBatch / totalInBatch) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('stat-progress').textContent =
+      doneInBatch < totalInBatch ? `${doneInBatch}/${totalInBatch}` : '';
+  }
+
+  function clearResults() {
+    checked.clear();
+    statTotal = 0; statFound = 0; statMissing = 0;
+    totalInBatch = 0; doneInBatch = 0;
+    document.getElementById('stat-total').textContent = '0';
+    document.getElementById('stat-found').textContent = '0';
+    document.getElementById('stat-missing').textContent = '0';
+    document.getElementById('progress-fill').style.width = '0%';
+    document.getElementById('stat-progress').textContent = '';
+    document.getElementById('stats').style.display = 'none';
+    const results = document.getElementById('results');
+    results.innerHTML = `
+      <div id="empty">
+        <div class="empty-icon">🔍</div>
+        <p>paste urls above and smash that Check All button<br><br>
+        <span style="font-size:11px;color:var(--text3)">caveman support many urls at once. very powerful.</span></p>
+      </div>`;
+    updateCount();
+  }
+
+  function runCheck(hostname) {
+    const id = 'card-' + Math.random().toString(36).slice(2);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = id;
+    card.innerHTML = `
+      <div class="card-hero">
+        <div class="icon-wrap" id="${id}-ico">
+          <span class="icon-placeholder">🌐</span>
+        </div>
+        <div class="card-meta">
+          <div class="card-host">${hostname}</div>
+          <span class="status-pill pill-checking" id="${id}-pill">
+            <span class="dot-blink"></span> checking...
+          </span>
+        </div>
+      </div>
+      <div class="sources" id="${id}-sources">
+        ${SOURCES.map(s => `
+          <div class="source-row">
+            <div class="src-dot wait" id="${id}-dot-${s.key}"></div>
+            <span class="src-name">${s.name}</span>
+            <span class="src-status" id="${id}-st-${s.key}">—</span>
+          </div>`).join('')}
+      </div>
+      <div class="found-url" id="${id}-foundurl" style="display:none"></div>
+    `;
+
+    document.getElementById('results').prepend(card);
+
+    let foundUrl = null;
+    let pending = SOURCES.length;
+
+    SOURCES.forEach(src => {
+      const url = src.url(hostname);
+      const img = new Image();
+      let done = false;
+
+      const timeout = setTimeout(() => {
+        if (done) return;
+        done = true;
+        markFail(src.key);
+        pending--;
+        if (pending === 0) finalize();
+      }, 5000);
+
+      img.onload = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timeout);
+
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const valid = w > 1 && h > 1 && !(w === 16 && h === 16 && src.key.startsWith('google'));
+
+        if (valid) {
+          markOk(src.key, `${w}×${h}`);
+          if (!foundUrl) {
+            foundUrl = url;
+            const ico = document.getElementById(`${id}-ico`);
+            if (ico) ico.innerHTML = `<img src="${url}" alt="favicon" />`;
+          }
+        } else if (w === 16 && h === 16 && src.key.startsWith('google')) {
+          markOk(src.key, `${w}×${h}`);
+          if (!foundUrl) {
+            foundUrl = url;
+            const ico = document.getElementById(`${id}-ico`);
+            if (ico) ico.innerHTML = `<img src="${url}" alt="favicon" />`;
+          }
+        } else {
+          markFail(src.key);
+        }
+
+        pending--;
+        if (pending === 0) finalize();
+      };
+
+      img.onerror = () => {
+        if (done) return;
+        done = true;
+        clearTimeout(timeout);
+        markFail(src.key);
+        pending--;
+        if (pending === 0) finalize();
+      };
+
+      img.src = url;
+    });
+
+    function markOk(key, label) {
+      const dot = document.getElementById(`${id}-dot-${key}`);
+      const st = document.getElementById(`${id}-st-${key}`);
+      if (dot) dot.className = 'src-dot ok';
+      if (st) { st.textContent = label || 'found'; st.className = 'src-status ok'; }
+    }
+
+    function markFail(key) {
+      const dot = document.getElementById(`${id}-dot-${key}`);
+      const st = document.getElementById(`${id}-st-${key}`);
+      if (dot) dot.className = 'src-dot fail';
+      if (st) { st.textContent = 'none'; st.className = 'src-status fail'; }
+    }
+
+    function finalize() {
+      doneInBatch++;
+      updateProgress();
+
+      const pill = document.getElementById(`${id}-pill`);
+      const foundUrlEl = document.getElementById(`${id}-foundurl`);
+      if (!pill) return;
+
+      if (foundUrl) {
+        pill.className = 'status-pill pill-found';
+        pill.innerHTML = '✓ favicon found';
+        statFound++;
+        document.getElementById('stat-found').textContent = statFound;
+        if (foundUrlEl) {
+          foundUrlEl.style.display = 'block';
+          foundUrlEl.innerHTML = `<a href="${foundUrl}" target="_blank" rel="noopener">${foundUrl}</a>`;
+        }
+      } else {
+        pill.className = 'status-pill pill-missing';
+        pill.innerHTML = '✕ no favicon';
+        statMissing++;
+        document.getElementById('stat-missing').textContent = statMissing;
+      }
+    }
+  }
+</script>
+</body>
+</html>
