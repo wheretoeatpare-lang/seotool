@@ -503,55 +503,66 @@ function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(-
 
 // ── API CALLS ────────────────────────────────────────────────────────────────
 
-// CLIENT-SIDE FALLBACK: fetch + parse page HTML directly via CORS proxy
-async function fetchPageDataClientSide(url) {
-  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-  try {
-    const t0 = Date.now();
-    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(18000) });
-    const ttfb = Date.now() - t0;
-    if (!res.ok) return null;
-    const json = await res.json();
-    const html = json.contents || '';
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    // Title
-    const title = doc.querySelector('title')?.textContent?.trim() || '';
-
-    // Meta description — check name and property variants
-    const metaDesc =
-      doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() ||
-      doc.querySelector('meta[property="og:description"]')?.getAttribute('content')?.trim() ||
-      '';
-
-    // Viewport / mobile
-    const hasViewport = !!doc.querySelector('meta[name="viewport"]');
-
-    // HTTPS
-    const isHttps = url.startsWith('https://');
-
-    // Word count (rough — strip tags, count words)
-    const bodyText = doc.body?.innerText || doc.body?.textContent || '';
-    const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
-
-    // Canonical
-    const canonical = doc.querySelector('link[rel="canonical"]')?.getAttribute('href')?.trim() || '';
-
-    // h1
-    const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
-
-    // robots meta
-    const robotsMeta = doc.querySelector('meta[name="robots"]')?.getAttribute('content')?.trim() || '';
-
-    // og:title / og:image
-    const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content')?.trim() || '';
-    const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content')?.trim() || '';
-
-    return { title, metaDesc, hasViewport, isHttps, wordCount, ttfb, canonical, h1, robotsMeta, ogTitle, ogImage, _source: 'client' };
-  } catch { return null; }
+// Extract SEO data from raw HTML string using regex (reliable even on malformed HTML)
+function parseHtmlForSEO(html, url) {
+  const isHttps = url.startsWith('https://');
+  function getMeta(attr, val) {
+    const rx = new RegExp('<meta[^>]+(?:' + attr + ')=["\\\']' + val + '["\\\'][^>]*content=["\\\']([^"\\\']*)["\\\']', 'i');
+    const rx2 = new RegExp('<meta[^>]+content=["\\\']([^"\\\']*)["\\\'][^>]*(?:' + attr + ')=["\\\']' + val + '["\\\']', 'i');
+    return (html.match(rx) || html.match(rx2) || [])[1]?.trim() || '';
+  }
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const title = titleMatch ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim() : '';
+  const metaDesc = getMeta('name', 'description') || getMeta('property', 'og:description') || '';
+  const hasViewport = /<meta[^>]+name=["']viewport["'][^>]*>/i.test(html);
+  const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
+  const canonical = canonicalMatch ? canonicalMatch[1].trim() : '';
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  const h1 = h1Match ? h1Match[1].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim() : '';
+  const robotsMeta = getMeta('name', 'robots');
+  const ogTitle = getMeta('property', 'og:title');
+  const ogImage = getMeta('property', 'og:image');
+  const stripped = html.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
+  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, h1, robotsMeta, ogTitle, ogImage };
 }
 
+// CLIENT-SIDE FALLBACK: try multiple CORS proxies, parse with regex
+async function fetchPageDataClientSide(url) {
+  const proxies = [
+    async () => {
+      const t0 = Date.now();
+      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
+      const ttfb = Date.now() - t0;
+      if (!res.ok) return null;
+      const json = await res.json();
+      const html = json.contents || '';
+      if (!html || html.length < 200) return null;
+      return { html, ttfb };
+    },
+    async () => {
+      const t0 = Date.now();
+      const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
+      const ttfb = Date.now() - t0;
+      if (!res.ok) return null;
+      const html = await res.text();
+      if (!html || html.length < 200) return null;
+      return { html, ttfb };
+    }
+  ];
+  for (const tryProxy of proxies) {
+    try {
+      const result = await tryProxy();
+      if (!result) continue;
+      const { html, ttfb } = result;
+      const parsed = parseHtmlForSEO(html, url);
+      if (parsed.title || parsed.metaDesc || parsed.h1) {
+        return { ...parsed, ttfb, _source: 'client' };
+      }
+    } catch(e) { /* try next proxy */ }
+  }
+  return null;
+}
 async function fetchPageData(url) {
   // 1️⃣ Try backend first
   try {
