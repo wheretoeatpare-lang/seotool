@@ -649,136 +649,53 @@ function applyFilters(){
   });
 }
 
-// ── EXCEL EXPORT (XLSX via SheetJS) ──────────────────────────────────────────
-function exportExcel() {
+// ── EXCEL EXPORT — calls /api/export-excel on the server ─────────────────────
+// The server generates a properly formatted .xlsx with colours, styled headers,
+// score-coloured cells, hyperlinks, and all 4 sheets. See export-excel-route.js
+async function exportExcel() {
   if (!auditResults.length) { showToast('⚠ No results to export yet!', 'var(--amber)'); return; }
 
-  // Load SheetJS on demand
-  const script = document.createElement('script');
-  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-  script.onload = () => _doExport();
-  script.onerror = () => { showToast('⚠ Could not load Excel library. Try again.', 'var(--red)'); };
-  document.head.appendChild(script);
-  if (window.XLSX) { _doExport(); return; }
-  showToast('📊 Preparing Excel report…', 'var(--teal)');
-}
+  const btn  = document.getElementById('export-btn');
+  const btn2 = document.querySelector('.btn-xl-excel');
+  const orig  = btn  ? btn.textContent  : '';
+  const orig2 = btn2 ? btn2.textContent : '';
+  if (btn)  { btn.disabled  = true; btn.textContent  = '⏳ Building report…'; }
+  if (btn2) { btn2.disabled = true; btn2.textContent = '⏳ Building report…'; }
+  showToast('📊 Building your formatted Excel report…', 'var(--teal)', 8000);
 
-function _doExport() {
-  const today = new Date().toISOString().slice(0,10);
-  const wb = XLSX.utils.book_new();
+  try {
+    const today = new Date().toISOString().slice(0, 10);
 
-  // ── Sheet 1: Summary ──────────────────────────────────────────────────────
-  const done   = auditResults.filter(r=>r.status==='done').length;
-  const errors = auditResults.filter(r=>r.status==='error').length;
-  const scores = auditResults.filter(r=>r.score!=null).map(r=>r.score);
-  const avg    = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
-  const good   = scores.filter(s=>s>=80).length;
-  const fair   = scores.filter(s=>s>=60&&s<80).length;
-  const poor   = scores.filter(s=>s<60).length;
-  const totalIssues = auditResults.reduce((sum,r)=>sum+(r.data?.suggestions?.length||0),0);
+    const res = await fetch('/api/export-excel', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ results: auditResults, auditDate: today }),
+    });
 
-  const summaryData = [
-    ['⚡ RankSorcery — Bulk SEO Audit Report', '', ''],
-    ['Generated:', today, ''],
-    ['', '', ''],
-    ['SUMMARY STATISTICS', '', ''],
-    ['Sites Audited', done, ''],
-    ['Average SEO Score', avg, 'out of 100'],
-    ['Audit Errors', errors, ''],
-    ['', '', ''],
-    ['SCORE BREAKDOWN', '', ''],
-    ['Good (80+)', good, 'sites'],
-    ['Fair (60–79)', fair, 'sites'],
-    ['Poor (<60)', poor, 'sites'],
-    ['', '', ''],
-    ['ISSUES', '', ''],
-    ['Total Issues Found', totalIssues, 'across all sites'],
-    ['Avg Issues per Site', done ? Math.round(totalIssues/done) : 0, ''],
-  ];
-  const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
-  ws1['!cols'] = [{wch:28},{wch:14},{wch:20}];
-  XLSX.utils.book_append_sheet(wb, ws1, '📊 Summary');
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Server error ' + res.status);
+    }
 
-  // ── Sheet 2: Full Audit Data ──────────────────────────────────────────────
-  const headers = [
-    '#','URL','SEO Score','Grade','CMS / Platform','HTTPS','Mobile Ready',
-    'TTFB (ms)','Word Count','Title Length (chars)','Meta Desc Length (chars)',
-    'Total Issues','High Priority Issues','Medium Priority Issues','Low Priority Issues',
-    'Top Issue #1','Top Issue #2','Top Issue #3','Audit Date'
-  ];
+    // Stream the blob and trigger download
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `RankSorcery-Bulk-SEO-Audit-${today}.xlsx`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
 
-  const dataRows = auditResults.map((r, idx) => {
-    const pd = r.pageData || {};
-    const d  = r.data || {};
-    const suggs = d.suggestions || [];
-    const highs = suggs.filter(s=>s.priority==='high');
-    const meds  = suggs.filter(s=>s.priority==='medium');
-    const lows  = suggs.filter(s=>s.priority==='low');
-    const score = r.score;
-    const grade = score==null?'':score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
-    return [
-      idx+1,
-      r.url,
-      score ?? (r.status==='error' ? 'ERROR' : 'N/A'),
-      grade,
-      r.cms?.cms || '—',
-      pd.isHttps!==false ? 'Yes' : 'No',
-      pd.hasViewport ? 'Yes' : 'No',
-      pd.ttfb || '',
-      pd.wordCount || '',
-      pd.title?.length || '',
-      pd.metaDesc?.length || '',
-      suggs.length,
-      highs.length,
-      meds.length,
-      lows.length,
-      highs[0]?.title || highs[0]?.text || '',
-      highs[1]?.title || highs[1]?.text || '',
-      highs[2]?.title || highs[2]?.text || '',
-      today,
-    ];
-  });
-
-  const ws2 = XLSX.utils.aoa_to_sheet([headers, ...dataRows]);
-  ws2['!cols'] = [
-    {wch:4},{wch:36},{wch:12},{wch:8},{wch:18},{wch:8},{wch:10},
-    {wch:10},{wch:12},{wch:14},{wch:16},
-    {wch:12},{wch:14},{wch:16},{wch:14},
-    {wch:40},{wch:40},{wch:40},{wch:14}
-  ];
-  // Freeze header row
-  ws2['!freeze'] = {xSplit:0, ySplit:1};
-  XLSX.utils.book_append_sheet(wb, ws2, '📋 Audit Data');
-
-  // ── Sheet 3: How To Read ──────────────────────────────────────────────────
-  const howTo = [
-    ['HOW TO READ THIS REPORT',''],
-    ['',''],
-    ['SCORE GUIDE',''],
-    ['90–100 → Grade A','Excellent. Site is well-optimised.'],
-    ['80–89  → Grade B','Good. Minor fixes needed.'],
-    ['70–79  → Grade C','Fair. Moderate issues. Prioritise High issues.'],
-    ['60–69  → Grade D','Needs Work. Fix High issues urgently.'],
-    ['Below 60 → Grade F','Poor. Full SEO overhaul needed.'],
-    ['',''],
-    ['PRIORITY LEVELS',''],
-    ['🔴 High','Fix immediately — actively harming rankings'],
-    ['🟡 Medium','Fix this week — meaningful improvements'],
-    ['🟢 Low','Nice to have — smaller ranking boosts'],
-    ['',''],
-    ['COLUMN GUIDE',''],
-    ['TTFB (ms)','Time To First Byte. Good <800ms, Poor ≥1800ms'],
-    ['Title Length','Ideal: 50–60 characters for best Google display'],
-    ['Meta Desc Length','Ideal: 120–155 characters'],
-    ['Word Count','Aim for 600+ words minimum for content pages'],
-  ];
-  const ws3 = XLSX.utils.aoa_to_sheet(howTo);
-  ws3['!cols'] = [{wch:24},{wch:52}];
-  XLSX.utils.book_append_sheet(wb, ws3, 'ℹ️ Guide');
-
-  // Download
-  XLSX.writeFile(wb, `RankSorcery-Bulk-SEO-Audit-${today}.xlsx`);
-  showToast('✅ Excel report downloaded!', 'var(--green)');
+    showToast('✅ Formatted Excel report downloaded!', 'var(--green)', 5000);
+  } catch (err) {
+    console.error('Export error:', err);
+    showToast('⚠ Export failed: ' + err.message, 'var(--red)', 6000);
+  } finally {
+    if (btn)  { btn.disabled  = false; btn.textContent  = orig;  }
+    if (btn2) { btn2.disabled = false; btn2.textContent = orig2; }
+  }
 }
 
 // ── TOAST ─────────────────────────────────────────────────────────────────────
