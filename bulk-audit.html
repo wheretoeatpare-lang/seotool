@@ -572,10 +572,127 @@ async function detectCMS(url) {
     if (!res.ok) return {cms:'Unknown',confidence:0}; return await res.json();
   } catch { return {cms:'Unknown',confidence:0}; }
 }
+const GROQ_PROXY = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/';
+
 async function runAIAudit(url, options, pageData, cmsData) {
-  const res = await fetch('/api/claude', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url,options,pageData,cmsData}), signal:AbortSignal.timeout(60000) });
-  if (!res.ok) { let msg='API error '+res.status; try{const e=await res.json();if(e.error)msg=e.error;}catch{} throw new Error(msg); }
-  return await res.json();
+  // 1 Try main backend first
+  try {
+    const res = await fetch('/api/claude', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({url, options, pageData, cmsData}),
+      signal: AbortSignal.timeout(60000)
+    });
+    if (res.ok) return await res.json();
+  } catch(e) { /* fall through */ }
+
+  // 2 Try Groq proxy worker
+  try {
+    const res = await fetch(GROQ_PROXY, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({url, options, pageData, cmsData}),
+      signal: AbortSignal.timeout(45000)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.result) {
+        const clean = data.result.replace(/```json|```/g,'').trim();
+        try { return JSON.parse(clean); } catch(e2) { /* fall through */ }
+      }
+      if (data.seo_score !== undefined) return data;
+    }
+  } catch(e) { /* fall through */ }
+
+  // 3 Both dead - score locally, no API needed
+  return runLocalAudit(url, pageData, cmsData);
+}
+
+function runLocalAudit(url, pageData, cmsData) {
+  const pd = pageData || {};
+  const suggestions = [];
+  let onPage = 100, technical = 100, content = 100, ux = 100;
+
+  // ON-PAGE SEO
+  if (!pd.title) {
+    onPage -= 30;
+    suggestions.push({ priority:'high', title:'Add a page title', detail:'No title tag found. This is one of the most critical on-page SEO elements.' });
+  } else {
+    const tl = pd.title.length;
+    if (tl < 30) { onPage -= 15; suggestions.push({ priority:'high', title:'Title too short ('+tl+' chars)', detail:'Aim for 50-60 characters. Short titles miss keyword opportunities.' }); }
+    else if (tl > 65) { onPage -= 10; suggestions.push({ priority:'medium', title:'Title too long ('+tl+' chars)', detail:'Google truncates titles over ~60 characters in search results. Trim it down.' }); }
+    else { suggestions.push({ priority:'low', title:'Title length is good ('+tl+' chars)', detail:'Your title is within the ideal 50-60 character range.' }); }
+  }
+
+  if (!pd.metaDesc) {
+    onPage -= 20;
+    suggestions.push({ priority:'high', title:'Add a meta description', detail:'No meta description found. Google often uses this as the search snippet.' });
+  } else {
+    const ml = pd.metaDesc.length;
+    if (ml < 80) { onPage -= 10; suggestions.push({ priority:'medium', title:'Meta description too short ('+ml+' chars)', detail:'Aim for 120-155 characters to maximise click-through rate.' }); }
+    else if (ml > 160) { onPage -= 8; suggestions.push({ priority:'low', title:'Meta description too long ('+ml+' chars)', detail:'Google truncates descriptions over ~155 characters. Shorten slightly.' }); }
+  }
+
+  if (!pd.h1) {
+    onPage -= 15;
+    suggestions.push({ priority:'high', title:'Add an H1 heading', detail:'No H1 tag detected. Every page should have one clear H1 with your primary keyword.' });
+  }
+
+  if (!pd.canonical) {
+    onPage -= 5;
+    suggestions.push({ priority:'low', title:'Add a canonical tag', detail:'No canonical URL found. A canonical tag prevents duplicate content issues.' });
+  }
+
+  if (!pd.ogTitle && !pd.ogImage) {
+    onPage -= 5;
+    suggestions.push({ priority:'low', title:'Add Open Graph tags', detail:'No OG title or image found. These improve how your page looks when shared on social media.' });
+  }
+
+  // TECHNICAL SEO
+  if (!pd.isHttps) {
+    technical -= 30;
+    suggestions.push({ priority:'high', title:'Switch to HTTPS', detail:'Site is not served over HTTPS. This is a Google ranking signal and critical for user trust.' });
+  }
+
+  if (pd.robotsMeta && /noindex/i.test(pd.robotsMeta)) {
+    technical -= 40;
+    suggestions.push({ priority:'high', title:'Page is set to noindex', detail:'The robots meta tag includes noindex - Google will not index this page.' });
+  }
+
+  if (pd.ttfb) {
+    if (pd.ttfb > 1800) { technical -= 20; suggestions.push({ priority:'high', title:'Slow TTFB ('+pd.ttfb+'ms)', detail:'Time To First Byte is very slow. Investigate server response time, caching, and hosting.' }); }
+    else if (pd.ttfb > 800) { technical -= 10; suggestions.push({ priority:'medium', title:'TTFB could be faster ('+pd.ttfb+'ms)', detail:'Aim for under 800ms TTFB. Consider caching or a CDN.' }); }
+  }
+
+  // CONTENT QUALITY
+  if (!pd.wordCount || pd.wordCount < 100) {
+    content -= 30;
+    suggestions.push({ priority:'high', title:'Very thin content ('+(pd.wordCount||0)+' words)', detail:'Pages with very little content rarely rank well. Aim for at least 600 words for content pages.' });
+  } else if (pd.wordCount < 400) {
+    content -= 15;
+    suggestions.push({ priority:'medium', title:'Low word count ('+pd.wordCount+' words)', detail:'Consider expanding content to 600+ words for better topical depth.' });
+  }
+
+  // USER EXPERIENCE
+  if (!pd.hasViewport) {
+    ux -= 30;
+    suggestions.push({ priority:'high', title:'Missing viewport meta tag', detail:'No viewport meta tag found. This means the page is not mobile-optimised - a significant ranking factor.' });
+  }
+
+  // FINAL SCORE
+  onPage    = Math.max(0, onPage);
+  technical = Math.max(0, technical);
+  content   = Math.max(0, content);
+  ux        = Math.max(0, ux);
+  const seo_score = Math.round(onPage * 0.35 + technical * 0.30 + content * 0.20 + ux * 0.15);
+
+  const order = { high:0, medium:1, low:2 };
+  suggestions.sort((a,b) => order[a.priority] - order[b.priority]);
+
+  return {
+    seo_score,
+    categories: { on_page_seo: onPage, technical_seo: technical, content_quality: content, user_experience: ux },
+    suggestions: suggestions.slice(0, 8),
+    eeat_summary: 'Score calculated locally from page structure data (title, meta, HTTPS, viewport, word count, H1, canonical). Groq and main API were unavailable.'
+  };
 }
 
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
