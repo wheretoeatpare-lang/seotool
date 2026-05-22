@@ -502,11 +502,69 @@ async function startBulkAudit() {
 function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(--amber)'); }
 
 // ── API CALLS ────────────────────────────────────────────────────────────────
+
+// CLIENT-SIDE FALLBACK: fetch + parse page HTML directly via CORS proxy
+async function fetchPageDataClientSide(url) {
+  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+  try {
+    const t0 = Date.now();
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(18000) });
+    const ttfb = Date.now() - t0;
+    if (!res.ok) return null;
+    const json = await res.json();
+    const html = json.contents || '';
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    // Title
+    const title = doc.querySelector('title')?.textContent?.trim() || '';
+
+    // Meta description — check name and property variants
+    const metaDesc =
+      doc.querySelector('meta[name="description"]')?.getAttribute('content')?.trim() ||
+      doc.querySelector('meta[property="og:description"]')?.getAttribute('content')?.trim() ||
+      '';
+
+    // Viewport / mobile
+    const hasViewport = !!doc.querySelector('meta[name="viewport"]');
+
+    // HTTPS
+    const isHttps = url.startsWith('https://');
+
+    // Word count (rough — strip tags, count words)
+    const bodyText = doc.body?.innerText || doc.body?.textContent || '';
+    const wordCount = bodyText.trim().split(/\s+/).filter(Boolean).length;
+
+    // Canonical
+    const canonical = doc.querySelector('link[rel="canonical"]')?.getAttribute('href')?.trim() || '';
+
+    // h1
+    const h1 = doc.querySelector('h1')?.textContent?.trim() || '';
+
+    // robots meta
+    const robotsMeta = doc.querySelector('meta[name="robots"]')?.getAttribute('content')?.trim() || '';
+
+    // og:title / og:image
+    const ogTitle = doc.querySelector('meta[property="og:title"]')?.getAttribute('content')?.trim() || '';
+    const ogImage = doc.querySelector('meta[property="og:image"]')?.getAttribute('content')?.trim() || '';
+
+    return { title, metaDesc, hasViewport, isHttps, wordCount, ttfb, canonical, h1, robotsMeta, ogTitle, ogImage, _source: 'client' };
+  } catch { return null; }
+}
+
 async function fetchPageData(url) {
+  // 1️⃣ Try backend first
   try {
     const res = await fetch('/api/page-data', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(20000) });
-    if (!res.ok) return null; return await res.json();
-  } catch { return null; }
+    if (res.ok) {
+      const data = await res.json();
+      // Backend returned data but title/metaDesc empty? Still try client fallback
+      if (data && (data.title || data.metaDesc)) return data;
+    }
+  } catch { /* fall through */ }
+
+  // 2️⃣ Backend failed or returned empty — scrape client-side via CORS proxy
+  return await fetchPageDataClientSide(url);
 }
 async function detectCMS(url) {
   try {
