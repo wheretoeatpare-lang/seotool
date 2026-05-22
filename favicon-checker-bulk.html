@@ -201,6 +201,40 @@
       color: var(--red);
     }
 
+    /* Filter buttons */
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .filter-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .filter-btn {
+      height: 32px;
+      padding: 0 14px;
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+    .filter-btn.active-all { border-color: var(--text2); color: var(--text); }
+    .filter-btn.active-found { border-color: var(--accent); color: var(--accent); background: rgba(184,255,87,0.07); }
+    .filter-btn.active-missing { border-color: var(--red); color: var(--red); background: rgba(255,87,87,0.07); }
+
     .url-count-badge {
       font-family: 'Space Mono', monospace;
       font-size: 11px;
@@ -278,6 +312,8 @@
       overflow: hidden;
       animation: cardIn 0.3s ease both;
     }
+
+    .card.hidden { display: none; }
 
     @keyframes cardIn {
       from { opacity: 0; transform: translateY(12px); }
@@ -381,7 +417,7 @@
     .src-name {
       font-family: 'Space Mono', monospace;
       color: var(--text2);
-      min-width: 90px;
+      min-width: 120px;
       flex-shrink: 0;
     }
 
@@ -407,6 +443,57 @@
 
     .found-url a { color: var(--accent2); text-decoration: none; }
     .found-url a:hover { text-decoration: underline; }
+
+    /* Missing site links */
+    .missing-links {
+      padding: 10px 20px 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .site-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 100px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      border: none;
+    }
+
+    .site-link-btn:hover { opacity: 0.8; }
+
+    .btn-visit {
+      background: rgba(87,200,255,0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(87,200,255,0.3) !important;
+    }
+
+    .btn-copy {
+      background: var(--surface2);
+      color: var(--text2);
+      border: 1px solid var(--border) !important;
+    }
+
+    .btn-copy.copied {
+      background: rgba(184,255,87,0.1);
+      color: var(--accent);
+      border-color: rgba(184,255,87,0.3) !important;
+    }
+
+    .missing-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 10px;
+      color: var(--text3);
+      margin-left: auto;
+    }
 
     /* Empty state */
     #empty {
@@ -484,11 +571,11 @@
 <header>
   <div class="header-inner">
     <div>
-      <div class="logo">Cave-Claude Tool v2.0 — BULK EDITION</div>
+      <div class="logo">Cave-Claude Tool v4.0 — NO MORE FAKE PLACEHOLDER TRICK</div>
       <h1>Favicon<br><span>Checker</span></h1>
       <p class="tagline">// bulk favicon detection — many sites, one smash</p>
     </div>
-    <div class="header-badge">🦴 UGH — NOW CHECK MANY SITES!</div>
+    <div class="header-badge">🦴 UGH — SMASH FAKE ICONS!</div>
   </div>
 </header>
 
@@ -511,6 +598,12 @@
       <button class="check-btn" onclick="checkAll()">Check All →</button>
       <button class="clear-btn" onclick="clearResults()">Clear Results</button>
       <span class="url-count-badge" id="url-count"></span>
+    </div>
+    <div class="filter-row">
+      <span class="filter-label">Show:</span>
+      <button class="filter-btn active-all" id="filter-all" onclick="setFilter('all')">All</button>
+      <button class="filter-btn" id="filter-found" onclick="setFilter('found')">✓ Found</button>
+      <button class="filter-btn" id="filter-missing" onclick="setFilter('missing')">✕ Missing</button>
     </div>
   </div>
 
@@ -553,36 +646,67 @@
   const checked = new Set();
   let statTotal = 0, statFound = 0, statMissing = 0;
   let totalInBatch = 0, doneInBatch = 0;
+  let currentFilter = 'all';
 
+  // ─── SOURCES ───────────────────────────────────────────────────────────────
+  // REMOVED: DuckDuckGo — returns its own placeholder globe icon for EVERY domain
+  //          even when no real favicon exists. Same fake-positive trick as FaviconKit! 🪓
+  // REMOVED: Google 32px — redundant when we have 64px + direct checks
+  // ADDED:   Direct /favicon.png, /apple-touch-icon.png — server either has file or 404s.
+  //          These NEVER return fake placeholders. Very trustworthy. Caveman approve. 🦴
   const SOURCES = [
     {
       key: 'google64',
       name: 'Google (64px)',
-      url: h => `https://www.google.com/s2/favicons?domain=${h}&sz=64`
+      url: h => `https://www.google.com/s2/favicons?domain=${h}&sz=64`,
+      // Google returns a 16x16 gray globe for ANY domain with no favicon,
+      // regardless of how large you request. Real favicons come back ≥32px usually.
+      // If we get exactly 16×16 on a sz=64 request → it's the placeholder globe.
+      isPlaceholder: (w, h) => w === 16 && h === 16
     },
     {
-      key: 'google32',
-      name: 'Google (32px)',
-      url: h => `https://www.google.com/s2/favicons?domain=${h}&sz=32`
-    },
-    {
-      key: 'duckduckgo',
-      name: 'DuckDuckGo',
-      url: h => `https://icons.duckduckgo.com/ip3/${h}.ico`
-    },
-    {
-      key: 'faviconkit',
-      name: 'FaviconKit',
-      url: h => `https://api.faviconkit.com/${h}/64`
-    },
-    {
-      key: 'direct',
+      key: 'favicon_ico',
       name: '/favicon.ico',
-      url: h => `https://${h}/favicon.ico`
+      url: h => `https://${h}/favicon.ico`,
+      // Direct hit. If server has no icon, returns 404 → browser fires onerror.
+      // Only false positive: server returns a 1×1 tracking pixel as 404. Size check handles it.
+      isPlaceholder: (w, h) => w <= 2 && h <= 2
+    },
+    {
+      key: 'favicon_png',
+      name: '/favicon.png',
+      url: h => `https://${h}/favicon.png`,
+      isPlaceholder: (w, h) => w <= 2 && h <= 2
+    },
+    {
+      key: 'apple_touch',
+      name: 'apple-touch-icon',
+      url: h => `https://${h}/apple-touch-icon.png`,
+      // Apple touch icons are always large (57–180px). Very reliable signal.
+      isPlaceholder: (w, h) => w <= 2 && h <= 2
+    },
+    {
+      key: 'apple_touch_pre',
+      name: 'apple-touch-precomp',
+      url: h => `https://${h}/apple-touch-icon-precomposed.png`,
+      isPlaceholder: (w, h) => w <= 2 && h <= 2
     }
   ];
 
   const SAMPLES = ['facebook.com','youtube.com','github.com','reddit.com','anthropic.com','x.com','wikipedia.org','stripe.com'];
+
+  function setFilter(f) {
+    currentFilter = f;
+    document.getElementById('filter-all').className = 'filter-btn' + (f === 'all' ? ' active-all' : '');
+    document.getElementById('filter-found').className = 'filter-btn' + (f === 'found' ? ' active-found' : '');
+    document.getElementById('filter-missing').className = 'filter-btn' + (f === 'missing' ? ' active-missing' : '');
+    // Apply filter to existing cards
+    document.querySelectorAll('.card[data-status]').forEach(card => {
+      const status = card.getAttribute('data-status');
+      const show = f === 'all' || status === f || status === 'checking';
+      card.classList.toggle('hidden', !show);
+    });
+  }
 
   function loadAllSamples() {
     const ta = document.getElementById('url-input');
@@ -603,7 +727,6 @@
   }
 
   function parseUrls(raw) {
-    // Split by newlines OR commas, trim, dedupe
     return raw
       .split(/[\n,]+/)
       .map(s => s.trim())
@@ -666,7 +789,6 @@
 
     if (hostnames.length === 0) return;
 
-    // Mark all as checked
     hostnames.forEach(h => checked.add(h));
 
     document.getElementById('empty').style.display = 'none';
@@ -674,14 +796,13 @@
     statTotal += hostnames.length;
     document.getElementById('stat-total').textContent = statTotal;
 
-    // Set up batch progress
     totalInBatch = hostnames.length;
     doneInBatch = 0;
     updateProgress();
 
-    // Fire all checks in parallel — big caveman stampede!
+    // Stagger 60ms each to avoid overwhelming the browser
     hostnames.forEach((h, i) => {
-      setTimeout(() => runCheck(h), i * 60); // stagger 60ms each to avoid overwhelming
+      setTimeout(() => runCheck(h), i * 60);
     });
   }
 
@@ -712,12 +833,41 @@
     updateCount();
   }
 
+  function copyUrl(hostname, btnId) {
+    const url = 'https://' + hostname;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy URL';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // fallback
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const btn = document.getElementById(btnId);
+      if (btn) {
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = '📋 Copy URL'; btn.classList.remove('copied'); }, 2000);
+      }
+    });
+  }
+
   function runCheck(hostname) {
     const id = 'card-' + Math.random().toString(36).slice(2);
 
     const card = document.createElement('div');
     card.className = 'card';
     card.id = id;
+    card.setAttribute('data-status', 'checking');
     card.innerHTML = `
       <div class="card-hero">
         <div class="icon-wrap" id="${id}-ico">
@@ -739,9 +889,19 @@
           </div>`).join('')}
       </div>
       <div class="found-url" id="${id}-foundurl" style="display:none"></div>
+      <div class="missing-links" id="${id}-missinglinks" style="display:none">
+        <a class="site-link-btn btn-visit" href="https://${hostname}" target="_blank" rel="noopener">🔗 Open Site</a>
+        <button class="site-link-btn btn-copy" id="${id}-copybtn" onclick="copyUrl('${hostname}', '${id}-copybtn')">📋 Copy URL</button>
+        <span class="missing-label">verify &amp; report back!</span>
+      </div>
     `;
 
     document.getElementById('results').prepend(card);
+
+    // Apply current filter to the new card
+    if (currentFilter === 'found' || currentFilter === 'missing') {
+      card.classList.add('hidden'); // hide until status resolved
+    }
 
     let foundUrl = null;
     let pending = SOURCES.length;
@@ -757,7 +917,7 @@
         markFail(src.key);
         pending--;
         if (pending === 0) finalize();
-      }, 5000);
+      }, 6000); // 6 second timeout — cave internet slow sometimes
 
       img.onload = () => {
         if (done) return;
@@ -766,16 +926,12 @@
 
         const w = img.naturalWidth;
         const h = img.naturalHeight;
-        const valid = w > 1 && h > 1 && !(w === 16 && h === 16 && src.key.startsWith('google'));
+
+        // Check if this source's response is a placeholder/fake
+        const isPlaceholder = src.isPlaceholder ? src.isPlaceholder(w, h) : false;
+        const valid = w > 0 && h > 0 && !isPlaceholder;
 
         if (valid) {
-          markOk(src.key, `${w}×${h}`);
-          if (!foundUrl) {
-            foundUrl = url;
-            const ico = document.getElementById(`${id}-ico`);
-            if (ico) ico.innerHTML = `<img src="${url}" alt="favicon" />`;
-          }
-        } else if (w === 16 && h === 16 && src.key.startsWith('google')) {
           markOk(src.key, `${w}×${h}`);
           if (!foundUrl) {
             foundUrl = url;
@@ -822,6 +978,7 @@
 
       const pill = document.getElementById(`${id}-pill`);
       const foundUrlEl = document.getElementById(`${id}-foundurl`);
+      const cardEl = document.getElementById(id);
       if (!pill) return;
 
       if (foundUrl) {
@@ -833,11 +990,24 @@
           foundUrlEl.style.display = 'block';
           foundUrlEl.innerHTML = `<a href="${foundUrl}" target="_blank" rel="noopener">${foundUrl}</a>`;
         }
+        if (cardEl) {
+          cardEl.setAttribute('data-status', 'found');
+          if (currentFilter === 'missing') cardEl.classList.add('hidden');
+          else cardEl.classList.remove('hidden');
+        }
       } else {
         pill.className = 'status-pill pill-missing';
         pill.innerHTML = '✕ no favicon';
         statMissing++;
         document.getElementById('stat-missing').textContent = statMissing;
+        // Show direct site links so user can verify manually
+        const missingLinksEl = document.getElementById(`${id}-missinglinks`);
+        if (missingLinksEl) missingLinksEl.style.display = 'flex';
+        if (cardEl) {
+          cardEl.setAttribute('data-status', 'missing');
+          if (currentFilter === 'found') cardEl.classList.add('hidden');
+          else cardEl.classList.remove('hidden');
+        }
       }
     }
   }
