@@ -888,12 +888,6 @@ function parseHtmlForSEO(html, url) {
     if (txt) h2Texts.push(txt);
   }
 
-  const robotsMeta = getMeta('name', 'robots');
-  const ogTitle = getMeta('property', 'og:title');
-  const ogImage = getMeta('property', 'og:image');
-  const stripped = html.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
-
   // ── IMAGE EXTRACTION ────────────────────────────────────────────────────────
   // Parse every <img> tag and collect src, alt, width, height
   const imgTagRx = /<img\b([^>]*?)(?:\/>|>)/gi;
@@ -1448,7 +1442,7 @@ function updateRow(idx) {
   if (scoreEl) {
     if (r.score != null) {
       const cls = scoreClass(r.score);
-      scoreEl.innerHTML = `<div class="score-cell ${cls}"><div class="score-num">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`;
+      scoreEl.innerHTML = `<div class="score-cell ${cls}"><div class="score-num score-pop">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`;
     } else if (r.status === 'error') {
       scoreEl.innerHTML = `<span style="color:var(--red);font-size:.75rem">${r.error}</span>`;
     } else {
@@ -1492,14 +1486,17 @@ function updateRow(idx) {
   }
 
   if (r.status === 'done' || r.status === 'error') {
+    const wasScanning = tr.classList.contains('row-scanning');
     tr.classList.remove('row-scanning');
     stopScanText(idx);
-    // Flash animation
-    requestAnimationFrame(() => {
-      fireRowComplete(idx);
-      tr.classList.add('row-zap');
-      setTimeout(() => tr.classList.remove('row-zap'), 400);
-    });
+    // Flash animation — only when transitioning FROM scanning (not on filter rebuilds)
+    if (wasScanning || auditRunning) {
+      requestAnimationFrame(() => {
+        fireRowComplete(idx);
+        tr.classList.add('row-zap');
+        setTimeout(() => tr.classList.remove('row-zap'), 400);
+      });
+    }
   }
 
   if (r.status === 'done' && expandedRows.has(idx)) renderDetail(idx);
