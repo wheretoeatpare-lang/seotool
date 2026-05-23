@@ -985,68 +985,148 @@ function updateProgress() {
 // ── RESULTS TABLE ─────────────────────────────────────────────────────────────
 function scoreClass(s){return s>=80?'score-green':s>=60?'score-amber':'score-red';}
 function renderTable() {
-  const tbody=document.getElementById('results-tbody'); tbody.innerHTML='';
-  auditResults.forEach((r,i)=>{
-    const tr=document.createElement('tr'); tr.id='row-'+i; tr.innerHTML=rowHtml(r,i); tbody.appendChild(tr);
-    const dtr=document.createElement('tr'); dtr.id='detail-row-'+i; dtr.className='detail-row';
-    dtr.innerHTML=`<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  auditResults.forEach((r, i) => {
+    let host = r.url; try { host = new URL(r.url).hostname; } catch {}
+    const fav = `https://www.google.com/s2/favicons?domain=${host}&sz=32`;
+
+    // Create TR skeleton once — child elements get stable IDs, updated in place later
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    tr.innerHTML = `
+      <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
+      <td><div class="site-cell">
+        <img class="site-favicon" src="${fav}" onerror="this.style.display='none'">
+        <div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div>
+      </div></td>
+      <td id="row-badge-${i}"><span class="status-badge badge-queued">⏳ Queued</span></td>
+      <td id="row-score-${i}"><span style="color:var(--muted2)">—</span></td>
+      <td id="row-cms-${i}"><span style="color:var(--muted2);font-size:.78rem;font-weight:600">—</span></td>
+      <td id="row-issues-${i}">—</td>
+      <td id="row-expand-${i}"></td>`;
+    tbody.appendChild(tr);
+
+    const dtr = document.createElement('tr');
+    dtr.id = 'detail-row-' + i;
+    dtr.className = 'detail-row';
+    dtr.innerHTML = `<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
     tbody.appendChild(dtr);
   });
 }
-function rowHtml(r,i){
-  let host=r.url; try{host=new URL(r.url).hostname;}catch{}
-  const fav=`https://www.google.com/s2/favicons?domain=${host}&sz=32`;
-  const badge=r.status==='done'?`<span class="status-badge badge-done">✓ Done</span>`
-    :r.status==='scanning'?`<span class="status-badge badge-scanning"><span class="badge-scanning-dot"></span>Scanning</span>`
-    :r.status==='error'?`<span class="status-badge badge-error">✗ Error</span>`
-    :`<span class="status-badge badge-queued">⏳ Queued</span>`;
-  const score=r.score!=null?`<div class="score-cell ${scoreClass(r.score)}"><div class="score-num">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`
-    :r.status==='error'?`<span style="color:var(--red);font-size:.75rem">${r.error}</span>`
-    :`<span style="color:var(--muted2)">—</span>`;
-  const cms=r.cms?.cms||'—';
-  let issues='—';
-  if(r.data?.suggestions?.length){
-    const hi=r.data.suggestions.filter(s=>s.priority==='high').slice(0,2);
-    if(hi.length)issues=hi.map(s=>`<div style="font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${s.title||s.text||''}</div>`).join('');
-  } else if(r.status==='scanning'){issues=`<span id="scan-text-${i}" class="shimmer-text" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;}
+
+function rowHtml(r, i) {
+  // Legacy — only used by applyFilters rebuild. Returns skeleton, cells updated after.
+  let host = r.url; try { host = new URL(r.url).hostname; } catch {}
+  const fav = `https://www.google.com/s2/favicons?domain=${host}&sz=32`;
   return `
     <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
-    <td><div class="site-cell"><img class="site-favicon" src="${fav}" onerror="this.style.display='none'"><div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div></div></td>
-    <td>${badge}</td>
-    <td>${score}</td>
-    <td><span style="color:${r.cms?.cms?'var(--teal)':'var(--muted2)'};font-size:.78rem;font-weight:600">${cms}</span></td>
-    <td>${issues}</td>
-    <td>${r.status==='done'?`<button class="expand-btn" id="expand-btn-${i}" onclick="toggleDetail(${i})">▼</button>`:''}</td>`;
+    <td><div class="site-cell">
+      <img class="site-favicon" src="${fav}" onerror="this.style.display='none'">
+      <div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div>
+    </div></td>
+    <td id="row-badge-${i}"><span class="status-badge badge-queued">⏳ Queued</span></td>
+    <td id="row-score-${i}"><span style="color:var(--muted2)">—</span></td>
+    <td id="row-cms-${i}"><span style="color:var(--muted2);font-size:.78rem;font-weight:600">—</span></td>
+    <td id="row-issues-${i}">—</td>
+    <td id="row-expand-${i}"></td>`;
 }
-function updateRow(idx){
-  const r=auditResults[idx];
-  const tr=document.getElementById('row-'+idx);
-  if(!tr) return;
 
-  // Clear all animation classes first
-  tr.classList.remove('row-scanning','row-done-flash','row-zap');
+function updateRow(idx) {
+  const r = auditResults[idx];
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
 
-  // Rebuild innerHTML first so TDs exist in DOM
-  tr.innerHTML = rowHtml(r, idx);
-
-  // Force reflow
-  void tr.offsetHeight;
-
-  if(r.status==='scanning'){
-    // Add class + inject sweep bar AFTER innerHTML so TDs exist
-    setRowScanning(idx);
-    startScanText(idx);
+  // ── BADGE ──────────────────────────────────────────────────────────────────
+  const badgeEl = document.getElementById('row-badge-' + idx);
+  if (badgeEl) {
+    if (r.status === 'done')
+      badgeEl.innerHTML = '<span class="status-badge badge-done">✓ Done</span>';
+    else if (r.status === 'scanning')
+      badgeEl.innerHTML = '<span class="status-badge badge-scanning"><span class="badge-scanning-dot"></span>Scanning</span>';
+    else if (r.status === 'error')
+      badgeEl.innerHTML = '<span class="status-badge badge-error">✗ Error</span>';
+    else
+      badgeEl.innerHTML = '<span class="status-badge badge-queued">⏳ Queued</span>';
   }
-  if(r.status==='done'||r.status==='error'){
+
+  // ── SCORE ──────────────────────────────────────────────────────────────────
+  const scoreEl = document.getElementById('row-score-' + idx);
+  if (scoreEl) {
+    if (r.score != null) {
+      const cls = scoreClass(r.score);
+      scoreEl.innerHTML = `<div class="score-cell ${cls}"><div class="score-num">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`;
+    } else if (r.status === 'error') {
+      scoreEl.innerHTML = `<span style="color:var(--red);font-size:.75rem">${r.error}</span>`;
+    } else {
+      scoreEl.innerHTML = '<span style="color:var(--muted2)">—</span>';
+    }
+  }
+
+  // ── CMS ────────────────────────────────────────────────────────────────────
+  const cmsEl = document.getElementById('row-cms-' + idx);
+  if (cmsEl) {
+    const cms = r.cms?.cms || '—';
+    cmsEl.innerHTML = `<span style="color:${r.cms?.cms ? 'var(--teal)' : 'var(--muted2)'};font-size:.78rem;font-weight:600">${cms}</span>`;
+  }
+
+  // ── ISSUES / SCAN TEXT ─────────────────────────────────────────────────────
+  const issuesEl = document.getElementById('row-issues-' + idx);
+  if (issuesEl) {
+    if (r.data?.suggestions?.length) {
+      const hi = r.data.suggestions.filter(s => s.priority === 'high').slice(0, 2);
+      issuesEl.innerHTML = hi.length
+        ? hi.map(s => `<div style="font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${s.title || s.text || ''}</div>`).join('')
+        : '—';
+    } else if (r.status === 'scanning') {
+      issuesEl.innerHTML = `<span id="scan-text-${idx}" class="shimmer-text" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;
+    } else {
+      issuesEl.innerHTML = '—';
+    }
+  }
+
+  // ── EXPAND BUTTON ──────────────────────────────────────────────────────────
+  const expandEl = document.getElementById('row-expand-' + idx);
+  if (expandEl && r.status === 'done' && !expandEl.querySelector('button')) {
+    expandEl.innerHTML = `<button class="expand-btn" id="expand-btn-${idx}" onclick="toggleDetail(${idx})">▼</button>`;
+  }
+
+  // ── ANIMATIONS ─────────────────────────────────────────────────────────────
+  if (r.status === 'scanning') {
+    tr.classList.remove('row-done-flash', 'row-zap');
+    tr.classList.add('row-scanning');
+    startScanText(idx);
+    // Inject sweep bar into badge TD (stable element, not re-created)
+    if (badgeEl && !document.getElementById('sweep-' + idx)) {
+      badgeEl.style.position = 'relative';
+      badgeEl.style.overflow = 'hidden';
+      const bar = document.createElement('div');
+      bar.className = 'scan-sweep-bar';
+      bar.id = 'sweep-' + idx;
+      badgeEl.appendChild(bar);
+    }
+  }
+
+  if (r.status === 'done' || r.status === 'error') {
+    tr.classList.remove('row-scanning');
     stopScanText(idx);
-    requestAnimationFrame(()=>{
+    // Remove sweep bar
+    const bar = document.getElementById('sweep-' + idx);
+    if (bar) bar.remove();
+    // Flash animation
+    requestAnimationFrame(() => {
+      tr.classList.add('row-done-flash');
+      setTimeout(() => tr.classList.remove('row-done-flash'), 900);
       fireRowComplete(idx);
-      setRowZapIn(idx);
+      tr.classList.add('row-zap');
+      setTimeout(() => tr.classList.remove('row-zap'), 400);
     });
   }
-  if(r.status==='done'&&expandedRows.has(idx)) renderDetail(idx);
+
+  if (r.status === 'done' && expandedRows.has(idx)) renderDetail(idx);
   renderSummaryChips();
 }
+
 function toggleDetail(idx){
   const dr=document.getElementById('detail-row-'+idx);
   const btn=document.getElementById('expand-btn-'+idx);
@@ -1112,6 +1192,8 @@ function applyFilters(){
     dtr.className='detail-row'+(expandedRows.has(i)?' open':'');
     dtr.innerHTML=`<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
     tbody.appendChild(dtr);
+    // Populate child cells via updateRow after skeleton is in DOM
+    updateRow(i);
     if(expandedRows.has(i)) renderDetail(i);
   });
 }
@@ -1617,27 +1699,11 @@ function fireRowComplete(idx) {
 }
 
 function setRowScanning(idx) {
-  const tr = document.getElementById('row-' + idx);
-  if (!tr) return;
-  tr.classList.add('row-scanning');
-  tr.classList.remove('row-done-flash', 'row-zap');
-  // Inject a real div sweep bar into the first TD — works reliably in all browsers
-  const firstTd = tr.querySelector('td');
-  if (firstTd) {
-    firstTd.style.position = 'relative';
-    firstTd.style.overflow = 'hidden';
-    const bar = document.createElement('div');
-    bar.className = 'scan-sweep-bar';
-    bar.id = 'sweep-' + idx;
-    firstTd.appendChild(bar);
-  }
+  // No-op — handled inside updateRow now
 }
 
 function setRowZapIn(idx) {
-  const tr = document.getElementById('row-' + idx);
-  if (!tr) return;
-  tr.classList.add('row-zap');
-  setTimeout(() => tr.classList.remove('row-zap'), 400);
+  // No-op — handled inside updateRow now
 }
 
 // Animated scanning steps text
