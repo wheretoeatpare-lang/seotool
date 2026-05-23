@@ -930,12 +930,11 @@ function parseHtmlForSEO(html, url) {
     alt:    img.alt,
     width:  img.width,
     height: img.height,
-    // Estimate unoptimised file size from dimensions (rough: width*height*3 bytes for uncompressed JPEG)
     estKb:  img.width && img.height ? Math.round(img.width * img.height * 3 / 1024) : null,
     hasAlt: img.alt.length > 0,
-    // Flag images likely too large: no dimensions (unknown), or estimated >200KB
-    likelyHeavy: (img.width && img.height) ? (img.width * img.height * 3 / 1024 > 200) : true,
-    // Detect unoptimised formats
+    // Only flag as heavy if we KNOW dimensions and they're large (>200KB uncompressed)
+    // Don't flag unknown-dimension images as heavy — too many false positives
+    likelyHeavy: (img.width && img.height) ? (img.width * img.height * 3 / 1024 > 200) : false,
     format: (img.src.match(/\.(\w{2,5})(?:\?|$)/i)||[])[1]?.toLowerCase() || 'unknown'
   }));
 
@@ -1017,17 +1016,44 @@ async function fetchPageDataClientSide(url) {
 }
 async function fetchPageData(url) {
   // 1️⃣ Try backend first
+  let backendData = null;
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/page-data', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(20000) });
     if (res.ok) {
       const data = await res.json();
-      // Backend returned data but title/metaDesc empty? Still try client fallback
-      if (data && (data.title || data.metaDesc)) return data;
+      if (data && (data.title || data.metaDesc)) backendData = data;
     }
   } catch { /* fall through */ }
 
-  // 2️⃣ Backend failed or returned empty — scrape client-side via CORS proxy
-  return await fetchPageDataClientSide(url);
+  // 2️⃣ Always try client-side parse too — it has our accurate heading counts,
+  //    image list, canonical detection, lang etc. that the backend may not return.
+  const clientData = await fetchPageDataClientSide(url);
+
+  if (!backendData && !clientData) return null;
+
+  // 3️⃣ Merge: prefer backend for basic fields (title, metaDesc, ttfb, statusCode etc.)
+  //    but always use client-side for headings, imageList, canonical, lang, hasViewport
+  //    since our parser is more accurate than the backend's.
+  const base = backendData || clientData;
+  const client = clientData || {};
+
+  return {
+    ...base,
+    // Always use client-parsed heading counts (accurate, handles Elementor/Divi/single-quotes)
+    headings: client.headings || base.headings || { h1: (base.h1 ? 1 : 0), h2: 0, h3: 0 },
+    h1:       client.h1 || base.h1 || '',
+    h2Texts:  client.h2Texts || [],
+    // Always use client canonical / lang / viewport (handles single-quote attrs)
+    canonical:   client.canonical  || base.canonical  || '',
+    lang:        client.lang       || base.lang        || '',
+    hasViewport: client.hasViewport ?? base.hasViewport ?? false,
+    // Always use client image list (backend rarely returns this)
+    imageList: client.imageList || base.imageList || [],
+    images:    client.images    || base.images    || {},
+    // Keep backend TTFB/statusCode/etc if available
+    ttfb:       base.ttfb       || client.ttfb,
+    statusCode: base.statusCode || client.statusCode,
+  };
 }
 async function detectCMS(url) {
   try {
@@ -1248,9 +1274,10 @@ function runLocalAudit(url, pageData, cmsData) {
   if (imageList.length > 0) {
     const noAltImgs = imageList.filter(i => !i.hasAlt);
     if (noAltImgs.length > 0) {
-      ux -= Math.min(15, noAltImgs.length * 3);
+      // Cap at 10 points max regardless of how many images are missing alt
+      ux -= Math.min(10, noAltImgs.length * 2);
       suggestions.push({
-        priority: 'high',
+        priority: noAltImgs.length > 3 ? 'high' : 'medium',
         title: `${noAltImgs.length} image${noAltImgs.length>1?'s':''} missing alt text`,
         detail: `Alt text is critical for accessibility and image SEO. Add descriptive alt attributes to: ${noAltImgs.slice(0,3).map(i=>i.url.split('/').pop()).join(', ')}${noAltImgs.length>3?' + '+(noAltImgs.length-3)+' more':''}.`
       });
@@ -1261,14 +1288,15 @@ function runLocalAudit(url, pageData, cmsData) {
 
     const heavyImgs = imageList.filter(i => i.likelyHeavy);
     if (heavyImgs.length > 0) {
-      technical -= Math.min(15, heavyImgs.length * 3);
+      // Cap at 10 points max
+      technical -= Math.min(10, heavyImgs.length * 2);
       suggestions.push({
-        priority: 'high',
+        priority: 'medium',
         title: `Optimise ${heavyImgs.length} heavy image${heavyImgs.length>1?'s':''}`,
         detail: `Large images slow page load speed. Convert to WebP and compress: ${heavyImgs.slice(0,3).map(i=>i.url.split('/').pop()+(i.estKb?` (~${i.estKb}KB)`:'(size unknown)')).join(', ')}${heavyImgs.length>3?' + '+(heavyImgs.length-3)+' more':''}.`
       });
       heavyImgs.slice(0, 10).forEach((img, idx) => {
-        const isAboveFold = idx < 2; // rough heuristic: first 2 images are likely hero/above fold
+        const isAboveFold = idx < 2;
         image_issues.push({
           url: img.url,
           issue: img.estKb ? `File too large (~${img.estKb}KB uncompressed — convert to WebP & compress)` : 'Large image — dimensions unknown, likely unoptimised',
