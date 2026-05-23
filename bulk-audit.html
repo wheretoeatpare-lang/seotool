@@ -199,8 +199,8 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   100% { background-position: 250% 0; opacity: 0; }
 }
 @keyframes row-pulse {
-  0%,100% { box-shadow: inset 0 0 0 1px rgba(10,191,188,0.0); }
-  50%      { box-shadow: inset 0 0 0 1px rgba(10,191,188,0.4); }
+  0%,100% { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.1); }
+  50%      { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.6); }
 }
 @keyframes score-pop {
   0%   { transform: scale(0.5) rotate(-10deg); opacity: 0; }
@@ -208,7 +208,8 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 @keyframes done-flash {
-  0%   { background: rgba(10,191,188,0.12); }
+  0%   { background: rgba(52,211,153,0.25); }
+  60%  { background: rgba(52,211,153,0.1); }
   100% { background: transparent; }
 }
 @keyframes particle-burst {
@@ -219,10 +220,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   0%,100% { opacity: 0.4; }
   50%      { opacity: 1; }
 }
-@keyframes scan-line {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -100% 0; }
-}
+/* scan-line keyframe defined with scanning CSS above */
 @keyframes zap-in {
   0%   { opacity:0; transform: translateY(6px) scale(0.95); }
   100% { opacity:1; transform: translateY(0) scale(1); }
@@ -231,25 +229,29 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 /* Row scanning state */
 tr.row-scanning td {
   position: relative !important;
-  animation: row-pulse 1.2s ease-in-out infinite;
-  background: rgba(10,191,188,0.03) !important;
+  animation: row-pulse 1s ease-in-out infinite;
+  background: rgba(10,191,188,0.06) !important;
+  transition: background 0.2s;
 }
 tr.row-scanning td::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: -100%; right: auto; bottom: 0;
+  width: 60%;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(10,191,188,0.06) 40%,
-    rgba(10,191,188,0.18) 50%,
-    rgba(10,191,188,0.06) 60%,
+    rgba(10,191,188,0.15) 40%,
+    rgba(10,191,188,0.4) 50%,
+    rgba(10,191,188,0.15) 60%,
     transparent 100%
   );
-  background-size: 200% 100%;
-  animation: scan-line 1.6s ease-in-out infinite;
+  animation: scan-line 1.4s ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
-  overflow: hidden;
+}
+@keyframes scan-line {
+  0%   { transform: translateX(0%); }
+  100% { transform: translateX(350%); }
 }
 
 /* Row done flash */
@@ -551,6 +553,9 @@ async function startBulkAudit() {
   renderTable();
   updateProgress();
 
+  // Helper: yield to browser so it can paint a frame before we continue
+  const paint = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+
   const queue = [...urls];
   async function runNext() {
     if (stopRequested || !queue.length) return;
@@ -559,6 +564,12 @@ async function startBulkAudit() {
     if (idx < 0) return;
     auditResults[idx].status = 'scanning';
     updateProgress(); updateRow(idx);
+
+    // CRITICAL: yield to browser here so scanning animation actually paints
+    // before the async work begins. Without this, JS blocks the render thread
+    // and the animation is never seen.
+    await paint();
+
     try {
       const [pageData, cmsData] = await Promise.all([fetchPageData(url), detectCMS(url)]);
       auditResults[idx].pageData = pageData;
@@ -572,6 +583,9 @@ async function startBulkAudit() {
       auditResults[idx].error = err.message || 'Failed';
     }
     updateProgress(); updateRow(idx);
+
+    // Yield again so done/flash animation paints before next URL starts
+    await paint();
     await runNext();
   }
 
