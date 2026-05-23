@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSorcery — Bulk SEO Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080C12;--bg2:#0F1622;--bg3:#182035;--bg4:#1E2A45;
+  --border:rgba(232,184,75,0.13);--border2:rgba(232,184,75,0.22);--border3:rgba(232,184,75,0.38);
+  --text:#ECF0F8;--muted:#8A93A8;--muted2:#5C6880;
+  --accent:#E8B84B;--accent2:#F5D98A;--accent3:#C9902A;
+  --glow:rgba(232,184,75,0.18);--teal:#0ABFBC;--teal2:rgba(10,191,188,0.12);
+  --green:#34d399;--green2:rgba(52,211,153,0.12);
+  --red:#f87171;--red2:rgba(248,113,113,0.12);
+  --amber:#fbbf24;--blue:#60a5fa;--radius:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.55}
+
+nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:rgba(8,12,18,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:9px;letter-spacing:-0.02em}
+.logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--teal));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;box-shadow:0 0 16px rgba(232,184,75,0.3)}
+.nav-back{color:var(--muted);text-decoration:none;font-size:.82rem;font-weight:500;padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+.nav-back:hover{color:var(--accent);border-color:var(--border2)}
+.bulk-badge{background:linear-gradient(135deg,rgba(10,191,188,0.15),rgba(232,184,75,0.1));border:1px solid rgba(10,191,188,0.3);color:var(--teal);font-size:.7rem;font-weight:700;padding:.2rem .65rem;border-radius:999px;letter-spacing:.05em;text-transform:uppercase}
+
+.hero{position:relative;z-index:2;padding:4rem 2rem 2.5rem;text-align:center;max-width:780px;margin:0 auto}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
+.hero-eyebrow span{display:inline-block;width:24px;height:1px;background:rgba(10,191,188,0.4)}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:1rem}
+.hero h1 .grad{background:linear-gradient(120deg,var(--accent),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero p{color:var(--muted);font-size:1rem;max-width:560px;margin:0 auto 2rem;line-height:1.7}
+
+.input-section{position:relative;z-index:2;max-width:860px;margin:0 auto 2rem;padding:0 1.5rem}
+.input-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:1.75rem;box-shadow:0 0 60px rgba(232,184,75,0.05)}
+.input-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.input-card-title{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--text)}
+.input-mode-tabs{display:flex;gap:.3rem}
+.mode-tab{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:600;padding:.25rem .7rem;border-radius:6px;cursor:pointer;transition:all .2s}
+.mode-tab.active{background:rgba(232,184,75,0.1);border-color:var(--border3);color:var(--accent)}
+
+.textarea-wrap{position:relative}
+#url-textarea{width:100%;min-height:140px;max-height:320px;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;line-height:1.6;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s}
+#url-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,184,75,0.1)}
+#url-textarea::placeholder{color:var(--muted2)}
+.textarea-hint{position:absolute;bottom:.6rem;right:.8rem;font-size:.68rem;color:var(--muted2)}
+
+.csv-drop{border:2px dashed var(--border2);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3)}
+.csv-drop:hover,.csv-drop.dragover{border-color:var(--accent);background:rgba(232,184,75,0.04)}
+#csv-file{display:none}
+.csv-label{display:inline-flex;align-items:center;gap:.4rem;background:rgba(232,184,75,0.08);border:1px solid var(--border2);color:var(--accent);font-size:.78rem;font-weight:600;padding:.35rem 1rem;border-radius:7px;cursor:pointer;transition:all .2s}
+.csv-label:hover{background:rgba(232,184,75,0.15)}
+
+.settings-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-top:1rem}
+.setting-chip{display:flex;align-items:center;gap:.4rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.35rem .75rem;font-size:.75rem;color:var(--muted);cursor:pointer;transition:all .2s;user-select:none}
+.setting-chip input{display:none}
+.setting-chip.active{background:rgba(232,184,75,0.08);border-color:var(--border2);color:var(--accent)}
+.concurrency-wrap{display:flex;align-items:center;gap:.5rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.35rem .75rem;font-size:.75rem;color:var(--muted)}
+.concurrency-wrap select{background:none;border:none;color:var(--accent);font-weight:700;font-size:.78rem;outline:none;cursor:pointer}
+.concurrency-wrap select option{background:var(--bg2);color:var(--text)}
+
+.action-row{display:flex;gap:.75rem;align-items:center;margin-top:1.25rem;flex-wrap:wrap}
+.btn-audit{flex:1;min-width:200px;background:linear-gradient(135deg,var(--accent),var(--accent3));color:#08080C;font-family:'Syne',sans-serif;font-weight:800;font-size:.95rem;padding:.85rem 2rem;border-radius:12px;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem;box-shadow:0 4px 20px rgba(232,184,75,0.25)}
+.btn-audit:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(232,184,75,0.35)}
+.btn-audit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-secondary{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.82rem;padding:.85rem 1.25rem;border-radius:12px;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--border2);color:var(--text)}
+.btn-excel{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.3);color:var(--green);font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;padding:.85rem 1.4rem;border-radius:12px;cursor:pointer;transition:all .2s}
+.btn-excel:hover{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.5)}
+
+/* PROGRESS */
+.progress-section{display:none;position:relative;z-index:2;max-width:860px;margin:0 auto 1.5rem;padding:0 1.5rem}
+.progress-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:1.25rem 1.5rem}
+.progress-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.progress-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700}
+.progress-counts{display:flex;gap:.75rem;font-size:.78rem;align-items:center;flex-wrap:wrap}
+.pcount{display:flex;align-items:center;gap:.3rem}
+.pcount-dot{width:8px;height:8px;border-radius:50%}
+.progress-bar-wrap{background:var(--bg3);border-radius:999px;height:8px;overflow:hidden;margin-bottom:.75rem}
+.progress-bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--teal));transition:width .4s ease;width:0%}
+.progress-sub{font-size:.74rem;color:var(--muted)}
+.active-sites{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.75rem}
+.active-site-pill{display:flex;align-items:center;gap:.4rem;background:rgba(10,191,188,0.08);border:1px solid rgba(10,191,188,0.2);border-radius:6px;padding:.2rem .6rem;font-size:.7rem;color:var(--teal);animation:pulse-border 1.5s ease-in-out infinite}
+@keyframes pulse-border{0%,100%{border-color:rgba(10,191,188,0.2)}50%{border-color:rgba(10,191,188,0.5)}}
+.active-site-spinner{width:10px;height:10px;border-radius:50%;border:1.5px solid rgba(10,191,188,0.3);border-top-color:var(--teal);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* COMPLETION BANNER */
+.done-banner{
+  display:none;position:relative;z-index:2;
+  max-width:860px;margin:0 auto 1.5rem;padding:0 1.5rem;
+}
+.done-banner-inner{
+  background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(10,191,188,0.06));
+  border:2px solid rgba(52,211,153,0.4);border-radius:16px;
+  padding:1.5rem 2rem;
+  display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;
+  animation:bannerIn .5s cubic-bezier(.22,1,.36,1);
+}
+@keyframes bannerIn{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+.done-banner-icon{font-size:2.5rem;flex-shrink:0}
+.done-banner-text h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:800;color:var(--green);margin-bottom:.3rem}
+.done-banner-text p{font-size:.85rem;color:var(--muted);line-height:1.5}
+.done-banner-actions{display:flex;gap:.75rem;flex-wrap:wrap;margin-left:auto}
+.btn-xl-excel{
+  background:linear-gradient(135deg,#1A7A4A,#34d399);
+  color:#fff;font-family:'Syne',sans-serif;font-weight:800;
+  font-size:.95rem;padding:.9rem 1.75rem;border-radius:12px;
+  border:none;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;gap:.5rem;
+  box-shadow:0 4px 20px rgba(52,211,153,0.3);
+}
+.btn-xl-excel:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(52,211,153,0.4)}
+
+/* RESULTS */
+.results-section{display:none;position:relative;z-index:2;max-width:1200px;margin:0 auto 3rem;padding:0 1.5rem}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem}
+.results-title{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:800}
+.summary-chips{display:flex;gap:.5rem;flex-wrap:wrap}
+.summary-chip{display:flex;align-items:center;gap:.35rem;padding:.3rem .75rem;border-radius:999px;font-size:.74rem;font-weight:700}
+.chip-green{background:var(--green2);border:1px solid rgba(52,211,153,0.3);color:var(--green)}
+.chip-amber{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--amber)}
+.chip-red{background:var(--red2);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+.chip-muted{background:rgba(138,147,168,0.08);border:1px solid var(--border);color:var(--muted)}
+
+.filter-bar{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.filter-select{background:var(--bg2);border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.78rem;padding:.35rem .75rem;border-radius:8px;outline:none;cursor:pointer;transition:border-color .2s}
+.filter-select:focus,.filter-select:hover{border-color:var(--border2);color:var(--text)}
+.filter-search{background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.78rem;padding:.35rem .75rem;border-radius:8px;outline:none;flex:1;min-width:160px;transition:border-color .2s}
+.filter-search:focus{border-color:var(--accent)}
+.filter-search::placeholder{color:var(--muted2)}
+
+.results-table-wrap{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;overflow:hidden;overflow-x:auto}
+.results-table{width:100%;border-collapse:collapse;min-width:700px}
+.results-table th{padding:.75rem 1rem;background:var(--bg3);text-align:left;font-size:.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid var(--border);white-space:nowrap}
+.results-table td{padding:.8rem 1rem;border-bottom:1px solid rgba(232,184,75,0.06);font-size:.82rem;vertical-align:middle}
+.results-table tr:last-child td{border-bottom:none}
+.results-table tr:hover td{background:rgba(232,184,75,0.02)}
+
+.score-cell{display:flex;align-items:center;gap:.5rem}
+.score-num{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;min-width:36px;text-align:right}
+.score-bar-wrap{flex:1;background:var(--bg4);border-radius:999px;height:5px;min-width:50px}
+.score-bar-fill{height:100%;border-radius:999px;transition:width .6s ease}
+.score-green .score-bar-fill{background:var(--green)}
+.score-amber .score-bar-fill{background:var(--amber)}
+.score-red .score-bar-fill{background:var(--red)}
+.score-green .score-num{color:var(--green)}
+.score-amber .score-num{color:var(--amber)}
+.score-red .score-num{color:var(--red)}
+
+.status-badge{display:inline-flex;align-items:center;gap:.3rem;padding:.15rem .5rem;border-radius:5px;font-size:.7rem;font-weight:700;white-space:nowrap}
+.badge-scanning{background:rgba(10,191,188,0.1);border:1px solid rgba(10,191,188,0.3);color:var(--teal)}
+.badge-done{background:var(--green2);border:1px solid rgba(52,211,153,0.3);color:var(--green)}
+.badge-error{background:var(--red2);border:1px solid rgba(248,113,113,0.3);color:var(--red)}
+.badge-queued{background:rgba(138,147,168,0.08);border:1px solid var(--border);color:var(--muted)}
+
+.site-cell{display:flex;align-items:center;gap:.6rem}
+.site-favicon{width:18px;height:18px;border-radius:3px;flex-shrink:0}
+.site-url{font-weight:600;color:var(--text);white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.site-url a{color:inherit;text-decoration:none}
+.site-url a:hover{color:var(--accent)}
+
+.expand-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:.9rem;padding:.2rem;transition:transform .2s,color .2s;display:flex;align-items:center}
+.expand-btn.open{transform:rotate(180deg);color:var(--accent)}
+
+.detail-row{display:none}
+.detail-row.open{display:table-row}
+.detail-cell{padding:0 1rem 1rem !important;background:var(--bg3) !important;border-top:1px solid var(--border) !important}
+.detail-inner{padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;margin-bottom:1rem}
+.detail-metric{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.75rem}
+.detail-metric-label{font-size:.65rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem}
+.detail-metric-val{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:var(--text)}
+.sugg-list{display:flex;flex-direction:column;gap:.4rem}
+.sugg-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.78rem;color:var(--muted);line-height:1.4}
+.sugg-badge{flex-shrink:0;font-size:.62rem;font-weight:700;padding:.1rem .4rem;border-radius:4px}
+.sugg-high{background:var(--red2);color:var(--red);border:1px solid rgba(248,113,113,0.3)}
+.sugg-med{background:rgba(251,191,36,0.1);color:var(--amber);border:1px solid rgba(251,191,36,0.3)}
+.sugg-low{background:var(--green2);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-size:.84rem;font-weight:500;padding:.7rem 1.5rem;border-radius:10px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:slideUp .25s ease;white-space:nowrap}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+@media(max-width:700px){nav{padding:0 1rem}.hero{padding:2.5rem 1rem 2rem}.input-section,.progress-section,.results-section,.done-banner{padding:0 1rem}.hero h1{font-size:1.8rem}}
+
+/* ── EPIC SCAN ANIMATIONS ────────────────────────────────────────── */
+
+/* Scanning row — sweeping radar glow */
+@keyframes radar-sweep {
+  0%   { background-position: -100% 0; opacity: 0; }
+  10%  { opacity: 1; }
+  100% { background-position: 250% 0; opacity: 0; }
+}
+@keyframes row-pulse {
+  0%,100% { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.1); }
+  50%      { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.6); }
+}
+@keyframes score-pop {
+  0%   { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  60%  { transform: scale(1.2) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes done-flash {
+  0%   { background: rgba(52,211,153,0.25); }
+  60%  { background: rgba(52,211,153,0.1); }
+  100% { background: transparent; }
+}
+@keyframes particle-burst {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+@keyframes shimmer-text {
+  0%,100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+/* scan-line keyframe defined with scanning CSS above */
+@keyframes zap-in {
+  0%   { opacity:0; transform: translateY(6px) scale(0.95); }
+  100% { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* Row scanning state — use outline on TR (works in all browsers) */
+tr.row-scanning {
+  outline: 2px solid rgba(10,191,188,0.5);
+  outline-offset: -1px;
+  animation: row-pulse 1s ease-in-out infinite;
+}
+tr.row-scanning td {
+  background: rgba(10,191,188,0.07) !important;
+}
+/* The sweep bar is injected as a real <div> by JS — see .scan-sweep-bar */
+.scan-sweep-bar {
+  position: absolute;
+  top: 0; left: 0;
+  height: 100%;
+  width: 40%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(10,191,188,0.2) 40%,
+    rgba(10,191,188,0.5) 50%,
+    rgba(10,191,188,0.2) 60%,
+    transparent 100%
+  );
+  animation: scan-sweep 1.4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+  border-radius: 2px;
+}
+@keyframes scan-sweep {
+  0%   { left: -40%; }
+  100% { left: 110%; }
+}
+@keyframes scan-line {
+  0%   { left: -40%; }
+  100% { left: 110%; }
+}
+
+/* Row done flash */
+tr.row-done-flash td {
+  animation: done-flash 0.8s ease forwards;
+}
+
+/* Score pop animation */
+.score-pop {
+  display: inline-block;
+  animation: score-pop 0.5s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* Analysing shimmer text */
+.shimmer-text {
+  animation: shimmer-text 1s ease-in-out infinite;
+}
+
+/* Row zap in */
+tr.row-zap td {
+  animation: zap-in 0.3s ease both;
+  position: relative !important;
+}
+
+/* Progress bar — animated gradient */
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--accent), var(--teal), var(--accent)) !important;
+  background-size: 200% 100% !important;
+  animation: progress-shimmer 1.5s linear infinite !important;
+}
+@keyframes progress-shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Scanning badge — pulsing dot */
+.badge-scanning-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: dot-ping 1s ease-in-out infinite;
+  margin-right: 4px;
+}
+@keyframes dot-ping {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* Particle canvas overlay */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Done counter pop */
+@keyframes counter-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); color: var(--teal); }
+  100% { transform: scale(1); }
+}
+.counter-pop { animation: counter-pop 0.4s ease; }
+
+/* ── NEW SCAN ANIMATION LAYER ──────────────────────────────────────────────── */
+
+/* Progress card glowing animated border when scanning */
+@keyframes glow-border {
+  0%,100% { box-shadow: 0 0 0 0 rgba(10,191,188,0); border-color: var(--border2); }
+  50%      { box-shadow: 0 0 0 6px rgba(10,191,188,0.18), 0 0 28px rgba(10,191,188,0.12); border-color: rgba(10,191,188,0.55); }
+}
+.progress-card.scanning-active {
+  animation: glow-border 2s ease-in-out infinite;
+}
+
+/* Radar sonar rings */
+.radar-wrap {
+  position: relative;
+  width: 42px; height: 42px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.radar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(10,191,188,0.6);
+  animation: sonar-out 2.1s ease-out infinite;
+  opacity: 0;
+}
+.radar-ring:nth-child(2) { animation-delay: 0.7s; }
+.radar-ring:nth-child(3) { animation-delay: 1.4s; }
+@keyframes sonar-out {
+  0%   { transform: scale(0.2); opacity: 0.9; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.radar-core {
+  width: 12px; height: 12px;
+  background: var(--teal);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--teal), 0 0 24px rgba(10,191,188,0.5);
+  animation: core-pulse 1s ease-in-out infinite;
+  position: relative; z-index: 2;
+}
+@keyframes core-pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.25); }
+}
+
+/* Vertical scan beam — sweeps down the results table */
+.table-scan-beam {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 4px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(10,191,188,0.3) 20%,
+    rgba(10,191,188,0.9) 50%,
+    rgba(10,191,188,0.3) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 18px rgba(10,191,188,0.7), 0 0 40px rgba(10,191,188,0.3);
+  animation: beam-down 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
+  pointer-events: none;
+  z-index: 8;
+  display: none;
+}
+@keyframes beam-down {
+  0%   { top: 0%;   opacity: 0; }
+  4%   { opacity: 1; }
+  96%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Typewriter cursor on scan text */
+.scan-cursor::after {
+  content: '▌';
+  font-size: .65rem;
+  color: var(--teal);
+  animation: blink-cursor 0.7s step-end infinite;
+  margin-left: 1px;
+}
+@keyframes blink-cursor {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ETA badge in progress sub row */
+.eta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  background: rgba(232,184,75,0.1);
+  border: 1px solid rgba(232,184,75,0.25);
+  color: var(--accent);
+  font-size: .7rem;
+  font-weight: 700;
+  padding: .1rem .5rem;
+  border-radius: 5px;
+  margin-left: .5rem;
+  vertical-align: middle;
+  animation: eta-fade 1s ease-in-out infinite alternate;
+}
+@keyframes eta-fade {
+  from { opacity: 0.7; }
+  to   { opacity: 1; }
+}
+
+/* Scanning title dots */
+.scanning-dots::after {
+  content: '';
+  animation: dot-cycle 1.5s steps(4, end) infinite;
+}
+@keyframes dot-cycle {
+  0%  { content: '';    }
+  25% { content: '.';   }
+  50% { content: '..';  }
+  75% { content: '...'; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo"><div class="logo-icon">⚡</div>RankSorcery</a>
+  <div style="display:flex;align-items:center;gap:.75rem">
+    <span class="bulk-badge">⚡ Bulk Mode</span>
+    <a href="/" class="nav-back">← Single Audit</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow"><span></span>Bulk SEO Auditor<span></span></div>
+  <h1>Audit <span class="grad">100 Sites</span><br>in Parallel — Fast</h1>
+  <p>Paste URLs or upload a CSV. Me scan all websites at same time. Get SEO scores, issues, and CMS for every site — then export a clean Excel report.</p>
+</div>
+
+<!-- INPUT -->
+<div class="input-section">
+  <div class="input-card">
+    <div class="input-card-header">
+      <div class="input-card-title">📋 Enter URLs to Audit</div>
+      <div class="input-mode-tabs">
+        <button class="mode-tab active" onclick="switchMode('paste',this)">Paste URLs</button>
+        <button class="mode-tab" onclick="switchMode('csv',this)">Upload CSV</button>
+      </div>
+    </div>
+
+    <div id="paste-mode">
+      <div class="textarea-wrap">
+        <textarea id="url-textarea" placeholder="https://example.com&#10;https://mysite.com&#10;competitor.com&#10;&#10;One URL per line. Up to 100 URLs."></textarea>
+        <div class="textarea-hint" id="url-count">0 URLs</div>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap">
+        <button class="btn-secondary" style="font-size:.72rem;padding:.3rem .75rem;border-radius:7px" onclick="loadSampleUrls()">Load Sample URLs</button>
+        <button class="btn-secondary" style="font-size:.72rem;padding:.3rem .75rem;border-radius:7px" onclick="clearUrls()">Clear</button>
+      </div>
+    </div>
+
+    <div id="csv-mode" style="display:none">
+      <div class="csv-drop" id="csv-drop">
+        <div style="font-size:2rem;margin-bottom:.5rem">📂</div>
+        <p style="font-size:.84rem;color:var(--muted);margin-bottom:.5rem">Drop a CSV file here or click to browse</p>
+        <p style="font-size:.72rem;color:var(--muted2);margin-bottom:.75rem">Must have a column named "url", "website", or "domain"</p>
+        <label class="csv-label" for="csv-file">📎 Choose CSV File</label>
+        <input type="file" id="csv-file" accept=".csv" onchange="handleCsvFile(event)">
+      </div>
+      <div id="csv-status" style="margin-top:.6rem;font-size:.78rem;color:var(--muted)"></div>
+    </div>
+
+    <div class="settings-row">
+      <label class="setting-chip active" onclick="toggleChip(this)"><input type="checkbox" name="cms" checked>🏠 CMS Detect</label>
+      <label class="setting-chip active" onclick="toggleChip(this)"><input type="checkbox" name="schema" checked>🧩 Schema</label>
+      <label class="setting-chip active" onclick="toggleChip(this)"><input type="checkbox" name="cwv" checked>⚡ Core Web Vitals</label>
+      <label class="setting-chip active" onclick="toggleChip(this)"><input type="checkbox" name="eeat" checked>🏆 E-E-A-T</label>
+      <div class="concurrency-wrap">⚡ Parallel: <select id="concurrency-select"><option value="2">2</option><option value="3">3</option><option value="5" selected>5</option><option value="8">8</option><option value="10">10</option></select> threads</div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-audit" id="audit-btn" onclick="startBulkAudit()">⚡ Audit All Websites</button>
+      <button class="btn-secondary" id="stop-btn" style="display:none;color:var(--red);border-color:rgba(248,113,113,0.3)" onclick="stopAudit()">⏹ Stop</button>
+      <button class="btn-excel" id="export-btn" style="display:none" onclick="exportExcel()">📊 Export Excel Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="progress-section" id="progress-section">
+  <div class="progress-card">
+    <div class="progress-header">
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div class="radar-wrap">
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-ring"></div>
+          <div class="radar-core"></div>
+        </div>
+        <div class="progress-title scanning-dots">🔍 Auditing in Progress</div>
+      </div>
+      <div class="progress-counts">
+        <div class="pcount"><div class="pcount-dot" style="background:var(--teal)"></div><span id="p-scanning">0 scanning</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--green)"></div><span id="p-done">0 done</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--red)"></div><span id="p-failed">0 failed</span></div>
+        <div class="pcount"><div class="pcount-dot" style="background:var(--muted2)"></div><span id="p-queued">0 queued</span></div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-sub" id="progress-sub">Starting audit… <span class="eta-tag" id="eta-tag" style="display:none">⏱ Calculating…</span></div>
+    <div class="active-sites" id="active-sites"></div>
+  </div>
+</div>
+
+<!-- ✅ DONE BANNER -->
+<div class="done-banner" id="done-banner">
+  <div class="done-banner-inner">
+    <div class="done-banner-icon">🎉</div>
+    <div class="done-banner-text">
+      <h3 id="done-banner-title">Bulk Audit Complete!</h3>
+      <p id="done-banner-desc">All sites have been audited. Download your Excel report below — it includes scores, issues, and CMS data for every site.</p>
+    </div>
+    <div class="done-banner-actions">
+      <button class="btn-xl-excel" onclick="exportExcel()">📊 Download Excel Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div class="results-section" id="results-section">
+  <div class="results-header">
+    <div>
+      <div class="results-title">📊 Bulk Audit Results</div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem" id="results-subtitle"></div>
+    </div>
+    <div class="summary-chips" id="summary-chips"></div>
+  </div>
+  <div class="filter-bar">
+    <input type="text" class="filter-search" id="filter-search" placeholder="🔍 Search sites…" oninput="applyFilters()">
+    <select class="filter-select" id="filter-score" onchange="applyFilters()">
+      <option value="all">All Scores</option>
+      <option value="good">Good (80+)</option>
+      <option value="ok">Fair (60-79)</option>
+      <option value="poor">Poor (&lt;60)</option>
+    </select>
+    <select class="filter-select" id="filter-status" onchange="applyFilters()">
+      <option value="all">All Status</option>
+      <option value="done">Done</option>
+      <option value="error">Errors</option>
+    </select>
+    <select class="filter-select" id="filter-sort" onchange="applyFilters()">
+      <option value="score-desc">Score ↓</option>
+      <option value="score-asc">Score ↑</option>
+      <option value="url">URL A–Z</option>
+      <option value="issues">Most Issues</option>
+    </select>
+  </div>
+  <div class="results-table-wrap" style="position:relative"><div class="table-scan-beam" id="table-scan-beam"></div>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th style="width:36px">#</th>
+          <th>Site</th>
+          <th>Status</th>
+          <th>SEO Score</th>
+          <th>CMS</th>
+          <th>Top Issues</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="results-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div id="toast" class="toast" style="display:none"></div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────────────────────
+let auditResults = [];
+let auditRunning = false;
+let stopRequested = false;
+let expandedRows = new Set();
+
+// ── URL INPUT ────────────────────────────────────────────────────────────────
+document.getElementById('url-textarea').addEventListener('input', updateUrlCount);
+function updateUrlCount() {
+  const urls = parseUrls(document.getElementById('url-textarea').value);
+  document.getElementById('url-count').textContent = urls.length + ' URL' + (urls.length !== 1 ? 's' : '');
+}
+function parseUrls(text) {
+  return text.split('\n')
+    .map(l => l.trim().replace(/^[\s"',;]+|[\s"',;]+$/g,''))
+    .filter(l => l && !l.startsWith('#'))
+    .map(l => l.startsWith('http') ? l : 'https://' + l)
+    .filter(u => { try { const h = new URL(u).hostname; return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(h); } catch { return false; } })
+    .slice(0, 100);
+}
+function loadSampleUrls() {
+  document.getElementById('url-textarea').value = 'https://nytimes.com\nhttps://techcrunch.com\nhttps://smashingmagazine.com\nhttps://moz.com\nhttps://ahrefs.com';
+  updateUrlCount();
+}
+function clearUrls() { document.getElementById('url-textarea').value = ''; updateUrlCount(); }
+
+// ── MODE SWITCH ──────────────────────────────────────────────────────────────
+function switchMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('paste-mode').style.display = mode === 'paste' ? '' : 'none';
+  document.getElementById('csv-mode').style.display   = mode === 'csv'   ? '' : 'none';
+}
+
+// ── CSV ──────────────────────────────────────────────────────────────────────
+const csvDrop = document.getElementById('csv-drop');
+csvDrop.addEventListener('dragover', e => { e.preventDefault(); csvDrop.classList.add('dragover'); });
+csvDrop.addEventListener('dragleave', () => csvDrop.classList.remove('dragover'));
+csvDrop.addEventListener('drop', e => {
+  e.preventDefault(); csvDrop.classList.remove('dragover');
+  const f = e.dataTransfer.files[0]; if (f) parseCsvFile(f);
+});
+csvDrop.addEventListener('click', () => document.getElementById('csv-file').click());
+function handleCsvFile(e) { const f = e.target.files[0]; if (f) parseCsvFile(f); }
+function parseCsvFile(file) {
+  const r = new FileReader();
+  r.onload = ev => {
+    const lines = ev.target.result.split('\n');
+    const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+    const idx = header.findIndex(h => ['url','website','domain','site'].includes(h));
+    if (idx < 0) { document.getElementById('csv-status').textContent = '⚠ No url/website/domain column found.'; return; }
+    const urls = lines.slice(1).map(l => l.split(',')[idx]?.trim().replace(/"/g,'')).filter(Boolean).slice(0,100);
+    document.getElementById('url-textarea').value = urls.join('\n');
+    switchMode('paste', document.querySelectorAll('.mode-tab')[0]);
+    updateUrlCount();
+    showToast('✅ Loaded ' + urls.length + ' URLs from ' + file.name);
+  };
+  r.readAsText(file);
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+function toggleChip(el) { el.classList.toggle('active'); }
+function getOptions() { return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name); }
+
+// ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
+async function startBulkAudit() {
+  const urls = parseUrls(document.getElementById('url-textarea').value);
+  if (!urls.length) { showToast('⚠ Enter at least one valid URL!', 'var(--red)'); return; }
+
+  const concurrency = parseInt(document.getElementById('concurrency-select').value);
+  const options = getOptions();
+
+  auditResults = urls.map(url => ({ url, status: 'queued', score: null, data: null, error: null, cms: null, pageData: null }));
+  auditRunning = true;
+  stopRequested = false;
+  expandedRows.clear();
+  _auditStartTime = 0;
+
+  document.getElementById('audit-btn').disabled = true;
+  document.getElementById('audit-btn').textContent = 'Auditing…';
+  document.getElementById('stop-btn').style.display = '';
+  document.getElementById('export-btn').style.display = 'none';
+  document.getElementById('done-banner').style.display = 'none';
+  document.getElementById('progress-section').style.display = '';
+  document.getElementById('results-section').style.display = '';
+
+  renderTable();
+  updateProgress();
+  // Activate scan animation classes
+  document.querySelector('.progress-card')?.classList.add('scanning-active');
+  const beam = document.getElementById('table-scan-beam');
+  if (beam) beam.style.display = 'block';
+
+  // Yield to browser paint — doubles up rAF + setTimeout to guarantee a real frame
+  const paint = (ms=0) => new Promise(r => requestAnimationFrame(() => setTimeout(r, ms)));
+
+  // Auto-scroll to results table so user sees the animation
+  await paint(80);
+  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await paint(300); // wait for scroll to settle
+
+  const queue = [...urls];
+  async function runNext() {
+    if (stopRequested || !queue.length) return;
+    const url = queue.shift();
+    const idx = auditResults.findIndex(r => r.url === url);
+    if (idx < 0) return;
+
+    auditResults[idx].status = 'scanning';
+    updateProgress();
+    updateRow(idx);
+
+    // Give browser at least 2 frames to paint the scanning animation
+    await paint(32);
+
+    const auditStart = Date.now();
+    try {
+      const [pageData, cmsData] = await Promise.all([fetchPageData(url), detectCMS(url)]);
+      auditResults[idx].pageData = pageData;
+      auditResults[idx].cms = cmsData;
+      const auditData = await runAIAudit(url, options, pageData, cmsData);
+      auditResults[idx].data = auditData;
+      auditResults[idx].score = auditData.seo_score ?? auditData.score ?? null;
+      auditResults[idx].status = 'done';
+    } catch (err) {
+      auditResults[idx].status = 'error';
+      auditResults[idx].error = err.message || 'Failed';
+    }
+
+    // Guarantee scanning animation shows for at least 600ms so it's visible
+    const elapsed = Date.now() - auditStart;
+    if (elapsed < 600) await paint(600 - elapsed);
+
+    updateProgress();
+    updateRow(idx);
+    await paint(80); // let done-flash render
+    await runNext();
+  }
+
+  const workers = Array.from({ length: concurrency }, () => runNext());
+  await Promise.allSettled(workers);
+
+  // ── AUDIT DONE ──
+  auditRunning = false;
+  document.querySelector('.progress-card')?.classList.remove('scanning-active');
+  const _beam = document.getElementById('table-scan-beam');
+  if (_beam) _beam.style.display = 'none';
+  const _etaTag = document.getElementById('eta-tag');
+  if (_etaTag) _etaTag.style.display = 'none';
+  document.getElementById('audit-btn').disabled = false;
+  document.getElementById('audit-btn').textContent = '⚡ Audit All Websites';
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('export-btn').style.display = '';
+  document.getElementById('progress-section').style.display = 'none';
+
+  // Show completion banner
+  const done   = auditResults.filter(r => r.status === 'done').length;
+  const errors = auditResults.filter(r => r.status === 'error').length;
+  const good   = auditResults.filter(r => r.score >= 80).length;
+  const banner = document.getElementById('done-banner');
+  document.getElementById('done-banner-title').textContent = stopRequested
+    ? '⏹ Audit Stopped — ' + done + ' Sites Completed'
+    : '🎉 Bulk Audit Complete! All ' + done + ' Sites Done' + (errors ? ' (' + errors + ' errors)' : '');
+  document.getElementById('done-banner-desc').textContent =
+    good + ' sites scored 80+ (Good) · ' + (done - good) + ' sites need attention. ' +
+    'Download your Excel report for the full breakdown.';
+  banner.style.display = '';
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Big toast notification
+  showToast('✅ ' + done + ' sites audited! Download your Excel report.', 'var(--green)', 6000);
+
+  // Play a subtle done sound
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
+      gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + i * 0.15 + 0.05);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.15 + 0.3);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.35);
+    });
+  } catch(e) {}
+
+  renderSummaryChips();
+  applyFilters();
+}
+
+function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(--amber)'); }
+
+// ── API CALLS ────────────────────────────────────────────────────────────────
+
+// Extract SEO data from raw HTML string using regex (reliable even on malformed HTML)
+function parseHtmlForSEO(html, url) {
+  const isHttps = url.startsWith('https://');
+  function getMeta(attr, val) {
+    const rx = new RegExp('<meta[^>]+(?:' + attr + ')=["\\\']' + val + '["\\\'][^>]*content=["\\\']([^"\\\']*)["\\\']', 'i');
+    const rx2 = new RegExp('<meta[^>]+content=["\\\']([^"\\\']*)["\\\'][^>]*(?:' + attr + ')=["\\\']' + val + '["\\\']', 'i');
+    return (html.match(rx) || html.match(rx2) || [])[1]?.trim() || '';
+  }
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const title = titleMatch ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim() : '';
+  const metaDesc = getMeta('name', 'description') || getMeta('property', 'og:description') || '';
+  const hasViewport = /<meta[^>]+name=["']viewport["'][^>]*>/i.test(html);
+  const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
+  const canonical = canonicalMatch ? canonicalMatch[1].trim() : '';
+  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+  const h1 = h1Match ? h1Match[1].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim() : '';
+  const robotsMeta = getMeta('name', 'robots');
+  const ogTitle = getMeta('property', 'og:title');
+  const ogImage = getMeta('property', 'og:image');
+  const stripped = html.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/<style[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
+  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, h1, robotsMeta, ogTitle, ogImage };
+}
+
+// CLIENT-SIDE FALLBACK: use our own Cloudflare Worker to fetch page HTML (no CORS issues)
+async function fetchPageDataClientSide(url) {
+  const WORKER_FETCH = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/page-data'; // ranksorcery-ai-proxy worker
+
+  // Fallback public proxies if worker fetch-page route not yet added
+  const publicProxies = [
+    async () => {
+      const t0 = Date.now();
+      const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
+      const ttfb = Date.now() - t0;
+      if (!res.ok) return null;
+      const json = await res.json();
+      const html = json.contents || '';
+      if (!html || html.length < 200) return null;
+      return { html, ttfb };
+    },
+    async () => {
+      const t0 = Date.now();
+      const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
+      const ttfb = Date.now() - t0;
+      if (!res.ok) return null;
+      const html = await res.text();
+      if (!html || html.length < 200) return null;
+      return { html, ttfb };
+    }
+  ];
+
+  // 1st — Try our own worker /fetch-page (most reliable, no CORS, server-side fetch)
+  try {
+    const t0 = Date.now();
+    const res = await fetch(WORKER_FETCH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(20000)
+    });
+    const ttfb = Date.now() - t0;
+    if (res.ok) {
+      const data = await res.json();
+      const html = data.html || '';
+      if (html.length > 200) {
+        const parsed = parseHtmlForSEO(html, url);
+        if (parsed.title || parsed.metaDesc || parsed.h1) {
+          return { ...parsed, ttfb, _source: 'worker' };
+        }
+      }
+    }
+  } catch(e) { /* fall through to public proxies */ }
+
+  // 2nd — Try public CORS proxies as last resort
+  for (const tryProxy of publicProxies) {
+    try {
+      const result = await tryProxy();
+      if (!result) continue;
+      const { html, ttfb } = result;
+      const parsed = parseHtmlForSEO(html, url);
+      if (parsed.title || parsed.metaDesc || parsed.h1) {
+        return { ...parsed, ttfb, _source: 'proxy' };
+      }
+    } catch(e) { /* try next */ }
+  }
+  return null;
+}
+async function fetchPageData(url) {
+  // 1️⃣ Try backend first
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/page-data', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(20000) });
+    if (res.ok) {
+      const data = await res.json();
+      // Backend returned data but title/metaDesc empty? Still try client fallback
+      if (data && (data.title || data.metaDesc)) return data;
+    }
+  } catch { /* fall through */ }
+
+  // 2️⃣ Backend failed or returned empty — scrape client-side via CORS proxy
+  return await fetchPageDataClientSide(url);
+}
+async function detectCMS(url) {
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(15000) });
+    if (!res.ok) return {cms:'Unknown',confidence:0}; return await res.json();
+  } catch { return {cms:'Unknown',confidence:0}; }
+}
+// GROQ_PROXY removed — logic now inside runAIAudit
+
+async function runAIAudit(url, options, pageData, cmsData) {
+  const WORKER_BASE = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+
+  // Build OpenAI-format messages array — exactly what /api/claude expects
+  const pd = pageData || {};
+  const cms = cmsData?.cms || 'Unknown';
+
+  const systemMsg = `You are an expert SEO auditor. Analyse the provided website data and respond ONLY with valid JSON — no markdown, no explanation, no code fences. Use this exact structure:
+{
+  "seo_score": <0-100>,
+  "categories": {
+    "on_page_seo": <0-100>,
+    "technical_seo": <0-100>,
+    "content_quality": <0-100>,
+    "user_experience": <0-100>
+  },
+  "suggestions": [
+    { "priority": "high"|"medium"|"low", "title": "<short title>", "detail": "<actionable explanation>" }
+  ],
+  "eeat_summary": "<1-2 sentence E-E-A-T assessment>"
+}`;
+
+  const userMsg = `Audit this website for SEO issues:
+
+URL: ${url}
+CMS: ${cms}
+HTTP Status: ${pd.statusCode || 'Unknown'}
+TTFB: ${pd.ttfb ? pd.ttfb + 'ms' : 'Unknown'}
+HTTPS: ${pd.isHttps ? 'Yes' : 'No'}
+
+TITLE: ${pd.title || 'MISSING'} (${pd.titleLen || 0} chars)
+META DESCRIPTION: ${pd.metaDesc || 'MISSING'} (${pd.descLen || 0} chars)
+CANONICAL: ${pd.canonical || 'MISSING'}
+LANG ATTRIBUTE: ${pd.lang || 'MISSING'}
+
+H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)}
+H2 COUNT: ${pd.headings?.h2 ?? 'Unknown'}
+WORD COUNT: ${pd.wordCount || 0}
+PAGE SIZE: ${pd.pageSizeKb ? pd.pageSizeKb + 'kb' : 'Unknown'}
+
+HAS VIEWPORT: ${pd.hasViewport ? 'Yes' : 'No'}
+HAS ROBOTS.TXT: ${pd.hasRobotsTxt ? 'Yes' : 'No'}
+HAS SITEMAP: ${pd.hasSitemap ? 'Yes' : 'No'}
+ROBOTS META: ${pd.robotsMeta || 'none'}
+IS NOINDEX: ${pd.isNoindex ? 'YES - CRITICAL' : 'No'}
+
+IMAGES: ${pd.images?.total ?? 'Unknown'} total, ${pd.images?.missingAlt ?? 'Unknown'} missing alt text
+SCHEMA TYPES: ${pd.schema?.types?.join(', ') || 'None found'}
+OG TAGS: title=${pd.openGraph?.title ? 'Yes' : 'No'}, image=${pd.openGraph?.image ? 'Yes' : 'No'}
+
+SECURITY HEADERS: HSTS=${pd.secHeaders?.hsts ? 'Yes' : 'No'}, X-Frame=${pd.secHeaders?.xFrame ? 'Yes' : 'No'}, CSP=${pd.secHeaders?.csp ? 'Yes' : 'No'}
+INTERNAL LINKS: ${pd.links?.internal ?? 'Unknown'}
+EXTERNAL LINKS: ${pd.links?.external ?? 'Unknown'}
+INLINE SCRIPTS: ${pd.inlineScripts ?? 'Unknown'}
+
+Return ONLY the JSON object.`;
+
+  const messages = [
+    { role: 'system', content: systemMsg },
+    { role: 'user',   content: userMsg }
+  ];
+
+  try {
+    const res = await fetch(WORKER_BASE + '/api/claude', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ messages }),
+      signal: AbortSignal.timeout(60000)
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      // Groq / CF AI both return OpenAI-style: { choices: [{ message: { content: '...' } }] }
+      const text = data?.choices?.[0]?.message?.content || '';
+      if (text) {
+        const clean = text.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
+        try {
+          const parsed = JSON.parse(clean);
+          if (parsed.seo_score !== undefined) {
+            console.log('[AI] SUCCESS via Groq/CF AI for', url);
+            return parsed;
+          }
+        } catch(e2) {
+          console.warn('[AI] JSON parse failed. Raw response:', text.slice(0, 300));
+        }
+      } else {
+        console.warn('[AI] Empty content in response:', JSON.stringify(data).slice(0, 200));
+      }
+    } else {
+      const errText = await res.text().catch(() => '');
+      console.warn('[AI] /api/claude HTTP', res.status, ':', errText.slice(0, 200));
+    }
+  } catch(e) {
+    console.warn('[AI] /api/claude fetch error:', e.message);
+  }
+
+  // Fallback — local rule-based audit
+  console.warn('[AI] Falling back to local audit for', url);
+  return runLocalAudit(url, pageData, cmsData);
+}
+
+
+function runLocalAudit(url, pageData, cmsData) {
+  const pd = pageData || {};
+  const suggestions = [];
+  let onPage = 100, technical = 100, content = 100, ux = 100;
+
+  // ON-PAGE SEO
+  if (!pd.title) {
+    onPage -= 30;
+    suggestions.push({ priority:'high', title:'Add a page title', detail:'No title tag found. This is one of the most critical on-page SEO elements.' });
+  } else {
+    const tl = pd.title.length;
+    if (tl < 30) { onPage -= 15; suggestions.push({ priority:'high', title:'Title too short ('+tl+' chars)', detail:'Aim for 50-60 characters. Short titles miss keyword opportunities.' }); }
+    else if (tl > 65) { onPage -= 10; suggestions.push({ priority:'medium', title:'Title too long ('+tl+' chars)', detail:'Google truncates titles over ~60 characters in search results. Trim it down.' }); }
+    else { suggestions.push({ priority:'low', title:'Title length is good ('+tl+' chars)', detail:'Your title is within the ideal 50-60 character range.' }); }
+  }
+
+  if (!pd.metaDesc) {
+    onPage -= 20;
+    suggestions.push({ priority:'high', title:'Add a meta description', detail:'No meta description found. Google often uses this as the search snippet.' });
+  } else {
+    const ml = pd.metaDesc.length;
+    if (ml < 80) { onPage -= 10; suggestions.push({ priority:'medium', title:'Meta description too short ('+ml+' chars)', detail:'Aim for 120-155 characters to maximise click-through rate.' }); }
+    else if (ml > 160) { onPage -= 8; suggestions.push({ priority:'low', title:'Meta description too long ('+ml+' chars)', detail:'Google truncates descriptions over ~155 characters. Shorten slightly.' }); }
+  }
+
+  if (!pd.h1) {
+    onPage -= 15;
+    suggestions.push({ priority:'high', title:'Add an H1 heading', detail:'No H1 tag detected. Every page should have one clear H1 with your primary keyword.' });
+  }
+
+  if (!pd.canonical) {
+    onPage -= 5;
+    suggestions.push({ priority:'low', title:'Add a canonical tag', detail:'No canonical URL found. A canonical tag prevents duplicate content issues.' });
+  }
+
+  if (!pd.ogTitle && !pd.ogImage) {
+    onPage -= 5;
+    suggestions.push({ priority:'low', title:'Add Open Graph tags', detail:'No OG title or image found. These improve how your page looks when shared on social media.' });
+  }
+
+  // TECHNICAL SEO
+  if (!pd.isHttps) {
+    technical -= 30;
+    suggestions.push({ priority:'high', title:'Switch to HTTPS', detail:'Site is not served over HTTPS. This is a Google ranking signal and critical for user trust.' });
+  }
+
+  if (pd.robotsMeta && /noindex/i.test(pd.robotsMeta)) {
+    technical -= 40;
+    suggestions.push({ priority:'high', title:'Page is set to noindex', detail:'The robots meta tag includes noindex - Google will not index this page.' });
+  }
+
+  if (pd.ttfb) {
+    if (pd.ttfb > 1800) { technical -= 20; suggestions.push({ priority:'high', title:'Slow TTFB ('+pd.ttfb+'ms)', detail:'Time To First Byte is very slow. Investigate server response time, caching, and hosting.' }); }
+    else if (pd.ttfb > 800) { technical -= 10; suggestions.push({ priority:'medium', title:'TTFB could be faster ('+pd.ttfb+'ms)', detail:'Aim for under 800ms TTFB. Consider caching or a CDN.' }); }
+  }
+
+  // CONTENT QUALITY
+  if (!pd.wordCount || pd.wordCount < 100) {
+    content -= 30;
+    suggestions.push({ priority:'high', title:'Very thin content ('+(pd.wordCount||0)+' words)', detail:'Pages with very little content rarely rank well. Aim for at least 600 words for content pages.' });
+  } else if (pd.wordCount < 400) {
+    content -= 15;
+    suggestions.push({ priority:'medium', title:'Low word count ('+pd.wordCount+' words)', detail:'Consider expanding content to 600+ words for better topical depth.' });
+  }
+
+  // USER EXPERIENCE
+  if (!pd.hasViewport) {
+    ux -= 30;
+    suggestions.push({ priority:'high', title:'Missing viewport meta tag', detail:'No viewport meta tag found. This means the page is not mobile-optimised - a significant ranking factor.' });
+  }
+
+  // FINAL SCORE
+  onPage    = Math.max(0, onPage);
+  technical = Math.max(0, technical);
+  content   = Math.max(0, content);
+  ux        = Math.max(0, ux);
+  const seo_score = Math.round(onPage * 0.35 + technical * 0.30 + content * 0.20 + ux * 0.15);
+
+  const order = { high:0, medium:1, low:2 };
+  suggestions.sort((a,b) => order[a.priority] - order[b.priority]);
+
+  return {
+    seo_score,
+    categories: { on_page_seo: onPage, technical_seo: technical, content_quality: content, user_experience: ux },
+    suggestions: suggestions.slice(0, 8),
+    eeat_summary: 'Score calculated locally from page structure data (title, meta, HTTPS, viewport, word count, H1, canonical). Groq and main API were unavailable.'
+  };
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
+let _auditStartTime = 0;
+function updateProgress() {
+  const done=auditResults.filter(r=>r.status==='done').length;
+  const failed=auditResults.filter(r=>r.status==='error').length;
+  const scanning=auditResults.filter(r=>r.status==='scanning').length;
+  const queued=auditResults.filter(r=>r.status==='queued').length;
+  const total=auditResults.length;
+  if (!_auditStartTime && (done+failed) > 0) _auditStartTime = Date.now();
+  document.getElementById('p-scanning').textContent=scanning+' scanning';
+  document.getElementById('p-done').textContent=done+' done';
+  document.getElementById('p-failed').textContent=failed+' failed';
+  document.getElementById('p-queued').textContent=queued+' queued';
+  document.getElementById('progress-bar').style.width=((done+failed)/total*100)+'%';
+  document.getElementById('progress-sub').textContent=`${done+failed} of ${total} sites audited · ${queued} in queue`;
+  // ETA
+  const etaTag = document.getElementById('eta-tag');
+  if (etaTag && _auditStartTime && (done+failed) > 0 && queued > 0) {
+    const elapsed = (Date.now() - _auditStartTime) / 1000;
+    const rate = (done+failed) / elapsed; // sites/sec
+    const etaSec = rate > 0 ? Math.ceil(queued / rate) : null;
+    if (etaSec !== null) {
+      const m = Math.floor(etaSec/60), s = etaSec%60;
+      etaTag.textContent = '⏱ ' + (m>0 ? m+'m '+s+'s left' : s+'s left');
+      etaTag.style.display = 'inline-flex';
+    }
+  }
+  document.getElementById('active-sites').innerHTML=auditResults.filter(r=>r.status==='scanning').map(r=>{
+    let h=r.url;try{h=new URL(r.url).hostname;}catch{}
+    return `<div class="active-site-pill"><div class="active-site-spinner"></div>${h}</div>`;
+  }).join('');
+}
+
+// ── RESULTS TABLE ─────────────────────────────────────────────────────────────
+function scoreClass(s){return s>=80?'score-green':s>=60?'score-amber':'score-red';}
+function renderTable() {
+  const tbody = document.getElementById('results-tbody');
+  tbody.innerHTML = '';
+  auditResults.forEach((r, i) => {
+    let host = r.url; try { host = new URL(r.url).hostname; } catch {}
+    const fav = `https://www.google.com/s2/favicons?domain=${host}&sz=32`;
+
+    // Create TR skeleton once — child elements get stable IDs, updated in place later
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + i;
+    tr.innerHTML = `
+      <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
+      <td><div class="site-cell">
+        <img class="site-favicon" src="${fav}" onerror="this.style.display='none'">
+        <div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div>
+      </div></td>
+      <td id="row-badge-${i}"><span class="status-badge badge-queued">⏳ Queued</span></td>
+      <td id="row-score-${i}"><span style="color:var(--muted2)">—</span></td>
+      <td id="row-cms-${i}"><span style="color:var(--muted2);font-size:.78rem;font-weight:600">—</span></td>
+      <td id="row-issues-${i}">—</td>
+      <td id="row-expand-${i}"></td>`;
+    tbody.appendChild(tr);
+
+    const dtr = document.createElement('tr');
+    dtr.id = 'detail-row-' + i;
+    dtr.className = 'detail-row';
+    dtr.innerHTML = `<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
+    tbody.appendChild(dtr);
+  });
+}
+
+function rowHtml(r, i) {
+  // Legacy — only used by applyFilters rebuild. Returns skeleton, cells updated after.
+  let host = r.url; try { host = new URL(r.url).hostname; } catch {}
+  const fav = `https://www.google.com/s2/favicons?domain=${host}&sz=32`;
+  return `
+    <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
+    <td><div class="site-cell">
+      <img class="site-favicon" src="${fav}" onerror="this.style.display='none'">
+      <div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div>
+    </div></td>
+    <td id="row-badge-${i}"><span class="status-badge badge-queued">⏳ Queued</span></td>
+    <td id="row-score-${i}"><span style="color:var(--muted2)">—</span></td>
+    <td id="row-cms-${i}"><span style="color:var(--muted2);font-size:.78rem;font-weight:600">—</span></td>
+    <td id="row-issues-${i}">—</td>
+    <td id="row-expand-${i}"></td>`;
+}
+
+function updateRow(idx) {
+  const r = auditResults[idx];
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
+
+  // ── BADGE ──────────────────────────────────────────────────────────────────
+  const badgeEl = document.getElementById('row-badge-' + idx);
+  if (badgeEl) {
+    if (r.status === 'done')
+      badgeEl.innerHTML = '<span class="status-badge badge-done">✓ Done</span>';
+    else if (r.status === 'scanning')
+      badgeEl.innerHTML = '<span class="status-badge badge-scanning"><span class="badge-scanning-dot"></span>Scanning</span>';
+    else if (r.status === 'error')
+      badgeEl.innerHTML = '<span class="status-badge badge-error">✗ Error</span>';
+    else
+      badgeEl.innerHTML = '<span class="status-badge badge-queued">⏳ Queued</span>';
+  }
+
+  // ── SCORE ──────────────────────────────────────────────────────────────────
+  const scoreEl = document.getElementById('row-score-' + idx);
+  if (scoreEl) {
+    if (r.score != null) {
+      const cls = scoreClass(r.score);
+      scoreEl.innerHTML = `<div class="score-cell ${cls}"><div class="score-num">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`;
+    } else if (r.status === 'error') {
+      scoreEl.innerHTML = `<span style="color:var(--red);font-size:.75rem">${r.error}</span>`;
+    } else {
+      scoreEl.innerHTML = '<span style="color:var(--muted2)">—</span>';
+    }
+  }
+
+  // ── CMS ────────────────────────────────────────────────────────────────────
+  const cmsEl = document.getElementById('row-cms-' + idx);
+  if (cmsEl) {
+    const cms = r.cms?.cms || '—';
+    cmsEl.innerHTML = `<span style="color:${r.cms?.cms ? 'var(--teal)' : 'var(--muted2)'};font-size:.78rem;font-weight:600">${cms}</span>`;
+  }
+
+  // ── ISSUES / SCAN TEXT ─────────────────────────────────────────────────────
+  const issuesEl = document.getElementById('row-issues-' + idx);
+  if (issuesEl) {
+    if (r.data?.suggestions?.length) {
+      const hi = r.data.suggestions.filter(s => s.priority === 'high').slice(0, 2);
+      issuesEl.innerHTML = hi.length
+        ? hi.map(s => `<div style="font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${s.title || s.text || ''}</div>`).join('')
+        : '—';
+    } else if (r.status === 'scanning') {
+      issuesEl.innerHTML = `<span id="scan-text-${idx}" class="shimmer-text scan-cursor" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;
+    } else {
+      issuesEl.innerHTML = '—';
+    }
+  }
+
+  // ── EXPAND BUTTON ──────────────────────────────────────────────────────────
+  const expandEl = document.getElementById('row-expand-' + idx);
+  if (expandEl && r.status === 'done' && !expandEl.querySelector('button')) {
+    expandEl.innerHTML = `<button class="expand-btn" id="expand-btn-${idx}" onclick="toggleDetail(${idx})">▼</button>`;
+  }
+
+  // ── ANIMATIONS ─────────────────────────────────────────────────────────────
+  if (r.status === 'scanning') {
+    tr.classList.remove('row-done-flash', 'row-zap');
+    tr.classList.add('row-scanning');
+    startScanText(idx);
+    // Inject sweep bar into badge TD (stable element, not re-created)
+    if (badgeEl && !document.getElementById('sweep-' + idx)) {
+      badgeEl.style.position = 'relative';
+      badgeEl.style.overflow = 'hidden';
+      const bar = document.createElement('div');
+      bar.className = 'scan-sweep-bar';
+      bar.id = 'sweep-' + idx;
+      badgeEl.appendChild(bar);
+    }
+  }
+
+  if (r.status === 'done' || r.status === 'error') {
+    tr.classList.remove('row-scanning');
+    stopScanText(idx);
+    // Remove sweep bar
+    const bar = document.getElementById('sweep-' + idx);
+    if (bar) bar.remove();
+    // Flash animation
+    requestAnimationFrame(() => {
+      tr.classList.add('row-done-flash');
+      setTimeout(() => tr.classList.remove('row-done-flash'), 900);
+      fireRowComplete(idx);
+      tr.classList.add('row-zap');
+      setTimeout(() => tr.classList.remove('row-zap'), 400);
+    });
+  }
+
+  if (r.status === 'done' && expandedRows.has(idx)) renderDetail(idx);
+  renderSummaryChips();
+}
+
+function toggleDetail(idx){
+  const dr=document.getElementById('detail-row-'+idx);
+  const btn=document.getElementById('expand-btn-'+idx);
+  if(!dr) return;
+  if(expandedRows.has(idx)){expandedRows.delete(idx);dr.classList.remove('open');if(btn)btn.classList.remove('open');}
+  else{expandedRows.add(idx);dr.classList.add('open');if(btn)btn.classList.add('open');renderDetail(idx);}
+}
+function renderDetail(idx){
+  const r=auditResults[idx]; if(!r.data) return;
+  const inner=document.getElementById('detail-inner-'+idx); if(!inner) return;
+  const d=r.data; const pd=r.pageData||{};
+  const catHtml=Object.entries(d.categories||{}).map(([k,v])=>{
+    const s=typeof v==='object'?(v.score??0):(typeof v==='number'?v:0);
+    const col=s>=80?'var(--green)':s>=60?'var(--amber)':'var(--red)';
+    return `<div class="detail-metric"><div class="detail-metric-label">${k.replace(/_/g,' ')}</div><div class="detail-metric-val" style="color:${col}">${s}<span style="font-size:.6rem;color:var(--muted)">/100</span></div></div>`;
+  }).join('');
+  const suggs=(d.suggestions||[]).slice(0,5).map(s=>{
+    const c=s.priority==='high'?'sugg-high':s.priority==='medium'?'sugg-med':'sugg-low';
+    const l=s.priority==='high'?'HIGH':s.priority==='medium'?'MED':'LOW';
+    return `<div class="sugg-item"><span class="sugg-badge ${c}">${l}</span>${s.title||s.text||''}</div>`;
+  }).join('');
+  const metrics=[['Title Len',pd.title?pd.title.length+' chars':'—'],['Meta Desc',pd.metaDesc?pd.metaDesc.length+' chars':'—'],['Words',pd.wordCount?pd.wordCount.toLocaleString():'—'],['HTTPS',pd.isHttps!==false?'✅':'❌'],['Mobile',pd.hasViewport?'✅':'❌'],['TTFB',pd.ttfb?pd.ttfb+'ms':'—']];
+  inner.innerHTML=`
+    <div style="margin-bottom:.75rem"><div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">📊 Category Scores</div><div class="detail-grid">${catHtml||'<span style="color:var(--muted2);font-size:.78rem">No data</span>'}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.75rem">
+      <div><div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">📈 Page Metrics</div><div class="detail-grid" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr))">${metrics.map(([l,v])=>`<div class="detail-metric"><div class="detail-metric-label">${l}</div><div class="detail-metric-val" style="font-size:.88rem">${v}</div></div>`).join('')}</div></div>
+      <div><div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem">💡 Top Issues</div><div class="sugg-list">${suggs||'<div style="color:var(--muted2);font-size:.78rem">No issues found</div>'}</div></div>
+    </div>
+    ${d.eeat_summary?`<div style="background:rgba(244,114,182,0.04);border:1px solid rgba(244,114,182,0.15);border-radius:10px;padding:.75rem 1rem;font-size:.78rem;color:var(--muted);line-height:1.6;margin-bottom:.75rem"><span style="color:#f472b6;font-weight:700">🏆 E-E-A-T: </span>${d.eeat_summary}</div>`:''}
+    <div style="text-align:right"><a href="/?url=${encodeURIComponent(r.url)}" target="_blank" style="font-size:.75rem;color:var(--accent);text-decoration:none;font-weight:600">View Full Single-Site Report →</a></div>`;
+}
+function renderSummaryChips(){
+  const done=auditResults.filter(r=>r.status==='done').length;
+  const errors=auditResults.filter(r=>r.status==='error').length;
+  const good=auditResults.filter(r=>r.score>=80).length;
+  const needs=auditResults.filter(r=>r.score>=60&&r.score<80).length;
+  const poor=auditResults.filter(r=>r.score<60&&r.score!==null).length;
+  document.getElementById('summary-chips').innerHTML=`<div class="summary-chip chip-green">✅ ${good} Good</div><div class="summary-chip chip-amber">⚠ ${needs} Fair</div><div class="summary-chip chip-red">❌ ${poor} Poor</div>${errors?`<div class="summary-chip chip-muted">✗ ${errors} Error${errors!==1?'s':''}</div>`:''}`;
+  document.getElementById('results-subtitle').textContent=`${done} of ${auditResults.length} sites audited`;
+}
+
+// ── FILTER ───────────────────────────────────────────────────────────────────
+function applyFilters(){
+  const search=document.getElementById('filter-search').value.toLowerCase();
+  const scoreF=document.getElementById('filter-score').value;
+  const statusF=document.getElementById('filter-status').value;
+  const sortF=document.getElementById('filter-sort').value;
+  let rows=auditResults.map((r,i)=>({r,i}));
+  if(search) rows=rows.filter(({r})=>r.url.toLowerCase().includes(search));
+  if(scoreF==='good') rows=rows.filter(({r})=>r.score>=80);
+  if(scoreF==='ok') rows=rows.filter(({r})=>r.score>=60&&r.score<80);
+  if(scoreF==='poor') rows=rows.filter(({r})=>r.score<60);
+  if(statusF==='done') rows=rows.filter(({r})=>r.status==='done');
+  if(statusF==='error') rows=rows.filter(({r})=>r.status==='error');
+  if(sortF==='score-desc') rows.sort((a,b)=>(b.r.score??-1)-(a.r.score??-1));
+  if(sortF==='score-asc') rows.sort((a,b)=>(a.r.score??999)-(b.r.score??999));
+  if(sortF==='url') rows.sort((a,b)=>a.r.url.localeCompare(b.r.url));
+  if(sortF==='issues') rows.sort((a,b)=>(b.r.data?.suggestions?.length??0)-(a.r.data?.suggestions?.length??0));
+  const tbody=document.getElementById('results-tbody'); tbody.innerHTML='';
+  rows.forEach(({r,i})=>{
+    const tr=document.createElement('tr'); tr.id='row-'+i; tr.innerHTML=rowHtml(r,i); tbody.appendChild(tr);
+    const dtr=document.createElement('tr'); dtr.id='detail-row-'+i;
+    dtr.className='detail-row'+(expandedRows.has(i)?' open':'');
+    dtr.innerHTML=`<td class="detail-cell" colspan="7"><div class="detail-inner" id="detail-inner-${i}"></div></td>`;
+    tbody.appendChild(dtr);
+    // Populate child cells via updateRow after skeleton is in DOM
+    updateRow(i);
+    if(expandedRows.has(i)) renderDetail(i);
+  });
+}
+
+// ── EXCEL EXPORT — 100% browser-side, no server needed ───────────────────────
+// Builds a real .xlsx file (ZIP of XML) directly in the browser.
+// Colours, styled headers, 4 sheets — works on Cloudflare Pages with zero backend.
+
+function exportExcel() {
+  const done = auditResults.filter(r => r.status === 'done' || r.status === 'error');
+  if (!done.length) { showToast('⚠ Run an audit first — no results yet!', 'var(--amber)'); return; }
+
+  const btn  = document.getElementById('export-btn');
+  const btn2 = document.querySelector('.btn-xl-excel');
+  if (btn)  { btn.disabled  = true; btn.textContent  = '⏳ Building…'; }
+  if (btn2) { btn2.disabled = true; btn2.textContent = '⏳ Building…'; }
+  showToast('📊 Building your Excel report…', 'var(--teal)', 8000);
+
+  // Run async so UI updates first
+  setTimeout(() => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const bytes = buildXlsx(auditResults, today);
+      const blob  = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `RankSorcery-Bulk-SEO-Audit-${today}.xlsx`;
+      document.body.appendChild(a); a.click(); a.remove();
+      showToast('✅ Excel report downloaded!', 'var(--green)', 5000);
+    } catch(e) {
+      console.error('[export]', e);
+      showToast('⚠ Export failed: ' + e.message, 'var(--red)', 6000);
+    } finally {
+      if (btn)  { btn.disabled  = false; btn.textContent  = '📊 Export Excel Report'; }
+      if (btn2) { btn2.disabled = false; btn2.textContent = '📊 Download Excel Report'; }
+    }
+  }, 50);
+}
+
+// ── Core xlsx builder ─────────────────────────────────────────────────────────
+function buildXlsx(results, today) {
+  const dateLabel = new Date(today).toLocaleDateString('en-AU', {year:'numeric',month:'long',day:'numeric'});
+
+  // Stats
+  const done      = results.filter(r => r.status === 'done');
+  const scores    = done.map(r => parseInt(r.score)).filter(s => !isNaN(s));
+  const avgScore  = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  const gradeA    = scores.filter(s=>s>=90).length;
+  const gradeB    = scores.filter(s=>s>=80&&s<90).length;
+  const gradeC    = scores.filter(s=>s>=70&&s<80).length;
+  const gradeD    = scores.filter(s=>s>=60&&s<70).length;
+  const gradeF    = scores.filter(s=>s<60).length;
+  const totalIss  = results.reduce((s,r)=>s+(r.data?.suggestions?.length||0),0);
+  const avgIss    = done.length ? Math.round(totalIss/done.length) : 0;
+
+  const issueCounts = {};
+  results.forEach(r => {
+    (r.data?.suggestions||[]).filter(s=>s.priority==='high').slice(0,3).forEach(s=>{
+      const t = s.title||s.text||''; if(t) issueCounts[t]=(issueCounts[t]||0)+1;
+    });
+  });
+  const topIssues = Object.entries(issueCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  function scoreStyle(score) {
+    const s = parseInt(score);
+    if (isNaN(s)) return {fi:0, grade:'—'};
+    if (s>=90) return {fi:5, grade:'A'}; if (s>=80) return {fi:6, grade:'B'};
+    if (s>=70) return {fi:7, grade:'C'}; if (s>=60) return {fi:8, grade:'D'};
+    return {fi:9, grade:'F'};
+  }
+
+  // ── Shared strings ──────────────────────────────────────────────────────────
+  const ss=[]; const ssM={};
+  function S(v){ const k=String(v??''); if(ssM[k]===undefined){ssM[k]=ss.length;ss.push(k);} return ssM[k]; }
+
+  // ── Column letter helper ────────────────────────────────────────────────────
+  function CL(n){let s='';while(n>0){n--;s=String.fromCharCode(65+(n%26))+s;n=Math.floor(n/26);}return s;}
+  function CR(c,r){return CL(c)+r;}
+
+  // ── XML cell helpers ────────────────────────────────────────────────────────
+  function numCell(ref,val,si){return `<c r="${ref}" t="n" s="${si}"><v>${val}</v></c>`;}
+  function strCell(ref,val,si){return `<c r="${ref}" t="s" s="${si}"><v>${S(val)}</v></c>`;}
+  function emptyCell(ref,si){return `<c r="${ref}" s="${si}"/>`;}
+
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  // ── STYLES ──────────────────────────────────────────────────────────────────
+  // Style index constants — must match cellXfs order below
+  // 0=default 1=titleHdr 2=subHdr 3=colHdr 4=kpiLabel 5=kpiTeal 6=kpiGold
+  // 7=kpiRed 8=kpiAmber 9=kpiDesc 10=sectionHdr
+  // 11=gradeA 12=gradeB 13=gradeC 14=gradeD 15=gradeF
+  // 16=greenBold 17=redBold 18=amberBold 19=mutedCtr
+  // 20=bodyLeft 21=bodyCtr 22=bodyRight 23=urlCell
+  // 24=ttfbGreen 25=ttfbAmber 26=ttfbRed
+  // 27=issGreen 28=issAmber 29=issRed
+  // 30=highCell 31=medCell 32=lowCell 33=issueTxt
+  // 34=spacer 35=altRow 36=httpsYes 37=httpsNo
+  // 38=guideLabel 39=guideSect 40=guideDesc 41=dateCel
+
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<fonts count="18">
+<font><sz val="10"/><name val="Arial"/><color rgb="FF1A1A2E"/></font>
+<font><b/><sz val="18"/><name val="Arial"/><color rgb="FFE8B84B"/></font>
+<font><sz val="10"/><name val="Arial"/><color rgb="FF8A93A8"/><i/></font>
+<font><b/><sz val="9"/><name val="Arial"/><color rgb="FFECF0F8"/></font>
+<font><b/><sz val="8"/><name val="Arial"/><color rgb="FF8A93A8"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FF0ABFBC"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFE8B84B"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFE05555"/></font>
+<font><b/><sz val="24"/><name val="Arial"/><color rgb="FFF5A623"/></font>
+<font><sz val="8"/><name val="Arial"/><color rgb="FF8A93A8"/><i/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF1A1A2E"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF1A7A4A"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FF92640A"/></font>
+<font><b/><sz val="11"/><name val="Arial"/><color rgb="FFC0392B"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FF1A7A4A"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FFC0392B"/></font>
+<font><b/><sz val="10"/><name val="Arial"/><color rgb="FF92640A"/></font>
+<font><sz val="9"/><name val="Arial"/><color rgb="FF1A5FB4"/><u/></font>
+</fonts>
+<fills count="16">
+<fill><patternFill patternType="none"/></fill>
+<fill><patternFill patternType="gray125"/></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF080C12"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF182035"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF1E2A45"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFE6F7EF"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFD1F0E2"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFF8E6"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFF3D6"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFEF0F0"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF4F6FA"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFEEF1F8"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFF0F2F7"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FFFAFBFD"/></patternFill></fill>
+<fill><patternFill patternType="solid"><fgColor rgb="FF0F1622"/></patternFill></fill>
+</fills>
+<borders count="2">
+<border><left/><right/><top/><bottom/><diagonal/></border>
+<border><left/><right/><top/><bottom style="thin"><color rgb="FFE2E8F0"/></bottom><diagonal/></border>
+</borders>
+<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+<cellXfs count="42">
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="1"  fillId="2"  borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="2"  fillId="2"  borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="3"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="4"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="5"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="6"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="7"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="8"  fillId="4"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="9"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="10" fillId="11" borderId="0" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="11" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="11" fillId="6"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="12" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="12" fillId="8"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="13" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="right"  vertical="center"/></xf>
+<xf numFmtId="0" fontId="17" fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="16" fillId="7"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="12" borderId="0" xfId="0"></xf>
+<xf numFmtId="0" fontId="0"  fillId="10" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="14" fillId="5"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="15" fillId="9"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="10" fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center"/></xf>
+<xf numFmtId="0" fontId="3"  fillId="3"  borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="left"   vertical="center" wrapText="1"/></xf>
+<xf numFmtId="0" fontId="0"  fillId="13" borderId="1" xfId="0"><alignment horizontal="center" vertical="center"/></xf>
+</cellXfs>
+</styleSheet>`;
+
+  // ── Sheet builders ──────────────────────────────────────────────────────────
+  function sheet(rowsXml, cols, merges, freeze, autoFilterRef) {
+    const colsXml = cols.map(([mn,mx,w])=>`<col min="${mn}" max="${mx}" width="${w}" customWidth="1"/>`).join('');
+    const mergeXml = merges.length ? `<mergeCells count="${merges.length}">${merges.map(m=>`<mergeCell ref="${m}"/>`).join('')}</mergeCells>` : '';
+    const afXml = autoFilterRef ? `<autoFilter ref="${autoFilterRef}"/>` : '';
+    const viewXml = freeze
+      ? `<sheetViews><sheetView workbookViewId="0"><pane ySplit="2" topLeftCell="A3" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>`
+      : `<sheetViews><sheetView showGridLines="0" workbookViewId="0"/></sheetViews>`;
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">${viewXml}<cols>${colsXml}</cols><sheetData>${rowsXml}</sheetData>${mergeXml}${afXml}</worksheet>`;
+  }
+
+  function row(r, ht, cells) {
+    const htAttr = ht ? ` ht="${ht}" customHeight="1"` : '';
+    return `<row r="${r}"${htAttr}>${cells}</row>`;
+  }
+
+  // ══ SHEET 1: Summary ════════════════════════════════════════════════════════
+  let s1 = '';
+  s1 += row(1, 48, strCell('A1', `  ⚡  RankSorcery — Bulk SEO Audit Report`, 1));
+  s1 += row(2, 24, strCell('A2', `  Generated: ${dateLabel}  ·  ${done.length} sites audited  ·  Powered by RankSorcery AI`, 2));
+  s1 += row(3, 10, emptyCell('A3', 34));
+
+  // KPI row labels (cols B=2, D=4, F=6, H=8)
+  const kpiL=['Sites Audited','Avg SEO Score','Total Issues','Avg Issues/Site'];
+  const kpiV=[done.length, avgScore, totalIss, avgIss];
+  const kpiS=[5,6,7,8];
+  s1 += row(4, 18, [2,4,6,8].map((c,i)=>strCell(CR(c,4),kpiL[i],4)).join(''));
+  s1 += row(5, 48, [2,4,6,8].map((c,i)=>numCell(CR(c,5),kpiV[i],kpiS[i])).join(''));
+  s1 += row(6, 20, [2,4,6,8].map((c,i)=>strCell(CR(c,6),['Successfully scanned','Average across all sites','Issues found across all sites','Average per site'][i],9)).join(''));
+  s1 += row(7, 14, emptyCell('A7', 34));
+  s1 += row(8, 28, strCell('A8','  SCORE BREAKDOWN',10));
+
+  const bkd=[
+    ['🟢  Grade A  (90–100)',gradeA,11],['🟢  Grade B  (80–89)',gradeB,12],
+    ['🟡  Grade C  (70–79)',gradeC,13],['🟡  Grade D  (60–69)',gradeD,14],
+    ['🔴  Grade F  (0–59)',gradeF,15],
+  ];
+  bkd.forEach(([lbl,cnt,si],i)=>{
+    s1+=row(9+i,26,strCell(CR(1,9+i),lbl,si)+numCell(CR(3,9+i),cnt,si));
+  });
+
+  s1 += row(15,14,emptyCell('A15',34));
+  s1 += row(16,28,strCell('A16','  TOP RECURRING ISSUES (High Priority)',10));
+  topIssues.forEach(([issue,cnt],i)=>{
+    const bg=i%2===0?21:35;
+    s1+=row(17+i,24,strCell(CR(1,17+i),`  ${issue}`,bg)+strCell(CR(8,17+i),`${cnt} sites`,30));
+  });
+
+  const sheet1 = sheet(s1,
+    [[1,1,3],[2,2,22],[3,3,3],[4,4,22],[5,5,3],[6,6,22],[7,7,3],[8,8,22],[9,9,3]],
+    ['A1:I1','A2:I2','A3:I3','A7:I7','A8:I8',
+     'A9:B9','A10:B10','A11:B11','A12:B12','A13:B13',
+     'A15:I15','A16:I16',
+     'A17:G17','A18:G18','A19:G19','A20:G20','A21:G21'],
+    false);
+
+  // ══ SHEET 2: Audit Data ══════════════════════════════════════════════════════
+  const hdrs2=['#','Website URL','SEO Score','Grade','CMS / Platform','HTTPS','Mobile Ready',
+    'TTFB (ms)','Word Count','Title Length','Meta Desc Length','Total Issues',
+    '🔴 High','🟡 Medium','🟢 Low','Top Issue #1','Top Issue #2','Top Issue #3','Audit Date'];
+  let s2='';
+  s2+=row(1,36,strCell('A1','  📋  Full Audit Data — All Sites',1));
+  s2+=row(2,36,hdrs2.map((h,i)=>strCell(CR(i+1,2),h,3)).join(''));
+
+  results.forEach((r,idx)=>{
+    const rn=idx+3; const alt=rn%2===0;
+    const bg=alt?35:21; const bgL=alt?35:20;
+    const pd=r.pageData||{}; const suggs=r.data?.suggestions||[];
+    const highs=suggs.filter(s=>s.priority==='high');
+    const meds=suggs.filter(s=>s.priority==='medium');
+    const lows=suggs.filter(s=>s.priority==='low');
+    const {fi,grade}=scoreStyle(r.score);
+    const scoreSi=[11,12,13,14,15][fi-5]??19;
+    const httpsY=pd.isHttps!==false; const mobY=!!pd.hasViewport;
+    const ttfb=pd.ttfb; const ttfbSi=ttfb<800?24:ttfb<1800?25:(ttfb?26:bg);
+    const tot=suggs.length; const totSi=tot>=15?29:tot>=10?28:tot<=5?27:bg;
+
+    const cells=[
+      numCell(CR(1,rn),idx+1,19),
+      strCell(CR(2,rn),r.url,23),
+      r.score!=null&&!isNaN(parseInt(r.score))?numCell(CR(3,rn),parseInt(r.score),scoreSi):strCell(CR(3,rn),r.status==='error'?'ERROR':'—',scoreSi),
+      strCell(CR(4,rn),r.status==='error'?'—':grade,scoreSi),
+      strCell(CR(5,rn),r.cms?.cms||'—',bg),
+      strCell(CR(6,rn),httpsY?'Yes':'No',httpsY?36:37),
+      strCell(CR(7,rn),mobY?'Yes':'No',mobY?36:37),
+      ttfb?numCell(CR(8,rn),ttfb,ttfbSi):emptyCell(CR(8,rn),bg),
+      pd.wordCount?numCell(CR(9,rn),pd.wordCount,bg):emptyCell(CR(9,rn),bg),
+      pd.title?.length?numCell(CR(10,rn),pd.title.length,bg):emptyCell(CR(10,rn),bg),
+      pd.metaDesc?.length?numCell(CR(11,rn),pd.metaDesc.length,bg):emptyCell(CR(11,rn),bg),
+      numCell(CR(12,rn),tot,totSi),
+      numCell(CR(13,rn),highs.length,highs.length>0?30:bg),
+      numCell(CR(14,rn),meds.length,meds.length>0?31:bg),
+      numCell(CR(15,rn),lows.length,lows.length>0?32:bg),
+      strCell(CR(16,rn),highs[0]?.title||highs[0]?.text||'',33),
+      strCell(CR(17,rn),highs[1]?.title||highs[1]?.text||'',33),
+      strCell(CR(18,rn),highs[2]?.title||highs[2]?.text||'',33),
+      strCell(CR(19,rn),today,41),
+    ].join('');
+    s2+=row(rn,22,cells);
+  });
+
+  const cols2=[[1,1,5],[2,2,36],[3,3,11],[4,4,8],[5,5,18],[6,6,9],[7,7,10],[8,8,11],[9,9,12],[10,10,13],[11,11,15],[12,12,12],[13,13,10],[14,14,10],[15,15,10],[16,16,40],[17,17,40],[18,18,40],[19,19,13]];
+  const sheet2=sheet(s2,cols2,[],true,`A2:S${results.length+2}`);
+
+  // ══ SHEET 3: Quick Wins ═════════════════════════════════════════════════════
+  const highSites=results.filter(r=>(r.data?.suggestions||[]).filter(s=>s.priority==='high').length>0)
+    .sort((a,b)=>(b.data?.suggestions||[]).filter(s=>s.priority==='high').length-(a.data?.suggestions||[]).filter(s=>s.priority==='high').length);
+  let s3='';
+  s3+=row(1,36,strCell('A1','  🎯  Quick Wins — Fix These First',1));
+  s3+=row(2,22,strCell('A2','  Sites with High Priority issues — sorted by most critical first',2));
+  s3+=row(3,32,['#','URL','SEO Score','High Issues','Top Issue'].map((h,i)=>strCell(CR(i+1,3),h,3)).join(''));
+  highSites.forEach((r,idx)=>{
+    const rn=idx+4; const alt=rn%2===0; const bg=alt?35:21;
+    const hi=(r.data?.suggestions||[]).filter(s=>s.priority==='high');
+    const {fi,grade}=scoreStyle(r.score);
+    const scoreSi=[11,12,13,14,15][fi-5]??19;
+    s3+=row(rn,22,[
+      numCell(CR(1,rn),idx+1,19),strCell(CR(2,rn),r.url,23),
+      r.score!=null?numCell(CR(3,rn),parseInt(r.score),scoreSi):strCell(CR(3,rn),'—',scoreSi),
+      numCell(CR(4,rn),hi.length,30),
+      strCell(CR(5,rn),hi[0]?.title||hi[0]?.text||'',33),
+    ].join(''));
+  });
+  const sheet3=sheet(s3,[[1,1,4],[2,2,36],[3,3,11],[4,4,12],[5,5,42]],[],false);
+
+  // ══ SHEET 4: Guide ══════════════════════════════════════════════════════════
+  const guideRows=[
+    ['','',''],
+    ['SCORES','Grade A  (90–100)','Excellent — site is fully optimised. Focus on content strategy.'],
+    ['','Grade B  (80–89)','Good — minor technical fixes needed. Review medium issues.'],
+    ['','Grade C  (70–79)','Fair — moderate gaps. Prioritise all High Priority issues first.'],
+    ['','Grade D  (60–69)','Needs Work — significant issues. Fix all High issues urgently.'],
+    ['','Grade F  (<60)','Poor — site needs a full SEO overhaul. Start immediately.'],
+    ['','',''],
+    ['PRIORITY','🔴 High','Fix immediately — actively suppressing your Google rankings.'],
+    ['','🟡 Medium','Fix this week — meaningful improvements to rankings and UX.'],
+    ['','🟢 Low','Nice to have — smaller gains, do after High and Medium.'],
+    ['','',''],
+    ['COLUMNS','TTFB (ms)','Time To First Byte. Green <800ms · Amber <1800ms · Red 1800ms+'],
+    ['','Title Length','Ideal: 50–60 characters for best Google SERP display.'],
+    ['','Meta Desc Length','Ideal: 120–155 characters. Longer gets cut off in Google.'],
+    ['','Word Count','Content pages should aim for 600+ words minimum.'],
+    ['','HTTPS','Green = secure. Red = no SSL — critical issue, fix immediately.'],
+    ['','Mobile Ready','Green = mobile-optimised. Red = missing viewport meta tag.'],
+    ['','',''],
+    ['EXPORT','How to export','Run audit at ranksorcery.com/bulk-audit → click Download Excel Report'],
+    ['','Daily tracking','Save each export with the date in filename to track scores over time.'],
+  ];
+  let s4='';
+  s4+=row(1,36,strCell('A1','  ℹ️  How To Read This Report',1));
+  guideRows.forEach(([sec,lbl,desc],i)=>{
+    const rn=i+2; const alt=rn%2===0;
+    s4+=row(rn,26,[
+      strCell(CR(1,rn),sec,sec?39:0),
+      strCell(CR(2,rn),lbl,38),
+      strCell(CR(3,rn),desc,40),
+    ].join(''));
+  });
+  const sheet4=sheet(s4,[[1,1,10],[2,2,26],[3,3,56]],[],false);
+
+  // ── Shared strings XML ──────────────────────────────────────────────────────
+  const ssXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${ss.length}" uniqueCount="${ss.length}">${ss.map(s=>`<si><t xml:space="preserve">${esc(s)}</t></si>`).join('')}</sst>`;
+
+  // ── Workbook XML ────────────────────────────────────────────────────────────
+  const wbXml=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="📊 Summary" sheetId="1" r:id="rId1"/><sheet name="📋 Audit Data" sheetId="2" r:id="rId2"/><sheet name="🎯 Quick Wins" sheetId="3" r:id="rId3"/><sheet name="ℹ️ Guide" sheetId="4" r:id="rId4"/></sheets></workbook>`;
+  const wbRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet4.xml"/><Relationship Id="rId5" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/><Relationship Id="rId6" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`;
+  const pkgRels=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`;
+  const ct=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet4.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`;
+
+  // ── ZIP builder ─────────────────────────────────────────────────────────────
+  const enc=new TextEncoder();
+  function crc32(buf){
+    let c=0xFFFFFFFF,t=crc32.t||(crc32.t=(()=>{const T=new Uint32Array(256);for(let i=0;i<256;i++){let x=i;for(let j=0;j<8;j++)x=x&1?(0xEDB88320^(x>>>1)):(x>>>1);T[i]=x;}return T;})());
+    for(let i=0;i<buf.length;i++)c=t[(c^buf[i])&0xFF]^(c>>>8);
+    return(c^0xFFFFFFFF)>>>0;
+  }
+  function u16(n){const b=new Uint8Array(2);new DataView(b.buffer).setUint16(0,n,true);return b;}
+  function u32(n){const b=new Uint8Array(4);new DataView(b.buffer).setUint32(0,n,true);return b;}
+  function cat(...a){const t=a.reduce((s,x)=>s+x.length,0),o=new Uint8Array(t);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length;});return o;}
+
+  const files=[
+    {n:'[Content_Types].xml',       d:enc.encode(ct)},
+    {n:'_rels/.rels',               d:enc.encode(pkgRels)},
+    {n:'xl/workbook.xml',           d:enc.encode(wbXml)},
+    {n:'xl/_rels/workbook.xml.rels',d:enc.encode(wbRels)},
+    {n:'xl/styles.xml',             d:enc.encode(stylesXml)},
+    {n:'xl/sharedStrings.xml',      d:enc.encode(ssXml)},
+    {n:'xl/worksheets/sheet1.xml',  d:enc.encode(sheet1)},
+    {n:'xl/worksheets/sheet2.xml',  d:enc.encode(sheet2)},
+    {n:'xl/worksheets/sheet3.xml',  d:enc.encode(sheet3)},
+    {n:'xl/worksheets/sheet4.xml',  d:enc.encode(sheet4)},
+  ];
+
+  const parts=[]; const cdirs=[]; let off=0;
+  files.forEach(({n,d})=>{
+    const nb=enc.encode(n); const crc=crc32(d);
+    const lh=cat(new Uint8Array([0x50,0x4B,0x03,0x04]),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(d.length),u32(d.length),u16(nb.length),u16(0),nb,d);
+    cdirs.push({nb,crc,sz:d.length,off});
+    parts.push(lh); off+=lh.length;
+  });
+  const cdStart=off;
+  cdirs.forEach(({nb,crc,sz,off:lo})=>{
+    const cd=cat(new Uint8Array([0x50,0x4B,0x01,0x02]),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(sz),u32(sz),u16(nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(lo),nb);
+    parts.push(cd); off+=cd.length;
+  });
+  const eocd=cat(new Uint8Array([0x50,0x4B,0x05,0x06]),u16(0),u16(0),u16(files.length),u16(files.length),u32(off-cdStart),u32(cdStart),u16(0));
+  parts.push(eocd);
+  return cat(...parts);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, color, duration) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.color = color || 'var(--text)';
+  el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.style.display = 'none'; }, duration || 4000);
+}
+
+// ── EPIC SCAN ANIMATION ENGINE ────────────────────────────────────
+
+// Particle burst when a site completes
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+let particles = [];
+let rafId = null;
+
+function resizeCanvas() {
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function spawnParticles(x, y, color) {
+  try {
+  const count = 18;
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
+    const speed = 2 + Math.random() * 5;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      decay: 0.025 + Math.random() * 0.03,
+      size: 2 + Math.random() * 4,
+      color
+    });
+  }
+  if (!rafId) animateParticles();
+  } catch(e) {}
+}
+
+function animateParticles() {
+  try {
+  if (!ctx) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles = particles.filter(p => p.life > 0);
+  for (const p of particles) {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.12; // gravity
+    p.life -= p.decay;
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (particles.length > 0) {
+    rafId = requestAnimationFrame(animateParticles);
+  } else {
+    rafId = null;
+  }
+  } catch(e) { rafId = null; }
+}
+
+function fireRowComplete(idx) {
+  try {
+  // Remove sweep bar
+  const bar = document.getElementById('sweep-' + idx);
+  if (bar) bar.remove();
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
+  const rect = tr.getBoundingClientRect();
+  const x = rect.left + rect.width * 0.15;
+  const y = rect.top + rect.height / 2;
+
+  const r = auditResults[idx];
+  const score = r?.data?.score || r?.data?.seo_score || 0;
+  const color = score >= 80 ? '#0abfbc' : score >= 60 ? '#e8b84b' : '#f87171';
+
+  spawnParticles(x, y, color);
+
+  // Flash the row
+  tr.classList.remove('row-scanning');
+  tr.classList.add('row-done-flash');
+  setTimeout(() => tr.classList.remove('row-done-flash'), 800);
+
+  // Pop the counter
+  const pDone = document.getElementById('p-done');
+  if (pDone) {
+    pDone.classList.remove('counter-pop');
+    void pDone.offsetWidth; // reflow
+    pDone.classList.add('counter-pop');
+  }
+  } catch(e) { /* animation error — don't crash audit */ }
+}
+
+function setRowScanning(idx) {
+  // No-op — handled inside updateRow now
+}
+
+function setRowZapIn(idx) {
+  // No-op — handled inside updateRow now
+}
+
+// Animated scanning steps text
+const scanSteps = [
+  'Fetching page…',
+  'Parsing HTML…',
+  'Checking meta tags…',
+  'Analysing headings…',
+  'Detecting CMS…',
+  'Scoring content…',
+  'Running AI audit…',
+  'Almost done…'
+];
+const activeScanTexts = {};
+
+function startScanText(idx) {
+  try {
+  let step = 0;
+  activeScanTexts[idx] = setInterval(() => {
+    try {
+      const el = document.getElementById('scan-text-' + idx);
+      if (el) { el.textContent = scanSteps[step % scanSteps.length]; step++; }
+    } catch(e) {}
+  }, 600);
+  } catch(e) {}
+}
+
+function stopScanText(idx) {
+  clearInterval(activeScanTexts[idx]);
+  delete activeScanTexts[idx];
+}
+
+</script>
+
+<canvas id="particle-canvas"></canvas>
+</body>
+</html>
