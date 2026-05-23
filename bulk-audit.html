@@ -230,7 +230,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 
 /* Row scanning state */
 tr.row-scanning td {
-  position: relative;
+  position: relative !important;
   animation: row-pulse 1.2s ease-in-out infinite;
   background: rgba(10,191,188,0.03) !important;
 }
@@ -270,6 +270,7 @@ tr.row-done-flash td {
 /* Row zap in */
 tr.row-zap td {
   animation: zap-in 0.3s ease both;
+  position: relative !important;
 }
 
 /* Progress bar — animated gradient */
@@ -733,22 +734,30 @@ async function detectCMS(url) {
     if (!res.ok) return {cms:'Unknown',confidence:0}; return await res.json();
   } catch { return {cms:'Unknown',confidence:0}; }
 }
-const GROQ_PROXY = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/';
+// GROQ_PROXY removed — logic now inside runAIAudit
 
 async function runAIAudit(url, options, pageData, cmsData) {
-  // 1 Try main backend first
+  const WORKER_BASE = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+
+  // 1 Try /api/claude endpoint (dedicated Claude route)
   try {
-    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/claude', {
+    const res = await fetch(WORKER_BASE + '/api/claude', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({url, options, pageData, cmsData}),
       signal: AbortSignal.timeout(60000)
     });
-    if (res.ok) return await res.json();
-  } catch(e) { /* fall through */ }
+    if (res.ok) {
+      const data = await res.json();
+      if (data && (data.seo_score !== undefined || data.score !== undefined)) {
+        console.log('[AI] Used /api/claude for', url);
+        return data;
+      }
+    }
+  } catch(e) { console.warn('[AI] /api/claude failed:', e.message); }
 
-  // 2 Try Groq proxy worker
+  // 2 Try root worker as Groq/AI proxy (POST to /)
   try {
-    const res = await fetch(GROQ_PROXY, {
+    const res = await fetch(WORKER_BASE + '/', {
       method: 'POST', headers: {'Content-Type':'application/json'},
       body: JSON.stringify({url, options, pageData, cmsData}),
       signal: AbortSignal.timeout(45000)
@@ -756,14 +765,24 @@ async function runAIAudit(url, options, pageData, cmsData) {
     if (res.ok) {
       const data = await res.json();
       if (data.result) {
-        const clean = data.result.replace(/```json|```/g,'').trim();
-        try { return JSON.parse(clean); } catch(e2) { /* fall through */ }
+        const clean = data.result.replace(/```json[\s\S]*?```|```/g,'').trim();
+        try {
+          const parsed = JSON.parse(clean);
+          if (parsed.seo_score !== undefined || parsed.score !== undefined) {
+            console.log('[AI] Used root proxy (unwrapped) for', url);
+            return parsed;
+          }
+        } catch(e2) { console.warn('[AI] Could not parse result JSON:', e2.message); }
       }
-      if (data.seo_score !== undefined) return data;
+      if (data.seo_score !== undefined || data.score !== undefined) {
+        console.log('[AI] Used root proxy (direct) for', url);
+        return data;
+      }
     }
-  } catch(e) { /* fall through */ }
+  } catch(e) { console.warn('[AI] Root proxy failed:', e.message); }
 
-  // 3 Both dead - score locally, no API needed
+  // 3 Both dead - fall back to local rule-based audit
+  console.warn('[AI] All AI endpoints failed for', url, '- using local audit');
   return runLocalAudit(url, pageData, cmsData);
 }
 
