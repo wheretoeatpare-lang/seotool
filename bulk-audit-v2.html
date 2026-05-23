@@ -776,8 +776,46 @@ function parseHtmlForSEO(html, url) {
   const hasViewport = /<meta[^>]+name=["']viewport["'][^>]*>/i.test(html);
   const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
   const canonical = canonicalMatch ? canonicalMatch[1].trim() : '';
-  const h1Match = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
-  const h1 = h1Match ? h1Match[1].replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').trim() : '';
+
+  // ── HEADING DETECTION ────────────────────────────────────────────────────────
+  // Strip scripts/styles first so we don't match headings inside JS strings
+  const htmlNoScripts = html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '');
+
+  // Count heading tags (reliable — just look for opening tags)
+  const countHeadingTags = (level) => {
+    const rx = new RegExp('<h' + level + '[\\s>][^]*?</h' + level + '\\s*>', 'gi');
+    return (htmlNoScripts.match(rx) || []).length;
+  };
+
+  const h1Count = countHeadingTags(1);
+  const h2Count = countHeadingTags(2);
+  const h3Count = countHeadingTags(3);
+
+  // Extract H1 text — strip all nested tags, decode entities
+  const decodeEntities = (s) => s
+    .replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"').replace(/&#039;/gi, "'").replace(/&nbsp;/gi, ' ')
+    .replace(/&#(\d+);/gi, (_, n) => String.fromCharCode(parseInt(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
+
+  // Use a greedy match that handles deeply nested tags inside H1
+  const h1BlockRx = /<h1[\s>][^]*?<\/h1\s*>/i;
+  const h1Block = htmlNoScripts.match(h1BlockRx);
+  const h1 = h1Block
+    ? decodeEntities(h1Block[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
+    : '';
+
+  // Also extract all H2 texts (first 5) for the AI prompt
+  const h2Texts = [];
+  const h2BlockRx = /<h2[\s>][^]*?<\/h2\s*>/gi;
+  let h2m;
+  while ((h2m = h2BlockRx.exec(htmlNoScripts)) !== null && h2Texts.length < 5) {
+    const txt = decodeEntities(h2m[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+    if (txt) h2Texts.push(txt);
+  }
+
   const robotsMeta = getMeta('name', 'robots');
   const ogTitle = getMeta('property', 'og:title');
   const ogImage = getMeta('property', 'og:image');
@@ -833,6 +871,9 @@ function parseHtmlForSEO(html, url) {
   const unoptimisedFmt   = images.filter(i => ['bmp','tiff','tif'].includes(i.format));
 
   return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, h1, robotsMeta, ogTitle, ogImage,
+    // Heading data — use tag counts (reliable) not just text presence
+    headings: { h1: h1Count, h2: h2Count, h3: h3Count },
+    h2Texts,
     imageList: images,
     images: { total: images.length, missingAlt: imagesWithoutAlt.length, heavy: heavyImages.length, unoptimisedFmt: unoptimisedFmt.length }
   };
@@ -963,7 +1004,10 @@ CANONICAL: ${pd.canonical || 'MISSING'}
 LANG ATTRIBUTE: ${pd.lang || 'MISSING'}
 
 H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)}
+H1 TEXT: ${pd.h1 || (pd.headings?.h1 > 0 ? '(present but text not extracted)' : 'MISSING')}
 H2 COUNT: ${pd.headings?.h2 ?? 'Unknown'}
+H3 COUNT: ${pd.headings?.h3 ?? 'Unknown'}
+${pd.h2Texts?.length ? `H2 HEADINGS: ${pd.h2Texts.join(' | ')}` : ''}
 WORD COUNT: ${pd.wordCount || 0}
 PAGE SIZE: ${pd.pageSizeKb ? pd.pageSizeKb + 'kb' : 'Unknown'}
 
@@ -1057,9 +1101,21 @@ function runLocalAudit(url, pageData, cmsData) {
     else if (ml > 160) { onPage -= 8; suggestions.push({ priority:'low', title:'Meta description too long ('+ml+' chars)', detail:'Google truncates descriptions over ~155 characters. Shorten slightly.' }); }
   }
 
-  if (!pd.h1) {
+  // Use reliable tag counts — fall back to text presence only if counts unavailable
+  const h1Count = pd.headings?.h1 ?? (pd.h1 ? 1 : 0);
+  const h2Count = pd.headings?.h2 ?? 0;
+
+  if (h1Count === 0) {
     onPage -= 15;
     suggestions.push({ priority:'high', title:'Add an H1 heading', detail:'No H1 tag detected. Every page should have one clear H1 with your primary keyword.' });
+  } else if (h1Count > 1) {
+    onPage -= 8;
+    suggestions.push({ priority:'medium', title:`Multiple H1 tags found (${h1Count})`, detail:'Having more than one H1 can dilute your primary keyword signal. Keep exactly one H1 per page.' });
+  }
+
+  if (h2Count === 0) {
+    onPage -= 5;
+    suggestions.push({ priority:'low', title:'Add H2 subheadings', detail:'No H2 tags found. Subheadings help structure content for both users and search engines.' });
   }
 
   if (!pd.canonical) {
@@ -1361,7 +1417,9 @@ function renderDetail(idx){
     const l=s.priority==='high'?'HIGH':s.priority==='medium'?'MED':'LOW';
     return `<div class="sugg-item"><span class="sugg-badge ${c}">${l}</span>${s.title||s.text||''}</div>`;
   }).join('');
-  const metrics=[['Title Len',pd.title?pd.title.length+' chars':'—'],['Meta Desc',pd.metaDesc?pd.metaDesc.length+' chars':'—'],['Words',pd.wordCount?pd.wordCount.toLocaleString():'—'],['HTTPS',pd.isHttps!==false?'✅':'❌'],['Mobile',pd.hasViewport?'✅':'❌'],['TTFB',pd.ttfb?pd.ttfb+'ms':'—']];
+  const h1c = pd.headings?.h1 ?? (pd.h1 ? 1 : 0);
+  const h2c = pd.headings?.h2 ?? '?';
+  const metrics=[['Title Len',pd.title?pd.title.length+' chars':'—'],['Meta Desc',pd.metaDesc?pd.metaDesc.length+' chars':'—'],['Words',pd.wordCount?pd.wordCount.toLocaleString():'—'],['HTTPS',pd.isHttps!==false?'✅':'❌'],['Mobile',pd.hasViewport?'✅':'❌'],['TTFB',pd.ttfb?pd.ttfb+'ms':'—'],['H1 Tags',h1c===0?'❌ None':h1c===1?'✅ 1':'⚠ '+h1c],['H2 Tags',h2c==='?'?'—':h2c>0?'✅ '+h2c:'⚠ None']];
 
   // ── IMAGE ISSUES TABLE ─────────────────────────────────────────────────────
   // Merge image_issues from AI + any imageList from page parsing
