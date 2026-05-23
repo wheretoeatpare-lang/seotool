@@ -189,6 +189,129 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
 @media(max-width:700px){nav{padding:0 1rem}.hero{padding:2.5rem 1rem 2rem}.input-section,.progress-section,.results-section,.done-banner{padding:0 1rem}.hero h1{font-size:1.8rem}}
+
+/* ── EPIC SCAN ANIMATIONS ────────────────────────────────────────── */
+
+/* Scanning row — sweeping radar glow */
+@keyframes radar-sweep {
+  0%   { background-position: -100% 0; opacity: 0; }
+  10%  { opacity: 1; }
+  100% { background-position: 250% 0; opacity: 0; }
+}
+@keyframes row-pulse {
+  0%,100% { box-shadow: inset 0 0 0 1px rgba(10,191,188,0.0); }
+  50%      { box-shadow: inset 0 0 0 1px rgba(10,191,188,0.4); }
+}
+@keyframes score-pop {
+  0%   { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  60%  { transform: scale(1.2) rotate(2deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes done-flash {
+  0%   { background: rgba(10,191,188,0.12); }
+  100% { background: transparent; }
+}
+@keyframes particle-burst {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+@keyframes shimmer-text {
+  0%,100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+@keyframes scan-line {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+@keyframes zap-in {
+  0%   { opacity:0; transform: translateY(6px) scale(0.95); }
+  100% { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* Row scanning state */
+tr.row-scanning td {
+  position: relative;
+  animation: row-pulse 1.2s ease-in-out infinite;
+  background: rgba(10,191,188,0.03) !important;
+}
+tr.row-scanning td:first-child::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(10,191,188,0.08) 40%,
+    rgba(10,191,188,0.25) 50%,
+    rgba(10,191,188,0.08) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: scan-line 1.6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Row done flash */
+tr.row-done-flash td {
+  animation: done-flash 0.8s ease forwards;
+}
+
+/* Score pop animation */
+.score-pop {
+  display: inline-block;
+  animation: score-pop 0.5s cubic-bezier(.22,1,.36,1) both;
+}
+
+/* Analysing shimmer text */
+.shimmer-text {
+  animation: shimmer-text 1s ease-in-out infinite;
+}
+
+/* Row zap in */
+tr.row-zap td {
+  animation: zap-in 0.3s ease both;
+}
+
+/* Progress bar — animated gradient */
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--accent), var(--teal), var(--accent)) !important;
+  background-size: 200% 100% !important;
+  animation: progress-shimmer 1.5s linear infinite !important;
+}
+@keyframes progress-shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* Scanning badge — pulsing dot */
+.badge-scanning-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: dot-ping 1s ease-in-out infinite;
+  margin-right: 4px;
+}
+@keyframes dot-ping {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* Particle canvas overlay */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Done counter pop */
+@keyframes counter-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.4); color: var(--teal); }
+  100% { transform: scale(1); }
+}
+.counter-pop { animation: counter-pop 0.4s ease; }
 </style>
 </head>
 <body>
@@ -767,7 +890,7 @@ function rowHtml(r,i){
   let host=r.url; try{host=new URL(r.url).hostname;}catch{}
   const fav=`https://www.google.com/s2/favicons?domain=${host}&sz=32`;
   const badge=r.status==='done'?`<span class="status-badge badge-done">✓ Done</span>`
-    :r.status==='scanning'?`<span class="status-badge badge-scanning"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(10,191,188,0.4);border-top-color:var(--teal);animation:spin .8s linear infinite"></span> Scanning</span>`
+    :r.status==='scanning'?`<span class="status-badge badge-scanning"><span class="badge-scanning-dot"></span>Scanning</span>`
     :r.status==='error'?`<span class="status-badge badge-error">✗ Error</span>`
     :`<span class="status-badge badge-queued">⏳ Queued</span>`;
   const score=r.score!=null?`<div class="score-cell ${scoreClass(r.score)}"><div class="score-num">${r.score}</div><div class="score-bar-wrap"><div class="score-bar-fill" style="width:${r.score}%"></div></div></div>`
@@ -778,7 +901,7 @@ function rowHtml(r,i){
   if(r.data?.suggestions?.length){
     const hi=r.data.suggestions.filter(s=>s.priority==='high').slice(0,2);
     if(hi.length)issues=hi.map(s=>`<div style="font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${s.title||s.text||''}</div>`).join('');
-  } else if(r.status==='scanning'){issues=`<span style="color:var(--muted2);font-size:.73rem">Analyzing…</span>`;}
+  } else if(r.status==='scanning'){issues=`<span id="scan-text-${idx}" class="shimmer-text" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;}
   return `
     <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
     <td><div class="site-cell"><img class="site-favicon" src="${fav}" onerror="this.style.display='none'"><div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div></div></td>
@@ -789,7 +912,10 @@ function rowHtml(r,i){
     <td>${r.status==='done'?`<button class="expand-btn" id="expand-btn-${i}" onclick="toggleDetail(${i})">▼</button>`:''}</td>`;
 }
 function updateRow(idx){
-  const tr=document.getElementById('row-'+idx); if(tr) tr.innerHTML=rowHtml(auditResults[idx],idx);
+  const r=auditResults[idx];
+  const tr=document.getElementById('row-'+idx); if(tr) tr.innerHTML=rowHtml(r,idx);
+  if(r.status==='scanning'){ setRowScanning(idx); startScanText(idx); }
+  if(r.status==='done'||r.status==='error'){ stopScanText(idx); fireRowComplete(idx); setRowZapIn(idx); }
   if(auditResults[idx].status==='done'&&expandedRows.has(idx)) renderDetail(idx);
   renderSummaryChips();
 }
@@ -1268,6 +1394,133 @@ function showToast(msg, color, duration) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => { el.style.display = 'none'; }, duration || 4000);
 }
+
+// ── EPIC SCAN ANIMATION ENGINE ────────────────────────────────────
+
+// Particle burst when a site completes
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+let particles = [];
+let rafId = null;
+
+function resizeCanvas() {
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function spawnParticles(x, y, color) {
+  const count = 18;
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
+    const speed = 2 + Math.random() * 5;
+    particles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      decay: 0.025 + Math.random() * 0.03,
+      size: 2 + Math.random() * 4,
+      color
+    });
+  }
+  if (!rafId) animateParticles();
+}
+
+function animateParticles() {
+  if (!ctx) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles = particles.filter(p => p.life > 0);
+  for (const p of particles) {
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.12; // gravity
+    p.life -= p.decay;
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  if (particles.length > 0) {
+    rafId = requestAnimationFrame(animateParticles);
+  } else {
+    rafId = null;
+  }
+}
+
+function fireRowComplete(idx) {
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
+  const rect = tr.getBoundingClientRect();
+  const x = rect.left + rect.width * 0.15;
+  const y = rect.top + rect.height / 2;
+
+  const r = auditResults[idx];
+  const score = r?.data?.score || r?.data?.seo_score || 0;
+  const color = score >= 80 ? '#0abfbc' : score >= 60 ? '#e8b84b' : '#f87171';
+
+  spawnParticles(x, y, color);
+
+  // Flash the row
+  tr.classList.remove('row-scanning');
+  tr.classList.add('row-done-flash');
+  setTimeout(() => tr.classList.remove('row-done-flash'), 800);
+
+  // Pop the counter
+  const pDone = document.getElementById('p-done');
+  if (pDone) {
+    pDone.classList.remove('counter-pop');
+    void pDone.offsetWidth; // reflow
+    pDone.classList.add('counter-pop');
+  }
+}
+
+function setRowScanning(idx) {
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
+  tr.classList.add('row-scanning');
+  tr.classList.remove('row-done-flash', 'row-zap');
+}
+
+function setRowZapIn(idx) {
+  const tr = document.getElementById('row-' + idx);
+  if (!tr) return;
+  tr.classList.add('row-zap');
+  setTimeout(() => tr.classList.remove('row-zap'), 400);
+}
+
+// Animated scanning steps text
+const scanSteps = [
+  'Fetching page…',
+  'Parsing HTML…',
+  'Checking meta tags…',
+  'Analysing headings…',
+  'Detecting CMS…',
+  'Scoring content…',
+  'Running AI audit…',
+  'Almost done…'
+];
+const activeScanTexts = {};
+
+function startScanText(idx) {
+  let step = 0;
+  activeScanTexts[idx] = setInterval(() => {
+    const el = document.getElementById('scan-text-' + idx);
+    if (el) { el.textContent = scanSteps[step % scanSteps.length]; step++; }
+  }, 600);
+}
+
+function stopScanText(idx) {
+  clearInterval(activeScanTexts[idx]);
+  delete activeScanTexts[idx];
+}
+
 </script>
+
+<canvas id="particle-canvas"></canvas>
 </body>
 </html>
