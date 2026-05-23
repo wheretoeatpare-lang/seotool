@@ -220,8 +220,8 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   50%      { opacity: 1; }
 }
 @keyframes scan-line {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(400%); }
+  0%   { background-position: 200% 0; }
+  100% { background-position: -100% 0; }
 }
 @keyframes zap-in {
   0%   { opacity:0; transform: translateY(6px) scale(0.95); }
@@ -234,21 +234,22 @@ tr.row-scanning td {
   animation: row-pulse 1.2s ease-in-out infinite;
   background: rgba(10,191,188,0.03) !important;
 }
-tr.row-scanning td:first-child::after {
+tr.row-scanning td::after {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(10,191,188,0.08) 40%,
-    rgba(10,191,188,0.25) 50%,
-    rgba(10,191,188,0.08) 60%,
+    rgba(10,191,188,0.06) 40%,
+    rgba(10,191,188,0.18) 50%,
+    rgba(10,191,188,0.06) 60%,
     transparent 100%
   );
   background-size: 200% 100%;
   animation: scan-line 1.6s ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
+  overflow: hidden;
 }
 
 /* Row done flash */
@@ -987,10 +988,32 @@ function rowHtml(r,i){
 }
 function updateRow(idx){
   const r=auditResults[idx];
-  const tr=document.getElementById('row-'+idx); if(tr) tr.innerHTML=rowHtml(r,idx);
-  if(r.status==='scanning'){ setRowScanning(idx); startScanText(idx); }
-  if(r.status==='done'||r.status==='error'){ stopScanText(idx); fireRowComplete(idx); setRowZapIn(idx); }
-  if(auditResults[idx].status==='done'&&expandedRows.has(idx)) renderDetail(idx);
+  const tr=document.getElementById('row-'+idx);
+  if(!tr) return;
+
+  // Apply scanning class BEFORE rebuilding innerHTML so new <td>s are born inside
+  // an already-classed <tr> — this is what makes CSS animations fire immediately
+  tr.classList.remove('row-scanning','row-done-flash','row-zap');
+  if(r.status==='scanning') tr.classList.add('row-scanning');
+
+  // Rebuild inner HTML
+  tr.innerHTML = rowHtml(r, idx);
+
+  // Force a reflow so the browser registers the new DOM state before we add more classes
+  void tr.offsetHeight;
+
+  if(r.status==='scanning'){
+    startScanText(idx);
+  }
+  if(r.status==='done'||r.status==='error'){
+    stopScanText(idx);
+    // Small delay so zap-in plays AFTER the row content is painted
+    requestAnimationFrame(()=>{
+      fireRowComplete(idx);
+      setRowZapIn(idx);
+    });
+  }
+  if(r.status==='done'&&expandedRows.has(idx)) renderDetail(idx);
   renderSummaryChips();
 }
 function toggleDetail(idx){
