@@ -193,11 +193,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
 /* ── EPIC SCAN ANIMATIONS ────────────────────────────────────────── */
 
 /* Scanning row — sweeping radar glow */
-@keyframes radar-sweep {
-  0%   { background-position: -100% 0; opacity: 0; }
-  10%  { opacity: 1; }
-  100% { background-position: 250% 0; opacity: 0; }
-}
+
 @keyframes row-pulse {
   0%,100% { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.1); }
   50%      { box-shadow: inset 0 0 0 2px rgba(10,191,188,0.6); }
@@ -212,10 +208,7 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   60%  { background: rgba(52,211,153,0.1); }
   100% { background: transparent; }
 }
-@keyframes particle-burst {
-  0%   { transform: translate(0,0) scale(1); opacity: 1; }
-  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
-}
+
 @keyframes shimmer-text {
   0%,100% { opacity: 0.4; }
   50%      { opacity: 1; }
@@ -226,37 +219,12 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   100% { opacity:1; transform: translateY(0) scale(1); }
 }
 
-/* Row scanning state — use outline on TR (works in all browsers) */
-tr.row-scanning {
-  outline: 2px solid rgba(10,191,188,0.5);
-  outline-offset: -1px;
-  animation: row-pulse 1s ease-in-out infinite;
-}
+/* Row scanning state — simple background highlight */
 tr.row-scanning td {
   background: rgba(10,191,188,0.07) !important;
+  transition: background 0.3s ease;
 }
-/* The sweep bar is injected as a real <div> by JS — see .scan-sweep-bar */
-.scan-sweep-bar {
-  position: absolute;
-  top: 0; left: 0;
-  height: 100%;
-  width: 40%;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(10,191,188,0.2) 40%,
-    rgba(10,191,188,0.5) 50%,
-    rgba(10,191,188,0.2) 60%,
-    transparent 100%
-  );
-  animation: scan-sweep 1.4s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 10;
-  border-radius: 2px;
-}
-@keyframes scan-sweep {
-  0%   { left: -40%; }
-  100% { left: 110%; }
-}
+/* scan-line kept for any future use */
 @keyframes scan-line {
   0%   { left: -40%; }
   100% { left: 110%; }
@@ -281,7 +249,6 @@ tr.row-done-flash td {
 /* Row zap in */
 tr.row-zap td {
   animation: zap-in 0.3s ease both;
-  position: relative !important;
 }
 
 /* Progress bar — animated gradient */
@@ -309,13 +276,6 @@ tr.row-zap td {
   50%      { transform: scale(1.5); opacity: 0.5; }
 }
 
-/* Particle canvas overlay */
-#particle-canvas {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9999;
-}
 
 /* Done counter pop */
 @keyframes counter-pop {
@@ -429,17 +389,8 @@ tr.row-zap td {
   to   { opacity: 1; }
 }
 
-/* Scanning title dots */
-.scanning-dots::after {
-  content: '';
-  animation: dot-cycle 1.5s steps(4, end) infinite;
-}
-@keyframes dot-cycle {
-  0%  { content: '';    }
-  25% { content: '.';   }
-  50% { content: '..';  }
-  75% { content: '...'; }
-}
+/* Scanning title dots — JS driven via setInterval */
+.scanning-dots-text { /* JS updates textContent */ }
 </style>
 </head>
 <body>
@@ -687,6 +638,19 @@ async function startBulkAudit() {
   updateProgress();
   // Activate scan animation classes
   document.querySelector('.progress-card')?.classList.add('scanning-active');
+  // JS-driven animated dots on scanning title (CSS content animation not supported)
+  let _dotsStep = 0;
+  const _dotsEl = document.querySelector('.scanning-dots');
+  if (_dotsEl) { _dotsEl._baseText = _dotsEl.textContent.replace(/\.+$/, '').trim(); }
+  const _dotsTimer = setInterval(() => {
+    const el = document.querySelector('.scanning-dots');
+    if (!el) return;
+    const base = el._baseText || '🔍 Auditing in Progress';
+    el.textContent = base + ['.','..','...',''][_dotsStep % 4];
+    _dotsStep++;
+  }, 500);
+  // Store for cleanup
+  window._scanDotsTimer = _dotsTimer;
   const beam = document.getElementById('table-scan-beam');
   if (beam) beam.style.display = 'block';
 
@@ -742,6 +706,10 @@ async function startBulkAudit() {
   // ── AUDIT DONE ──
   auditRunning = false;
   document.querySelector('.progress-card')?.classList.remove('scanning-active');
+  // Stop JS dots animation
+  clearInterval(window._scanDotsTimer);
+  const _dotsEl2 = document.querySelector('.scanning-dots');
+  if (_dotsEl2 && _dotsEl2._baseText) _dotsEl2.textContent = _dotsEl2._baseText;
   const _beam = document.getElementById('table-scan-beam');
   if (_beam) _beam.style.display = 'none';
   const _etaTag = document.getElementById('eta-tag');
@@ -1243,27 +1211,13 @@ function updateRow(idx) {
     tr.classList.remove('row-done-flash', 'row-zap');
     tr.classList.add('row-scanning');
     startScanText(idx);
-    // Inject sweep bar into badge TD (stable element, not re-created)
-    if (badgeEl && !document.getElementById('sweep-' + idx)) {
-      badgeEl.style.position = 'relative';
-      badgeEl.style.overflow = 'hidden';
-      const bar = document.createElement('div');
-      bar.className = 'scan-sweep-bar';
-      bar.id = 'sweep-' + idx;
-      badgeEl.appendChild(bar);
-    }
   }
 
   if (r.status === 'done' || r.status === 'error') {
     tr.classList.remove('row-scanning');
     stopScanText(idx);
-    // Remove sweep bar
-    const bar = document.getElementById('sweep-' + idx);
-    if (bar) bar.remove();
     // Flash animation
     requestAnimationFrame(() => {
-      tr.classList.add('row-done-flash');
-      setTimeout(() => tr.classList.remove('row-done-flash'), 900);
       fireRowComplete(idx);
       tr.classList.add('row-zap');
       setTimeout(() => tr.classList.remove('row-zap'), 400);
@@ -1752,83 +1706,12 @@ function showToast(msg, color, duration) {
   toastTimer = setTimeout(() => { el.style.display = 'none'; }, duration || 4000);
 }
 
-// ── EPIC SCAN ANIMATION ENGINE ────────────────────────────────────
-
-// Particle burst when a site completes
-const canvas = document.getElementById('particle-canvas');
-const ctx = canvas ? canvas.getContext('2d') : null;
-let particles = [];
-let rafId = null;
-
-function resizeCanvas() {
-  if (!canvas) return;
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function spawnParticles(x, y, color) {
-  try {
-  const count = 18;
-  for (let i = 0; i < count; i++) {
-    const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
-    const speed = 2 + Math.random() * 5;
-    particles.push({
-      x, y,
-      vx: Math.cos(angle) * speed,
-      vy: Math.sin(angle) * speed,
-      life: 1,
-      decay: 0.025 + Math.random() * 0.03,
-      size: 2 + Math.random() * 4,
-      color
-    });
-  }
-  if (!rafId) animateParticles();
-  } catch(e) {}
-}
-
-function animateParticles() {
-  try {
-  if (!ctx) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particles = particles.filter(p => p.life > 0);
-  for (const p of particles) {
-    p.x  += p.vx;
-    p.y  += p.vy;
-    p.vy += 0.12; // gravity
-    p.life -= p.decay;
-    ctx.globalAlpha = Math.max(0, p.life);
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-  if (particles.length > 0) {
-    rafId = requestAnimationFrame(animateParticles);
-  } else {
-    rafId = null;
-  }
-  } catch(e) { rafId = null; }
-}
+// ── SCAN ANIMATION ENGINE ──────────────────────────────────────────
 
 function fireRowComplete(idx) {
   try {
-  // Remove sweep bar
-  const bar = document.getElementById('sweep-' + idx);
-  if (bar) bar.remove();
   const tr = document.getElementById('row-' + idx);
   if (!tr) return;
-  const rect = tr.getBoundingClientRect();
-  const x = rect.left + rect.width * 0.15;
-  const y = rect.top + rect.height / 2;
-
-  const r = auditResults[idx];
-  const score = r?.data?.score || r?.data?.seo_score || 0;
-  const color = score >= 80 ? '#0abfbc' : score >= 60 ? '#e8b84b' : '#f87171';
-
-  spawnParticles(x, y, color);
 
   // Flash the row
   tr.classList.remove('row-scanning');
@@ -1885,6 +1768,5 @@ function stopScanText(idx) {
 
 </script>
 
-<canvas id="particle-canvas"></canvas>
 </body>
 </html>
