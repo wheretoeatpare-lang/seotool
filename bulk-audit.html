@@ -1412,6 +1412,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function spawnParticles(x, y, color) {
+  try {
   const count = 18;
   for (let i = 0; i < count; i++) {
     const angle = (Math.PI * 2 / count) * i + (Math.random() - 0.5) * 0.5;
@@ -1427,9 +1428,11 @@ function spawnParticles(x, y, color) {
     });
   }
   if (!rafId) animateParticles();
+  } catch(e) {}
 }
 
 function animateParticles() {
+  try {
   if (!ctx) return;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   particles = particles.filter(p => p.life > 0);
@@ -1450,9 +1453,11 @@ function animateParticles() {
   } else {
     rafId = null;
   }
+  } catch(e) { rafId = null; }
 }
 
 function fireRowComplete(idx) {
+  try {
   const tr = document.getElementById('row-' + idx);
   if (!tr) return;
   const rect = tr.getBoundingClientRect();
@@ -1477,6 +1482,7 @@ function fireRowComplete(idx) {
     void pDone.offsetWidth; // reflow
     pDone.classList.add('counter-pop');
   }
+  } catch(e) { /* animation error — don't crash audit */ }
 }
 
 function setRowScanning(idx) {
@@ -1507,11 +1513,15 @@ const scanSteps = [
 const activeScanTexts = {};
 
 function startScanText(idx) {
+  try {
   let step = 0;
   activeScanTexts[idx] = setInterval(() => {
-    const el = document.getElementById('scan-text-' + idx);
-    if (el) { el.textContent = scanSteps[step % scanSteps.length]; step++; }
+    try {
+      const el = document.getElementById('scan-text-' + idx);
+      if (el) { el.textContent = scanSteps[step % scanSteps.length]; step++; }
+    } catch(e) {}
   }, 600);
+  } catch(e) {}
 }
 
 function stopScanText(idx) {
