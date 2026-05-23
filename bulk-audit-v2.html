@@ -765,28 +765,99 @@ function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(-
 // Extract SEO data from raw HTML string using regex (reliable even on malformed HTML)
 function parseHtmlForSEO(html, url) {
   const isHttps = url.startsWith('https://');
-  function getMeta(attr, val) {
-    const rx = new RegExp('<meta[^>]+(?:' + attr + ')=["\\\']' + val + '["\\\'][^>]*content=["\\\']([^"\\\']*)["\\\']', 'i');
-    const rx2 = new RegExp('<meta[^>]+content=["\\\']([^"\\\']*)["\\\'][^>]*(?:' + attr + ')=["\\\']' + val + '["\\\']', 'i');
-    return (html.match(rx) || html.match(rx2) || [])[1]?.trim() || '';
+
+  // ── PRE-CLEAN: strip comments, scripts, styles BEFORE any parsing ────────────
+  // This prevents matching tags inside JS strings or CSS content
+  const htmlClean = html
+    .replace(/<!--[\s\S]*?-->/g, '')           // HTML comments
+    .replace(/<script[\s\S]*?<\/script>/gi, '') // script blocks
+    .replace(/<style[\s\S]*?<\/style>/gi, '');  // style blocks
+
+  // ── ATTR EXTRACTOR: handles " ' or unquoted values ───────────────────────────
+  function getAttr(tag, name) {
+    // Double quotes
+    let m = tag.match(new RegExp(name + '\\s*=\\s*"([^"]*)"', 'i'));
+    if (m) return m[1].trim();
+    // Single quotes
+    m = tag.match(new RegExp(name + "\\s*=\\s*'([^']*)'", 'i'));
+    if (m) return m[1].trim();
+    // Unquoted
+    m = tag.match(new RegExp(name + '\\s*=\\s*([^\\s>]+)', 'i'));
+    if (m) return m[1].trim();
+    return '';
   }
-  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim() : '';
+
+  // ── META TAG PARSER ──────────────────────────────────────────────────────────
+  // Collect ALL <meta ...> tags first, then look them up — far more reliable
+  // than trying to match both attrs in a single regex pass
+  const metaTags = [];
+  const metaRx = /<meta\b([^>]*?)(?:\/>|>)/gi;
+  let mm;
+  while ((mm = metaRx.exec(htmlClean)) !== null) {
+    metaTags.push(mm[1]);
+  }
+
+  function getMeta(nameAttr, nameVal) {
+    // nameAttr = 'name' or 'property', nameVal = 'description', 'og:title', etc.
+    for (const attrs of metaTags) {
+      const attrVal = getAttr(attrs, nameAttr);
+      if (attrVal.toLowerCase() === nameVal.toLowerCase()) {
+        return getAttr(attrs, 'content');
+      }
+    }
+    return '';
+  }
+
+  // ── TITLE ────────────────────────────────────────────────────────────────────
+  const titleMatch = htmlClean.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const title = titleMatch
+    ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&apos;/g,"'").trim()
+    : '';
+
+  // ── META DESC ────────────────────────────────────────────────────────────────
   const metaDesc = getMeta('name', 'description') || getMeta('property', 'og:description') || '';
-  const hasViewport = /<meta[^>]+name=["']viewport["'][^>]*>/i.test(html);
-  const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i) || html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']canonical["']/i);
-  const canonical = canonicalMatch ? canonicalMatch[1].trim() : '';
+
+  // ── VIEWPORT ─────────────────────────────────────────────────────────────────
+  const hasViewport = metaTags.some(attrs => {
+    const n = getAttr(attrs, 'name').toLowerCase();
+    return n === 'viewport';
+  });
+
+  // ── CANONICAL ────────────────────────────────────────────────────────────────
+  // Collect all <link> tags and find rel=canonical
+  const linkRx = /<link\b([^>]*?)(?:\/>|>)/gi;
+  let lm; let canonical = '';
+  while ((lm = linkRx.exec(htmlClean)) !== null) {
+    const attrs = lm[1];
+    const rel = getAttr(attrs, 'rel').toLowerCase();
+    if (rel === 'canonical') {
+      canonical = getAttr(attrs, 'href');
+      break;
+    }
+  }
+
+  // ── LANG ─────────────────────────────────────────────────────────────────────
+  const htmlTagMatch = html.match(/<html\b([^>]*)>/i);
+  const lang = htmlTagMatch ? getAttr(htmlTagMatch[1], 'lang') : '';
+
+  // ── ROBOTS ───────────────────────────────────────────────────────────────────
+  const robotsMeta = getMeta('name', 'robots');
+
+  // ── OG TAGS ──────────────────────────────────────────────────────────────────
+  const ogTitle = getMeta('property', 'og:title');
+  const ogImage = getMeta('property', 'og:image');
+
+  // ── WORD COUNT ───────────────────────────────────────────────────────────────
+  const stripped = htmlClean.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
 
   // ── HEADING DETECTION ────────────────────────────────────────────────────────
-  // Strip scripts/styles first so we don't match headings inside JS strings
-  const htmlNoScripts = html
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?<\/style>/gi, '');
+  // htmlClean already has scripts/styles/comments stripped
 
   // Count heading tags (reliable — just look for opening tags)
   const countHeadingTags = (level) => {
     const rx = new RegExp('<h' + level + '[\\s>][^]*?</h' + level + '\\s*>', 'gi');
-    return (htmlNoScripts.match(rx) || []).length;
+    return (htmlClean.match(rx) || []).length;
   };
 
   const h1Count = countHeadingTags(1);
@@ -802,7 +873,7 @@ function parseHtmlForSEO(html, url) {
 
   // Use a greedy match that handles deeply nested tags inside H1
   const h1BlockRx = /<h1[\s>][^]*?<\/h1\s*>/i;
-  const h1Block = htmlNoScripts.match(h1BlockRx);
+  const h1Block = htmlClean.match(h1BlockRx);
   const h1 = h1Block
     ? decodeEntities(h1Block[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
     : '';
@@ -811,7 +882,7 @@ function parseHtmlForSEO(html, url) {
   const h2Texts = [];
   const h2BlockRx = /<h2[\s>][^]*?<\/h2\s*>/gi;
   let h2m;
-  while ((h2m = h2BlockRx.exec(htmlNoScripts)) !== null && h2Texts.length < 5) {
+  while ((h2m = h2BlockRx.exec(htmlClean)) !== null && h2Texts.length < 5) {
     const txt = decodeEntities(h2m[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
     if (txt) h2Texts.push(txt);
   }
@@ -827,12 +898,13 @@ function parseHtmlForSEO(html, url) {
   const imgTagRx = /<img\b([^>]*?)(?:\/>|>)/gi;
   const extractAttr = (attrs, name) => {
     const m = attrs.match(new RegExp(name + '=["\']([^"\']*)["\']', 'i'))
+           || attrs.match(new RegExp(name + "='([^']*)'", 'i'))
            || attrs.match(new RegExp(name + '=([^\\s>]+)', 'i'));
     return m ? m[1].trim() : '';
   };
   const rawImgs = [];
   let imgMatch;
-  while ((imgMatch = imgTagRx.exec(html)) !== null) {
+  while ((imgMatch = imgTagRx.exec(htmlClean)) !== null) {
     const attrs = imgMatch[1];
     const src   = extractAttr(attrs, 'src') || extractAttr(attrs, 'data-src') || extractAttr(attrs, 'data-lazy-src');
     if (!src || src.startsWith('data:')) continue; // skip inline base64
@@ -870,7 +942,7 @@ function parseHtmlForSEO(html, url) {
   const heavyImages      = images.filter(i => i.likelyHeavy);
   const unoptimisedFmt   = images.filter(i => ['bmp','tiff','tif'].includes(i.format));
 
-  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, h1, robotsMeta, ogTitle, ogImage,
+  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, lang, h1, robotsMeta, ogTitle, ogImage,
     // Heading data — use tag counts (reliable) not just text presence
     headings: { h1: h1Count, h2: h2Count, h3: h3Count },
     h2Texts,
