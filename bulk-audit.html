@@ -226,32 +226,40 @@ nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-co
   100% { opacity:1; transform: translateY(0) scale(1); }
 }
 
-/* Row scanning state */
-tr.row-scanning td {
-  position: relative !important;
+/* Row scanning state — use outline on TR (works in all browsers) */
+tr.row-scanning {
+  outline: 2px solid rgba(10,191,188,0.5);
+  outline-offset: -1px;
   animation: row-pulse 1s ease-in-out infinite;
-  background: rgba(10,191,188,0.06) !important;
-  transition: background 0.2s;
 }
-tr.row-scanning td::after {
-  content: '';
+tr.row-scanning td {
+  background: rgba(10,191,188,0.07) !important;
+}
+/* The sweep bar is injected as a real <div> by JS — see .scan-sweep-bar */
+.scan-sweep-bar {
   position: absolute;
-  top: 0; left: -100%; right: auto; bottom: 0;
-  width: 60%;
+  top: 0; left: 0;
+  height: 100%;
+  width: 40%;
   background: linear-gradient(90deg,
     transparent 0%,
-    rgba(10,191,188,0.15) 40%,
-    rgba(10,191,188,0.4) 50%,
-    rgba(10,191,188,0.15) 60%,
+    rgba(10,191,188,0.2) 40%,
+    rgba(10,191,188,0.5) 50%,
+    rgba(10,191,188,0.2) 60%,
     transparent 100%
   );
-  animation: scan-line 1.4s ease-in-out infinite;
+  animation: scan-sweep 1.4s ease-in-out infinite;
   pointer-events: none;
-  z-index: 1;
+  z-index: 10;
+  border-radius: 2px;
+}
+@keyframes scan-sweep {
+  0%   { left: -40%; }
+  100% { left: 110%; }
 }
 @keyframes scan-line {
-  0%   { transform: translateX(0%); }
-  100% { transform: translateX(350%); }
+  0%   { left: -40%; }
+  100% { left: 110%; }
 }
 
 /* Row done flash */
@@ -1005,23 +1013,22 @@ function updateRow(idx){
   const tr=document.getElementById('row-'+idx);
   if(!tr) return;
 
-  // Apply scanning class BEFORE rebuilding innerHTML so new <td>s are born inside
-  // an already-classed <tr> — this is what makes CSS animations fire immediately
+  // Clear all animation classes first
   tr.classList.remove('row-scanning','row-done-flash','row-zap');
-  if(r.status==='scanning') tr.classList.add('row-scanning');
 
-  // Rebuild inner HTML
+  // Rebuild innerHTML first so TDs exist in DOM
   tr.innerHTML = rowHtml(r, idx);
 
-  // Force a reflow so the browser registers the new DOM state before we add more classes
+  // Force reflow
   void tr.offsetHeight;
 
   if(r.status==='scanning'){
+    // Add class + inject sweep bar AFTER innerHTML so TDs exist
+    setRowScanning(idx);
     startScanText(idx);
   }
   if(r.status==='done'||r.status==='error'){
     stopScanText(idx);
-    // Small delay so zap-in plays AFTER the row content is painted
     requestAnimationFrame(()=>{
       fireRowComplete(idx);
       setRowZapIn(idx);
@@ -1569,6 +1576,9 @@ function animateParticles() {
 
 function fireRowComplete(idx) {
   try {
+  // Remove sweep bar
+  const bar = document.getElementById('sweep-' + idx);
+  if (bar) bar.remove();
   const tr = document.getElementById('row-' + idx);
   if (!tr) return;
   const rect = tr.getBoundingClientRect();
@@ -1601,6 +1611,16 @@ function setRowScanning(idx) {
   if (!tr) return;
   tr.classList.add('row-scanning');
   tr.classList.remove('row-done-flash', 'row-zap');
+  // Inject a real div sweep bar into the first TD — works reliably in all browsers
+  const firstTd = tr.querySelector('td');
+  if (firstTd) {
+    firstTd.style.position = 'relative';
+    firstTd.style.overflow = 'hidden';
+    const bar = document.createElement('div');
+    bar.className = 'scan-sweep-bar';
+    bar.id = 'sweep-' + idx;
+    firstTd.appendChild(bar);
+  }
 }
 
 function setRowZapIn(idx) {
