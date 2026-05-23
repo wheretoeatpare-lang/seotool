@@ -527,9 +527,12 @@ function parseHtmlForSEO(html, url) {
   return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, h1, robotsMeta, ogTitle, ogImage };
 }
 
-// CLIENT-SIDE FALLBACK: try multiple CORS proxies, parse with regex
+// CLIENT-SIDE FALLBACK: use our own Cloudflare Worker to fetch page HTML (no CORS issues)
 async function fetchPageDataClientSide(url) {
-  const proxies = [
+  const WORKER_FETCH = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/fetch-page';
+
+  // Fallback public proxies if worker fetch-page route not yet added
+  const publicProxies = [
     async () => {
       const t0 = Date.now();
       const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(15000) });
@@ -550,16 +553,40 @@ async function fetchPageDataClientSide(url) {
       return { html, ttfb };
     }
   ];
-  for (const tryProxy of proxies) {
+
+  // 1st — Try our own worker /fetch-page (most reliable, no CORS, server-side fetch)
+  try {
+    const t0 = Date.now();
+    const res = await fetch(WORKER_FETCH, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(20000)
+    });
+    const ttfb = Date.now() - t0;
+    if (res.ok) {
+      const data = await res.json();
+      const html = data.html || '';
+      if (html.length > 200) {
+        const parsed = parseHtmlForSEO(html, url);
+        if (parsed.title || parsed.metaDesc || parsed.h1) {
+          return { ...parsed, ttfb, _source: 'worker' };
+        }
+      }
+    }
+  } catch(e) { /* fall through to public proxies */ }
+
+  // 2nd — Try public CORS proxies as last resort
+  for (const tryProxy of publicProxies) {
     try {
       const result = await tryProxy();
       if (!result) continue;
       const { html, ttfb } = result;
       const parsed = parseHtmlForSEO(html, url);
       if (parsed.title || parsed.metaDesc || parsed.h1) {
-        return { ...parsed, ttfb, _source: 'client' };
+        return { ...parsed, ttfb, _source: 'proxy' };
       }
-    } catch(e) { /* try next proxy */ }
+    } catch(e) { /* try next */ }
   }
   return null;
 }
