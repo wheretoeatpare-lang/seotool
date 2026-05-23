@@ -853,10 +853,11 @@ function parseHtmlForSEO(html, url) {
 
   // ── HEADING DETECTION ────────────────────────────────────────────────────────
   // htmlClean already has scripts/styles/comments stripped
-
-  // Count heading tags (reliable — just look for opening tags)
+  // Count by opening tags only — far more reliable than trying to match open+close
+  // on large pages where regex backtracking can fail
   const countHeadingTags = (level) => {
-    const rx = new RegExp('<h' + level + '[\\s>][^]*?</h' + level + '\\s*>', 'gi');
+    // Match <h1 ... > or <h1> — just the opening tag, not the full block
+    const rx = new RegExp('<h' + level + '(?:[\\s>])', 'gi');
     return (htmlClean.match(rx) || []).length;
   };
 
@@ -1075,12 +1076,13 @@ META DESCRIPTION: ${pd.metaDesc || 'MISSING'} (${pd.descLen || 0} chars)
 CANONICAL: ${pd.canonical || 'MISSING'}
 LANG ATTRIBUTE: ${pd.lang || 'MISSING'}
 
-H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)}
+H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)} (this is an accurate count of <h1> tags — trust it exactly; do NOT suggest adding an H1 if count is 1 or more)
 H1 TEXT: ${pd.h1 || (pd.headings?.h1 > 0 ? '(present but text not extracted)' : 'MISSING')}
 H2 COUNT: ${pd.headings?.h2 ?? 'Unknown'}
 H3 COUNT: ${pd.headings?.h3 ?? 'Unknown'}
 ${pd.h2Texts?.length ? `H2 HEADINGS: ${pd.h2Texts.join(' | ')}` : ''}
 WORD COUNT: ${pd.wordCount || 0}
+IMPORTANT: seo_score and all category scores MUST be between 0 and 100. Never return negative numbers.
 PAGE SIZE: ${pd.pageSizeKb ? pd.pageSizeKb + 'kb' : 'Unknown'}
 
 HAS VIEWPORT: ${pd.hasViewport ? 'Yes' : 'No'}
@@ -1125,6 +1127,13 @@ Return ONLY the JSON object.`;
         try {
           const parsed = JSON.parse(clean);
           if (parsed.seo_score !== undefined) {
+            // Clamp score and all category scores to 0–100
+            parsed.seo_score = Math.min(100, Math.max(0, Math.round(Number(parsed.seo_score) || 0)));
+            if (parsed.categories) {
+              Object.keys(parsed.categories).forEach(k => {
+                parsed.categories[k] = Math.min(100, Math.max(0, Math.round(Number(parsed.categories[k]) || 0)));
+              });
+            }
             console.log('[AI] SUCCESS via Groq/CF AI for', url);
             return parsed;
           }
@@ -1181,9 +1190,10 @@ function runLocalAudit(url, pageData, cmsData) {
     onPage -= 15;
     suggestions.push({ priority:'high', title:'Add an H1 heading', detail:'No H1 tag detected. Every page should have one clear H1 with your primary keyword.' });
   } else if (h1Count > 1) {
-    onPage -= 8;
-    suggestions.push({ priority:'medium', title:`Multiple H1 tags found (${h1Count})`, detail:'Having more than one H1 can dilute your primary keyword signal. Keep exactly one H1 per page.' });
+    onPage -= 10;
+    suggestions.push({ priority:'high', title:`Multiple H1 tags found (${h1Count} H1s on page)`, detail:`This page has ${h1Count} H1 tags. Search engines expect exactly one H1 per page. Having multiple H1s dilutes your primary keyword signal — consolidate to a single H1.` });
   }
+  // h1Count === 1 is perfect — no suggestion needed
 
   if (h2Count === 0) {
     onPage -= 5;
