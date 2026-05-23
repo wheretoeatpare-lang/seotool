@@ -901,7 +901,7 @@ function rowHtml(r,i){
   if(r.data?.suggestions?.length){
     const hi=r.data.suggestions.filter(s=>s.priority==='high').slice(0,2);
     if(hi.length)issues=hi.map(s=>`<div style="font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${s.title||s.text||''}</div>`).join('');
-  } else if(r.status==='scanning'){issues=`<span id="scan-text-${idx}" class="shimmer-text" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;}
+  } else if(r.status==='scanning'){issues=`<span id="scan-text-${i}" class="shimmer-text" style="color:var(--teal);font-size:.73rem">Fetching page…</span>`;}
   return `
     <td style="color:var(--muted2);font-size:.75rem">${i+1}</td>
     <td><div class="site-cell"><img class="site-favicon" src="${fav}" onerror="this.style.display='none'"><div class="site-url"><a href="${r.url}" target="_blank" rel="noopener">${host}</a></div></div></td>
