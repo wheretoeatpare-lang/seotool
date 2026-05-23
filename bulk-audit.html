@@ -561,8 +561,13 @@ async function startBulkAudit() {
   renderTable();
   updateProgress();
 
-  // Helper: yield to browser so it can paint a frame before we continue
-  const paint = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
+  // Yield to browser paint — doubles up rAF + setTimeout to guarantee a real frame
+  const paint = (ms=0) => new Promise(r => requestAnimationFrame(() => setTimeout(r, ms)));
+
+  // Auto-scroll to results table so user sees the animation
+  await paint(80);
+  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await paint(300); // wait for scroll to settle
 
   const queue = [...urls];
   async function runNext() {
@@ -570,14 +575,15 @@ async function startBulkAudit() {
     const url = queue.shift();
     const idx = auditResults.findIndex(r => r.url === url);
     if (idx < 0) return;
+
     auditResults[idx].status = 'scanning';
-    updateProgress(); updateRow(idx);
+    updateProgress();
+    updateRow(idx);
 
-    // CRITICAL: yield to browser here so scanning animation actually paints
-    // before the async work begins. Without this, JS blocks the render thread
-    // and the animation is never seen.
-    await paint();
+    // Give browser at least 2 frames to paint the scanning animation
+    await paint(32);
 
+    const auditStart = Date.now();
     try {
       const [pageData, cmsData] = await Promise.all([fetchPageData(url), detectCMS(url)]);
       auditResults[idx].pageData = pageData;
@@ -590,10 +596,14 @@ async function startBulkAudit() {
       auditResults[idx].status = 'error';
       auditResults[idx].error = err.message || 'Failed';
     }
-    updateProgress(); updateRow(idx);
 
-    // Yield again so done/flash animation paints before next URL starts
-    await paint();
+    // Guarantee scanning animation shows for at least 600ms so it's visible
+    const elapsed = Date.now() - auditStart;
+    if (elapsed < 600) await paint(600 - elapsed);
+
+    updateProgress();
+    updateRow(idx);
+    await paint(80); // let done-flash render
     await runNext();
   }
 
