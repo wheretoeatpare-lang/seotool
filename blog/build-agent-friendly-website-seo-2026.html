@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google's Agent-Friendly Website Guide: What SEOs Actually Need to Do — RankSorcery</title>
+<meta name="description" content="Google published an official guide on building agent-friendly websites. Here's what it means for SEO and the exact steps to make your site AI-agent ready.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google's Agent-Friendly Website Guide: What SEOs Actually Need to Do">
+<meta property="og:description" content="Google published an official guide on building agent-friendly websites. Here's what it means for SEO and the exact steps to make your site AI-agent ready.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-24">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Agent-Friendly Websites</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">AI Search</span>
+          <span class="tag tag-amber">Technical SEO</span>
+        </div>
+        <h1>Google Just Published a Guide on <span>Agent-Friendly Websites</span> — Here's What SEOs Actually Need to Do</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 24, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 9 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 1,247 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A few weeks ago, Google quietly dropped a guide on their web.dev developer site called "Build agent-friendly websites." No big announcement. No Google I/O keynote spotlight. Just a technical doc that landed while most SEOs were busy arguing about something else entirely.</p>
+
+      <p>I almost missed it. A colleague pinged me with the link and said "this seems important." He was right, but not for the reasons I first assumed. My instinct was that it would be another vague doc full of "use quality content" platitudes dressed up in technical language. It isn't. It's actually specific, and if you run a website — especially one you care about ranking in AI-driven search — you should read it. Or at least read this, because I'll translate the developer-speak into something actionable.</p>
+
+      <p>The core message Google is sending: <strong>AI agents are now a distinct type of visitor to your website, and your site may be invisible or broken for them.</strong> That matters because AI agents aren't just bots indexing your content. They're shopping on behalf of users, comparing services, extracting data to surface in AI Mode summaries, and completing tasks without a human ever landing on your page. If your site doesn't work for agents, you're getting cut out of that pipeline entirely.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">📌</div>
+        <div class="callout-body">
+          <strong>The Short Version</strong>
+          Google officially confirmed that AI agents read websites through three methods: screenshots, raw HTML, and the accessibility tree. Websites that use sloppy HTML, unstable layouts, or poor accessibility are "functionally broken" for these agents. Fixing this overlaps almost entirely with good technical SEO — and Google admits it.
+        </div>
+      </div>
+
+      <h2 id="how-agents-see">How AI Agents Actually See Your Website</h2>
+
+      <p>Before you can fix anything, you need to understand what's actually happening when an AI agent visits your page. Google breaks it down into three methods, and understanding all three is genuinely useful.</p>
+
+      <h3>Method 1: Screenshots</h3>
+
+      <p>The agent captures a snapshot of the rendered page and uses a vision model to interpret it. Think of it as the AI looking at your page the same way a human would glance at a screenshot — except it can't interact with the image, it can only read it.</p>
+
+      <p>This means visual clarity matters in a way most SEOs haven't thought about. High-contrast text, clearly labeled sections, obvious visual hierarchy — these aren't just UX considerations. When an agent takes a screenshot of your site, a visually cluttered page full of overlapping elements, hover-dependent navigation, or content that only reveals itself after interaction is going to confuse the model. It sees a mess. It may skip you.</p>
+
+      <p>One benchmark I find useful: look at McMaster-Carr's website. It's famously sparse and utilitarian. But take a screenshot of any page and you immediately know exactly what you're looking at. That level of visual clarity is what agents can work with most reliably.</p>
+
+      <h3>Method 2: Raw HTML (The DOM)</h3>
+
+      <p>The agent reads the actual code structure of your page — the Document Object Model. It understands how elements nest, their logical hierarchy, and how attributes define relationships. Google gives a good example: if a "Buy Now" button is inside a product container in the HTML, the agent correctly assumes that button belongs to that specific product.</p>
+
+      <p>Here's where a lot of modern websites fall apart. Years of "section-based" web development — where a page is built as a hero section, a features section, a CTA section — has created code that looks visually organized but is semantically meaningless. The code says "section" with no indication of <em>what</em> kind of section it is, or how the content inside relates to anything else on the page.</p>
+
+      <p>From an agent's perspective, that's a pile of unlabeled boxes. Compare it to a page where the HTML structure clearly tells a story: here's a product, here's its price, here's the action to take on it. That's a page an agent can navigate and extract from reliably.</p>
+
+      <h3>Method 3: The Accessibility Tree</h3>
+
+      <p>This one is the most underappreciated, and honestly the one most SEOs have never thought about at all. The accessibility tree is a browser-native API that strips away visual noise and exposes only the roles, names, and states of interactive elements. It's what screen readers use. And it turns out, it's what AI agents use too.</p>
+
+      <p>The key phrase here is "roles, names, and <em>states</em>." The state part matters. An agent needs to know not just that there's a button, but whether it's currently active or disabled. Not just that there's a dropdown, but whether it's expanded or collapsed. If your site doesn't communicate element states through proper accessibility markup, agents are flying blind on interactive elements.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">3</span>
+          <div class="stat-label">Ways AI agents read your website (screenshots, HTML, accessibility tree)</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">~97%</span>
+          <div class="stat-label">Of accessibility issues also hurt agent-readability, per web.dev guidance</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">0</span>
+          <div class="stat-label">New standards needed — agent-friendly = accessible + semantic HTML you should have already</div>
+        </div>
+      </div>
+
+      <h2 id="what-breaks">What Makes Your Site "Functionally Broken" for Agents</h2>
+
+      <p>Google uses that phrase — "functionally broken for agents" — to describe sites with complex hover states, shifting layouts, and reliance on JavaScript-only interactions. Let me be more blunt about what I see constantly when doing technical audits:</p>
+
+      <ul class="checklist">
+        <li><strong>Buttons built with &lt;div&gt; tags</strong> — Looks identical to users, invisible in the accessibility tree. An agent sees a div, not a button. It can't "click" something that doesn't exist as a button semantically.</li>
+        <li><strong>Form labels not associated with inputs</strong> — If a label isn't linked to its input via the <code>for</code> attribute, agents can't reliably connect the label text to the field. Your contact form becomes a guessing game.</li>
+        <li><strong>Navigation hidden behind hover states</strong> — Agents don't hover. If your main nav only appears on mouse hover, a significant portion of your site is unreachable to agents doing any kind of traversal.</li>
+        <li><strong>Content loaded exclusively via JavaScript with no fallback</strong> — Some agents read the initial HTML, not the rendered DOM. If your product descriptions, prices, or key content only exists after JS runs, it may simply not be there when the agent looks.</li>
+        <li><strong>Layouts that shift across breakpoints with no stable structure</strong> — An agent can't predict where elements will be if your layout jumps around depending on viewport state.</li>
+        <li><strong>Images with no alt text or misleading alt text</strong> — This isn't new advice, but it applies here too. An agent reading your page via screenshot or HTML needs context for images. "img_43892.jpg" tells it nothing.</li>
+      </ul>
+
+      <p>None of this is new as a list of things you <em>should</em> be doing. What's new is the cost of not doing them is now doubled: you lose accessibility compliance points AND you lose agent-readability. There's no more "eh, it works fine for most users."</p>
+
+      <h2 id="what-to-do">The Practical Fixes — In Order of Impact</h2>
+
+      <p>Here's how I'd prioritize this if I were auditing a site today with agent-readability in mind. Not everything needs to happen at once, but some of this is genuinely quick to fix.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Audit Your Semantic HTML</h4>
+            <p>Run a crawl and look specifically at your button and link elements. Every interactive element that users click should be an actual <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code> — not a styled div or span. This is the single biggest agent-readability issue on modern sites built with component libraries that default to divs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Fix Form Label Associations</h4>
+            <p>Every <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, and <code>&lt;textarea&gt;</code> on your site should have an associated <code>&lt;label&gt;</code> using the <code>for</code> attribute matching the input's <code>id</code>. Alternatively, wrap the label around the input. This is a 10-minute fix on most sites and wildly underappreciated.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Add ARIA States to Dynamic Elements</h4>
+            <p>Accordions, tabs, modals, dropdowns — any element that has an expanded/collapsed or open/closed state needs to communicate that state via ARIA attributes like <code>aria-expanded</code>, <code>aria-hidden</code>, and <code>aria-selected</code>. This is what tells the accessibility tree (and agents) what state things are currently in.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Use Semantic Sectioning Elements</h4>
+            <p>Replace generic <code>&lt;div class="section"&gt;</code> patterns with <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;aside&gt;</code>, and <code>&lt;footer&gt;</code> where appropriate. This gives the DOM hierarchy real meaning, not just visual grouping. An agent can then understand "this is the main product area" vs "this is the sidebar" without guessing.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Ensure Key Content Exists in the Initial HTML</h4>
+            <p>Check that your prices, product names, headings, and any data you'd want an AI agent to extract is present in the static HTML — not only injected after a JavaScript fetch. Use server-side rendering or static HTML for critical content wherever possible. This one can require more engineering effort, but it's increasingly non-negotiable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>🔍 Not Sure Where Your Site Stands?</h3>
+        <p>Run a free technical SEO audit with RankSorcery. It flags semantic HTML issues, missing alt text, accessibility problems, Core Web Vitals, and 60+ other factors that affect both rankings and agent-readability.</p>
+        <a href="https://ranksorcery.com/">Audit My Site Free →</a>
+      </div>
+
+      <h2 id="webmcp">WebMCP: The Next Level Nobody Is Talking About Yet</h2>
+
+      <p>Buried at the bottom of Google's agent-friendly guide is a link to something called WebMCP — a proposed web standard for websites to actively register tools that agents can discover and call as functions.</p>
+
+      <p>The concept is significant. Right now, agents interact with websites reactively — they scrape, they screenshot, they hope the structure is clear enough to work with. WebMCP would flip this: a website would declare "here's a search function, here are its inputs and outputs, here's how to use it." Agents could then call that function directly, like an API call, without having to figure out your navigation.</p>
+
+      <p>Google is currently running an early preview program for this. It's not mainstream yet — most sites won't need to think about it this year. But the direction is clear: the web is gaining a machine-readable interface layer that sits on top of the human-readable one. The sites that will win in an agentic search world are the ones that invest in being machine-legible now.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🔮</div>
+        <div class="callout-body">
+          <strong>Forward Signal</strong>
+          WebMCP allows websites to register structured tools that AI agents can call as functions. Think of it as your site getting an API layer specifically for AI interaction. Google and Chrome are actively developing this standard. Worth tracking if you run an e-commerce or SaaS site where agent-driven transactions matter.
+        </div>
+      </div>
+
+      <h2 id="seo-connection">The Connection to Traditional SEO (That Google Is Being Diplomatic About)</h2>
+
+      <p>Google ends their guide with this line: "Everything we suggest to make a site 'agent-ready' also makes sites better for humans."</p>
+
+      <p>That's carefully worded. What it really means is: if your site isn't accessible and semantically built, it was never doing as well as it could in regular search either. The agent-readability conversation is exposing technical debt that's been quietly costing sites rankings for years.</p>
+
+      <p>Crawlability issues, poor HTML structure, JavaScript dependency problems — these aren't new categories. What's new is that the stakes are higher. In traditional SEO, Googlebot could sometimes figure out what you meant even if your HTML was sloppy. An AI agent that's trying to complete a task on behalf of a user has less patience for ambiguity. It'll move on to your competitor's site faster than you can say "but it renders correctly in Chrome."</p>
+
+      <div class="pull-quote">
+        "If an AI agent has to guess what your button does, it probably won't click it. It'll go somewhere that makes the answer obvious."
+      </div>
+
+      <p>There's also a practical SEO angle around AI citations. The sites getting cited in Google AI Mode summaries, ChatGPT answers, and Perplexity results tend to share characteristics: clean structure, explicit labeling, clear factual content that stands on its own. The accessibility tree connection helps explain why — structured content that's legible to assistive technology is also legible to the models pulling citations.</p>
+
+      <h2 id="ai-search-visibility">Check Your AI Search Visibility Right Now</h2>
+
+      <p>One thing worth doing this week: actually test whether your site is being picked up in AI search results for your target terms. A lot of sites assume they're showing up — and they're not. The traffic loss is real but invisible in traditional rank tracking because AI citations don't always come with a click.</p>
+
+      <p>RankSorcery's <a href="https://ranksorcery.com/ai-search.html">AI Search Visibility tool</a> checks whether your site and brand are surfacing in AI-generated search results. It's a fast way to see whether the work you're doing on agent-readability and content structure is actually translating into visibility. Run it on your site, then on your top two competitors. The gap is often surprising.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-body">
+          <strong>Quick Win</strong>
+          Check your AI Search Visibility score before and after making semantic HTML improvements. It's one of the clearest ways to see whether agent-readability changes are actually moving the needle on how AI systems reference your site. Most SEOs don't have a baseline — get yours now before everyone else does.
+        </div>
+      </div>
+
+      <h2 id="bottom-line">My Take: This Is the Most Practical AI SEO Advice in Years</h2>
+
+      <p>I've been skeptical of a lot of the "optimize for AI" content that's flooded SEO Twitter over the past year. Most of it boils down to "write good content" with extra steps, or it's chasing features that shift monthly. This is different.</p>
+
+      <p>Google's agent-friendly guidance is grounded in real technical standards that have existed for years — semantic HTML and web accessibility. These aren't moving targets. They're foundational. And fixing them has compounding benefits: better accessibility, better crawlability, better Core Web Vitals perception, better agent-readability, and yes, almost certainly better rankings over time.</p>
+
+      <p>If I were advising a client right now, I'd prioritize this ahead of almost anything else in the technical SEO backlog. Not because it's a quick win — some of it genuinely requires development work — but because the web is clearly evolving toward an agent-mediated interaction model, and the window to get ahead of that is now, not after everyone else has already figured it out.</p>
+
+      <p>Run your technical audit, fix the semantic HTML basics, and get your AI Search Visibility baseline. That's the starting point. Everything else builds from there.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#how-agents-see">How AI Agents See Your Site</a></li>
+        <li class="sub"><a href="#how-agents-see">Screenshots</a></li>
+        <li class="sub"><a href="#how-agents-see">HTML / The DOM</a></li>
+        <li class="sub"><a href="#how-agents-see">The Accessibility Tree</a></li>
+        <li><a href="#what-breaks">What Makes Sites "Broken" for Agents</a></li>
+        <li><a href="#what-to-do">Practical Fixes — In Order</a></li>
+        <li><a href="#webmcp">WebMCP: What's Coming Next</a></li>
+        <li><a href="#seo-connection">Connection to Traditional SEO</a></li>
+        <li><a href="#ai-search-visibility">Check Your AI Visibility</a></li>
+        <li><a href="#bottom-line">Bottom Line</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Google%27s%20Agent-Friendly%20Website%20Guide%3A%20What%20SEOs%20Actually%20Need%20to%20Do&url=https://ranksorcery.com/blog/build-agent-friendly-website-seo-2026.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="../blog/schema-markup-ai-search-2026.html" class="related-post">
+        <div class="related-post-icon">🗂️</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>12 min · May 19</span></div>
+      </a>
+      <a href="../blog/why-content-missing-from-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">Why Your Content Isn't Showing Up in AI Search Results<span>11 min · May 15</span></div>
+      </a>
+      <a href="../blog/core-web-vitals-seo-rankings-2026.html" class="related-post">
+        <div class="related-post-icon">⚡</div>
+        <div class="related-post-body">Core Web Vitals in 2026: What Google Actually Measures<span>10 min · May 9</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">See if AI search results are citing your site — or your competitors'.</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check My Visibility →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
