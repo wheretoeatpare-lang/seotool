@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — RankSorcery SEO Analyzer Extension</title>
+  <meta name="description" content="Privacy Policy for the RankSorcery SEO Analyzer Chrome Extension. Learn how we handle your data — spoiler: we don't collect any.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ranksorcery.com/privacy-policy">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Privacy Policy — RankSorcery SEO Analyzer">
+  <meta property="og:description" content="RankSorcery SEO Analyzer does not collect, store, or transmit any user data. All analysis runs locally in your browser.">
+  <meta property="og:url" content="https://ranksorcery.com/privacy-policy">
+  <meta property="og:type" content="website">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:       #E8B84B;
+      --gold-dim:   #c49a30;
+      --gold-glow:  rgba(232,184,75,0.12);
+      --bg:         #0d0d0f;
+      --surface:    #141417;
+      --surface2:   #1c1c21;
+      --border:     rgba(232,184,75,0.14);
+      --text:       #f0ede6;
+      --muted:      #7a7875;
+      --green:      #4caf7d;
+      --radius:     12px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+      min-height: 100vh;
+    }
+
+    /* ── STARFIELD ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(232,184,75,.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 74% 9%,  rgba(232,184,75,.18) 0%, transparent 100%),
+        radial-gradient(1px 1px at 38% 55%, rgba(232,184,75,.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 67%, rgba(232,184,75,.20) 0%, transparent 100%),
+        radial-gradient(1px 1px at 52% 82%, rgba(232,184,75,.12) 0%, transparent 100%),
+        radial-gradient(1px 1px at 21% 91%, rgba(232,184,75,.16) 0%, transparent 100%),
+        radial-gradient(1px 1px at 63% 34%, rgba(232,184,75,.14) 0%, transparent 100%),
+        radial-gradient(600px 600px at 15% 20%, rgba(232,184,75,.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,15,.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 clamp(20px, 5vw, 80px);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-star {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      box-shadow: 0 0 16px rgba(232,184,75,.3);
+      flex-shrink: 0;
+    }
+
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      background: linear-gradient(135deg, var(--gold), #fff5d6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .nav-link:hover { color: var(--gold); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: clamp(60px, 10vw, 100px) clamp(20px, 5vw, 80px) 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(232,184,75,.08);
+      border: 1px solid rgba(232,184,75,.22);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 700;
+      letter-spacing: .02em;
+      background: linear-gradient(135deg, var(--gold) 0%, #fff5d6 50%, var(--gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .hero-sub {
+      font-size: clamp(14px, 2vw, 17px);
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 20px;
+    }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(76,175,125,.1);
+      border: 1px solid rgba(76,175,125,.25);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .badge::before { content: '✓'; }
+
+    /* ── TOC ── */
+    .toc-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 48px auto 0;
+      padding: 0 clamp(20px, 5vw, 40px);
+    }
+
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+
+    .toc-title {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 6px 24px;
+    }
+
+    .toc li { counter-increment: toc; }
+
+    .toc a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .toc a:hover { color: var(--gold); }
+    .toc a::before {
+      content: counter(toc, decimal-leading-zero);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--gold);
+      opacity: .6;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN CONTENT ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px clamp(20px, 5vw, 40px) 80px;
+    }
+
+    /* ── SECTION ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      transition: border-color .2s;
+    }
+    .section:hover { border-color: rgba(232,184,75,.28); }
+
+    .section-num {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: .6;
+      margin-bottom: 6px;
+    }
+
+    .section h2 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section h2 .icon {
+      width: 34px; height: 34px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .section p {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+    .section p:last-child { margin-bottom: 0; }
+
+    .section p strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: var(--surface2);
+      color: var(--gold);
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    .data-table th:first-child { border-radius: 8px 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 8px 0 0; }
+
+    .data-table td {
+      padding: 10px 14px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      vertical-align: top;
+    }
+
+    .data-table td:first-child { color: var(--text); font-weight: 500; }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    /* ── PILL LIST ── */
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .pill {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pill.ok {
+      background: rgba(76,175,125,.1);
+      border-color: rgba(76,175,125,.25);
+      color: var(--green);
+    }
+
+    /* ── HIGHLIGHT BOX ── */
+    .highlight {
+      background: rgba(232,184,75,.06);
+      border: 1px solid rgba(232,184,75,.2);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .highlight strong { color: var(--gold); }
+
+    /* ── NO COLLECT BOX ── */
+    .no-collect {
+      background: rgba(76,175,125,.06);
+      border: 1px solid rgba(76,175,125,.2);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 20px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .no-collect-icon {
+      font-size: 28px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .no-collect-text strong {
+      display: block;
+      color: var(--green);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .no-collect-text span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ── UL ── */
+    .section ul {
+      list-style: none;
+      margin: 12px 0;
+    }
+
+    .section ul li {
+      color: var(--muted);
+      font-size: 14px;
+      padding: 5px 0 5px 22px;
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,.03);
+    }
+    .section ul li:last-child { border-bottom: none; }
+
+    .section ul li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--gold);
+      font-size: 12px;
+      top: 6px;
+    }
+
+    /* ── UPDATED DATE ── */
+    .last-updated {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* ── CONTACT CARD ── */
+    .contact-card {
+      background: linear-gradient(135deg, var(--surface) 0%, rgba(20,20,23,.8) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .contact-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .contact-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+      color: #0d0d0f;
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: .03em;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 2px 12px rgba(232,184,75,.25);
+    }
+    .contact-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(232,184,75,.4);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 32px clamp(20px, 5vw, 80px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+
+    .footer-note {
+      width: 100%;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: .6;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .section { padding: 22px 20px; }
+      .data-table { font-size: 12px; }
+      .data-table th, .data-table td { padding: 8px 10px; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://ranksorcery.com" class="nav-logo">
+    <div class="nav-star">✦</div>
+    <span class="nav-brand">RankSorcery</span>
+  </a>
+  <a href="https://ranksorcery.com" class="nav-link">← Back to Home</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">✦ Legal</div>
+  <h1>Privacy Policy</h1>
+  <p class="hero-sub">RankSorcery SEO Analyzer Chrome Extension — and all associated browser extensions.</p>
+  <div class="hero-badges">
+    <span class="badge">No data collected</span>
+    <span class="badge">No tracking</span>
+    <span class="badge">No login required</span>
+    <span class="badge">100% local analysis</span>
+  </div>
+</section>
+
+<!-- TOC -->
+<div class="toc-wrap">
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#data-collected">Data We Collect</a></li>
+      <li><a href="#permissions">Permissions Explained</a></li>
+      <li><a href="#how-it-works">How the Extension Works</a></li>
+      <li><a href="#third-parties">Third-Party Services</a></li>
+      <li><a href="#data-storage">Data Storage</a></li>
+      <li><a href="#children">Children's Privacy</a></li>
+      <li><a href="#changes">Changes to This Policy</a></li>
+      <li><a href="#rights">Your Rights</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+    </ol>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+
+  <p class="last-updated">Last updated: May 26, 2026 &nbsp;·&nbsp; Effective: May 26, 2026</p>
+
+  <!-- 01 OVERVIEW -->
+  <div class="section" id="overview">
+    <div class="section-num">01</div>
+    <h2><span class="icon">📋</span> Overview</h2>
+
+    <div class="no-collect">
+      <div class="no-collect-icon">🔒</div>
+      <div class="no-collect-text">
+        <strong>Bottom line: we collect absolutely nothing.</strong>
+        <span>The RankSorcery SEO Analyzer extension performs all analysis locally inside your browser. No page content, URLs, analysis results, or personal information is ever sent to our servers or any third party.</span>
+      </div>
+    </div>
+
+    <p>This Privacy Policy describes how RankSorcery ("we", "us", or "our") handles information in connection with the <strong>RankSorcery SEO Analyzer</strong> browser extension, available for Chrome, Firefox, Edge, Opera, and Safari.</p>
+
+    <p>This policy applies to the browser extension only. For the privacy policy of the RankSorcery website (<a href="https://ranksorcery.com" style="color:var(--gold)">ranksorcery.com</a>), please refer to the main site policy.</p>
+  </div>
+
+  <!-- 02 DATA COLLECTED -->
+  <div class="section" id="data-collected">
+    <div class="section-num">02</div>
+    <h2><span class="icon">🗄️</span> Data We Collect</h2>
+
+    <div class="highlight">
+      <strong>We do not collect, store, transmit, or share any personal data, browsing data, or usage data of any kind.</strong>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Data Type</th>
+          <th>Collected?</th>
+          <th>Details</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>URLs you visit</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>URLs are read locally to display in the popup only — never transmitted</td>
+        </tr>
+        <tr>
+          <td>Page HTML content</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>Scanned locally in your browser memory, discarded immediately after analysis</td>
+        </tr>
+        <tr>
+          <td>SEO analysis results</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>Results are displayed in the popup only and not saved or transmitted</td>
+        </tr>
+        <tr>
+          <td>Personal information</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>No name, email, IP address, or identifiers of any kind are collected</td>
+        </tr>
+        <tr>
+          <td>Browsing history</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>We do not access or store your browsing history</td>
+        </tr>
+        <tr>
+          <td>Keystrokes or form data</td>
+          <td style="color:var(--green);font-weight:700">✗ Never</td>
+          <td>The extension does not read any form inputs or user-typed content</td>
+        </tr>
+        <tr>
+          <td>UI preferences</td>
+          <td style="color:var(--gold);font-weight:700">Local only</td>
+          <td>Open/closed section states stored in your browser's local storage — never transmitted</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 03 PERMISSIONS -->
+  <div class="section" id="permissions">
+    <div class="section-num">03</div>
+    <h2><span class="icon">🔑</span> Permissions Explained</h2>
+
+    <p>The extension requests the following browser permissions. Each is explained in plain language:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th>Why It's Needed</th>
+          <th>What We Do NOT Use It For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">activeTab</code></td>
+          <td>Read the HTML of the tab you are currently viewing when you click "Analyze Page"</td>
+          <td>We do not read tabs you haven't clicked Analyze on, and never read tabs in the background</td>
+        </tr>
+        <tr>
+          <td><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">scripting</code></td>
+          <td>Inject the SEO analysis function into the active page to extract meta tags, headings, schema, and performance data</td>
+          <td>We do not inject tracking scripts, ads, or any persistent code into pages</td>
+        </tr>
+        <tr>
+          <td><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">storage</code></td>
+          <td>Save your UI preferences locally (e.g., which sections were open) so the extension remembers your layout</td>
+          <td>We do not store URLs, analysis results, or personal data in storage</td>
+        </tr>
+        <tr>
+          <td><code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">&lt;all_urls&gt;</code></td>
+          <td>Allow the extension to run on any website so you can analyze any page you visit</td>
+          <td>We do not monitor your browsing or run any code on pages you haven't actively chosen to analyze</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="highlight">
+      <strong>Note for Chrome Web Store reviewers:</strong> The <code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:3px;font-size:12px">&lt;all_urls&gt;</code> host permission is required so users can analyze any website of their choosing. The extension only activates when the user explicitly clicks "Analyze Page" — it does not run automatically on page load or in the background.
+    </div>
+  </div>
+
+  <!-- 04 HOW IT WORKS -->
+  <div class="section" id="how-it-works">
+    <div class="section-num">04</div>
+    <h2><span class="icon">⚙️</span> How the Extension Works</h2>
+
+    <p>When you click <strong>"Analyze Page"</strong>, the following happens entirely within your browser:</p>
+
+    <ul>
+      <li>A JavaScript function is injected into the current active tab</li>
+      <li>The function reads HTML meta tags, heading structure, image attributes, link counts, schema markup scripts, and performance timing data from the page's DOM</li>
+      <li>This data is passed back to the extension popup and displayed to you</li>
+      <li>The data is held in memory only for the duration of the popup being open</li>
+      <li>When you close the popup, all page data is discarded from memory</li>
+      <li>Nothing is sent to any server — no network requests are made containing page data</li>
+    </ul>
+
+    <p>The only outbound network requests the extension makes are:</p>
+    <ul>
+      <li>Loading the Google Fonts stylesheet for the popup UI typography (fonts.googleapis.com) — this is a standard CDN request and contains no user or page data</li>
+      <li>Opening ranksorcery.com in a new tab when you click "Full Audit" or the footer link — this is a normal browser navigation, not a data transmission</li>
+    </ul>
+  </div>
+
+  <!-- 05 THIRD PARTIES -->
+  <div class="section" id="third-parties">
+    <div class="section-num">05</div>
+    <h2><span class="icon">🔗</span> Third-Party Services</h2>
+
+    <p>The extension does <strong>not</strong> integrate with, send data to, or load code from any analytics, advertising, or tracking services.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Purpose</th>
+          <th>Data Shared</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Fonts</td>
+          <td>Load Cinzel and DM Sans typefaces for the popup UI</td>
+          <td>Standard HTTP request — no user or page data included</td>
+        </tr>
+        <tr>
+          <td>ranksorcery.com</td>
+          <td>Opened in a new tab when user clicks "Full Audit" or the RankSorcery logo</td>
+          <td>The current page URL is passed as a URL parameter — this is user-initiated navigation, not background tracking</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pill-list">
+      <span class="pill ok">No Google Analytics</span>
+      <span class="pill ok">No Facebook Pixel</span>
+      <span class="pill ok">No advertising SDKs</span>
+      <span class="pill ok">No crash reporting</span>
+      <span class="pill ok">No A/B testing tools</span>
+      <span class="pill ok">No remote code injection</span>
+    </div>
+  </div>
+
+  <!-- 06 DATA STORAGE -->
+  <div class="section" id="data-storage">
+    <div class="section-num">06</div>
+    <h2><span class="icon">💾</span> Data Storage</h2>
+
+    <p>The extension uses the browser's <strong>local storage API</strong> (<code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-size:12px">chrome.storage.local</code>) solely to save UI preferences — specifically which analysis sections the user has expanded or collapsed. This data:</p>
+
+    <ul>
+      <li>Never leaves your device</li>
+      <li>Contains no personal information, URLs, or analysis results</li>
+      <li>Can be cleared at any time by removing the extension</li>
+      <li>Is not synced to any cloud or external server</li>
+    </ul>
+
+    <p>No cookies are set by the extension. No IndexedDB, sessionStorage, or other persistent storage mechanisms are used.</p>
+  </div>
+
+  <!-- 07 CHILDREN -->
+  <div class="section" id="children">
+    <div class="section-num">07</div>
+    <h2><span class="icon">👶</span> Children's Privacy</h2>
+
+    <p>The RankSorcery SEO Analyzer extension is intended for general use by website owners, marketers, developers, and SEO professionals. It is not directed at children under the age of 13.</p>
+
+    <p>Because we collect no personal data from any users, we also collect no data from children. If you believe a child has provided us with personal information through any means, please contact us at <a href="mailto:webmasterjamez@gmail.com" style="color:var(--gold)">webmasterjamez@gmail.com</a> and we will take appropriate action.</p>
+  </div>
+
+  <!-- 08 CHANGES -->
+  <div class="section" id="changes">
+    <div class="section-num">08</div>
+    <h2><span class="icon">📝</span> Changes to This Policy</h2>
+
+    <p>We may update this Privacy Policy from time to time. When we do, we will:</p>
+
+    <ul>
+      <li>Update the "Last updated" date at the top of this page</li>
+      <li>Update the extension version with a changelog note if the change is material</li>
+      <li>Not retroactively apply new data practices without clear notice</li>
+    </ul>
+
+    <p>Because we collect no personal data, changes to this policy will be limited to clarifications, new permission explanations, or changes reflecting new extension features. Your continued use of the extension after any update constitutes acceptance of the revised policy.</p>
+  </div>
+
+  <!-- 09 RIGHTS -->
+  <div class="section" id="rights">
+    <div class="section-num">09</div>
+    <h2><span class="icon">⚖️</span> Your Rights</h2>
+
+    <p>Under various privacy laws (GDPR, CCPA, and others), you have rights regarding your personal data. Because <strong>we collect no personal data</strong>, there is nothing to access, correct, delete, or export. Nonetheless, your rights include:</p>
+
+    <ul>
+      <li><strong>Right to know:</strong> What data we collect — none</li>
+      <li><strong>Right to delete:</strong> Remove the extension to clear all locally stored preferences</li>
+      <li><strong>Right to opt out:</strong> Simply don't use the extension</li>
+      <li><strong>Right to non-discrimination:</strong> We have no user accounts or services that could be withheld</li>
+    </ul>
+
+    <p>For users in the European Economic Area (EEA): our lawful basis for any processing is <strong>legitimate interest</strong> in providing the extension's core SEO analysis functionality, and all processing occurs locally on your device.</p>
+  </div>
+
+  <!-- 10 CONTACT -->
+  <div class="section" id="contact">
+    <div class="section-num">10</div>
+    <h2><span class="icon">✉️</span> Contact Us</h2>
+
+    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or the RankSorcery SEO Analyzer extension, please reach out:</p>
+
+    <table class="data-table">
+      <tbody>
+        <tr>
+          <td>Product</td>
+          <td>RankSorcery SEO Analyzer (Chrome / Firefox / Edge / Opera / Safari)</td>
+        </tr>
+        <tr>
+          <td>Website</td>
+          <td><a href="https://ranksorcery.com" style="color:var(--gold)">https://ranksorcery.com</a></td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td><a href="mailto:webmasterjamez@gmail.com" style="color:var(--gold)">webmasterjamez@gmail.com</a></td>
+        </tr>
+        <tr>
+          <td>Response time</td>
+          <td>Within 5 business days</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CONTACT CTA -->
+  <div class="contact-card">
+    <h3>✦ Questions About Your Privacy?</h3>
+    <p>We're committed to transparency. If anything in this policy is unclear, reach out — we'll respond within 5 business days.</p>
+    <a href="mailto:webmasterjamez@gmail.com" class="contact-btn">✉ Email Us</a>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <a href="https://ranksorcery.com" class="footer-brand">✦ RankSorcery</a>
+  <div class="footer-links">
+    <a href="https://ranksorcery.com">Home</a>
+    <a href="https://ranksorcery.com/privacy-policy">Privacy Policy</a>
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+  </div>
+  <p class="footer-note">© 2025–2026 RankSorcery · This privacy policy applies to the RankSorcery SEO Analyzer browser extension · Last updated May 26, 2026</p>
+</footer>
+
+</body>
+</html>
