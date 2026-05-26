@@ -1,0 +1,57 @@
+name: Auto-Update Sitemap
+
+on:
+  # ① Runs every time you push to main (new page added, file edited, etc.)
+  push:
+    branches:
+      - main
+
+  # ② Runs every day at midnight UTC automatically
+  schedule:
+    - cron: '0 0 * * *'
+
+  # ③ Lets you trigger it manually from GitHub Actions tab anytime
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to commit the new sitemap.xml back to the repo
+
+jobs:
+  generate-sitemap:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out your full repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js (used by the sitemap generator script)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Run the sitemap generator script
+      - name: Generate sitemap.xml
+        run: node scripts/generate-sitemap.js
+
+      # 4. Commit and push the updated sitemap.xml back to the repo
+      #    (only if something actually changed — skips empty commits)
+      - name: Commit updated sitemap
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add sitemap.xml
+          # Only commit if sitemap.xml actually changed
+          git diff --staged --quiet || git commit -m "chore: auto-update sitemap.xml [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push
+
+      # 5. Ping Google & Bing to notify them of the updated sitemap
+      #    This tells search engines to crawl your new pages immediately
+      - name: Ping search engines
+        run: |
+          echo "Pinging Google..."
+          curl -s "https://www.google.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Google pinged"
+
+          echo "Pinging Bing..."
+          curl -s "https://www.bing.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Bing pinged"
