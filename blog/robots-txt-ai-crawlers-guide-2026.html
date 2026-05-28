@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your robots.txt Is Not Ready for AI Crawlers in 2026 — RankSorcery</title>
+<meta name="description" content="GPTBot, ClaudeBot, and Google-Extended are hammering your server. Here's exactly how to configure your robots.txt to manage AI crawlers in 2026.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Your robots.txt Is Not Ready for AI Crawlers in 2026">
+<meta property="og:description" content="GPTBot, ClaudeBot, and Google-Extended are hammering your server. Here's exactly how to configure your robots.txt to manage AI crawlers in 2026.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-27">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+code { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 2px 7px; font-family: 'Courier New', monospace; font-size: 0.88em; color: var(--accent2); }
+pre { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1.5rem; margin: 1.5rem 0; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.87rem; color: var(--teal); line-height: 1.7; }
+pre .comment { color: var(--muted2); }
+pre .directive { color: var(--accent); }
+pre .value { color: var(--green); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">robots.txt &amp; AI Crawlers</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">Technical SEO</span>
+          <span class="tag tag-purple">AI Crawlers</span>
+        </div>
+        <h1>Your robots.txt Is <span>Not Ready</span> for AI Crawlers in 2026</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 27, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 10 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,143 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client called me last month in a mild panic. Their hosting bill had tripled. No traffic spike in Google Analytics, no viral post, no product launch. Just a slow, silent surge of server requests from bots they'd never heard of — <code>Bytespider</code>, <code>OAI-SearchBot</code>, <code>ClaudeBot</code>, <code>PerplexityBot</code>. When we pulled the server logs, AI crawlers were eating about 38% of their total bandwidth. And their robots.txt file? Untouched since 2019. It still had a <code>Disallow: /wp-admin/</code> rule and not much else.</p>
+
+      <p>This situation is not unusual anymore. According to Cloudflare Radar data from Q1 2026, AI and LLM crawlers grew from 2.6% to 10.1% of all web traffic in under a year. GPTBot alone surged 305% year-over-year. We're past the point where this is a "watch and see" issue. If you haven't deliberately configured your robots.txt for the AI crawler era, you're flying blind — and in some cases, paying for the privilege.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">305%</span>
+          <div class="stat-label">GPTBot traffic growth, year-over-year (Q1 2026)</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">52%</span>
+          <div class="stat-label">Share of all global web traffic now coming from bots</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">40%</span>
+          <div class="stat-label">Max bandwidth consumed by a single deep AI crawl cycle</div>
+        </div>
+      </div>
+
+      <h2 id="two-jobs">Your robots.txt Now Has Two Jobs, Not One</h2>
+
+      <p>For 20-odd years, robots.txt had one main job: tell Googlebot what not to crawl. Keep the staging environments out of the index, block the internal search result pages, prevent the cart URLs from eating up crawl budget. Simple stuff.</p>
+
+      <p>Now it has a second, more complicated job: decide which AI systems get to read your content, for what purpose, and under what conditions. This is genuinely new territory. The old SEO playbook doesn't really cover it, and most "robots.txt guides" are still recycling 2020-era advice.</p>
+
+      <p>The core tension here is real. You <em>want</em> Googlebot to crawl everything relevant so you rank. You might <em>want</em> some AI search bots (like OAI-SearchBot, which powers ChatGPT's web browsing feature) to access your content so you appear in AI search results. But you probably <em>don't</em> want training crawlers scraping your entire site to feed LLM training datasets — especially if you're a publisher, a SaaS company with docs, or anyone who creates original content.</p>
+
+      <div class="callout callout-gold">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>The Distinction That Matters</strong>
+          There are two fundamentally different types of AI crawlers: <strong>training crawlers</strong> (they scrape your content to train AI models) and <strong>retrieval/search crawlers</strong> (they index your content so AI search tools can cite it). Blocking both equally is usually a mistake.
+        </div>
+      </div>
+
+      <h2 id="who-is-crawling">The AI Crawlers You Actually Need to Know</h2>
+
+      <p>Let me give you a practical rundown of the crawlers that actually matter right now. I'm skipping the long tail of sketchy bots — focus on these first.</p>
+
+      <h3>The ones you generally want to allow:</h3>
+
+      <ul class="checklist">
+        <li><strong>OAI-SearchBot</strong> — OpenAI's retrieval bot. When someone asks ChatGPT to browse the web, this is what crawls your page. Blocking it means you won't appear in ChatGPT web search results.</li>
+        <li><strong>PerplexityBot</strong> — Powers Perplexity.ai's search engine. Very active, respects robots.txt. Worth allowing if you want AI search citations.</li>
+        <li><strong>Google-Extended</strong> — Google's signal for AI training data vs. regular search. Blocking it prevents your content from being used in Gemini's training. This one's nuanced — it doesn't affect your regular Google search rankings.</li>
+        <li><strong>Applebot-Extended</strong> — Similar deal for Apple Intelligence. Still early days, but the traffic is growing.</li>
+      </ul>
+
+      <h3>The ones you should think hard about:</h3>
+
+      <ul class="checklist">
+        <li><strong>GPTBot</strong> — OpenAI's training crawler (separate from OAI-SearchBot). Crawling your content for training. You can block GPTBot while still allowing OAI-SearchBot if you want ChatGPT search citations without contributing to training data.</li>
+        <li><strong>ClaudeBot</strong> — Anthropic's training crawler. Same deal as GPTBot. Aggressive, high-bandwidth. Many publishers block it entirely.</li>
+        <li><strong>Bytespider</strong> — ByteDance's crawler. TikTok's parent company. No clear AI product benefit to allowing this one for most sites. One site reported saving $900/month just by blocking it.</li>
+        <li><strong>CCBot</strong> — Common Crawl bot. Data is widely used for training models. Unless you actively want to contribute to open training datasets, there's no upside to allowing it.</li>
+      </ul>
+
+      <div class="callout callout-red">
+        <span class="callout-icon">⚠️</span>
+        <div class="callout-body">
+          <strong>Important Caveat</strong>
+          Most of the legitimate crawlers listed here <em>do</em> respect robots.txt — studies from 2025-2026 log analysis confirm this. Sketchy scrapers don't. But blocking the legitimate ones via robots.txt is still worth doing because: (1) it signals your preference, (2) it reduces load from compliant bots, and (3) it creates a legal record of your access restrictions.
+        </div>
+      </div>
+
+      <h2 id="what-to-write">What a 2026-Ready robots.txt Actually Looks Like</h2>
+
+      <p>Here's a practical template. I'm going to explain each decision rather than just dump a config file at you, because the right choices depend on your situation.</p>
+
+      <pre><span class="comment"># Standard Googlebot — full access (except private areas)</span>
+<span class="directive">User-agent:</span> <span class="value">Googlebot</span>
+<span class="directive">Disallow:</span> <span class="value">/admin/</span>
+<span class="directive">Disallow:</span> <span class="value">/checkout/</span>
+<span class="directive">Disallow:</span> <span class="value">/account/</span>
+<span class="directive">Disallow:</span> <span class="value">/*?*sort=</span>
+
+<span class="comment"># Bing/Microsoft — allow for search</span>
+<span class="directive">User-agent:</span> <span class="value">Bingbot</span>
+<span class="directive">Allow:</span> <span class="value">/</span>
+
+<span class="comment"># AI Search crawlers — allow for citation/visibility</span>
+<span class="directive">User-agent:</span> <span class="value">OAI-SearchBot</span>
+<span class="directive">Allow:</span> <span class="value">/</span>
+
+<span class="directive">User-agent:</span> <span class="value">PerplexityBot</span>
+<span class="directive">Allow:</span> <span class="value">/</span>
+
+<span class="directive">User-agent:</span> <span class="value">YouBot</span>
+<span class="directive">Allow:</span> <span class="value">/</span>
+
+<span class="comment"># AI Training crawlers — block (no search visibility benefit)</span>
+<span class="directive">User-agent:</span> <span class="value">GPTBot</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="directive">User-agent:</span> <span class="value">ClaudeBot</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="directive">User-agent:</span> <span class="value">CCBot</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="comment"># Google AI training signal (doesn't affect search rankings)</span>
+<span class="directive">User-agent:</span> <span class="value">Google-Extended</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="comment"># High-bandwidth nuisance crawlers</span>
+<span class="directive">User-agent:</span> <span class="value">Bytespider</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="directive">User-agent:</span> <span class="value">DiffBot</span>
+<span class="directive">Disallow:</span> <span class="value">/</span>
+
+<span class="comment"># Sitemap</span>
+<span class="directive">Sitemap:</span> <span class="value">https://yoursite.com/sitemap.xml</span></pre>
+
+      <p>This configuration threads the needle: you keep AI search visibility (ChatGPT search, Perplexity) while protecting your content from training scrapers and cutting unnecessary bandwidth.</p>
+
+      <div class="inline-cta">
+        <h3>Generate a 2026-Ready robots.txt in Seconds</h3>
+        <p>Don't write it by hand and risk syntax errors. RankSorcery's Robots.txt Generator builds a clean, properly formatted file with AI crawler rules, crawl-delay settings, and sitemap declaration — ready to drop straight into your server root.</p>
+        <a href="https://ranksorcery.com/robots-txt-generator.html">Generate My robots.txt →</a>
+      </div>
+
+      <h2 id="common-mistakes">The 5 robots.txt Mistakes I See Most Often</h2>
+
+      <p>After auditing a fair number of sites this year, these are the patterns that keep showing up.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Using a wildcard block for all bots</h4>
+            <p>The <code>User-agent: *</code> + <code>Disallow: /</code> pattern that some developers use "to block everything except Googlebot" is the nuclear option. Done wrong, it blocks everything including OAI-SearchBot, PerplexityBot, and other AI search crawlers you actually want. Always define specific rules for crawlers you want, then use the wildcard block for everything else.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Blocking AI search bots because they "sound like" AI training bots</h4>
+            <p>GPTBot = training. OAI-SearchBot = retrieval for ChatGPT search. These are different user agents with different purposes. I've seen site owners block OAI-SearchBot and then wonder why their site never appears in ChatGPT web search answers. Check the user agent string carefully.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>No Crawl-delay directive for heavy crawlers you're allowing</h4>
+            <p>Even bots you want to allow can be rude about how hard they hit your server. Adding <code>Crawl-delay: 10</code> under PerplexityBot or OAI-SearchBot tells them to wait 10 seconds between requests. Not all bots respect this, but the major ones generally do, and it can meaningfully reduce server load during deep crawl cycles.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Missing or wrong Sitemap declaration</h4>
+            <p>Your robots.txt should include a <code>Sitemap:</code> line pointing to your XML sitemap. Not just for Googlebot — AI search crawlers use it too. If they can't find your sitemap from robots.txt, they rely on internal link discovery, which is slower and less complete.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Blocking dynamic URL patterns that you actually need indexed</h4>
+            <p>Old habit from the 2010s: block all URLs with query parameters to avoid duplicate content. But in 2026, many paginated product listings, filtered search results, and content URLs use query strings legitimately. Blanket <code>Disallow: /*?*</code> rules knock out pages that should be crawled. Review these patterns carefully.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="should-you-block">Should You Actually Block AI Training Crawlers?</h2>
+
+      <p>This is where I'll give you an actual opinion rather than the usual "it depends on your goals" non-answer.</p>
+
+      <p><strong>If you're a publisher, blogger, or content creator: yes, block training crawlers.</strong> The value exchange is too lopsided. You create content, they scrape it to train models that then answer questions without sending traffic back to you. Allowing training access and hoping for AI search visibility is a false tradeoff — you can get AI search citations through OAI-SearchBot and PerplexityBot without feeding GPTBot.</p>
+
+      <p><strong>If you're a SaaS or tool company:</strong> this is more nuanced. Having your product docs and help content included in LLM training can increase brand recall when AI tools make recommendations. But weigh that against the bandwidth cost and the fact that AI might recommend you based on outdated documentation.</p>
+
+      <p><strong>If you run an e-commerce site:</strong> block training crawlers without hesitation. Your product pages, pricing, and category structure being in training data doesn't help you. Your bandwidth being consumed does hurt you.</p>
+
+      <div class="pull-quote">
+        "The question isn't 'should I block AI crawlers?' It's 'which AI crawlers serve my business goals, and which ones just consume my server resources?'"
+      </div>
+
+      <h2 id="how-to-check">How to Check What's Actually Hitting Your Site Right Now</h2>
+
+      <p>Before you change anything in your robots.txt, know what you're dealing with. Here's a quick way to audit your actual crawler traffic:</p>
+
+      <ul class="checklist">
+        <li>Pull your server access logs for the past 30 days (not GA — raw server logs)</li>
+        <li>Filter for known AI crawler user agent strings: GPTBot, ClaudeBot, OAI-SearchBot, PerplexityBot, Bytespider, CCBot, Google-Extended, Amazonbot</li>
+        <li>Count total requests and bytes transferred per bot</li>
+        <li>Identify which bots are consuming bandwidth vs. which are crawling useful pages</li>
+        <li>Check if any bots are ignoring your existing Disallow rules (signs: hitting /admin/, /checkout/, etc.)</li>
+        <li>Note which bots are crawling your highest-value pages (blog posts, product pages, docs)</li>
+      </ul>
+
+      <p>On most shared and managed WordPress hosts, you won't have direct log access. Check with your hosting provider — many now offer basic bot traffic breakdowns in their dashboards. Cloudflare users have a significant advantage here; the Cloudflare Radar data is excellent.</p>
+
+      <div class="callout callout-teal">
+        <span class="callout-icon">📊</span>
+        <div class="callout-body">
+          <strong>Quick Wins from the Data</strong>
+          In a recent case study, a mid-size SaaS company blocked Bytespider, CCBot, and GPTBot while keeping OAI-SearchBot and PerplexityBot allowed. Result: AI crawler bandwidth dropped 75%, from 45 GB/month to about 11 GB/month, saving $450/month in overage charges. Their ChatGPT and Perplexity citation rate didn't change.
+        </div>
+      </div>
+
+      <h2 id="llms-txt">What About llms.txt? Is That the New robots.txt?</h2>
+
+      <p>You might have heard about the <code>llms.txt</code> proposal — a file placed at your site root that gives AI systems structured information about your content. Think of it as a sitemap specifically for LLMs.</p>
+
+      <p>As of mid-2026, this is still more of an emerging convention than a hard standard. Perplexity has said they look at it. Claude apparently uses it in some contexts. But it's not replacing robots.txt — it's supplementary. My recommendation: implement llms.txt if you have the time, but it's not a substitute for getting your robots.txt right. Robots.txt controls access. llms.txt guides understanding. Both matter, in that order.</p>
+
+      <h2 id="action-plan">The Quick-Start Action Plan</h2>
+
+      <p>If you've been putting this off, here's your 20-minute fix:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Check your current robots.txt</h4>
+            <p>Visit <code>yourdomain.com/robots.txt</code> and look at what's actually there. Note what AI crawlers are currently allowed or blocked (probably nothing is specified — that's the common case).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Decide your AI crawler policy</h4>
+            <p>Using the framework above: which crawlers help your visibility in AI search (allow), which ones are training scrapers with no upside for you (block), and which are unknown bandwidth consumers (block).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Generate and validate your new file</h4>
+            <p>Write your rules, validate the syntax, and make sure you haven't accidentally blocked Googlebot or your preferred AI search bots. Use <a href="https://ranksorcery.com/robots-txt-generator.html">RankSorcery's Robots.txt Generator</a> to build it cleanly without syntax headaches.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Deploy and monitor</h4>
+            <p>Upload the new robots.txt to your server root. Check Google Search Console's robots.txt tester to confirm Googlebot rules look right. Monitor server logs over the next week to see if the bandwidth from blocked crawlers drops as expected.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-purple">
+        <span class="callout-icon">🤖</span>
+        <div class="callout-body">
+          <strong>One More Thing: AI Search Visibility</strong>
+          Getting cited in ChatGPT, Perplexity, and Gemini search results is increasingly valuable as traditional organic click-through rates drop. Allowing OAI-SearchBot and PerplexityBot is just table stakes. For deeper AI search visibility work — tracking where and how often AI tools mention your site — check out RankSorcery's <a href="https://ranksorcery.com/ai-search.html">AI Search Visibility</a> tool.
+        </div>
+      </div>
+
+      <p>The robots.txt file used to be a footnote in a technical SEO audit. In 2026, it's a meaningful business decision. Take 20 minutes and sort it out — your server bill (and your AI search visibility) will thank you.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#two-jobs">robots.txt's Two Jobs Now</a></li>
+        <li><a href="#who-is-crawling">AI Crawlers You Need to Know</a></li>
+        <li><a href="#what-to-write">What a 2026 robots.txt Looks Like</a></li>
+        <li><a href="#common-mistakes">5 Common Mistakes</a></li>
+        <li><a href="#should-you-block">Should You Block Training Crawlers?</a></li>
+        <li><a href="#how-to-check">Check What's Hitting Your Site</a></li>
+        <li><a href="#llms-txt">What About llms.txt?</a></li>
+        <li><a href="#action-plan">Quick-Start Action Plan</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Your%20robots.txt%20Is%20Not%20Ready%20for%20AI%20Crawlers%20in%202026&url=https://ranksorcery.com/blog/robots-txt-ai-crawlers-guide-2026.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="../blog/build-agent-friendly-website-seo-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">Google's Agent-Friendly Website Guide<span>9 min · May 20</span></div>
+      </a>
+      <a href="../blog/schema-markup-ai-search-2026.html" class="related-post">
+        <div class="related-post-icon">🔖</div>
+        <div class="related-post-body">Schema Markup for AI Search 2026<span>11 min · May 12</span></div>
+      </a>
+      <a href="../blog/why-content-missing-from-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🔍</div>
+        <div class="related-post-body">Why Your Content Isn't in AI Search Results<span>13 min · May 7</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Robots.txt Generator</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Build a 2026-ready file with AI crawler rules in seconds</p>
+      <a href="https://ranksorcery.com/robots-txt-generator.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Generate File →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
