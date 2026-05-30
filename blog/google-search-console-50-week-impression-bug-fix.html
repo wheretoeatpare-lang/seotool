@@ -1,0 +1,626 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Search Console 50-Week Bug Fix</title>
+<meta name="description" content="Fix Google's 50-week impression bug, recover lost SEO data and take action now with our expert guide">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google's 50-Week Search Console Bug: What Your SEO Data Is Really Telling You Now">
+<meta property="og:description" content="Google silently inflated your Search Console impressions for nearly a year. Here's what it means for your CTR, rankings data, and what to actually do about it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-09">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&amp;display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(248,113,113,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(251,191,36,0.10) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-red { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--amber)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--amber); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(248,113,113,0.06), rgba(251,191,36,0.04));
+  border: 1px solid rgba(248,113,113,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Google Search Console Bug</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-red">🚨 Data Alert</span>
+          <span class="tag tag-amber">🔥 Trending May 2026</span>
+          <span class="tag tag-cyan">⚡ Action Required</span>
+        </div>
+        <h1>Google's <span>50-Week Search Console Bug:</span> What Your SEO Data Is Really Telling You Now</h1>
+        <div class="article-hero-meta">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 May 9, 2026</span>
+          <span>·</span>
+          <span>⏱ 11 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What Actually Happened — And Why It Matters</a></li>
+        <li><a href="#section2">Which Metrics Were Poisoned (And Which Were Fine)</a></li>
+        <li><a href="#section3">How to Audit Your Historical Data Right Now</a></li>
+        <li><a href="#section4">Rebuilding an Accurate Performance Baseline</a></li>
+        <li><a href="#section5">What to Do Going Forward</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>Here's something that should make every SEO a little uncomfortable: for roughly 50 weeks — from May 13, 2025 all the way to April 27, 2026 — Google Search Console was quietly reporting inflated impression numbers to every single site on the web. Not a handful of sites. Not a niche bug. Every site. And most people either didn't notice, shrugged, or congratulated themselves on their "improved visibility."</p>
+
+      <p>Google confirmed the fix on May 4, 2026. The announcement was brief and clinical: "A logging error prevented Search Console from accurately reporting impressions from May 13, 2025 until April 27, 2026. This issue has been resolved." What they did not say — and what John Mueller later confirmed on Bluesky — is that the historical data will <strong>not</strong> be corrected. Those 50 weeks of inflated numbers are going to sit in your account forever. So if you're looking at year-over-year comparisons right now, you're comparing against a ghost.</p>
+
+      <p>This article is about what that means practically. Not just "your impressions dropped, don't panic" — but specifically which decisions you might have made based on bad data, how to figure out what your actual performance was, and how to build a clean baseline from this point forward. There's also a really underappreciated wrinkle about CTR and average position that I haven't seen covered anywhere properly yet, and we need to talk about that.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">~50</span><div class="stat-label">Weeks of inaccurate GSC impression data (May 2025 – April 2026)</div></div>
+        <div class="stat-card"><span class="stat-val">3</span><div class="stat-label">Metrics affected: impressions, CTR, and average position (clicks were untouched)</div></div>
+        <div class="stat-card"><span class="stat-val">0</span><div class="stat-label">Historical data points Google will fix — the old numbers stay broken permanently</div></div>
+      </div>
+
+      <h2 id="section1">What Actually Happened — And Why It Matters</h2>
+
+      <p>Let me be honest with you: Google has been vague about the technical specifics of what went wrong. We know it was a "logging error" in the impression tracking pipeline. We know it caused impressions to be over-reported. We don't know by how much — and that's actually the most frustrating part. Was it 10% inflation? 50%? 200%? Google hasn't said, and early reports from SEOs who noticed the fix going live suggest the drops have been significant. Some accounts saw impression counts fall by 30–60% almost overnight after April 27.</p>
+
+      <p>I've seen some people in SEO Twitter (or whatever we're calling it now) try to spin this as "no big deal since clicks weren't affected." I get why they're saying that — clicks are usually the more important business metric. But this framing misses something critical: impressions feed into two other metrics that SEOs and content teams actively use to make decisions. If your impressions were inflated, your click-through rate was deflated, and your average position data was skewed. Both of those numbers influence real strategic choices.</p>
+
+      <p>Think about the decisions that get made based on "my CTR is only 2% for this keyword." You write new title tags. You restructure your page. You add FAQ schema to try to get a featured snippet. You worry you're not competitive enough in the SERP. Now imagine you did all of that over the past year based on a CTR that was artificially suppressed because the denominator (impressions) was wrong. You might have been fixing a problem that didn't exist.</p>
+
+      <p>Or consider average position. A bunch of SEO content audits use average position as a signal for which articles are "stuck" on page 2 vs ranking solidly on page 1. If the position data was being pulled from the same broken logging pipeline — and it was, since GSC derives it from impression events — then your position data for the affected period is unreliable too. Not completely useless, but definitely not trustworthy for fine-grained analysis.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Critical Context</strong>
+          Do not use any year-over-year impression comparisons that span the May 2025 – April 2026 window for strategic decisions. The baseline period is contaminated. Clicks data from that window is still valid and usable for trend analysis.
+        </div>
+      </div>
+
+      <h2 id="section2">Which Metrics Were Poisoned (And Which Were Fine)</h2>
+
+      <p>Let's get specific about this, because I've seen a lot of confused takes floating around. Google was clear that <strong>clicks were not affected</strong>. The logging error was specifically in the impression counting system. So your actual traffic numbers — the people who physically clicked through to your site — those are accurate. Your clicks trend data from the past year is fine.</p>
+
+      <h3>The Impression Cascade Problem</h3>
+
+      <p>Here's what wasn't fine. Search Console calculates CTR as clicks divided by impressions. If impressions were inflated, then your CTR for every single query in the affected period is lower than reality. The math is simple: if you got 100 clicks from what was logged as 5,000 impressions but the real number was 3,000 impressions, your real CTR was 3.3% — but GSC showed you 2.0%. That's a massive difference in how you'd evaluate a piece of content.</p>
+
+      <p>Average position is even trickier. GSC calculates it as a weighted average across impression events. More impressions at a certain position shifts the average. With artificial inflation in the impression data, the position averages were being calculated on a distorted input. In practice, I suspect position data was less severely impacted than CTR data (since the inflation likely affected impressions at all positions somewhat proportionally), but you should still treat any position-based analysis from that period with healthy skepticism.</p>
+
+      <p>The metrics that are totally clean: clicks, sessions in GA4, conversions, and any server-side data you collected. If you were also running Bing Webmaster Tools, that data was completely separate and unaffected. Same for any rank tracking tools you use — those pull live SERP data independently, not from GSC's logging system.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Affected by Bug?</th>
+            <th>Severity</th>
+            <th>Use for Analysis?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Impressions</td><td class="bad">✗ Yes — inflated</td><td class="bad">High</td><td class="bad">✗ Avoid for May '25–Apr '26</td></tr>
+          <tr><td>Clicks</td><td class="good">✓ Unaffected</td><td class="good">None</td><td class="good">✓ Safe to use</td></tr>
+          <tr><td>CTR</td><td class="bad">✗ Yes — deflated</td><td class="bad">High</td><td class="bad">✗ Avoid for May '25–Apr '26</td></tr>
+          <tr><td>Avg. Position</td><td class="mid">~ Partially affected</td><td class="mid">Medium</td><td class="mid">~ Use with caution</td></tr>
+          <tr><td>GA4 Sessions</td><td class="good">✓ Unaffected</td><td class="good">None</td><td class="good">✓ Safe to use</td></tr>
+          <tr><td>Bing WMT Data</td><td class="good">✓ Unaffected</td><td class="good">None</td><td class="good">✓ Safe to use</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What About Discover and Google News?</h3>
+
+      <p>Google's announcement specifically mentioned the Performance report for Search results. The Discover and Google News reports in Search Console have their own separate impression tracking pipelines, and Google was not explicit about whether those were affected. Based on the wording ("Search Console Performance report") the bug appears to be web search specific, but if your site gets significant Discover traffic, I'd approach those impression figures from the same time window with caution until we get more clarity. The safe play is to treat clicks as your source of truth across all report types for that period.</p>
+
+      <h2 id="section3">How to Audit Your Historical Data Right Now</h2>
+
+      <p>Okay, so the data is broken for that window. What do you actually do about it? First, don't delete anything. GSC doesn't let you export and reimport anyway, but more importantly, you still have your clicks data which is valuable for trend analysis. The goal here isn't to throw out the period — it's to understand what you can trust and what you need to flag.</p>
+
+      <p>The audit process I'd recommend has four phases. You're going to cross-reference your GSC clicks data with GA4 organic sessions to establish a reliable performance picture, identify any decisions you made based on the bad impression/CTR data, assess whether those decisions were probably still correct (many of them will be), and then set a clean baseline from April 28, 2026 onward.</p>
+
+      <div class="inline-cta">
+        <h3>🔍 Run a Full SEO Audit While You're Cleaning Up Your Data</h3>
+        <p>Spot technical issues, crawl errors, and on-page problems that your GSC data might have been masking — get a complete picture in under 60 seconds.</p>
+        <a href="/seo-auditor">Try It Free →</a>
+      </div>
+
+      <h3>The Cross-Reference Method</h3>
+
+      <p>Here's the practical technique: go into Google Search Console and export your clicks data by page for the full affected window (May 13, 2025 – April 27, 2026). Then pull organic sessions by landing page from GA4 for the same period. These two numbers should broadly correlate — GSC clicks are not exactly the same as GA4 sessions (there's always some discrepancy due to JavaScript loading, bot filtering, etc.) but typically they move together. If you see any major divergences on specific pages, that's worth investigating.</p>
+
+      <p>What you're really looking for is whether your actual traffic trend (clicks and sessions) was growing, stable, or declining — and using that to cross-check any strategy decisions you made based on GSC impression or CTR data. Most sites I've seen discussed in the community found their clicks trend was actually fine throughout the period. The bug was inflating impressions without meaningfully affecting the click-to-site rate in practice. But you want to verify this for your own site rather than assume.</p>
+
+      <ul class="checklist">
+        <li>Export all GSC data from May 13, 2025 – April 27, 2026 (Clicks column is trustworthy)</li>
+        <li>Pull GA4 organic landing page data for the same date range and compare the trends</li>
+        <li>Flag any pages where you rewrote title tags or meta descriptions based on "low CTR" signals during this period</li>
+        <li>Review any content audits that used average position as a primary ranking signal — those need revisiting</li>
+        <li>Check if your reporting dashboards have historical impressions charts that will mislead stakeholders after the drop</li>
+        <li>Annotate your GSC account (or your reporting tool) to mark May 13, 2025 – April 27, 2026 as "impression data unreliable"</li>
+        <li>Document what a "normal" impressions range looks like for your site from clean post-April-28 data</li>
+      </ul>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Pro Tip: Annotate Everything</strong>
+          If you use Google Looker Studio, Data Studio, or any BI tool that pulls from GSC, add a visible annotation or shaded date range showing the affected window. This prevents anyone on your team from accidentally building reports off that data six months from now when they've forgotten about the bug.
+        </div>
+      </div>
+
+      <h2 id="section4">Rebuilding an Accurate Performance Baseline</h2>
+
+      <p>This is the part nobody is talking about enough. Yes, the old data was bad — but the more pressing question is: what does "normal" even look like for your site now? Because starting April 28, 2026, your impressions number probably dropped significantly. If you go into GSC today and compare this week to any week from the last year, you're going to see a scary-looking decline. Your team is going to ask questions. Your clients are going to ask questions. You need to be ready with a clear answer.</p>
+
+      <p>The first thing I'd do is take a 30-day snapshot of your impressions, clicks, CTR, and average position from April 28 onward. This is your new baseline. For most sites, your clicks should be relatively stable compared to the pre-fix period (because clicks weren't affected). What you'll notice is that your CTR probably looks much better now — because the same number of clicks is now being divided by a more accurate (lower) impressions figure. This is a good thing. Your site's actual click-through performance was probably better than you thought all along.</p>
+
+      <div class="pull-quote">"If your impressions just dropped 40% but your clicks stayed flat, that's not a traffic crisis — that's a data correction. Your site is performing the same. Your reporting was lying to you before."</div>
+
+      <p>Average position is worth watching too. For many sites, position data actually becomes more stable and reliable after the fix. The pre-fix inflation likely added noise to position calculations by injecting artificial impression events. Your position data going forward should give you a cleaner read on where you're actually ranking for specific queries.</p>
+
+      <p>One practical thing you can do right now: use the date comparison feature in GSC to compare April 28 – May 9, 2026 against the same date range in 2024 (which was before the bug started). This gives you a legitimate year-over-year window that isn't contaminated on either side. Your clicks trend from that comparison will tell you the real story about whether your organic performance has grown or declined over the past year.</p>
+
+      <h3>Re-Evaluating Title Tag and Meta Description Decisions</h3>
+
+      <p>Here's the uncomfortable one. If you spent any part of the last year iterating on title tags or meta descriptions to improve CTR — because your CTR data was showing you below-average numbers — you need to go back and reassess whether those changes were actually necessary or beneficial.</p>
+
+      <p>That doesn't mean your new title tags are wrong. They might be genuinely better. But if the entire premise for the change was "our CTR for this page is 1.8% and that's below average," you should know that the 1.8% was a fiction. The real CTR might have been 2.8% or 3.2%, which could have been perfectly competitive. Run a clicks-based analysis on those pages to see whether click volume actually improved after your title tag changes. That's the real signal.</p>
+
+      <p>The same logic applies to any pages you might have flagged for content rewrites because they showed "high impressions, low clicks" patterns. That pattern can be a real signal — it often points to keyword intent mismatches — but it can also just be inflated impression noise. Look at your actual engagement metrics (GA4 bounce rate equivalent, time on page, scroll depth) to figure out which category each flagged page falls into.</p>
+
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Pull Your Clicks Baseline</h4><p>In GSC, set the date range to April 28 – today and export clicks by page and query. This becomes your new source of truth. Save it somewhere permanent.</p></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Audit Your Title Tag Changes</h4><p>If you rewrote title tags or meta descriptions between May 2025 and April 2026 to improve "low CTR," check whether clicks to those pages actually increased. If not, you may want to re-evaluate those changes.</p></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Compare Against Clean Dates</h4><p>Use GSC's date comparison to compare current data (post-April 28, 2026) against pre-bug data (before May 13, 2025). This is your only valid year-over-year window right now.</p></div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Update Your Reporting Dashboards</h4><p>Add annotations or shading to any dashboard showing GSC impressions data, marking the affected window clearly. Stakeholders need context when they see the sudden drop in April/May 2026 charts.</p></div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Verify Real Keyword Performance</h4><p>Use a keyword volume and ranking tool to independently confirm your keyword positions for your most important terms — don't rely on GSC average position data from the affected window for strategy decisions.</p></div></div>
+      </div>
+
+      <h2 id="section5">What to Do Going Forward</h2>
+
+      <p>The most important shift you can make after this is to diversify your SEO measurement. Search Console is a fantastic tool and I'm not suggesting you abandon it — but this episode is a good reminder that any single data source can have problems, and the SEOs who got burned the most by this bug were the ones who were making decisions purely based on GSC impression and CTR data without cross-checking against other signals.</p>
+
+      <p>Going forward, clicks should be your primary GSC metric. Clicks are robust, they weren't affected by this bug, and they directly measure what actually matters — people actually navigating to your site. Impressions are useful for broad reach analysis but shouldn't drive granular content decisions. CTR is fine as a directional signal, but always triangulate it against actual page analytics before rewriting anything.</p>
+
+      <p>I'd also strongly encourage using independent rank tracking for your most important keywords rather than relying solely on GSC average position. GSC gives you a great overview across thousands of queries, but for your core 20-50 keywords, a dedicated tracker that hits the SERPs directly gives you much more precise and reliable position data. Combined with a proper keyword volume check for your target terms, you get a much more complete picture than GSC alone provides.</p>
+
+      <div class="inline-cta">
+        <h3>📊 Get Real Keyword Data Independent of Google's Reporting</h3>
+        <p>Check actual search volumes and ranking competition for your target keywords without depending on Search Console's (now-known-to-be-buggy) impression data.</p>
+        <a href="/keyword-volume">Check Keyword Volume Free →</a>
+      </div>
+
+      <p>Here's the other thing I want to say clearly: don't let this bug shake your confidence in SEO as a discipline. The fundamentals — create useful content, earn genuine authority, keep your site technically clean, build real topical depth — none of that changed. Your site's actual organic performance over the past year was driven by those factors. The broken GSC data just made it harder to see clearly. Now the data is fixed, and if you approach the next few months with clean measurement practices, you'll have a much better foundation for making smart decisions.</p>
+
+      <p>Start fresh. Set your new baseline. Document what "normal" looks like for your site now. And next time someone suggests making major content decisions based on a single metric from a single data source, push back. Good SEO measurement has always required triangulating across multiple signals — this bug just made that lesson a little more expensive for the people who didn't already know it.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          The Google Search Console impression bug is fixed going forward, but 50 weeks of historical data remains permanently inflated. Use clicks (not impressions) as your primary GSC metric, cross-reference with GA4 organic data, and build a new clean baseline from April 28, 2026 onward. Any analysis that spans the affected window needs to be clearly flagged or redone.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO &amp; Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
+      </a>
+      <a href="/background-remover" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">✂️</div>
+        <div><div class="tool-card-sm-name">Background Remover</div><div class="tool-card-sm-desc">Remove bg in one click</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/schema-markup-ai-search-2026.html" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Schema Markup in 2026: The Fastest Path to AI Search Citations Most Sites Are Ignoring →
+        </a>
+        <a href="/blog/internal-linking-audit-after-march-2026-core-update.html" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Internal Linking Audit After the March 2026 Core Update →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+
+
+</body></html>
