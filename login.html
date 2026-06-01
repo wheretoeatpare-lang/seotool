@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSorcery — Member Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --gold: #E8B84B;
+    --gold-dim: #c49a30;
+    --gold-pale: rgba(232,184,75,0.12);
+    --gold-glow: rgba(232,184,75,0.25);
+    --bg: #0c0c0e;
+    --surface: #141416;
+    --surface2: #1c1c1f;
+    --border: rgba(232,184,75,0.18);
+    --text: #f0ede6;
+    --muted: #7a7870;
+    --error: #e05252;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Subtle animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(232,184,75,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,184,75,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: gridDrift 20s linear infinite;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    top: -30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(232,184,75,0.07) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(48px); }
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 16px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-inner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Corner glow accent */
+  .card-inner::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle at top left, rgba(232,184,75,0.22), transparent 70%);
+    border-radius: 16px 0 0 0;
+    pointer-events: none;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--gold-pale);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    color: var(--gold);
+  }
+
+  .logo-text {
+    font-family: 'Cinzel', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.03em;
+  }
+
+  .heading {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .subheading {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .field {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  input[type="email"],
+  input[type="password"] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input:focus {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 0 3px var(--gold-glow);
+  }
+
+  input::placeholder { color: #4a4845; }
+
+  .pw-wrap {
+    position: relative;
+  }
+
+  .pw-toggle {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 4px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+
+  .pw-toggle:hover { color: var(--gold); }
+
+  .btn-login {
+    width: 100%;
+    margin-top: 8px;
+    padding: 13px;
+    background: var(--gold);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #0c0c0e;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-login:hover {
+    background: #f0c45a;
+    box-shadow: 0 0 24px rgba(232,184,75,0.35);
+  }
+
+  .btn-login:active { transform: scale(0.99); }
+
+  .btn-login:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-login .spinner {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(0,0,0,0.25);
+    border-top-color: #0c0c0e;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-login.loading .btn-text { display: none; }
+  .btn-login.loading .spinner { display: block; }
+
+  .error-msg {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(224,82,82,0.1);
+    border: 1px solid rgba(224,82,82,0.3);
+    border-radius: 7px;
+    font-size: 13px;
+    color: #e07070;
+    line-height: 1.4;
+  }
+
+  .error-msg.visible { display: block; }
+
+  .success-msg {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(30,180,100,0.1);
+    border: 1px solid rgba(30,180,100,0.25);
+    border-radius: 7px;
+    font-size: 13px;
+    color: #5ecb8c;
+  }
+
+  .success-msg.visible { display: block; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 0;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+
+  .divider span {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .footer-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .footer-note a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+
+  .footer-note a:hover { text-decoration: underline; }
+
+  /* Particles */
+  .particle {
+    position: fixed;
+    width: 2px; height: 2px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: float var(--dur, 8s) linear var(--delay, 0s) infinite;
+  }
+
+  @keyframes float {
+    0%   { transform: translateY(110vh) translateX(0); opacity: 0; }
+    10%  { opacity: 0.4; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-10vh) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="particle" style="left:12%; --dur:10s; --delay:0s; --drift:30px;"></div>
+<div class="particle" style="left:28%; --dur:13s; --delay:2s; --drift:-20px;"></div>
+<div class="particle" style="left:55%; --dur:9s;  --delay:5s; --drift:15px;"></div>
+<div class="particle" style="left:72%; --dur:11s; --delay:1s; --drift:-35px;"></div>
+<div class="particle" style="left:88%; --dur:14s; --delay:3s; --drift:10px;"></div>
+
+<div class="card">
+  <div class="card-inner">
+
+    <div class="logo-wrap">
+      <div class="logo-mark">✦</div>
+      <span class="logo-text">RankSorcery</span>
+    </div>
+
+    <h1 class="heading">Member Access</h1>
+    <p class="subheading">Sign in to unlock your premium SEO tools.</p>
+
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
+        <button class="pw-toggle" id="pwToggle" aria-label="Show password" type="button">Show</button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn" type="button">
+      <span class="btn-text">Sign in</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <div class="divider"><span>Need access?</span></div>
+
+    <p class="footer-note">
+      RankSorcery premium accounts are provided after purchase.<br>
+      <a href="mailto:webmasterjamez@gmail.com">Contact us</a> to get started.
+    </p>
+
+  </div>
+</div>
+
+<script>
+  // =============================================
+  // CONFIGURATION — replace with your real values
+  // =============================================
+  const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'
+  const SUPABASE_ANON_KEY = 'YOUR_ANON_PUBLIC_KEY'
+
+  // After successful login, redirect here:
+  const REDIRECT_AFTER_LOGIN = '/premium-tools.html'
+  // =============================================
+
+  const { createClient } = supabase
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  const emailEl   = document.getElementById('email')
+  const passEl    = document.getElementById('password')
+  const loginBtn  = document.getElementById('loginBtn')
+  const errorMsg  = document.getElementById('errorMsg')
+  const successMsg = document.getElementById('successMsg')
+  const pwToggle  = document.getElementById('pwToggle')
+
+  // Password show/hide
+  pwToggle.addEventListener('click', () => {
+    const isPass = passEl.type === 'password'
+    passEl.type = isPass ? 'text' : 'password'
+    pwToggle.textContent = isPass ? 'Hide' : 'Show'
+  })
+
+  // Show error
+  function showError(msg) {
+    errorMsg.textContent = msg
+    errorMsg.classList.add('visible')
+    successMsg.classList.remove('visible')
+  }
+
+  // Reset state
+  function clearMessages() {
+    errorMsg.classList.remove('visible')
+    successMsg.classList.remove('visible')
+  }
+
+  // Login handler
+  loginBtn.addEventListener('click', async () => {
+    clearMessages()
+    const email = emailEl.value.trim()
+    const password = passEl.value
+
+    if (!email || !password) {
+      showError('Please enter your email and password.')
+      return
+    }
+
+    loginBtn.disabled = true
+    loginBtn.classList.add('loading')
+
+    const { data, error } = await sb.auth.signInWithPassword({ email, password })
+
+    loginBtn.disabled = false
+    loginBtn.classList.remove('loading')
+
+    if (error) {
+      if (error.message.includes('Invalid login')) {
+        showError('Incorrect email or password. Please try again.')
+      } else if (error.message.includes('Email not confirmed')) {
+        showError('Please confirm your email address before logging in.')
+      } else {
+        showError(error.message)
+      }
+      return
+    }
+
+    // Success
+    successMsg.textContent = 'Login successful! Redirecting...'
+    successMsg.classList.add('visible')
+
+    setTimeout(() => {
+      window.location.href = REDIRECT_AFTER_LOGIN
+    }, 900)
+  })
+
+  // Allow Enter key to submit
+  [emailEl, passEl].forEach(el => {
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter') loginBtn.click()
+    })
+  })
+
+  // Check if already logged in — skip login screen
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = REDIRECT_AFTER_LOGIN
+  })
+</script>
+</body>
+</html>
