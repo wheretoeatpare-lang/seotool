@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RankSorcery — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = 'https://vgoweydboijdfvkvzbko.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnb3dleWRib2lqZGZ2a3Z6YmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMTExOTAsImV4cCI6MjA5NTg4NzE5MH0.JFLncfHGluDFdp8vxWwKkeqaeXY2vAEJqJ0kbv50fjw'
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (!session) window.location.href = '/login.html'
+    })
+  </script>
+<style>
+:root {
+  --gold: #E8B84B;
+  --gold-dim: #c49a30;
+  --gold-pale: rgba(232,184,75,0.10);
+  --gold-glow: rgba(232,184,75,0.20);
+  --bg: #0c0c0e;
+  --surface: #141416;
+  --surface2: #1c1c1f;
+  --surface3: #222226;
+  --border: rgba(232,184,75,0.15);
+  --border-subtle: rgba(255,255,255,0.06);
+  --text: #f0ede6;
+  --muted: #6a6865;
+  --muted2: #9a9890;
+  --green: #4ade80;
+  --green-pale: rgba(74,222,128,0.10);
+  --red: #f87171;
+  --red-pale: rgba(248,113,113,0.10);
+  --blue: #60a5fa;
+  --blue-pale: rgba(96,165,250,0.10);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.03) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(232,184,75,0.06) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── NAVBAR ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,12,14,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.nav-logo-mark {
+  width: 32px; height: 32px;
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+}
+
+.nav-logo-text {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.03em;
+}
+
+.nav-badge {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2px 10px;
+  margin-left: 4px;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted2);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 7px;
+  transition: color 0.2s, background 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.nav-link:hover { color: var(--text); background: var(--surface2); }
+.nav-link.active { color: var(--gold); background: var(--gold-pale); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-user { font-size: 13px; color: var(--muted2); }
+.nav-user span { color: var(--text); font-weight: 500; }
+
+.btn-logout {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: none;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-logout:hover { color: var(--text); border-color: var(--border); }
+
+/* ── LAYOUT ── */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 60px);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── SIDEBAR ── */
+aside {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border-subtle);
+  background: rgba(20,20,22,0.6);
+  padding: 28px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 10px;
+  margin: 16px 0 6px;
+}
+
+.sidebar-section-label:first-child { margin-top: 0; }
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted2);
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.sidebar-link:hover { color: var(--text); background: var(--surface2); }
+.sidebar-link.active { color: var(--gold); background: var(--gold-pale); }
+
+.sidebar-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+.sidebar-link .badge-dot {
+  margin-left: auto;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0.8;
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 44px 32px 80px;
+  width: 100%;
+}
+
+/* ── HERO ── */
+.hero { margin-bottom: 36px; }
+
+.hero-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.hero-eyebrow-line {
+  width: 28px; height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.hero-eyebrow span {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.8;
+}
+
+.hero-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.hero h1 {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.hero h1 em { font-style: normal; color: var(--gold); }
+
+.hero p {
+  font-size: 14px;
+  color: var(--muted2);
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gold-pale);
+  border: 1px solid rgba(232,184,75,0.35);
+  border-radius: 8px;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 18px;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.btn-primary:hover {
+  background: rgba(232,184,75,0.18);
+  border-color: rgba(232,184,75,0.55);
+}
+
+/* ── KPI STRIP ── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 36px;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.kpi {
+  background: var(--surface);
+  padding: 18px 22px;
+}
+
+.kpi-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.kpi-value {
+  font-family: 'Cinzel', serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.kpi-sub {
+  font-size: 11px;
+  color: var(--muted2);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kpi-delta {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.kpi-delta.up   { color: var(--green); background: var(--green-pale); }
+.kpi-delta.down { color: var(--red);   background: var(--red-pale);   }
+
+/* ── TWO-COL GRID ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 22px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.card-action {
+  font-size: 11px;
+  color: var(--gold);
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  letter-spacing: 0.04em;
+}
+
+.card-action:hover { opacity: 1; }
+
+/* ── ACTIVITY LIST ── */
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-icon {
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.activity-icon.seo     { background: rgba(232,184,75,0.12); }
+.activity-icon.ai      { background: rgba(99,153,34,0.12); }
+.activity-icon.research{ background: rgba(29,158,117,0.12); }
+.activity-icon.pro     { background: rgba(208,66,47,0.12); }
+
+.activity-body { flex: 1; min-width: 0; }
+
+.activity-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activity-sub {
+  font-size: 11px;
+  color: var(--muted2);
+}
+
+.activity-time {
+  font-size: 11px;
+  color: var(--muted);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── QUICK ACTIONS ── */
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.quick-btn:hover {
+  border-color: var(--border);
+  background: var(--surface3);
+  transform: translateX(2px);
+}
+
+.quick-btn-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.quick-btn-icon.gold    { background: var(--gold-pale); }
+.quick-btn-icon.green   { background: var(--green-pale); }
+.quick-btn-icon.blue    { background: var(--blue-pale); }
+.quick-btn-icon.red     { background: var(--red-pale); }
+
+.quick-btn-arrow {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 13px;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.quick-btn:hover .quick-btn-arrow {
+  color: var(--gold);
+  transform: translateX(3px);
+}
+
+/* ── RANK TRACKER WIDGET ── */
+.rank-list { display: flex; flex-direction: column; gap: 8px; }
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface2);
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+}
+
+.rank-pos {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--gold);
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.rank-keyword {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 500;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rank-url {
+  font-size: 11px;
+  color: var(--muted2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.rank-change {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.rank-change.up   { color: var(--green); background: var(--green-pale); }
+.rank-change.down { color: var(--red);   background: var(--red-pale);   }
+.rank-change.same { color: var(--muted); background: var(--surface3);   }
+
+/* ── USAGE BAR ── */
+.usage-item {
+  margin-bottom: 14px;
+}
+
+.usage-item:last-child { margin-bottom: 0; }
+
+.usage-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.usage-label { font-size: 12px; color: var(--muted2); font-weight: 500; }
+.usage-count { font-size: 11px; color: var(--muted); }
+
+.usage-bar {
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.usage-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  transition: width 1s ease;
+}
+
+/* ── ANNOUNCEMENT ── */
+.announcement {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--gold-pale);
+  border: 1px solid rgba(232,184,75,0.2);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+
+.announcement-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+.announcement-body h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 3px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.04em;
+}
+
+.announcement-body p {
+  font-size: 12px;
+  color: var(--muted2);
+  line-height: 1.55;
+}
+
+.announcement-body a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.announcement-body a:hover { text-decoration: underline; }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  margin-top: 36px;
+}
+
+.section-icon {
+  width: 30px; height: 30px;
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.section-icon.seo      { background: rgba(232,184,75,0.12); }
+.section-icon.ai       { background: rgba(99,153,34,0.12); }
+.section-icon.analysis { background: rgba(29,158,117,0.12); }
+.section-icon.pro      { background: rgba(208,66,47,0.12); }
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+/* ── PROFILE CARD ── */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 22px;
+  gap: 0;
+}
+
+.profile-avatar {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: var(--gold-pale);
+  border: 2px solid rgba(232,184,75,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.profile-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.profile-email {
+  font-size: 12px;
+  color: var(--muted2);
+  margin-bottom: 14px;
+}
+
+.profile-plan {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 12px;
+  margin-bottom: 18px;
+}
+
+.profile-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--border-subtle);
+  margin-bottom: 18px;
+}
+
+.profile-stat {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.profile-stat-label { font-size: 12px; color: var(--muted2); }
+.profile-stat-val   { font-size: 12px; font-weight: 500; color: var(--text); }
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border-subtle);
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+footer p   { font-size: 12px; color: var(--muted); }
+footer a   { color: var(--gold); text-decoration: none; font-size: 12px; }
+footer a:hover { text-decoration: underline; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  aside { display: none; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  .nav-center { display: none; }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 0 16px; }
+  main { padding: 28px 16px 60px; }
+  .nav-user { display: none; }
+  .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+  footer { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="https://ranksorcery.com/">
+    <div class="nav-logo-mark">✦</div>
+    <span class="nav-logo-text">RankSorcery</span>
+    <span class="nav-badge">Premium</span>
+  </a>
+
+  <div class="nav-center">
+    <a class="nav-link active" href="/dashboard.html">Dashboard</a>
+    <a class="nav-link" href="/premium-tools.html">Tools</a>
+    <a class="nav-link" href="/serp-rank-tracker.html">Rankings</a>
+    <a class="nav-link" href="#">Reports</a>
+  </div>
+
+  <div class="nav-right">
+    <span class="nav-user">Logged in as <span id="userEmail">—</span></span>
+    <button class="btn-logout" id="logoutBtn">Sign out</button>
+  </div>
+</nav>
+
+<!-- BODY LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <span class="sidebar-section-label">Overview</span>
+    <a class="sidebar-link active" href="/dashboard.html">
+      <span class="sidebar-icon">🏠</span> Dashboard
+    </a>
+    <a class="sidebar-link" href="#">
+      <span class="sidebar-icon">📊</span> Analytics
+    </a>
+    <a class="sidebar-link" href="#">
+      <span class="sidebar-icon">🔔</span> Alerts
+      <span class="badge-dot"></span>
+    </a>
+
+    <span class="sidebar-section-label">SEO Tools</span>
+    <a class="sidebar-link" href="/bulk-audit.html">
+      <span class="sidebar-icon">🧪</span> Bulk Auditor
+    </a>
+    <a class="sidebar-link" href="/serp-rank-tracker.html">
+      <span class="sidebar-icon">📈</span> Rank Tracker
+    </a>
+    <a class="sidebar-link" href="/keyword-volume.html">
+      <span class="sidebar-icon">🔑</span> Keyword Research
+    </a>
+    <a class="sidebar-link" href="/competitor.html">
+      <span class="sidebar-icon">⚔️</span> Competitor
+    </a>
+    <a class="sidebar-link" href="/ai-search.html">
+      <span class="sidebar-icon">🤖</span> AI Visibility
+    </a>
+
+    <span class="sidebar-section-label">Content</span>
+    <a class="sidebar-link" href="/ai-blog-writer.html">
+      <span class="sidebar-icon">📰</span> Blog Writer
+    </a>
+    <a class="sidebar-link" href="/schema-markup-writer.html">
+      <span class="sidebar-icon">🧩</span> Schema Writer
+    </a>
+    <a class="sidebar-link" href="/ai-meta-description-generator.html">
+      <span class="sidebar-icon">🏷️</span> Meta Generator
+    </a>
+
+    <span class="sidebar-section-label">Account</span>
+    <a class="sidebar-link" href="#">
+      <span class="sidebar-icon">⚙️</span> Settings
+    </a>
+    <a class="sidebar-link" href="mailto:webmasterjamez@gmail.com">
+      <span class="sidebar-icon">💬</span> Support
+    </a>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <span>Member Dashboard</span>
+        <div class="hero-eyebrow-line"></div>
+      </div>
+      <div class="hero-row">
+        <div>
+          <h1>Welcome back, <em id="userFirstName">Champion</em></h1>
+          <p>Here's an overview of your SEO performance and recent activity.</p>
+        </div>
+        <a class="btn-primary" href="/premium-tools.html">✦ All Premium Tools →</a>
+      </div>
+    </div>
+
+    <!-- ANNOUNCEMENT -->
+    <div class="announcement">
+      <div class="announcement-icon">✦</div>
+      <div class="announcement-body">
+        <h3>Bulk Site Auditor — Now Live</h3>
+        <p>Audit up to 100 URLs at once — 80+ ranking factors per page, exportable HTML report. <a href="/bulk-audit.html">Try it now →</a></p>
+      </div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="kpi-strip">
+      <div class="kpi">
+        <div class="kpi-label">Audits Run</div>
+        <div class="kpi-value">47</div>
+        <div class="kpi-sub"><span class="kpi-delta up">↑ 12</span> this week</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Keywords Tracked</div>
+        <div class="kpi-value">128</div>
+        <div class="kpi-sub"><span class="kpi-delta up">↑ 8</span> since last week</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Avg Rank</div>
+        <div class="kpi-value">14.2</div>
+        <div class="kpi-sub"><span class="kpi-delta up">↑ 2.1</span> vs last month</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Top 10 Keywords</div>
+        <div class="kpi-value">23</div>
+        <div class="kpi-sub"><span class="kpi-delta up">↑ 5</span> new this month</div>
+      </div>
+    </div>
+
+    <!-- ROW 1: Activity + Quick Actions -->
+    <div class="grid-2">
+
+      <!-- Recent Activity -->
+      <div class="card" style="animation-delay:0.1s">
+        <div class="card-header">
+          <span class="card-title">Recent Activity</span>
+          <a class="card-action" href="#">View all →</a>
+        </div>
+        <div class="activity-list">
+          <div class="activity-item">
+            <div class="activity-icon seo">🧪</div>
+            <div class="activity-body">
+              <div class="activity-title">Bulk audit — ranksorcery.com</div>
+              <div class="activity-sub">12 URLs · 80+ factors each</div>
+            </div>
+            <div class="activity-time">2h ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon research">📊</div>
+            <div class="activity-body">
+              <div class="activity-title">Keyword research — "seo tools"</div>
+              <div class="activity-sub">Vol: 22,000 · KD: 67</div>
+            </div>
+            <div class="activity-time">5h ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon ai">📰</div>
+            <div class="activity-body">
+              <div class="activity-title">Blog post generated</div>
+              <div class="activity-sub">"10 Best On-Page SEO Tips for 2026"</div>
+            </div>
+            <div class="activity-time">Yesterday</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon pro">⚡</div>
+            <div class="activity-body">
+              <div class="activity-title">Core Web Vitals — homepage</div>
+              <div class="activity-sub">LCP 1.8s · CLS 0.02 · FID 14ms</div>
+            </div>
+            <div class="activity-time">2d ago</div>
+          </div>
+          <div class="activity-item">
+            <div class="activity-icon seo">⚔️</div>
+            <div class="activity-body">
+              <div class="activity-title">Competitor analysis vs ahrefs.com</div>
+              <div class="activity-sub">38 keyword gaps found</div>
+            </div>
+            <div class="activity-time">3d ago</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card" style="animation-delay:0.15s">
+        <div class="card-header">
+          <span class="card-title">Quick Actions</span>
+        </div>
+        <div class="quick-actions">
+          <a class="quick-btn" href="/bulk-audit.html">
+            <div class="quick-btn-icon gold">🧪</div>
+            Run Site Audit
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="/keyword-volume.html">
+            <div class="quick-btn-icon green">🔑</div>
+            Research Keywords
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="/ai-blog-writer.html">
+            <div class="quick-btn-icon blue">📰</div>
+            Write Blog Post
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="/competitor.html">
+            <div class="quick-btn-icon red">⚔️</div>
+            Competitor Gap Report
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="/ai-search.html">
+            <div class="quick-btn-icon gold">🤖</div>
+            Check AI Visibility
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="/schema-markup-writer.html">
+            <div class="quick-btn-icon green">🧩</div>
+            Generate Schema Markup
+            <span class="quick-btn-arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW 2: Rank Tracker + Usage + Profile -->
+    <div class="grid-3">
+
+      <!-- Rank Tracker snapshot -->
+      <div class="card" style="animation-delay:0.2s">
+        <div class="card-header">
+          <span class="card-title">Top Tracked Keywords</span>
+          <a class="card-action" href="/serp-rank-tracker.html">Full tracker →</a>
+        </div>
+        <div class="rank-list">
+          <div class="rank-item">
+            <div class="rank-pos">#3</div>
+            <div>
+              <div class="rank-keyword">best seo tools 2026</div>
+              <div class="rank-url">ranksorcery.com</div>
+            </div>
+            <span class="rank-change up">↑4</span>
+          </div>
+          <div class="rank-item">
+            <div class="rank-pos">#7</div>
+            <div>
+              <div class="rank-keyword">on-page seo checker</div>
+              <div class="rank-url">ranksorcery.com/tools</div>
+            </div>
+            <span class="rank-change up">↑2</span>
+          </div>
+          <div class="rank-item">
+            <div class="rank-pos">#11</div>
+            <div>
+              <div class="rank-keyword">bulk site auditor tool</div>
+              <div class="rank-url">ranksorcery.com/bulk</div>
+            </div>
+            <span class="rank-change same">—</span>
+          </div>
+          <div class="rank-item">
+            <div class="rank-pos">#18</div>
+            <div>
+              <div class="rank-keyword">ai content humanizer</div>
+              <div class="rank-url">ranksorcery.com/ai</div>
+            </div>
+            <span class="rank-change down">↓1</span>
+          </div>
+          <div class="rank-item">
+            <div class="rank-pos">#24</div>
+            <div>
+              <div class="rank-keyword">schema markup generator</div>
+              <div class="rank-url">ranksorcery.com/schema</div>
+            </div>
+            <span class="rank-change up">↑6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Usage + Profile -->
+      <div style="display:flex; flex-direction:column; gap:16px;">
+
+        <!-- Tool Usage -->
+        <div class="card" style="animation-delay:0.25s">
+          <div class="card-header">
+            <span class="card-title">Tool Usage</span>
+          </div>
+          <div class="usage-item">
+            <div class="usage-row">
+              <span class="usage-label">🧪 Bulk Auditor</span>
+              <span class="usage-count">47 / ∞</span>
+            </div>
+            <div class="usage-bar"><div class="usage-fill" style="width:62%"></div></div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-row">
+              <span class="usage-label">📊 Keyword Research</span>
+              <span class="usage-count">31 / ∞</span>
+            </div>
+            <div class="usage-bar"><div class="usage-fill" style="width:41%"></div></div>
+          </div>
+          <div class="usage-item">
+            <div class="usage-row">
+              <span class="usage-label">📰 Blog Writer</span>
+              <span class="usage-count">9 / ∞</span>
+            </div>
+            <div class="usage-bar"><div class="usage-fill" style="width:12%"></div></div>
+          </div>
+          <div class="usage-item" style="margin-bottom:0">
+            <div class="usage-row">
+              <span class="usage-label">🤖 AI Visibility</span>
+              <span class="usage-count">15 / ∞</span>
+            </div>
+            <div class="usage-bar"><div class="usage-fill" style="width:20%"></div></div>
+          </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="card profile-card" style="animation-delay:0.3s">
+          <div class="profile-avatar" id="profileAvatar">—</div>
+          <div class="profile-name" id="profileName">Loading…</div>
+          <div class="profile-email" id="profileEmail">—</div>
+          <div class="profile-plan">✦ Premium Member</div>
+          <div class="profile-divider"></div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Member since</span>
+            <span class="profile-stat-val" id="memberSince">—</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Plan</span>
+            <span class="profile-stat-val">Premium Annual</span>
+          </div>
+          <div class="profile-stat">
+            <span class="profile-stat-label">Tools access</span>
+            <span class="profile-stat-val">12 / 12</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025–2026 RankSorcery · Premium Member Dashboard</p>
+  <a href="mailto:webmasterjamez@gmail.com">Contact Support</a>
+</footer>
+
+<script>
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (!session) return
+
+    const user = session.user
+    const email = user.email || ''
+    const createdAt = user.created_at ? new Date(user.created_at) : null
+
+    // Nav email
+    document.getElementById('userEmail').textContent = email
+
+    // Hero first name
+    const firstName = email.split('@')[0].replace(/[._]/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase())
+    document.getElementById('userFirstName').textContent = firstName
+    document.getElementById('profileName').textContent = firstName
+
+    // Profile
+    document.getElementById('profileEmail').textContent = email
+    document.getElementById('profileAvatar').textContent =
+      firstName.charAt(0).toUpperCase()
+
+    // Member since
+    if (createdAt) {
+      const opts = { month: 'short', year: 'numeric' }
+      document.getElementById('memberSince').textContent =
+        createdAt.toLocaleDateString('en-US', opts)
+    }
+  })
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut()
+    window.location.href = '/login.html'
+  })
+</script>
+
+</body>
+</html>
