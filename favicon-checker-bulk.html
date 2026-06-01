@@ -580,6 +580,15 @@
       .header-badge { display: none; }
     }
   </style>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://vgoweydboijdfvkvzbko.supabase.co'
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZnb3dleWRib2lqZGZ2a3Z6YmtvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzMTExOTAsImV4cCI6MjA5NTg4NzE5MH0.JFLncfHGluDFdp8vxWwKkeqaeXY2vAEJqJ0kbv50fjw'
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (!session) window.location.href = '/login.html'
+    })
+  </script> 
 </head>
 <body>
 
