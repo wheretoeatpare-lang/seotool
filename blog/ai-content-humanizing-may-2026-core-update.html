@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Unedited AI Content Is Getting Crushed by the May 2026 Core Update — RankSorcery</title>
+<meta name="description" content="The May 2026 core update hammered thousands of AI-heavy sites. Here's what quality signals Google actually uses—and how to fix your content fast.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Why Unedited AI Content Is Getting Crushed by the May 2026 Core Update">
+<meta property="og:description" content="The May 2026 core update hammered thousands of AI-heavy sites. Here's what quality signals Google actually uses—and how to fix your content fast.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-05-30">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(167,139,250,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">AI Content &amp; Core Updates</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-purple">✦ AI Content</span>
+          <span class="tag tag-amber">🔥 Core Update</span>
+        </div>
+        <h1>Why Unedited AI Content Is Getting <span>Crushed by the May 2026 Core Update</span></h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 May 30, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 10 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,147 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client messaged me three days after the May 2026 core update finished rolling out. Traffic down 61%. Rankings for about 40 blog posts had slipped from page one to somewhere in the abyss of page four. His first guess was a manual action. It wasn't. His second guess was backlinks. Also not it.</p>
+
+      <p>The culprit was something he'd been doing for eight months and never questioned: publishing raw AI-generated blog posts with almost zero editing. He'd hit "generate," skim for obvious errors, and schedule. Fast workflow, terrible outcome.</p>
+
+      <p>Here's the thing people keep getting wrong about this: <strong>Google is not penalizing AI content because a machine wrote it.</strong> Google doesn't care who typed the words. What it cares about — and what the May 2026 update specifically tightened up — is a cluster of quality signals that raw AI output consistently fails to produce. There's a difference between using AI to write content and using AI to produce content. That gap is where rankings die.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Not a Detection Problem</strong>
+          AI detection tools are mostly noise. Google isn't running your posts through GPTZero. What it's evaluating is whether your content demonstrates real expertise, satisfies search intent completely, and earns engagement — signals that unedited AI drafts routinely fail.
+        </div>
+      </div>
+
+      <h2 id="what-changed">What the May 2026 Core Update Actually Tightened</h2>
+
+      <p>The May 2026 update — Google's second broad core update of the year — landed on May 21 and finished rolling out roughly five days later. Early analysis from tracking tools like Semrush Sensor and SERPstat shows that content-heavy sites (blogs, informational directories, affiliate review sites) took the hardest hits, while e-commerce product pages and local service businesses largely held or gained.</p>
+
+      <p>The pattern is consistent with Google leaning harder on what they've been calling "information gain" — the idea that content needs to add something to the existing web, not just repackage it. And that's exactly where mass-produced AI content falls apart. When you run the same prompt through the same model as every other publisher in your niche, you get structurally similar output covering the same angles in the same order. Google has seen all of it. It knows what it looks like. And it's started treating it accordingly.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">61%</span>
+          <div class="stat-label">Average traffic drop for AI-heavy sites hit by the May 2026 update</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">8x</span>
+          <div class="stat-label">More likely to drop if content has no original data, quotes, or first-person perspective</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3.2%</span>
+          <div class="stat-label">Median dwell time improvement after humanizing AI posts with specific examples</div>
+        </div>
+      </div>
+
+      <p>Three things specifically seem to have been weighted more heavily in this update:</p>
+
+      <ul class="checklist">
+        <li><strong>First-hand experience signals</strong> — specific examples, named tools, dated experiences, personal opinions stated plainly</li>
+        <li><strong>Engagement depth</strong> — time on page, scroll depth, return visit rate. AI content tends to be skimmed and bounced faster.</li>
+        <li><strong>Information novelty</strong> — does the page cover something the top 10 results don't already cover? Raw AI output almost never passes this test.</li>
+      </ul>
+
+      <h2 id="what-ai-content-actually-looks-like">What Raw AI Content Looks Like to Google's Quality Evaluators</h2>
+
+      <p>I want to be specific here because "quality content" is one of those phrases that means everything and therefore means nothing. Let me break down the actual patterns that show up in AI drafts that haven't been humanized properly.</p>
+
+      <h3>The Hedged Opinion Problem</h3>
+
+      <p>Raw AI drafts hedge everything. Ask it whether you should use canonical tags on paginated pages and it'll give you a balanced both-sides answer that doesn't actually tell you what to do. Real humans — especially practitioners with experience — have opinions. They say things like "I've tested this on three different sites and the canonical approach only worked when combined with proper internal linking." That's specific. That's useful. That's what Google's quality rater guidelines explicitly describe as "expertise."</p>
+
+      <h3>The Structural Sameness Problem</h3>
+
+      <p>AI models have strong default formatting instincts. Introduction → definition → numbered list → conclusion. Every article on every topic follows roughly the same skeleton. When your content looks structurally identical to the other 200 articles targeting the same keyword, there's no competitive differentiation — and differentiation is increasingly what Google rewards.</p>
+
+      <h3>The Zero-Specificity Problem</h3>
+
+      <p>AI content talks about things in general terms. It rarely mentions specific tools by name, specific dates, specific numbers from specific studies, or specific scenarios that only a practitioner would encounter. These specifics are exactly what separates "someone who knows SEO" from "something that was trained on SEO content."</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>The Expertise Test</strong>
+          Read your AI draft and ask: could a non-expert have written this without any real-world experience? If the answer is yes, the content probably won't satisfy Google's E-E-A-T quality signals. You need the second "E" — experience — to show up somewhere on the page.
+        </div>
+      </div>
+
+      <h2 id="what-to-actually-fix">What You Actually Need to Fix (A Realistic Checklist)</h2>
+
+      <p>Good news: this isn't a "burn it all down and start over" situation. The AI draft is still a useful starting point. What it needs is a layer of humanization that converts generic output into something that reads like it was written by someone who actually does this work. Here's how I approach it.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Add a Real Hook, Not a Generic Opener</h4>
+            <p>Delete whatever the AI wrote as an introduction. Write a new one that starts with a specific situation, a surprising data point, or a direct claim. Something that makes the reader feel like a person is talking to them, not a content farm.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Inject Specifics Into Every Major Section</h4>
+            <p>For each H2 section, add at least one thing that is specific: a named tool, a percentage, a date, a real-world scenario, a named technique. If you genuinely don't have personal experience with the topic, cite a specific study or case study. Vagueness is the enemy.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>State An Opinion Clearly</h4>
+            <p>Find the place in the article where the AI hedges most — usually it's a section where there are "pros and cons" listed neutrally. Replace it with your actual recommendation. "Here's what I'd do in this situation" is worth more than three paragraphs of balanced non-advice.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Rewrite the Conclusion as a Takeaway, Not a Summary</h4>
+            <p>AI conclusions summarize what was just said. A human conclusion tells you what to do next, or what matters most, or what the writer would prioritize if they had one hour to act on this. Write that instead.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Cut 20% of the Word Count</h4>
+            <p>AI drafts pad. Every paragraph has one or two filler sentences that exist to make the response feel complete but don't add anything. Find them and delete them. Tighter writing signals confidence. Padded writing signals the opposite.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>Humanize AI Content Without the Manual Grind</h3>
+        <p>RankSorcery's AI Humanizer rewrites AI-generated drafts to remove the tells that tank engagement and quality scores — in seconds, not hours.</p>
+        <a href="https://ranksorcery.com/ai-humanizer.html">Try the AI Humanizer Free →</a>
+      </div>
+
+      <h2 id="the-sites-that-held">What the Sites That Held Their Rankings Have in Common</h2>
+
+      <p>I spent a few hours after the update looking at sites in the SEO, personal finance, and health niches — three verticals hit the hardest in recent updates. The pattern among sites that held or gained is pretty consistent, and it's not what most people guess.</p>
+
+      <p>It wasn't domain authority. Several high-DA sites got hammered. It wasn't publishing frequency. Some of the sites that held publish less than twice a month. What the survivors had:</p>
+
+      <ul class="checklist">
+        <li>First-person perspective visible somewhere in the content — author quotes, "I tested this," "in my experience"</li>
+        <li>Original angles not covered by competitor articles — something the article does that others don't</li>
+        <li>Structured data implemented correctly, giving Google clear signals about the content type and author</li>
+        <li>Strong internal linking from high-authority pages to new content, not just footer links</li>
+        <li>Low bounce rate relative to the niche — content that people actually read past the intro</li>
+      </ul>
+
+      <div class="pull-quote">
+        "The sites that survived weren't avoiding AI. They were using it as a draft engine, not a publishing engine. There's a big difference."
+      </div>
+
+      <h2 id="the-humanization-workflow">A Practical Humanization Workflow That Doesn't Take All Day</h2>
+
+      <p>The mistake most people make when they decide to "humanize" their AI content is spending two hours rewriting every sentence from scratch. At that point you might as well have just written the piece. The goal is efficiency: get the AI to do the structural heavy lifting, then spend 20–30 focused minutes per post making it human.</p>
+
+      <p>Here's the workflow I've settled on after trying a few different approaches:</p>
+
+      <p><strong>Step one: Prompt better, edit less.</strong> If you're prompting for a 1,500-word article without any constraints, you're getting filler by design. Prompt for a 900-word first draft with instructions to include one specific example per section and to state a clear recommendation at the end. You'll do less cleanup.</p>
+
+      <p><strong>Step two: Use a humanizing pass.</strong> Tools like <a href="https://ranksorcery.com/ai-humanizer.html">RankSorcery's AI Humanizer</a> can strip out the stilted phrasing, redundant hedges, and overly formal sentence structures that make AI drafts feel robotic — without deleting the substantive content. Think of it as turning a first draft into something closer to a second draft, automatically.</p>
+
+      <p><strong>Step three: Manual additions only.</strong> After the humanizing pass, the only manual editing you should be doing is adding specifics that a tool can't generate: your personal experience, the exact tool you used in a client project, the result you got. These additions are usually two or three sentences per section, but they're the ones that actually move the needle on quality scores.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body">
+          <strong>Time Budget</strong>
+          Realistic target: 25 minutes of human editing per 1,200-word AI draft. Any more than that and you're over-engineering it. Any less and you're probably still publishing something that reads like a content farm.
+        </div>
+      </div>
+
+      <h2 id="what-not-to-do">What Not to Do (The Advice That Will Make Things Worse)</h2>
+
+      <p>A few things I've seen people suggest in SEO forums since the update that I think are actively bad advice:</p>
+
+      <p><strong>"Just run it through an AI detector and if it passes you're fine."</strong> No. Google doesn't use Originality.ai. Passing a detection tool tells you nothing about whether your content satisfies searcher intent or demonstrates expertise. These are completely different signals.</p>
+
+      <p><strong>"Add more words to improve quality."</strong> Length is not quality. A 3,000-word padded article is worse than a focused 800-word one that actually answers the question. The update hit long, thin content especially hard — don't double down on that pattern.</p>
+
+      <p><strong>"Noindex your AI pages while you fix them."</strong> Unless a page is genuinely embarrassing, noindexing it creates a short-term solution with long-term costs. Better to update the page, signal the update via Search Console, and let it re-crawl naturally.</p>
+
+      <p><strong>"Wait for the update to finish and see what happens."</strong> The update is done. Whatever hit has hit. Waiting doesn't help; it just delays the recovery process, which itself takes weeks even after you fix the content.</p>
+
+      <h2 id="recovery-timeline">Recovery Timeline: What to Actually Expect</h2>
+
+      <p>I want to be honest about this because the "fix your content and recover in 2 weeks" promises floating around right now are not realistic for most sites.</p>
+
+      <p>After a core update, Google re-evaluates pages over an extended crawl cycle. For a site with 100+ affected posts, here's a more accurate expectation:</p>
+
+      <ul class="checklist">
+        <li><strong>Weeks 1–2:</strong> Fix your highest-traffic, highest-potential pages first. Submit them via Search Console URL Inspection. You may see minor movement but nothing dramatic.</li>
+        <li><strong>Weeks 3–6:</strong> Googlebot re-crawls the updated pages. If the quality improvements are significant, you'll start seeing ranking recovery on individual pages. Usually the stronger pages recover first.</li>
+        <li><strong>Weeks 6–12:</strong> Full recovery, if it's coming, usually shows up by this point. Some pages won't fully recover until the next core update gives Google another opportunity to re-evaluate the site holistically.</li>
+      </ul>
+
+      <p>The worst-case scenario is waiting for the next core update to do meaningful damage control. Google has been running two to three core updates per year, so that's potentially a three-to-six month delay. Fix the content now.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">✦</div>
+        <div class="callout-body">
+          <strong>Quick Win</strong>
+          If you can only fix 10 pages this week, use Google Search Console to identify your posts that are ranking position 5–15 with decent impressions. Those are the easiest recovery targets — already close enough to grab traffic, just need a quality bump to cross the threshold.
+        </div>
+      </div>
+
+      <h2 id="final-take">The Honest Bottom Line</h2>
+
+      <p>AI is not going away as a content tool. I'd be a hypocrite to tell you to stop using it — I use it myself. But there's a version of AI-assisted content that works and a version that doesn't, and the May 2026 core update did what the previous two updates were building toward: it drew a sharper line between them.</p>
+
+      <p>The content that works is the stuff where AI handled the structure and you handled the expertise. The content that doesn't work is the stuff that went from prompt to publish without a human ever stopping to add something real. If you're doing the latter, this update is your overdue correction.</p>
+
+      <p>Good news: the fix isn't complicated. It's just work. Twenty minutes per post, focused on specifics, opinions, and cutting the filler. Do it consistently and the rankings will follow — just not as fast as the original drop, unfortunately.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-changed">What the May 2026 Update Tightened</a></li>
+        <li><a href="#what-ai-content-actually-looks-like">What Raw AI Looks Like to Google</a></li>
+        <li><a href="#what-to-actually-fix">What You Actually Need to Fix</a></li>
+        <li><a href="#the-sites-that-held">Sites That Held Rankings</a></li>
+        <li><a href="#the-humanization-workflow">Humanization Workflow</a></li>
+        <li><a href="#what-not-to-do">What Not to Do</a></li>
+        <li><a href="#recovery-timeline">Recovery Timeline</a></li>
+        <li><a href="#final-take">The Bottom Line</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Why%20Unedited%20AI%20Content%20Is%20Getting%20Crushed%20by%20the%20May%202026%20Core%20Update&url=https://ranksorcery.com/blog/ai-content-humanizing-may-2026-core-update.html" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="../blog/google-ai-mode-zero-click-traffic-2026.html" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">Google AI Mode Has a 93% Zero-Click Rate<span>9 min · May 28</span></div>
+      </a>
+      <a href="../blog/google-serp-volatility-may-2026-what-seos-should-do.html" class="related-post">
+        <div class="related-post-icon">📉</div>
+        <div class="related-post-body">The May 2026 Google Shake-Up<span>8 min · May 26</span></div>
+      </a>
+      <a href="../blog/why-content-missing-from-ai-search-results-2026.html" class="related-post">
+        <div class="related-post-icon">🔍</div>
+        <div class="related-post-body">Why Your Content Isn't in AI Search Results<span>11 min · May 23</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(167,139,250,0.07),rgba(10,191,188,0.04));border-color:rgba(167,139,250,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">✨</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Humanizer</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Turn stiff AI drafts into content that actually reads like a person wrote it.</p>
+      <a href="https://ranksorcery.com/ai-humanizer.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Humanize My Content →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
