@@ -1186,7 +1186,8 @@ tr.row-zap td {
 .main-tabs{display:flex;gap:0;max-width:860px;margin:1.5rem auto 0;padding:0 1.5rem;position:relative;z-index:2}
 .main-tab{flex:1;padding:.7rem 1.5rem;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:700;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;transition:all .2s;text-align:center;letter-spacing:.03em}
 .main-tab:first-child{border-radius:12px 0 0 12px}
-.main-tab:last-child{border-radius:0 12px 12px 0;border-left:none}
+.main-tab:not(:first-child){border-left:none}
+.main-tab:last-child{border-radius:0 12px 12px 0}
 .main-tab.active{background:rgba(232,184,75,0.1);border-color:var(--border3);color:var(--accent)}
 .main-tab-panel{display:none}.main-tab-panel.active{display:block}
 
@@ -1329,6 +1330,9 @@ tr.row-zap td {
     <span class="sidebar-section-label">SEO Tools</span>
     <a class="sidebar-link" href="#" id="sidebar-bulk-link" onclick="showBulkAuditor(event)">
       <span class="sidebar-icon">🧪</span> Bulk Auditor
+    </a>
+    <a class="sidebar-link" href="#" id="sidebar-favicon-link" onclick="showFaviconChecker(event)">
+      <span class="sidebar-icon">🦴</span> Favicon Checker
     </a>
     <a class="sidebar-link" href="/serp-rank-tracker.html">
       <span class="sidebar-icon">📈</span> Rank Tracker
@@ -1635,6 +1639,7 @@ tr.row-zap td {
 <div class="main-tabs">
   <button class="main-tab active" id="tab-bulk" onclick="switchMainTab('bulk')">⚡ Bulk Audit</button>
   <button class="main-tab" id="tab-crawl" onclick="switchMainTab('crawl')">🕷️ Site Crawl</button>
+  <button class="main-tab" id="tab-favicon" onclick="switchMainTab('favicon')">🦴 Favicon Checker</button>
 </div>
 
 <!-- ══════════════ BULK AUDIT PANEL ══════════════ -->
@@ -1839,6 +1844,534 @@ tr.row-zap td {
 </div>
 
 </div><!-- end #panel-crawl -->
+
+<!-- ══════════════ FAVICON CHECKER PANEL ══════════════ -->
+<div class="main-tab-panel" id="panel-favicon">
+
+<style>
+/* ── Favicon Checker Panel Styles (scoped inside #panel-favicon) ── */
+#panel-favicon {
+  --fav-accent: #b8ff57;
+  --fav-accent2: #57c8ff;
+  --fav-red: #ff5757;
+  --fav-surface: #141416;
+  --fav-surface2: #1c1c1f;
+  --fav-border: rgba(232,184,75,0.15);
+  --fav-text2: #9a9890;
+  --fav-text3: #6a6865;
+  --fav-radius: 12px;
+}
+
+.fav-header {
+  padding: 2.5rem 1.5rem 1.5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.fav-eyebrow {
+  font-size: 10px;
+  font-family: 'DM Sans', monospace;
+  color: var(--fav-text3);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.fav-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.fav-title span { color: var(--fav-accent); }
+
+.fav-tagline {
+  font-size: 12px;
+  color: var(--fav-text2);
+  letter-spacing: 0.03em;
+}
+
+.fav-body {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+
+.fav-input-label {
+  font-size: 10px;
+  font-family: 'DM Sans', monospace;
+  color: var(--fav-text3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fav-input-label .hint {
+  background: var(--fav-surface2);
+  border: 1px solid var(--fav-border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+}
+
+.fav-textarea {
+  width: 100%;
+  background: var(--fav-surface);
+  border: 1px solid var(--fav-border);
+  border-radius: var(--fav-radius);
+  color: var(--text);
+  font-family: 'DM Sans', monospace;
+  font-size: 13px;
+  padding: 14px 16px;
+  height: 120px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.7;
+}
+
+.fav-textarea:focus { border-color: var(--fav-accent); }
+.fav-textarea::placeholder { color: var(--fav-text3); }
+
+.fav-btn-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fav-check-btn {
+  height: 40px;
+  padding: 0 24px;
+  background: var(--fav-accent);
+  color: #000;
+  border: none;
+  border-radius: var(--fav-radius);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.fav-check-btn:hover { opacity: 0.88; }
+.fav-check-btn:active { transform: scale(0.97); }
+
+.fav-clear-btn {
+  height: 40px;
+  padding: 0 18px;
+  background: transparent;
+  color: var(--fav-text3);
+  border: 1px solid var(--fav-border);
+  border-radius: var(--fav-radius);
+  font-family: 'DM Sans', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.fav-clear-btn:hover { border-color: var(--fav-red); color: var(--fav-red); }
+
+.fav-url-count {
+  font-size: 11px;
+  color: var(--fav-text3);
+  margin-left: auto;
+  font-family: 'DM Sans', monospace;
+}
+
+.fav-url-count .fav-count-num { color: var(--fav-accent); font-weight: 700; }
+
+.fav-filter-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.fav-filter-label {
+  font-size: 10px;
+  font-family: 'DM Sans', monospace;
+  color: var(--fav-text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fav-filter-btn {
+  height: 30px;
+  padding: 0 14px;
+  background: var(--fav-surface2);
+  color: var(--fav-text2);
+  border: 1px solid var(--fav-border);
+  border-radius: 100px;
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.fav-filter-btn:hover { border-color: var(--fav-accent2); color: var(--fav-accent2); }
+.fav-filter-btn.fav-active-all { border-color: var(--fav-text2); color: var(--text); }
+.fav-filter-btn.fav-active-found { border-color: var(--fav-accent); color: var(--fav-accent); background: rgba(184,255,87,0.07); }
+.fav-filter-btn.fav-active-missing { border-color: var(--fav-red); color: var(--fav-red); background: rgba(255,87,87,0.07); }
+
+.fav-quick-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 16px 0 24px;
+}
+
+.fav-quick-label {
+  font-size: 10px;
+  font-family: 'DM Sans', monospace;
+  color: var(--fav-text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fav-quick-btn {
+  background: var(--fav-surface2);
+  border: 1px solid var(--fav-border);
+  border-radius: 100px;
+  color: var(--fav-text2);
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.fav-quick-btn:hover { border-color: var(--fav-accent); color: var(--fav-accent); }
+
+.fav-quick-btn-all {
+  background: rgba(184,255,87,0.07);
+  border: 1px solid rgba(184,255,87,0.25);
+  border-radius: 100px;
+  color: var(--fav-accent);
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.fav-quick-btn-all:hover { background: rgba(184,255,87,0.14); }
+
+#fav-stats {
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  color: var(--fav-text3);
+  margin-bottom: 16px;
+  display: none;
+  gap: 16px;
+  align-items: center;
+}
+
+#fav-stats span { color: var(--fav-text2); }
+#fav-stats .fav-s-found { color: var(--fav-accent); }
+#fav-stats .fav-s-missing { color: var(--fav-red); }
+
+.fav-progress-wrap {
+  flex: 1;
+  height: 3px;
+  background: var(--fav-surface2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.fav-progress-fill {
+  height: 100%;
+  background: var(--fav-accent);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+#fav-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 14px;
+}
+
+.fav-card {
+  background: var(--fav-surface);
+  border: 1px solid var(--fav-border);
+  border-radius: var(--fav-radius);
+  overflow: hidden;
+  animation: favCardIn 0.3s ease both;
+}
+
+.fav-card.fav-hidden { display: none; }
+
+@keyframes favCardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fav-card-hero {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--fav-border);
+}
+
+.fav-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--fav-surface2);
+  border: 1px solid var(--fav-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.fav-icon-wrap img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.fav-card-host {
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 5px;
+}
+
+.fav-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-family: 'DM Sans', monospace;
+  padding: 2px 9px;
+  border-radius: 100px;
+}
+
+.fav-pill-checking { background: var(--fav-surface2); color: var(--fav-text2); }
+.fav-pill-found { background: rgba(184,255,87,0.12); color: var(--fav-accent); border: 1px solid rgba(184,255,87,0.3); }
+.fav-pill-missing { background: rgba(255,87,87,0.1); color: var(--fav-red); border: 1px solid rgba(255,87,87,0.25); }
+
+.fav-dot-blink {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--fav-text2);
+  animation: favBlink 1s ease-in-out infinite;
+}
+
+@keyframes favBlink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+.fav-sources {
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.fav-source-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.fav-src-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.fav-src-dot.wait { background: var(--fav-text3); animation: favBlink 1s infinite; }
+.fav-src-dot.ok { background: var(--fav-accent); }
+.fav-src-dot.fail { background: var(--fav-red); }
+
+.fav-src-name {
+  font-family: 'DM Sans', monospace;
+  color: var(--fav-text2);
+  min-width: 110px;
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.fav-src-status {
+  font-family: 'DM Sans', monospace;
+  font-size: 10px;
+  margin-left: auto;
+}
+
+.fav-src-status.ok { color: var(--fav-accent); }
+.fav-src-status.fail { color: var(--fav-text3); }
+
+.fav-found-url {
+  padding: 8px 16px 12px;
+  font-family: 'DM Sans', monospace;
+  font-size: 10px;
+  color: var(--fav-text3);
+  word-break: break-all;
+  border-top: 1px solid var(--fav-border);
+}
+
+.fav-found-url a { color: var(--fav-accent2); text-decoration: none; }
+.fav-found-url a:hover { text-decoration: underline; }
+
+.fav-missing-links {
+  padding: 8px 16px 12px;
+  border-top: 1px solid var(--fav-border);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.fav-site-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Sans', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  border: none;
+}
+
+.fav-site-link-btn:hover { opacity: 0.8; }
+
+.fav-btn-visit {
+  background: rgba(87,200,255,0.12);
+  color: var(--fav-accent2);
+  border: 1px solid rgba(87,200,255,0.3) !important;
+}
+
+.fav-btn-copy {
+  background: var(--fav-surface2);
+  color: var(--fav-text2);
+  border: 1px solid var(--fav-border) !important;
+}
+
+.fav-btn-copy.fav-copied {
+  background: rgba(184,255,87,0.1);
+  color: var(--fav-accent);
+  border-color: rgba(184,255,87,0.3) !important;
+}
+
+#fav-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--fav-text3);
+}
+
+#fav-empty .fav-empty-icon { font-size: 40px; margin-bottom: 14px; }
+#fav-empty p { font-family: 'DM Sans', monospace; font-size: 12px; }
+
+.fav-dupe-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--fav-surface2);
+  border: 1px solid var(--fav-border);
+  border-radius: var(--fav-radius);
+  padding: 10px 16px;
+  font-family: 'DM Sans', monospace;
+  font-size: 12px;
+  color: var(--fav-text2);
+  z-index: 9999;
+  animation: favToastIn 0.2s ease;
+  display: none;
+}
+
+@keyframes favToastIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<!-- Favicon Checker UI -->
+<div class="fav-header">
+  <div class="fav-eyebrow">🦴 RankSorcery Tool</div>
+  <div class="fav-title">Favicon <span>Checker</span></div>
+  <div class="fav-tagline">Bulk favicon detection — many sites, one smash</div>
+</div>
+
+<div class="fav-body">
+  <div style="margin-bottom:16px">
+    <div class="fav-input-label">
+      Paste URLs — one per line or comma-separated
+      <span class="hint">bulk mode 🦴</span>
+    </div>
+    <textarea
+      class="fav-textarea"
+      id="fav-url-input"
+      placeholder="https://facebook.com&#10;https://github.com&#10;https://stripe.com&#10;reddit.com, youtube.com"
+      autocomplete="off"
+      spellcheck="false"
+    ></textarea>
+    <div class="fav-btn-row">
+      <button class="fav-check-btn" onclick="favCheckAll()">Check All →</button>
+      <button class="fav-clear-btn" onclick="favClearResults()">Clear Results</button>
+      <span class="fav-url-count" id="fav-url-count"></span>
+    </div>
+    <div class="fav-filter-row">
+      <span class="fav-filter-label">Show:</span>
+      <button class="fav-filter-btn fav-active-all" id="fav-filter-all" onclick="favSetFilter('all')">All</button>
+      <button class="fav-filter-btn" id="fav-filter-found" onclick="favSetFilter('found')">✓ Found</button>
+      <button class="fav-filter-btn" id="fav-filter-missing" onclick="favSetFilter('missing')">✕ Missing</button>
+    </div>
+  </div>
+
+  <div class="fav-quick-row">
+    <span class="fav-quick-label">Try:</span>
+    <button class="fav-quick-btn" onclick="favAddQuick('facebook.com')">facebook.com</button>
+    <button class="fav-quick-btn" onclick="favAddQuick('youtube.com')">youtube.com</button>
+    <button class="fav-quick-btn" onclick="favAddQuick('github.com')">github.com</button>
+    <button class="fav-quick-btn" onclick="favAddQuick('reddit.com')">reddit.com</button>
+    <button class="fav-quick-btn" onclick="favAddQuick('anthropic.com')">anthropic.com</button>
+    <button class="fav-quick-btn" onclick="favAddQuick('stripe.com')">stripe.com</button>
+    <button class="fav-quick-btn-all" onclick="favLoadAllSamples()">+ load all samples</button>
+  </div>
+
+  <div id="fav-stats" style="display:none;flex-direction:row;gap:16px;align-items:center;margin-bottom:16px;font-family:'DM Sans',monospace;font-size:11px;color:var(--fav-text3)">
+    Checked: <span id="fav-stat-total">0</span> &nbsp;|&nbsp;
+    Found: <span id="fav-stat-found" class="fav-s-found">0</span> &nbsp;|&nbsp;
+    Missing: <span id="fav-stat-missing" class="fav-s-missing">0</span>
+    &nbsp;|&nbsp;
+    <div class="fav-progress-wrap">
+      <div class="fav-progress-fill" id="fav-progress-fill" style="width:0%"></div>
+    </div>
+    &nbsp;<span id="fav-stat-progress" style="white-space:nowrap"></span>
+  </div>
+
+  <div id="fav-results">
+    <div id="fav-empty">
+      <div class="fav-empty-icon">🔍</div>
+      <p>Paste URLs above and smash Check All<br><br>
+      <span style="font-size:10px;color:var(--fav-text3)">Caveman support many URLs at once. Very powerful. UGH.</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="fav-dupe-toast" id="fav-dupe-toast"></div>
+
+</div><!-- end #panel-favicon -->
 
 <script>
 // ── STATE ────────────────────────────────────────────────────────────────────
@@ -4850,9 +5383,17 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
-    // Update sidebar active state
+    switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-bulk-link').classList.add('active');
+  }
+  function showFaviconChecker(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.add('active');
+    switchMainTab('favicon');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-favicon-link').classList.add('active');
   }
   function showDashboard(e) {
     if (e) e.preventDefault();
@@ -7833,6 +8374,322 @@ async function exportCrawlExcel() {
 
 </script>
 
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// FAVICON CHECKER — Integrated into Dashboard
+// UGH. CAVEMAN CHECK FAVICONS NOW.
+// ═══════════════════════════════════════════════════════════════════
+
+const FAV_SOURCES = [
+  {
+    key: 'google64',
+    name: 'Google S2',
+    urlFn: h => `https://www.google.com/s2/favicons?sz=64&domain_url=https://${h}`,
+    isPlaceholder: (w, h) => w === 16 && h === 16
+  },
+  {
+    key: 'favicon_ico',
+    name: '/favicon.ico',
+    urlFn: h => `https://${h}/favicon.ico`,
+    isPlaceholder: (w, h) => w <= 200 && h <= 200
+  },
+  {
+    key: 'favicon_png',
+    name: '/favicon.png',
+    urlFn: h => `https://${h}/favicon.png`,
+    isPlaceholder: (w, h) => w <= 200 && h <= 200
+  },
+  {
+    key: 'apple_touch',
+    name: 'apple-touch-icon',
+    urlFn: h => `https://${h}/apple-touch-icon.png`,
+    isPlaceholder: (w, h) => w <= -1 && h <= -1
+  },
+  {
+    key: 'apple_precomposed',
+    name: 'apple-precomposed',
+    urlFn: h => `https://${h}/apple-touch-icon-precomposed.png`,
+    isPlaceholder: (w, h) => w <= 900 && h <= 900
+  }
+];
+
+const FAV_SAMPLES = ['facebook.com','youtube.com','github.com','stripe.com','anthropic.com','x.com','wikipedia.org','reddit.com'];
+
+let favChecked = new Set();
+let favStatTotal = 0, favStatFound = 0, favStatMissing = 0;
+let favTotalInBatch = 0, favDoneInBatch = 0;
+let favCurrentFilter = 'all';
+
+function favSetFilter(f) {
+  favCurrentFilter = f;
+  document.getElementById('fav-filter-all').className = 'fav-filter-btn' + (f === 'all' ? ' fav-active-all' : '');
+  document.getElementById('fav-filter-found').className = 'fav-filter-btn' + (f === 'found' ? ' fav-active-found' : '');
+  document.getElementById('fav-filter-missing').className = 'fav-filter-btn' + (f === 'missing' ? ' fav-active-missing' : '');
+  document.querySelectorAll('.fav-card').forEach(card => {
+    const status = card.getAttribute('data-status');
+    const visible = f === 'all' || status === f || status === 'checking';
+    card.classList.toggle('fav-hidden', !visible);
+  });
+}
+
+function favParseUrls(raw) {
+  return raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+}
+
+function favParseHostname(raw) {
+  raw = raw.trim();
+  if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+  try { return new URL(raw).hostname.replace(/^www\./, ''); }
+  catch { return null; }
+}
+
+function favUpdateCount() {
+  const inp = document.getElementById('fav-url-input');
+  const urls = favParseUrls(inp.value);
+  const valid = urls.filter(u => favParseHostname(u) !== null);
+  const el = document.getElementById('fav-url-count');
+  el.innerHTML = valid.length > 0
+    ? `<span class="fav-count-num">${valid.length}</span> URL${valid.length !== 1 ? 's' : ''}`
+    : '';
+}
+
+document.getElementById('fav-url-input').addEventListener('input', favUpdateCount);
+document.getElementById('fav-url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) favCheckAll();
+});
+
+function favShowDupe(msg) {
+  const el = document.getElementById('fav-dupe-toast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.style.display = 'none'; }, 2500);
+}
+
+function favAddQuick(domain) {
+  const inp = document.getElementById('fav-url-input');
+  const cur = inp.value.trim();
+  inp.value = cur ? cur + '\n' + domain : domain;
+  favUpdateCount();
+  inp.scrollTop = inp.scrollHeight;
+}
+
+function favLoadAllSamples() {
+  const inp = document.getElementById('fav-url-input');
+  const existing = new Set(favParseUrls(inp.value).map(u => favParseHostname(u)).filter(Boolean));
+  const toAdd = FAV_SAMPLES.filter(s => !existing.has(s));
+  const cur = favParseUrls(inp.value);
+  inp.value = [...cur, ...toAdd].join('\n');
+  favUpdateCount();
+}
+
+function favUpdateProgress() {
+  const pct = favTotalInBatch > 0 ? Math.round((favDoneInBatch / favTotalInBatch) * 100) : 0;
+  document.getElementById('fav-progress-fill').style.width = pct + '%';
+  document.getElementById('fav-stat-progress').textContent = favDoneInBatch < favTotalInBatch
+    ? favDoneInBatch + '/' + favTotalInBatch : '';
+}
+
+function favCheckAll() {
+  const raw = document.getElementById('fav-url-input').value.trim();
+  if (!raw) return;
+  const urls = favParseUrls(raw);
+  const toCheck = [], dupes = [], invalid = [];
+  for (const u of urls) {
+    const h = favParseHostname(u);
+    if (!h) { invalid.push(u); continue; }
+    if (favChecked.has(h)) { dupes.push(h); continue; }
+    toCheck.push(h);
+  }
+  if (invalid.length) favShowDupe('⚠️ Ignored ' + invalid.slice(0,3).join(', ') + (invalid.length > 3 ? '…' : ''));
+  else if (dupes.length && toCheck.length === 0) favShowDupe('Already checked: ' + dupes.slice(0,3).join(', ') + (dupes.length > 3 ? '…' : ''));
+  if (toCheck.length === 0) return;
+  toCheck.forEach(h => favChecked.add(h));
+  document.getElementById('fav-empty').style.display = 'none';
+  const statsEl = document.getElementById('fav-stats');
+  statsEl.style.display = 'flex';
+  favStatTotal += toCheck.length;
+  document.getElementById('fav-stat-total').textContent = favStatTotal;
+  favTotalInBatch = toCheck.length;
+  favDoneInBatch = 0;
+  favUpdateProgress();
+  toCheck.forEach((h, i) => {
+    setTimeout(() => favRunCheck(h), i * 120);
+  });
+}
+
+function favRunCheck(hostname) {
+  const id = 'fav-' + Math.random().toString(36).slice(-6);
+  const card = document.createElement('div');
+  card.className = 'fav-card';
+  card.id = id;
+  card.setAttribute('data-status', 'checking');
+  if (favCurrentFilter === 'found' || favCurrentFilter === 'missing') {
+    card.classList.add('fav-hidden');
+  }
+
+  card.innerHTML = `
+    <div class="fav-card-hero">
+      <div class="fav-icon-wrap" id="${id}-icon">
+        <span style="font-size:22px;opacity:0.3">🌐</span>
+      </div>
+      <div style="min-width:0">
+        <div class="fav-card-host">${hostname}</div>
+        <span class="fav-status-pill fav-pill-checking" id="${id}-pill">
+          <span class="fav-dot-blink"></span> checking...
+        </span>
+      </div>
+    </div>
+    <div class="fav-sources">
+      ${FAV_SOURCES.map(s => `
+        <div class="fav-source-row">
+          <span class="fav-src-dot wait" id="${id}-dot-${s.key}"></span>
+          <span class="fav-src-name">${s.name}</span>
+          <span class="fav-src-status" id="${id}-st-${s.key}">—</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="fav-found-url" id="${id}-foundurl" style="display:none"></div>
+    <div class="fav-missing-links" id="${id}-missinglinks" style="display:none">
+      <a href="https://${hostname}" target="_blank" rel="noopener noreferrer" class="fav-site-link-btn fav-btn-visit">🔗 Open Site</a>
+      <button class="fav-site-link-btn fav-btn-copy" id="${id}-copybtn" onclick="favCopyUrl('${hostname}','${id}-copybtn')">📋 Copy URL</button>
+    </div>`;
+
+  document.getElementById('fav-results').appendChild(card);
+
+  let foundUrl = null;
+  let remaining = FAV_SOURCES.length;
+
+  FAV_SOURCES.forEach(src => {
+    const imgUrl = src.urlFn(hostname);
+    const img = new Image();
+    let done = false;
+    const timer = setTimeout(() => {
+      if (done) return;
+      done = true;
+      favMarkSrc(id, src.key, false);
+      remaining--;
+      if (remaining === 0) favFinish(id, hostname, foundUrl);
+    }, 5000);
+
+    img.onload = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      const w = img.naturalWidth, h = img.naturalHeight;
+      const isPlaceholder = src.isPlaceholder ? src.isPlaceholder(w, h) : false;
+      const valid = w > 1 && h > 1 && !isPlaceholder;
+      if (valid) {
+        favMarkSrc(id, src.key, true, w + '×' + h);
+        if (!foundUrl) {
+          foundUrl = imgUrl;
+          const iconEl = document.getElementById(id + '-icon');
+          if (iconEl) iconEl.innerHTML = `<img src="${imgUrl}" alt="">`;
+        }
+      } else {
+        favMarkSrc(id, src.key, false);
+      }
+      remaining--;
+      if (remaining === 0) favFinish(id, hostname, foundUrl);
+    };
+
+    img.onerror = () => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      favMarkSrc(id, src.key, false);
+      remaining--;
+      if (remaining === 0) favFinish(id, hostname, foundUrl);
+    };
+
+    img.src = imgUrl;
+  });
+}
+
+function favMarkSrc(id, key, ok, label) {
+  const dot = document.getElementById(id + '-dot-' + key);
+  const st  = document.getElementById(id + '-st-'  + key);
+  if (dot) dot.className = 'fav-src-dot ' + (ok ? 'ok' : 'fail');
+  if (st)  { st.textContent = ok ? (label || '✓ found') : '✕ none'; st.className = 'fav-src-status ' + (ok ? 'ok' : 'fail'); }
+}
+
+function favFinish(id, hostname, foundUrl) {
+  favDoneInBatch++;
+  favUpdateProgress();
+  const pill = document.getElementById(id + '-pill');
+  const card = document.getElementById(id);
+  if (!pill) return;
+  if (foundUrl) {
+    pill.className = 'fav-status-pill fav-pill-found';
+    pill.textContent = '✓ favicon found';
+    favStatFound++;
+    document.getElementById('fav-stat-found').textContent = favStatFound;
+    const fuEl = document.getElementById(id + '-foundurl');
+    if (fuEl) {
+      fuEl.style.display = '';
+      fuEl.innerHTML = `<a href="${foundUrl}" target="_blank" rel="noopener">${foundUrl}</a>`;
+    }
+    if (card) {
+      card.setAttribute('data-status', 'found');
+      if (favCurrentFilter === 'missing') card.classList.add('fav-hidden');
+      else card.classList.remove('fav-hidden');
+    }
+  } else {
+    pill.className = 'fav-status-pill fav-pill-missing';
+    pill.textContent = '✕ no favicon';
+    favStatMissing++;
+    document.getElementById('fav-stat-missing').textContent = favStatMissing;
+    const ml = document.getElementById(id + '-missinglinks');
+    if (ml) ml.style.display = '';
+    if (card) {
+      card.setAttribute('data-status', 'missing');
+      if (favCurrentFilter === 'found') card.classList.add('fav-hidden');
+      else card.classList.remove('fav-hidden');
+    }
+  }
+}
+
+function favCopyUrl(hostname, btnId) {
+  const url = 'https://' + hostname;
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('fav-copied');
+    setTimeout(() => {
+      btn.textContent = '📋 Copy URL';
+      btn.classList.remove('fav-copied');
+    }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
+function favClearResults() {
+  favChecked.clear();
+  favStatTotal = favStatFound = favStatMissing = 0;
+  favTotalInBatch = favDoneInBatch = 0;
+  document.getElementById('fav-stat-total').textContent = '0';
+  document.getElementById('fav-stat-found').textContent = '0';
+  document.getElementById('fav-stat-missing').textContent = '0';
+  document.getElementById('fav-progress-fill').style.width = '0%';
+  document.getElementById('fav-stat-progress').textContent = '';
+  document.getElementById('fav-stats').style.display = 'none';
+  const res = document.getElementById('fav-results');
+  res.innerHTML = `<div id="fav-empty">
+    <div class="fav-empty-icon">🔍</div>
+    <p>Paste URLs above and smash Check All<br><br>
+    <span style="font-size:10px;color:var(--fav-text3)">Caveman support many URLs at once. Very powerful. UGH.</span></p>
+  </div>`;
+  favUpdateCount();
+}
 </script>
 </body>
 </html>
