@@ -2706,7 +2706,7 @@ function toggleChip(el) { el.classList.toggle('active'); }
 function getOptions() { return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name); }
 
 // ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
-async function startBulkAudit() {
+async function _startBulkAuditCore() {
   const urls = parseUrls(document.getElementById('url-textarea').value);
   if (!urls.length) { showToast('⚠ Enter at least one valid URL!', 'var(--red)'); return; }
 
@@ -4796,7 +4796,7 @@ async function extractUrlsFromSitemap(origin, cap) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SITE CRAWL ENGINE
 // ═══════════════════════════════════════════════════════════════════════════════
-async function startSiteCrawl() {
+async function _startSiteCrawlCore() {
   const rawInput = document.getElementById('crawl-url-input').value.trim();
   if (!rawInput) { showToast('Enter at least one URL to crawl', 'var(--red)'); return; }
 
@@ -5776,7 +5776,7 @@ function toggleChip(el) { el.classList.toggle('active'); }
 function getOptions() { return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name); }
 
 // ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
-async function startBulkAudit() {
+async function _startBulkAuditCore() {
   const urls = parseUrls(document.getElementById('url-textarea').value);
   if (!urls.length) { showToast('⚠ Enter at least one valid URL!', 'var(--red)'); return; }
 
@@ -7866,7 +7866,7 @@ async function extractUrlsFromSitemap(origin, cap) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // SITE CRAWL ENGINE
 // ═══════════════════════════════════════════════════════════════════════════════
-async function startSiteCrawl() {
+async function _startSiteCrawlCore() {
   const rawInput = document.getElementById('crawl-url-input').value.trim();
   if (!rawInput) { showToast('Enter at least one URL to crawl', 'var(--red)'); return; }
 
@@ -8792,7 +8792,7 @@ function favUpdateProgress() {
     ? favDoneInBatch + '/' + favTotalInBatch : '';
 }
 
-function favCheckAll() {
+function _favCheckAllCore() {
   const raw = document.getElementById('fav-url-input').value.trim();
   if (!raw) return;
   const urls = favParseUrls(raw);
@@ -9196,10 +9196,9 @@ function purchaseCredits() {
 // ═══════════════════════════════════════════════════════════════════
 
 // ── Gate: Bulk Audit ─────────────────────────────────────────────────
-const _origStartBulkAudit = window.startBulkAudit || startBulkAudit;
 async function startBulkAudit() {
   const urls = parseUrls(document.getElementById('url-textarea').value);
-  if (!urls.length) { _origStartBulkAudit(); return; }
+  if (!urls.length) { _startBulkAuditCore(); return; }
 
   const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
 
@@ -9208,16 +9207,14 @@ async function startBulkAudit() {
     return;
   }
 
-  // Deduct first, then run
   const ok = userCredits !== null ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  _origStartBulkAudit();
+  _startBulkAuditCore();
 }
 
 // ── Gate: Site Crawl ─────────────────────────────────────────────────
-const _origStartSiteCrawl = window.startSiteCrawl || startSiteCrawl;
 async function startSiteCrawl() {
   const rawInput = (document.getElementById('crawl-url-input')?.value || '').trim();
   const siteCount = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0).length;
@@ -9232,20 +9229,20 @@ async function startSiteCrawl() {
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  _origStartSiteCrawl();
+  _startSiteCrawlCore();
 }
 
 // ── Gate: Favicon Checker ────────────────────────────────────────────
-const _origFavCheckAll = favCheckAll;
+const _origFavCheckAll = _favCheckAllCore;
 async function favCheckAll() {
   const raw = document.getElementById('fav-url-input').value.trim();
-  if (!raw) { _origFavCheckAll(); return; }
+  if (!raw) { _favCheckAllCore(); return; }
 
   const urls = favParseUrls(raw);
   const newUrls = urls.map(u => favParseHostname(u)).filter(h => h && !favChecked.has(h));
   const cost = newUrls.length * CREDIT_COSTS.favicon_per_url;
 
-  if (cost === 0) { _origFavCheckAll(); return; }
+  if (cost === 0) { _favCheckAllCore(); return; }
 
   if (userCredits !== null && userCredits < cost) {
     showInsufficientCredits(cost);
@@ -9256,7 +9253,7 @@ async function favCheckAll() {
   if (!ok) { showInsufficientCredits(cost); return; }
 
   showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  _origFavCheckAll();
+  _favCheckAllCore();
 }
 
 // ── Boot: load credits once session is confirmed ─────────────────────
