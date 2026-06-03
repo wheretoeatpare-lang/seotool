@@ -156,6 +156,248 @@ nav {
 .nav-user { font-size: 13px; color: var(--muted2); }
 .nav-user span { color: var(--text); font-weight: 500; }
 
+/* ── Credits Pill (Navbar) ── */
+.nav-credits-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 12px 4px 8px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  text-decoration: none;
+}
+.nav-credits-pill:hover { background: rgba(232,184,75,0.18); border-color: rgba(232,184,75,0.35); }
+.nav-credits-pill .cred-icon { font-size: 14px; }
+.nav-credits-pill .cred-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'DM Sans', sans-serif;
+}
+.nav-credits-pill .cred-lbl {
+  font-size: 10px;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.nav-credits-pill.credits-low { background: rgba(248,113,113,0.1); border-color: rgba(248,113,113,0.35); }
+.nav-credits-pill.credits-low .cred-val { color: var(--red); }
+.nav-credits-pill.credits-low .cred-icon { animation: credPulse 1.2s ease-in-out infinite; }
+@keyframes credPulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
+
+/* ── Credits Widget in Sidebar ── */
+.sidebar-credits-box {
+  margin: 12px 0 4px;
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.scb-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.scb-label {
+  font-size: 11px;
+  color: var(--muted2);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.scb-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  line-height: 1;
+}
+.scb-bar-wrap {
+  height: 4px;
+  background: rgba(232,184,75,0.12);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 7px;
+}
+.scb-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.scb-bar-fill.low { background: linear-gradient(90deg, #ef4444, var(--red)); }
+.scb-sub {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.scb-topup {
+  display: block;
+  margin-top: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gold);
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 0;
+  cursor: pointer;
+  transition: background 0.15s;
+  width: 100%;
+}
+.scb-topup:hover { background: rgba(232,184,75,0.12); }
+
+/* ── Credits Cost Badge (on audit buttons) ── */
+.credit-cost-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--gold);
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.03em;
+}
+
+/* ── Low Credits Modal ── */
+.credits-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.credits-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.credits-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px;
+  max-width: 400px;
+  width: calc(100% - 48px);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+  transform: translateY(16px) scale(0.97);
+  transition: transform 0.2s;
+}
+.credits-modal-overlay.open .credits-modal {
+  transform: translateY(0) scale(1);
+}
+.cm-icon { font-size: 40px; margin-bottom: 12px; }
+.cm-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.cm-body {
+  font-size: 14px;
+  color: var(--muted2);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.cm-body strong { color: var(--text); }
+.cm-plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.cm-plan {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.cm-plan:hover, .cm-plan.selected {
+  border-color: rgba(232,184,75,0.5);
+  background: var(--gold-pale);
+}
+.cm-plan .plan-credits {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+}
+.cm-plan .plan-price {
+  font-size: 11px;
+  color: var(--muted2);
+  margin-top: 2px;
+}
+.cm-plan .plan-name {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+.cm-btn-row { display: flex; gap: 10px; }
+.cm-btn-primary {
+  flex: 1;
+  padding: 10px;
+  background: var(--gold);
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.15s;
+}
+.cm-btn-primary:hover { opacity: 0.88; }
+.cm-btn-secondary {
+  padding: 10px 16px;
+  background: none;
+  color: var(--muted2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.15s;
+}
+.cm-btn-secondary:hover { color: var(--text); }
+
+/* ── Profile card credits row ── */
+.profile-credits-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--gold-pale);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 8px 0 4px;
+}
+.pcr-label { font-size: 11px; color: var(--muted2); }
+.pcr-val { font-size: 18px; font-weight: 800; color: var(--gold); font-family: 'Cinzel', serif; }
+.pcr-sub { font-size: 10px; color: var(--muted); }
+
+
+
 .btn-logout {
   font-size: 12px;
   font-weight: 500;
@@ -1305,6 +1547,11 @@ tr.row-zap td {
   </div>
 
   <div class="nav-right">
+    <div class="nav-credits-pill" id="nav-credits-pill" onclick="openCreditsModal()" title="Your audit credits">
+      <span class="cred-icon">⚡</span>
+      <span class="cred-val" id="nav-credits-val">—</span>
+      <span class="cred-lbl">credits</span>
+    </div>
     <span class="nav-user">Logged in as <span id="userEmail">—</span></span>
     <button class="btn-logout" id="logoutBtn">Sign out</button>
   </div>
@@ -1328,6 +1575,17 @@ tr.row-zap td {
     </a>
 
     <span class="sidebar-section-label">SEO Tools</span>
+    <div class="sidebar-credits-box" id="sidebar-credits-box">
+      <div class="scb-row">
+        <span class="scb-label">⚡ Credits</span>
+        <span class="scb-val" id="scb-val">—</span>
+      </div>
+      <div class="scb-bar-wrap">
+        <div class="scb-bar-fill" id="scb-bar" style="width:0%"></div>
+      </div>
+      <div class="scb-sub" id="scb-sub">Loading your balance…</div>
+      <button class="scb-topup" onclick="openCreditsModal()">✦ Get More Credits</button>
+    </div>
     <a class="sidebar-link" href="#" id="sidebar-bulk-link" onclick="showBulkAuditor(event)">
       <span class="sidebar-icon">🧪</span> Bulk Auditor
     </a>
@@ -1613,6 +1871,15 @@ tr.row-zap td {
           <div class="profile-name" id="profileName">Loading…</div>
           <div class="profile-email" id="profileEmail">—</div>
           <div class="profile-plan">✦ Premium Member</div>
+          <div class="profile-credits-row">
+            <div>
+              <div class="pcr-label">Audit Credits</div>
+              <div class="pcr-sub">1 credit = 1 URL audited</div>
+            </div>
+            <div style="text-align:right">
+              <div class="pcr-val" id="profile-credits-val">—</div>
+            </div>
+          </div>
           <div class="profile-divider"></div>
           <div class="profile-stat">
             <span class="profile-stat-label">Member since</span>
@@ -1693,7 +1960,7 @@ tr.row-zap td {
     </div>
 
     <div class="action-row">
-      <button class="btn-audit" id="audit-btn" onclick="startBulkAudit()">⚡ Audit All Websites</button>
+      <button class="btn-audit" id="audit-btn" onclick="startBulkAudit()">⚡ Audit All Websites<span class="credit-cost-badge" id="bulk-cost-badge">⚡ ? credits</span></button>
       <button class="btn-secondary" id="stop-btn" style="display:none;color:var(--red);border-color:rgba(248,113,113,0.3)" onclick="stopAudit()">⏹ Stop</button>
       <button class="btn-excel" id="export-btn" style="display:none" onclick="exportExcel()">📊 Export Excel Report</button>
     </div>
@@ -1814,7 +2081,7 @@ tr.row-zap td {
         <input type="range" min="10" max="200" value="50" step="10" id="crawl-cap-range" oninput="document.getElementById('crawl-cap-val').textContent=this.value">
         <span id="crawl-cap-val">50</span>
       </div>
-      <button class="btn-crawl" id="crawl-btn" onclick="startSiteCrawl()">🕷️ Start Crawl</button>
+      <button class="btn-crawl" id="crawl-btn" onclick="startSiteCrawl()">🕷️ Start Crawl<span class="credit-cost-badge">⚡ 5 credits/site</span></button>
       <button class="btn-secondary" id="crawl-stop-btn" style="display:none;color:var(--red);border-color:rgba(248,113,113,0.3)" onclick="stopSiteCrawl()">⏹ Stop</button>
     </div>
   </div>
@@ -2326,7 +2593,7 @@ tr.row-zap td {
       spellcheck="false"
     ></textarea>
     <div class="fav-btn-row">
-      <button class="fav-check-btn" onclick="favCheckAll()">Check All →</button>
+      <button class="fav-check-btn" onclick="favCheckAll()">Check All →<span class="credit-cost-badge">⚡ 1/url</span></button>
       <button class="fav-clear-btn" onclick="favClearResults()">Clear Results</button>
       <span class="fav-url-count" id="fav-url-count"></span>
     </div>
@@ -5339,6 +5606,39 @@ async function exportCrawlExcel() {
     </div><!-- end bulk-auditor-view -->
 
   </main>
+</div>
+
+<!-- CREDITS MODAL -->
+<div class="credits-modal-overlay" id="credits-modal-overlay" onclick="closeCreditsModalOutside(event)">
+  <div class="credits-modal">
+    <div class="cm-icon">⚡</div>
+    <div class="cm-title">Get More Credits</div>
+    <div class="cm-body">
+      You have <strong id="cm-current-credits">—</strong> credits remaining.<br>
+      Each URL audited costs <strong>1 credit</strong>. Site crawls cost <strong>5 credits per site</strong>.
+    </div>
+    <div class="cm-plans">
+      <div class="cm-plan selected" data-credits="100" data-price="$5" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">100</div>
+        <div class="plan-price">$5</div>
+        <div class="plan-name">Starter</div>
+      </div>
+      <div class="cm-plan" data-credits="500" data-price="$19" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">500</div>
+        <div class="plan-price">$19</div>
+        <div class="plan-name">Growth</div>
+      </div>
+      <div class="cm-plan" data-credits="2000" data-price="$59" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">2000</div>
+        <div class="plan-price">$59</div>
+        <div class="plan-name">Agency</div>
+      </div>
+    </div>
+    <div class="cm-btn-row">
+      <button class="cm-btn-primary" onclick="purchaseCredits()">✦ Buy Credits</button>
+      <button class="cm-btn-secondary" onclick="closeCreditsModal()">Maybe later</button>
+    </div>
+  </div>
 </div>
 
 <!-- FOOTER -->
@@ -8691,5 +8991,282 @@ function favClearResults() {
   favUpdateCount();
 }
 </script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CREDITS SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+
+const CREDITS_TABLE = 'user_credits';
+const CREDITS_LOW_THRESHOLD = 10;
+const CREDITS_MAX_FOR_BAR = 500; // bar fills at this value
+
+// Cost config — credits per action
+const CREDIT_COSTS = {
+  bulk_audit_per_url: 1,   // 1 credit per URL in bulk audit
+  site_crawl_per_site: 5,  // 5 credits per site in crawl queue
+  favicon_per_url: 1       // 1 credit per URL in favicon checker
+};
+
+let userCredits = null;   // null = not loaded yet
+let creditsUserId = null;
+
+// ── Load credits from Supabase ──────────────────────────────────────
+async function loadCredits() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    creditsUserId = session.user.id;
+
+    const { data, error } = await sb
+      .from(CREDITS_TABLE)
+      .select('credits')
+      .eq('user_id', creditsUserId)
+      .single();
+
+    if (error && error.code === 'PGRST116') {
+      // Row doesn't exist yet — create with default credits
+      const defaultCredits = 100;
+      const { data: newRow, error: insertErr } = await sb
+        .from(CREDITS_TABLE)
+        .insert({ user_id: creditsUserId, credits: defaultCredits })
+        .select('credits')
+        .single();
+      if (!insertErr && newRow) {
+        userCredits = newRow.credits;
+      } else {
+        // Fallback: show credits from local state if DB insert fails
+        userCredits = defaultCredits;
+      }
+    } else if (!error && data) {
+      userCredits = data.credits;
+    } else {
+      // DB unavailable — use cached local value or 0
+      userCredits = userCredits ?? 0;
+    }
+  } catch (e) {
+    console.warn('[Credits] Load failed:', e);
+    userCredits = userCredits ?? 0;
+  }
+  renderCreditsUI();
+}
+
+// ── Deduct credits in Supabase ──────────────────────────────────────
+async function deductCredits(amount) {
+  if (!creditsUserId) return false;
+  if (userCredits < amount) return false;
+
+  const newBalance = userCredits - amount;
+  try {
+    const { error } = await sb
+      .from(CREDITS_TABLE)
+      .update({ credits: newBalance, updated_at: new Date().toISOString() })
+      .eq('user_id', creditsUserId);
+
+    if (error) {
+      console.warn('[Credits] Deduct failed:', error);
+      return false;
+    }
+    userCredits = newBalance;
+    renderCreditsUI();
+    return true;
+  } catch (e) {
+    console.warn('[Credits] Deduct exception:', e);
+    return false;
+  }
+}
+
+// ── Render all credits UI elements ──────────────────────────────────
+function renderCreditsUI() {
+  if (userCredits === null) return;
+  const val = userCredits;
+  const isLow = val <= CREDITS_LOW_THRESHOLD;
+  const pct = Math.min(100, Math.round((val / CREDITS_MAX_FOR_BAR) * 100));
+
+  // Navbar pill
+  const pill = document.getElementById('nav-credits-pill');
+  const pillVal = document.getElementById('nav-credits-val');
+  if (pill && pillVal) {
+    pillVal.textContent = val.toLocaleString();
+    pill.classList.toggle('credits-low', isLow);
+  }
+
+  // Sidebar box
+  const scbVal = document.getElementById('scb-val');
+  const scbBar = document.getElementById('scb-bar');
+  const scbSub = document.getElementById('scb-sub');
+  if (scbVal) scbVal.textContent = val.toLocaleString();
+  if (scbBar) {
+    scbBar.style.width = pct + '%';
+    scbBar.classList.toggle('low', isLow);
+  }
+  if (scbSub) {
+    if (isLow) {
+      scbSub.innerHTML = `<span style="color:var(--red);font-weight:600">⚠ Low balance!</span> Top up to keep auditing.`;
+    } else {
+      scbSub.textContent = `1 credit = 1 URL audited`;
+    }
+  }
+
+  // Profile card
+  const profileVal = document.getElementById('profile-credits-val');
+  if (profileVal) profileVal.textContent = val.toLocaleString();
+
+  // Modal current balance
+  const cmCur = document.getElementById('cm-current-credits');
+  if (cmCur) cmCur.textContent = val.toLocaleString() + ' credits';
+
+  // Update bulk cost badge dynamically
+  updateBulkCostBadge();
+}
+
+// ── Update bulk audit cost badge based on URL count ─────────────────
+function updateBulkCostBadge() {
+  const badge = document.getElementById('bulk-cost-badge');
+  if (!badge) return;
+  try {
+    const textarea = document.getElementById('url-textarea');
+    if (!textarea) return;
+    const urls = parseUrls(textarea.value);
+    const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
+    badge.textContent = cost > 0 ? `⚡ ${cost} credit${cost !== 1 ? 's' : ''}` : '⚡ 1/url';
+  } catch(e) {
+    badge.textContent = '⚡ 1/url';
+  }
+}
+
+// Hook URL textarea to update badge live
+document.addEventListener('DOMContentLoaded', () => {
+  const ta = document.getElementById('url-textarea');
+  if (ta) ta.addEventListener('input', updateBulkCostBadge);
+});
+// Also run on first load after short delay (DOM may not be ready)
+setTimeout(() => {
+  const ta = document.getElementById('url-textarea');
+  if (ta) ta.addEventListener('input', updateBulkCostBadge);
+}, 800);
+
+// ── Show "not enough credits" toast ─────────────────────────────────
+function showInsufficientCredits(needed) {
+  showToast(`⚡ Need ${needed} credit${needed !== 1 ? 's' : ''} — you have ${userCredits}. Top up to continue!`, 'var(--red)');
+  setTimeout(() => openCreditsModal(), 800);
+}
+
+// ── Credits Modal ────────────────────────────────────────────────────
+let selectedPlanCredits = 100;
+let selectedPlanPrice = '$5';
+
+function openCreditsModal() {
+  renderCreditsUI(); // refresh balance shown in modal
+  document.getElementById('credits-modal-overlay').classList.add('open');
+}
+
+function closeCreditsModal() {
+  document.getElementById('credits-modal-overlay').classList.remove('open');
+}
+
+function closeCreditsModalOutside(e) {
+  if (e.target === document.getElementById('credits-modal-overlay')) closeCreditsModal();
+}
+
+function selectCreditPlan(el) {
+  document.querySelectorAll('.cm-plan').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPlanCredits = parseInt(el.dataset.credits);
+  selectedPlanPrice = el.dataset.price;
+}
+
+function purchaseCredits() {
+  // Hook this to your payment provider (Stripe, LemonSqueezy, etc.)
+  // For now, show a toast directing to billing
+  closeCreditsModal();
+  showToast(`✦ Redirecting to billing for ${selectedPlanCredits} credits (${selectedPlanPrice})…`, 'var(--gold)');
+  // TODO: window.location.href = '/billing.html?credits=' + selectedPlanCredits;
+  setTimeout(() => {
+    // DEV MODE: add credits directly for testing
+    if (window._devMode) {
+      userCredits = (userCredits || 0) + selectedPlanCredits;
+      renderCreditsUI();
+      showToast(`✅ +${selectedPlanCredits} credits added (dev mode)`, 'var(--green)');
+    }
+  }, 500);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CREDIT GATES — wrap existing audit functions
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Gate: Bulk Audit ─────────────────────────────────────────────────
+const _origStartBulkAudit = window.startBulkAudit || startBulkAudit;
+async function startBulkAudit() {
+  const urls = parseUrls(document.getElementById('url-textarea').value);
+  if (!urls.length) { _origStartBulkAudit(); return; }
+
+  const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
+
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
+
+  // Deduct first, then run
+  const ok = userCredits !== null ? await deductCredits(cost) : true;
+  if (!ok) { showInsufficientCredits(cost); return; }
+
+  if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  _origStartBulkAudit();
+}
+
+// ── Gate: Site Crawl ─────────────────────────────────────────────────
+const _origStartSiteCrawl = window.startSiteCrawl || startSiteCrawl;
+async function startSiteCrawl() {
+  const rawInput = (document.getElementById('crawl-url-input')?.value || '').trim();
+  const siteCount = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0).length;
+  const cost = siteCount * CREDIT_COSTS.site_crawl_per_site;
+
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
+
+  const ok = userCredits !== null && cost > 0 ? await deductCredits(cost) : true;
+  if (!ok) { showInsufficientCredits(cost); return; }
+
+  if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  _origStartSiteCrawl();
+}
+
+// ── Gate: Favicon Checker ────────────────────────────────────────────
+const _origFavCheckAll = favCheckAll;
+async function favCheckAll() {
+  const raw = document.getElementById('fav-url-input').value.trim();
+  if (!raw) { _origFavCheckAll(); return; }
+
+  const urls = favParseUrls(raw);
+  const newUrls = urls.map(u => favParseHostname(u)).filter(h => h && !favChecked.has(h));
+  const cost = newUrls.length * CREDIT_COSTS.favicon_per_url;
+
+  if (cost === 0) { _origFavCheckAll(); return; }
+
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
+
+  const ok = userCredits !== null ? await deductCredits(cost) : true;
+  if (!ok) { showInsufficientCredits(cost); return; }
+
+  showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  _origFavCheckAll();
+}
+
+// ── Boot: load credits once session is confirmed ─────────────────────
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) loadCredits();
+});
+
+// ── Dev helper — type enableDevMode() in console to test top-ups ─────
+window.enableDevMode = () => { window._devMode = true; console.log('💛 Dev mode on — purchaseCredits() will add credits directly'); };
+</script>
+
 </body>
 </html>
