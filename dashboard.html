@@ -1659,24 +1659,24 @@ tr.row-zap td {
     <!-- KPI STRIP -->
     <div class="kpi-strip">
       <div class="kpi">
+        <div class="kpi-label">Credits Remaining</div>
+        <div class="kpi-value" id="kpi-credits">—</div>
+        <div class="kpi-sub" id="kpi-credits-sub">loading…</div>
+      </div>
+      <div class="kpi">
         <div class="kpi-label">Audits Run</div>
-        <div class="kpi-value">47</div>
-        <div class="kpi-sub"><span class="kpi-delta up">↑ 12</span> this week</div>
+        <div class="kpi-value" id="kpi-audits">—</div>
+        <div class="kpi-sub" id="kpi-audits-sub">all time</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Keywords Tracked</div>
-        <div class="kpi-value">128</div>
-        <div class="kpi-sub"><span class="kpi-delta up">↑ 8</span> since last week</div>
+        <div class="kpi-label">URLs Audited</div>
+        <div class="kpi-value" id="kpi-urls">—</div>
+        <div class="kpi-sub" id="kpi-urls-sub">all time</div>
       </div>
       <div class="kpi">
-        <div class="kpi-label">Avg Rank</div>
-        <div class="kpi-value">14.2</div>
-        <div class="kpi-sub"><span class="kpi-delta up">↑ 2.1</span> vs last month</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">Top 10 Keywords</div>
-        <div class="kpi-value">23</div>
-        <div class="kpi-sub"><span class="kpi-delta up">↑ 5</span> new this month</div>
+        <div class="kpi-label">Member Since</div>
+        <div class="kpi-value" id="kpi-since" style="font-size:1.1rem">—</div>
+        <div class="kpi-sub" id="kpi-since-sub">&nbsp;</div>
       </div>
     </div>
 
@@ -1687,48 +1687,11 @@ tr.row-zap td {
       <div class="card" style="animation-delay:0.1s">
         <div class="card-header">
           <span class="card-title">Recent Activity</span>
-          <a class="card-action" href="#">View all →</a>
+          <span class="card-action" onclick="clearActivityLog()" style="cursor:pointer">Clear →</span>
         </div>
-        <div class="activity-list">
-          <div class="activity-item">
-            <div class="activity-icon seo">🧪</div>
-            <div class="activity-body">
-              <div class="activity-title">Bulk audit — ranksorcery.com</div>
-              <div class="activity-sub">12 URLs · 80+ factors each</div>
-            </div>
-            <div class="activity-time">2h ago</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon research">📊</div>
-            <div class="activity-body">
-              <div class="activity-title">Keyword research — "seo tools"</div>
-              <div class="activity-sub">Vol: 22,000 · KD: 67</div>
-            </div>
-            <div class="activity-time">5h ago</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon ai">📰</div>
-            <div class="activity-body">
-              <div class="activity-title">Blog post generated</div>
-              <div class="activity-sub">"10 Best On-Page SEO Tips for 2026"</div>
-            </div>
-            <div class="activity-time">Yesterday</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon pro">⚡</div>
-            <div class="activity-body">
-              <div class="activity-title">Core Web Vitals — homepage</div>
-              <div class="activity-sub">LCP 1.8s · CLS 0.02 · FID 14ms</div>
-            </div>
-            <div class="activity-time">2d ago</div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-icon seo">⚔️</div>
-            <div class="activity-body">
-              <div class="activity-title">Competitor analysis vs ahrefs.com</div>
-              <div class="activity-sub">38 keyword gaps found</div>
-            </div>
-            <div class="activity-time">3d ago</div>
+        <div class="activity-list" id="activity-list">
+          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px" id="activity-empty">
+            No activity yet — run your first audit!
           </div>
         </div>
       </div>
@@ -1742,6 +1705,11 @@ tr.row-zap td {
           <a class="quick-btn" href="#" onclick="showBulkAuditor(event)">
             <div class="quick-btn-icon gold">🧪</div>
             Run Site Audit
+            <span class="quick-btn-arrow">→</span>
+          </a>
+          <a class="quick-btn" href="#" onclick="showFaviconChecker(event)">
+            <div class="quick-btn-icon gold">🦴</div>
+            Favicon Checker
             <span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="/keyword-volume.html">
@@ -1764,65 +1732,23 @@ tr.row-zap td {
             Check AI Visibility
             <span class="quick-btn-arrow">→</span>
           </a>
-          <a class="quick-btn" href="/schema-markup-writer.html">
-            <div class="quick-btn-icon green">🧩</div>
-            Generate Schema Markup
-            <span class="quick-btn-arrow">→</span>
-          </a>
         </div>
       </div>
 
     </div>
 
-    <!-- ROW 2: Rank Tracker + Usage + Profile -->
+    <!-- ROW 2: Credits History + Usage + Profile -->
     <div class="grid-3">
 
-      <!-- Rank Tracker snapshot -->
+      <!-- Credits & Activity History -->
       <div class="card" style="animation-delay:0.2s">
         <div class="card-header">
-          <span class="card-title">Top Tracked Keywords</span>
-          <a class="card-action" href="/serp-rank-tracker.html">Full tracker →</a>
+          <span class="card-title">Credits History</span>
+          <span class="card-action" id="credits-history-label" style="font-size:11px;color:var(--muted)">last 5 uses</span>
         </div>
-        <div class="rank-list">
-          <div class="rank-item">
-            <div class="rank-pos">#3</div>
-            <div>
-              <div class="rank-keyword">best seo tools 2026</div>
-              <div class="rank-url">ranksorcery.com</div>
-            </div>
-            <span class="rank-change up">↑4</span>
-          </div>
-          <div class="rank-item">
-            <div class="rank-pos">#7</div>
-            <div>
-              <div class="rank-keyword">on-page seo checker</div>
-              <div class="rank-url">ranksorcery.com/tools</div>
-            </div>
-            <span class="rank-change up">↑2</span>
-          </div>
-          <div class="rank-item">
-            <div class="rank-pos">#11</div>
-            <div>
-              <div class="rank-keyword">bulk site auditor tool</div>
-              <div class="rank-url">ranksorcery.com/bulk</div>
-            </div>
-            <span class="rank-change same">—</span>
-          </div>
-          <div class="rank-item">
-            <div class="rank-pos">#18</div>
-            <div>
-              <div class="rank-keyword">ai content humanizer</div>
-              <div class="rank-url">ranksorcery.com/ai</div>
-            </div>
-            <span class="rank-change down">↓1</span>
-          </div>
-          <div class="rank-item">
-            <div class="rank-pos">#24</div>
-            <div>
-              <div class="rank-keyword">schema markup generator</div>
-              <div class="rank-url">ranksorcery.com/schema</div>
-            </div>
-            <span class="rank-change up">↑6</span>
+        <div id="credits-history-list">
+          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">
+            No credit usage yet
           </div>
         </div>
       </div>
@@ -1838,30 +1764,30 @@ tr.row-zap td {
           <div class="usage-item">
             <div class="usage-row">
               <span class="usage-label">🧪 Bulk Auditor</span>
-              <span class="usage-count">47 / ∞</span>
+              <span class="usage-count" id="usage-bulk">0 audits</span>
             </div>
-            <div class="usage-bar"><div class="usage-fill" style="width:62%"></div></div>
+            <div class="usage-bar"><div class="usage-fill" id="usage-bulk-bar" style="width:0%"></div></div>
           </div>
           <div class="usage-item">
             <div class="usage-row">
-              <span class="usage-label">📊 Keyword Research</span>
-              <span class="usage-count">31 / ∞</span>
+              <span class="usage-label">🕷️ Site Crawl</span>
+              <span class="usage-count" id="usage-crawl">0 crawls</span>
             </div>
-            <div class="usage-bar"><div class="usage-fill" style="width:41%"></div></div>
+            <div class="usage-bar"><div class="usage-fill" id="usage-crawl-bar" style="width:0%"></div></div>
           </div>
           <div class="usage-item">
             <div class="usage-row">
-              <span class="usage-label">📰 Blog Writer</span>
-              <span class="usage-count">9 / ∞</span>
+              <span class="usage-label">🦴 Favicon Checker</span>
+              <span class="usage-count" id="usage-favicon">0 checks</span>
             </div>
-            <div class="usage-bar"><div class="usage-fill" style="width:12%"></div></div>
+            <div class="usage-bar"><div class="usage-fill" id="usage-favicon-bar" style="width:0%"></div></div>
           </div>
           <div class="usage-item" style="margin-bottom:0">
             <div class="usage-row">
-              <span class="usage-label">🤖 AI Visibility</span>
-              <span class="usage-count">15 / ∞</span>
+              <span class="usage-label">⚡ Credits Spent</span>
+              <span class="usage-count" id="usage-credits-spent">0 total</span>
             </div>
-            <div class="usage-bar"><div class="usage-fill" style="width:20%"></div></div>
+            <div class="usage-bar"><div class="usage-fill" id="usage-credits-bar" style="width:0%;background:var(--gold)"></div></div>
           </div>
         </div>
 
@@ -1887,11 +1813,11 @@ tr.row-zap td {
           </div>
           <div class="profile-stat">
             <span class="profile-stat-label">Plan</span>
-            <span class="profile-stat-val">Premium Annual</span>
+            <span class="profile-stat-val">Premium</span>
           </div>
           <div class="profile-stat">
-            <span class="profile-stat-label">Tools access</span>
-            <span class="profile-stat-val">12 / 12</span>
+            <span class="profile-stat-label">Email</span>
+            <span class="profile-stat-val" id="profileEmailStat">—</span>
           </div>
         </div>
 
@@ -9117,6 +9043,12 @@ function renderCreditsUI() {
 
   // Update bulk cost badge dynamically
   updateBulkCostBadge();
+
+  // Refresh KPI credits cell live
+  const kpiCred = document.getElementById('kpi-credits');
+  if (kpiCred) kpiCred.textContent = val.toLocaleString();
+  const kpiSub = document.getElementById('kpi-credits-sub');
+  if (kpiSub) kpiSub.textContent = val <= 10 ? '⚠ low balance' : 'available';
 }
 
 // ── Update bulk audit cost badge based on URL count ─────────────────
@@ -9263,6 +9195,296 @@ sb.auth.getSession().then(({ data: { session } }) => {
 
 // ── Dev helper — type enableDevMode() in console to test top-ups ─────
 window.enableDevMode = () => { window._devMode = true; console.log('💛 Dev mode on — purchaseCredits() will add credits directly'); };
+
+// ═══════════════════════════════════════════════════════════════════
+// DASHBOARD ANALYTICS — Real data from Supabase + localStorage
+// ═══════════════════════════════════════════════════════════════════
+
+const ACTIVITY_KEY  = 'rs_activity_log';   // localStorage key for activity
+const USAGE_KEY     = 'rs_tool_usage';     // localStorage key for tool counts
+const CRED_LOG_KEY  = 'rs_credit_log';     // localStorage key for credit history
+
+// ── Activity Log Helpers ─────────────────────────────────────────────
+function getActivityLog() {
+  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveActivityLog(log) {
+  localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log.slice(0, 50)));
+}
+function logActivity(icon, iconClass, title, sub) {
+  const log = getActivityLog();
+  log.unshift({ icon, iconClass, title, sub, ts: Date.now() });
+  saveActivityLog(log);
+  renderActivityFeed();
+}
+
+// ── Tool Usage Helpers ───────────────────────────────────────────────
+function getUsage() {
+  try { return JSON.parse(localStorage.getItem(USAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function bumpUsage(tool, count = 1) {
+  const u = getUsage();
+  u[tool] = (u[tool] || 0) + count;
+  localStorage.setItem(USAGE_KEY, JSON.stringify(u));
+  renderUsage();
+}
+
+// ── Credit Log Helpers ───────────────────────────────────────────────
+function getCreditLog() {
+  try { return JSON.parse(localStorage.getItem(CRED_LOG_KEY) || '[]'); }
+  catch { return []; }
+}
+function logCreditUse(tool, amount, detail) {
+  const log = getCreditLog();
+  log.unshift({ tool, amount, detail, ts: Date.now() });
+  localStorage.setItem(CRED_LOG_KEY, JSON.stringify(log.slice(0, 30)));
+  renderCreditsHistory();
+}
+
+// ── Relative time helper ─────────────────────────────────────────────
+function timeAgo(ts) {
+  const sec = Math.floor((Date.now() - ts) / 1000);
+  if (sec < 60)   return 'just now';
+  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
+  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
+  if (sec < 604800) return Math.floor(sec/86400) + 'd ago';
+  return new Date(ts).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+}
+
+// ── Render: Activity Feed ────────────────────────────────────────────
+function renderActivityFeed() {
+  const list = document.getElementById('activity-list');
+  const emptyEl = document.getElementById('activity-empty');
+  if (!list) return;
+  const log = getActivityLog();
+  if (log.length === 0) {
+    list.innerHTML = `<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px" id="activity-empty">No activity yet — run your first audit!</div>`;
+    return;
+  }
+  list.innerHTML = log.slice(0, 8).map(item => `
+    <div class="activity-item">
+      <div class="activity-icon ${item.iconClass || 'seo'}">${item.icon}</div>
+      <div class="activity-body">
+        <div class="activity-title">${item.title}</div>
+        <div class="activity-sub">${item.sub}</div>
+      </div>
+      <div class="activity-time">${timeAgo(item.ts)}</div>
+    </div>`).join('');
+}
+
+function clearActivityLog() {
+  localStorage.removeItem(ACTIVITY_KEY);
+  localStorage.removeItem(USAGE_KEY);
+  localStorage.removeItem(CRED_LOG_KEY);
+  renderActivityFeed();
+  renderUsage();
+  renderCreditsHistory();
+  renderKPIs();
+}
+
+// ── Render: Tool Usage Bars ──────────────────────────────────────────
+function renderUsage() {
+  const u = getUsage();
+  const bulk    = u.bulk    || 0;
+  const crawl   = u.crawl   || 0;
+  const favicon = u.favicon || 0;
+  const spent   = u.credits_spent || 0;
+  const maxTool = Math.max(bulk, crawl, favicon, 1);
+  const maxCred = Math.max(spent, 1);
+
+  setText('usage-bulk',    bulk    + (bulk === 1 ? ' audit' : ' audits'));
+  setText('usage-crawl',   crawl   + (crawl === 1 ? ' crawl' : ' crawls'));
+  setText('usage-favicon', favicon + (favicon === 1 ? ' check' : ' checks'));
+  setText('usage-credits-spent', spent + ' credit' + (spent === 1 ? '' : 's') + ' spent');
+
+  setStyle('usage-bulk-bar',    'width', Math.round((bulk/maxTool)*100) + '%');
+  setStyle('usage-crawl-bar',   'width', Math.round((crawl/maxTool)*100) + '%');
+  setStyle('usage-favicon-bar', 'width', Math.round((favicon/maxTool)*100) + '%');
+  setStyle('usage-credits-bar', 'width', Math.min(100, Math.round((spent/Math.max(spent,200))*100)) + '%');
+}
+
+// ── Render: Credits History ──────────────────────────────────────────
+function renderCreditsHistory() {
+  const el = document.getElementById('credits-history-list');
+  if (!el) return;
+  const log = getCreditLog();
+  if (log.length === 0) {
+    el.innerHTML = `<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No credit usage yet</div>`;
+    return;
+  }
+  el.innerHTML = log.slice(0, 6).map(entry => `
+    <div class="activity-item" style="padding:10px 0">
+      <div class="activity-icon seo" style="font-size:13px;width:32px;height:32px;min-width:32px">⚡</div>
+      <div class="activity-body">
+        <div class="activity-title" style="font-size:12px">${entry.tool}</div>
+        <div class="activity-sub">${entry.detail}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="color:var(--gold);font-weight:700;font-size:13px">-${entry.amount}</div>
+        <div class="activity-time">${timeAgo(entry.ts)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── Render: KPI Strip ───────────────────────────────────────────────
+function renderKPIs() {
+  const u = getUsage();
+  const log = getActivityLog();
+
+  // Credits from live userCredits var
+  setText('kpi-credits', userCredits !== null ? userCredits.toLocaleString() : '—');
+  setText('kpi-credits-sub', userCredits !== null
+    ? (userCredits <= 10 ? '⚠ low balance' : 'available')
+    : 'loading…');
+
+  // Audits run = activity log entries of type bulk+crawl
+  const auditCount = log.filter(i => i.iconClass === 'seo' || i.iconClass === 'research').length;
+  setText('kpi-audits', (u.bulk || 0) + (u.crawl || 0));
+  setText('kpi-audits-sub', 'bulk + crawl runs');
+
+  // URLs audited = from usage
+  setText('kpi-urls', (u.urls_audited || 0).toLocaleString());
+  setText('kpi-urls-sub', (u.credits_spent || 0) + ' credits spent');
+}
+
+// ── Render: Member Since (from Supabase) ────────────────────────────
+async function renderMemberSince() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return;
+    const created = session.user.created_at;
+    const d = new Date(created);
+    const label = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    setText('kpi-since', label);
+    setText('memberSince', label);
+    // How many days ago
+    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+    setText('kpi-since-sub', days === 0 ? 'joined today! 🎉' : days + ' days ago');
+    setText('profileEmailStat', session.user.email || '—');
+  } catch(e) {
+    console.warn('[Dashboard] memberSince load failed', e);
+  }
+}
+
+// ── Tiny DOM helpers ─────────────────────────────────────────────────
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+function setStyle(id, prop, val) {
+  const el = document.getElementById(id);
+  if (el) el.style[prop] = val;
+}
+
+// ── Hook into the credit gates to log activity ───────────────────────
+// Wrap deductCredits to auto-log whenever credits are used
+const _origDeductCredits = deductCredits;
+async function deductCredits(amount) {
+  const result = await _origDeductCredits(amount);
+  // logging happens in the gate wrappers below
+  return result;
+}
+
+// Patch _startBulkAuditCore to log after successful run
+const __bulkCore = _startBulkAuditCore;
+async function _startBulkAuditCore() {
+  await __bulkCore();
+}
+
+// Hook startBulkAudit gate to also log activity
+const __gatedBulk = startBulkAudit;
+async function startBulkAudit() {
+  const urlsRaw = document.getElementById('url-textarea')?.value || '';
+  const urls = parseUrls(urlsRaw);
+  const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
+
+  // Run the existing gate
+  await __gatedBulk();
+
+  // Log only if credits were actually consumed (gate succeeded)
+  if (urls.length > 0 && userCredits !== null) {
+    const firstUrl = urls[0];
+    let domain = firstUrl;
+    try { domain = new URL(firstUrl.startsWith('http') ? firstUrl : 'https://'+firstUrl).hostname; } catch {}
+    logActivity('🧪', 'seo',
+      `Bulk audit — ${domain}${urls.length > 1 ? ` +${urls.length-1} more` : ''}`,
+      `${urls.length} URL${urls.length !== 1 ? 's' : ''} · ${cost} credits`);
+    bumpUsage('bulk');
+    bumpUsage('urls_audited', urls.length);
+    bumpUsage('credits_spent', cost);
+    logCreditUse('🧪 Bulk Audit', cost, `${urls.length} URLs · ${domain}`);
+    renderKPIs();
+  }
+}
+
+// Hook startSiteCrawl gate
+const __gatedCrawl = startSiteCrawl;
+async function startSiteCrawl() {
+  const rawInput = document.getElementById('crawl-url-input')?.value || '';
+  const sites = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
+  const cost = sites.length * CREDIT_COSTS.site_crawl_per_site;
+
+  await __gatedCrawl();
+
+  if (sites.length > 0 && userCredits !== null) {
+    let domain = sites[0];
+    try { domain = new URL(sites[0].startsWith('http') ? sites[0] : 'https://'+sites[0]).hostname; } catch {}
+    logActivity('🕷️', 'research',
+      `Site crawl — ${domain}${sites.length > 1 ? ` +${sites.length-1} more` : ''}`,
+      `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${cost} credits`);
+    bumpUsage('crawl');
+    bumpUsage('credits_spent', cost);
+    logCreditUse('🕷️ Site Crawl', cost, `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${domain}`);
+    renderKPIs();
+  }
+}
+
+// Hook favCheckAll gate
+const __gatedFav = favCheckAll;
+async function favCheckAll() {
+  const raw = document.getElementById('fav-url-input')?.value || '';
+  const urls = favParseUrls(raw);
+  const newUrls = urls.map(u => favParseHostname(u)).filter(h => h && !favChecked.has(h));
+  const cost = newUrls.length * CREDIT_COSTS.favicon_per_url;
+
+  await __gatedFav();
+
+  if (newUrls.length > 0 && userCredits !== null) {
+    logActivity('🦴', 'seo',
+      `Favicon check — ${newUrls[0]}${newUrls.length > 1 ? ` +${newUrls.length-1} more` : ''}`,
+      `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''} · ${cost} credits`);
+    bumpUsage('favicon');
+    bumpUsage('credits_spent', cost);
+    logCreditUse('🦴 Favicon Checker', cost, `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''}`);
+    renderKPIs();
+  }
+}
+
+// ── Boot dashboard analytics ─────────────────────────────────────────
+function initDashboardAnalytics() {
+  renderActivityFeed();
+  renderUsage();
+  renderCreditsHistory();
+  renderKPIs();
+  renderMemberSince();
+}
+
+// Run after credits load
+const __origLoadCredits = loadCredits;
+async function loadCredits() {
+  await __origLoadCredits();
+  renderKPIs(); // refresh KPI credits after load
+}
+
+// Boot on page ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboardAnalytics);
+} else {
+  initDashboardAnalytics();
+}
+
 </script>
 
 </body>
