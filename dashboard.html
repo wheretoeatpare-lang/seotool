@@ -5769,7 +5769,6 @@ async function exportCrawlExcel() {
 </script>
 
 <script>
-<script>
 // ── STATE ────────────────────────────────────────────────────────────────────
 let auditResults = [];
 let auditRunning = false;
@@ -9410,38 +9409,33 @@ async function startBulkAudit() {
 
   const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
 
-  if (userCredits !== null && userCredits < cost) {
-    showInsufficientCredits(cost);
-    return;
-  }
+  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
 
   const ok = userCredits !== null ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  if (cost > 0 && typeof _logBulkAuditActivity === 'function') _logBulkAuditActivity(urls, cost);
   _startBulkAuditCore();
 }
 
 // ── Gate: Site Crawl ─────────────────────────────────────────────────
 async function startSiteCrawl() {
   const rawInput = (document.getElementById('crawl-url-input')?.value || '').trim();
-  const siteCount = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0).length;
-  const cost = siteCount * CREDIT_COSTS.site_crawl_per_site;
+  const sites = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
+  const cost = sites.length * CREDIT_COSTS.site_crawl_per_site;
 
-  if (userCredits !== null && userCredits < cost) {
-    showInsufficientCredits(cost);
-    return;
-  }
+  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
 
   const ok = userCredits !== null && cost > 0 ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  if (cost > 0 && typeof _logCrawlActivity === 'function') _logCrawlActivity(sites, cost);
   _startSiteCrawlCore();
 }
 
 // ── Gate: Favicon Checker ────────────────────────────────────────────
-const _origFavCheckAll = _favCheckAllCore;
 async function favCheckAll() {
   const raw = document.getElementById('fav-url-input').value.trim();
   if (!raw) { _favCheckAllCore(); return; }
@@ -9452,15 +9446,13 @@ async function favCheckAll() {
 
   if (cost === 0) { _favCheckAllCore(); return; }
 
-  if (userCredits !== null && userCredits < cost) {
-    showInsufficientCredits(cost);
-    return;
-  }
+  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
 
   const ok = userCredits !== null ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
+  if (typeof _logFaviconActivity === 'function') _logFaviconActivity(newUrls, cost);
   _favCheckAllCore();
 }
 
@@ -9667,79 +9659,47 @@ async function deductCredits(amount) {
   return result;
 }
 
-// Patch _startBulkAuditCore to log after successful run
-const __bulkCore = _startBulkAuditCore;
-async function _startBulkAuditCore() {
-  await __bulkCore();
+// ── Activity logging helpers called FROM the gate functions ──────────
+// These are standalone helpers — they do NOT redefine any existing function.
+// They are called explicitly inside startBulkAudit / startSiteCrawl / favCheckAll gates.
+
+function _logBulkAuditActivity(urls, cost) {
+  if (!urls.length) return;
+  const firstUrl = urls[0];
+  let domain = firstUrl;
+  try { domain = new URL(firstUrl.startsWith('http') ? firstUrl : 'https://'+firstUrl).hostname; } catch {}
+  logActivity('🧪', 'seo',
+    `Bulk audit — ${domain}${urls.length > 1 ? ` +${urls.length-1} more` : ''}`,
+    `${urls.length} URL${urls.length !== 1 ? 's' : ''} · ${cost} credits`);
+  bumpUsage('bulk');
+  bumpUsage('urls_audited', urls.length);
+  bumpUsage('credits_spent', cost);
+  logCreditUse('🧪 Bulk Audit', cost, `${urls.length} URLs · ${domain}`);
+  renderKPIs();
 }
 
-// Hook startBulkAudit gate to also log activity
-const __gatedBulk = startBulkAudit;
-async function startBulkAudit() {
-  const urlsRaw = document.getElementById('url-textarea')?.value || '';
-  const urls = parseUrls(urlsRaw);
-  const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
-
-  // Run the existing gate
-  await __gatedBulk();
-
-  // Log only if credits were actually consumed (gate succeeded)
-  if (urls.length > 0 && userCredits !== null) {
-    const firstUrl = urls[0];
-    let domain = firstUrl;
-    try { domain = new URL(firstUrl.startsWith('http') ? firstUrl : 'https://'+firstUrl).hostname; } catch {}
-    logActivity('🧪', 'seo',
-      `Bulk audit — ${domain}${urls.length > 1 ? ` +${urls.length-1} more` : ''}`,
-      `${urls.length} URL${urls.length !== 1 ? 's' : ''} · ${cost} credits`);
-    bumpUsage('bulk');
-    bumpUsage('urls_audited', urls.length);
-    bumpUsage('credits_spent', cost);
-    logCreditUse('🧪 Bulk Audit', cost, `${urls.length} URLs · ${domain}`);
-    renderKPIs();
-  }
+function _logCrawlActivity(sites, cost) {
+  if (!sites.length) return;
+  let domain = sites[0];
+  try { domain = new URL(sites[0].startsWith('http') ? sites[0] : 'https://'+sites[0]).hostname; } catch {}
+  logActivity('🕷️', 'research',
+    `Site crawl — ${domain}${sites.length > 1 ? ` +${sites.length-1} more` : ''}`,
+    `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${cost} credits`);
+  bumpUsage('crawl');
+  bumpUsage('credits_spent', cost);
+  logCreditUse('🕷️ Site Crawl', cost, `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${domain}`);
+  renderKPIs();
 }
 
-// Hook startSiteCrawl gate
-const __gatedCrawl = startSiteCrawl;
-async function startSiteCrawl() {
-  const rawInput = document.getElementById('crawl-url-input')?.value || '';
-  const sites = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
-  const cost = sites.length * CREDIT_COSTS.site_crawl_per_site;
-
-  await __gatedCrawl();
-
-  if (sites.length > 0 && userCredits !== null) {
-    let domain = sites[0];
-    try { domain = new URL(sites[0].startsWith('http') ? sites[0] : 'https://'+sites[0]).hostname; } catch {}
-    logActivity('🕷️', 'research',
-      `Site crawl — ${domain}${sites.length > 1 ? ` +${sites.length-1} more` : ''}`,
-      `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${cost} credits`);
-    bumpUsage('crawl');
-    bumpUsage('credits_spent', cost);
-    logCreditUse('🕷️ Site Crawl', cost, `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${domain}`);
-    renderKPIs();
-  }
-}
-
-// Hook favCheckAll gate
-const __gatedFav = favCheckAll;
-async function favCheckAll() {
-  const raw = document.getElementById('fav-url-input')?.value || '';
-  const urls = favParseUrls(raw);
-  const newUrls = urls.map(u => favParseHostname(u)).filter(h => h && !favChecked.has(h));
-  const cost = newUrls.length * CREDIT_COSTS.favicon_per_url;
-
-  await __gatedFav();
-
-  if (newUrls.length > 0 && userCredits !== null) {
-    logActivity('🦴', 'seo',
-      `Favicon check — ${newUrls[0]}${newUrls.length > 1 ? ` +${newUrls.length-1} more` : ''}`,
-      `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''} · ${cost} credits`);
-    bumpUsage('favicon');
-    bumpUsage('credits_spent', cost);
-    logCreditUse('🦴 Favicon Checker', cost, `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''}`);
-    renderKPIs();
-  }
+function _logFaviconActivity(newUrls, cost) {
+  if (!newUrls.length) return;
+  logActivity('🦴', 'seo',
+    `Favicon check — ${newUrls[0]}${newUrls.length > 1 ? ` +${newUrls.length-1} more` : ''}`,
+    `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''} · ${cost} credits`);
+  bumpUsage('favicon');
+  bumpUsage('credits_spent', cost);
+  logCreditUse('🦴 Favicon Checker', cost, `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''}`);
+  renderKPIs();
 }
 
 // ── Boot dashboard analytics ─────────────────────────────────────────
@@ -9749,13 +9709,8 @@ function initDashboardAnalytics() {
   renderCreditsHistory();
   renderKPIs();
   renderMemberSince();
-}
-
-// Run after credits load
-const __origLoadCredits = loadCredits;
-async function loadCredits() {
-  await __origLoadCredits();
-  renderKPIs(); // refresh KPI credits after load
+  // Also refresh KPIs after credits load
+  setTimeout(() => { if (userCredits !== null) renderKPIs(); }, 2000);
 }
 
 // Boot on page ready
