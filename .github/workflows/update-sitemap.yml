@@ -8,7 +8,7 @@ on:
 
   # ② Runs every day at midnight UTC automatically
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 7 * * *'
 
   # ③ Lets you trigger it manually from GitHub Actions tab anytime
   workflow_dispatch:
@@ -23,13 +23,13 @@ jobs:
     steps:
       # 1. Check out your full repository
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # 2. Set up Node.js (used by the sitemap generator script)
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '24'
 
       # 3. Run the sitemap generator script
       - name: Generate sitemap.xml
