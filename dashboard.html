@@ -1682,85 +1682,54 @@ tr.row-zap td {
 
     <!-- ROW 1: Activity + Quick Actions -->
     <div class="grid-2">
-
-      <!-- Recent Activity -->
       <div class="card" style="animation-delay:0.1s">
         <div class="card-header">
           <span class="card-title">Recent Activity</span>
           <span class="card-action" onclick="clearActivityLog()" style="cursor:pointer">Clear →</span>
         </div>
         <div class="activity-list" id="activity-list">
-          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px" id="activity-empty">
-            No activity yet — run your first audit!
-          </div>
+          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No activity yet — run your first audit!</div>
         </div>
       </div>
-
-      <!-- Quick Actions -->
       <div class="card" style="animation-delay:0.15s">
-        <div class="card-header">
-          <span class="card-title">Quick Actions</span>
-        </div>
+        <div class="card-header"><span class="card-title">Quick Actions</span></div>
         <div class="quick-actions">
           <a class="quick-btn" href="#" onclick="showBulkAuditor(event)">
-            <div class="quick-btn-icon gold">🧪</div>
-            Run Site Audit
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon gold">🧪</div>Run Site Audit<span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="#" onclick="showFaviconChecker(event)">
-            <div class="quick-btn-icon gold">🦴</div>
-            Favicon Checker
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon gold">🦴</div>Favicon Checker<span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="/keyword-volume.html">
-            <div class="quick-btn-icon green">🔑</div>
-            Research Keywords
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon green">🔑</div>Research Keywords<span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="/ai-blog-writer.html">
-            <div class="quick-btn-icon blue">📰</div>
-            Write Blog Post
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon blue">📰</div>Write Blog Post<span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="/competitor.html">
-            <div class="quick-btn-icon red">⚔️</div>
-            Competitor Gap Report
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon red">⚔️</div>Competitor Gap Report<span class="quick-btn-arrow">→</span>
           </a>
           <a class="quick-btn" href="/ai-search.html">
-            <div class="quick-btn-icon gold">🤖</div>
-            Check AI Visibility
-            <span class="quick-btn-arrow">→</span>
+            <div class="quick-btn-icon gold">🤖</div>Check AI Visibility<span class="quick-btn-arrow">→</span>
           </a>
         </div>
       </div>
-
     </div>
 
     <!-- ROW 2: Credits History + Usage + Profile -->
     <div class="grid-3">
-
-      <!-- Credits & Activity History -->
       <div class="card" style="animation-delay:0.2s">
         <div class="card-header">
           <span class="card-title">Credits History</span>
-          <span class="card-action" id="credits-history-label" style="font-size:11px;color:var(--muted)">last 5 uses</span>
+          <span style="font-size:11px;color:var(--muted)">last 6 uses</span>
         </div>
         <div id="credits-history-list">
-          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">
-            No credit usage yet
-          </div>
+          <div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No credit usage yet</div>
         </div>
       </div>
-
-      <!-- Right column: Usage + Profile -->
-      <div style="display:flex; flex-direction:column; gap:16px;">
-
-        <!-- Tool Usage -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
         <div class="card" style="animation-delay:0.25s">
-          <div class="card-header">
-            <span class="card-title">Tool Usage</span>
-          </div>
+          <div class="card-header"><span class="card-title">Tool Usage</span></div>
           <div class="usage-item">
             <div class="usage-row">
               <span class="usage-label">🧪 Bulk Auditor</span>
@@ -1790,8 +1759,6 @@ tr.row-zap td {
             <div class="usage-bar"><div class="usage-fill" id="usage-credits-bar" style="width:0%;background:var(--gold)"></div></div>
           </div>
         </div>
-
-        <!-- Profile Card -->
         <div class="card profile-card" style="animation-delay:0.3s">
           <div class="profile-avatar" id="profileAvatar">—</div>
           <div class="profile-name" id="profileName">Loading…</div>
@@ -1820,7 +1787,6 @@ tr.row-zap td {
             <span class="profile-stat-val" id="profileEmailStat">—</span>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -3417,143 +3383,43 @@ async function detectSitemapAndRobots(url, cachedPageHtml) {
   return result;
 }
 
-// ── CMS Fingerprinter — client-side HTML sniffing ───────────────────────────
-function sniffCMSFromHtml(html, headers) {
+function _sniffCMSFromHtml(html) {
   if (!html) return null;
   const h = html.toLowerCase();
   const checks = [
-    // Duda — highest priority, very distinctive
-    { cms:'Duda',        score: (
-        (h.includes('dmcdn.net') ? 40 : 0) +
-        (h.includes('irp-cdn.multiscreensite.com') ? 40 : 0) +
-        (h.includes('multiscreensite.com') ? 35 : 0) +
-        (h.includes('dudamobile.com') ? 35 : 0) +
-        (h.includes('duda-editor') ? 30 : 0) +
-        (h.includes('data-v-') && h.includes('dmcdn') ? 20 : 0) +
-        (/class="[^"]*u_[a-zA-Z0-9]{8,}/.test(html) ? 15 : 0) +
-        (h.includes('runtime-worker') && h.includes('dmcdn') ? 20 : 0) +
-        (h.includes('site-popup') && h.includes('dmcdn') ? 15 : 0)
-    )},
-    // WordPress
-    { cms:'WordPress',   score: (
-        (h.includes('/wp-content/') ? 50 : 0) +
-        (h.includes('/wp-includes/') ? 30 : 0) +
-        (h.includes('wp-json') ? 20 : 0) +
-        (h.includes('wordpress') ? 10 : 0)
-    )},
-    // Shopify
-    { cms:'Shopify',     score: (
-        (h.includes('cdn.shopify.com') ? 50 : 0) +
-        (h.includes('shopify.com/s/files') ? 40 : 0) +
-        (h.includes('myshopify.com') ? 30 : 0) +
-        (h.includes('shopify-analytics') ? 20 : 0)
-    )},
-    // Squarespace
-    { cms:'Squarespace', score: (
-        (h.includes('squarespace.com') ? 50 : 0) +
-        (h.includes('static1.squarespace.com') ? 40 : 0) +
-        (h.includes('squarespace-cdn.com') ? 30 : 0)
-    )},
-    // Wix
-    { cms:'Wix',         score: (
-        (h.includes('wix.com') ? 40 : 0) +
-        (h.includes('wixstatic.com') ? 40 : 0) +
-        (h.includes('parastorage.com') ? 20 : 0) +
-        (h.includes('x-wix-renderer') ? 30 : 0)
-    )},
-    // Webflow
-    { cms:'Webflow',     score: (
-        (h.includes('webflow.com') ? 40 : 0) +
-        (h.includes('assets-global.website-files.com') ? 30 : 0) +
-        (h.includes('uploads-ssl.webflow.com') ? 30 : 0) +
-        (h.includes('w-webflow-badge') ? 25 : 0)
-    )},
-    // Framer
-    { cms:'Framer',      score: (
-        (h.includes('framer.com') ? 40 : 0) +
-        (h.includes('framerusercontent.com') ? 40 : 0) +
-        (h.includes('framer-badge') ? 30 : 0)
-    )},
-    // Ghost
-    { cms:'Ghost',       score: (
-        (h.includes('ghost.io') ? 40 : 0) +
-        (h.includes('/ghost/') ? 30 : 0) +
-        (h.includes('ghost-theme') ? 20 : 0)
-    )},
-    // HubSpot CMS
-    { cms:'HubSpot',     score: (
-        (h.includes('hubspot.com') ? 40 : 0) +
-        (h.includes('hs-scripts') ? 30 : 0) +
-        (h.includes('hscta-wrapper') ? 25 : 0)
-    )},
-    // BigCommerce
-    { cms:'BigCommerce', score: (
-        (h.includes('bigcommerce.com') ? 40 : 0) +
-        (h.includes('cdn11.bigcommerce') ? 40 : 0)
-    )},
-    // Joomla
-    { cms:'Joomla',      score: (
-        (h.includes('/media/jui/') ? 40 : 0) +
-        (h.includes('joomla') ? 20 : 0) +
-        (h.includes('/components/com_') ? 30 : 0)
-    )},
-    // Drupal
-    { cms:'Drupal',      score: (
-        (h.includes('/sites/default/files/') ? 40 : 0) +
-        (h.includes('drupal') ? 20 : 0) +
-        (h.includes('drupalSettings') ? 30 : 0)
-    )},
-    // Next.js
-    { cms:'Next.js',     score: (
-        (h.includes('__next') ? 30 : 0) +
-        (h.includes('/_next/static/') ? 40 : 0) +
-        (h.includes('next/dist') ? 20 : 0)
-    )},
-    // Gatsby
-    { cms:'Gatsby',      score: (
-        (h.includes('gatsby') ? 20 : 0) +
-        (h.includes('/static/gatsby') ? 30 : 0) +
-        (h.includes('___gatsby') ? 30 : 0)
-    )},
+    { cms:'Duda',        score: (h.includes('dmcdn.net')?40:0)+(h.includes('irp-cdn.multiscreensite.com')?40:0)+(h.includes('multiscreensite.com')?35:0)+(h.includes('dudamobile.com')?35:0)+(h.includes('duda-editor')?30:0) },
+    { cms:'WordPress',   score: (h.includes('/wp-content/')?50:0)+(h.includes('/wp-includes/')?30:0)+(h.includes('wp-json')?20:0) },
+    { cms:'Shopify',     score: (h.includes('cdn.shopify.com')?50:0)+(h.includes('shopify.com/s/files')?40:0)+(h.includes('myshopify.com')?30:0) },
+    { cms:'Squarespace', score: (h.includes('squarespace.com')?50:0)+(h.includes('static1.squarespace.com')?40:0) },
+    { cms:'Wix',         score: (h.includes('wixstatic.com')?40:0)+(h.includes('parastorage.com')?20:0) },
+    { cms:'Webflow',     score: (h.includes('assets-global.website-files.com')?40:0)+(h.includes('uploads-ssl.webflow.com')?30:0)+(h.includes('w-webflow-badge')?25:0) },
+    { cms:'Framer',      score: (h.includes('framerusercontent.com')?40:0)+(h.includes('framer-badge')?30:0) },
+    { cms:'Ghost',       score: (h.includes('ghost.io')?40:0)+(h.includes('/ghost/')?30:0) },
+    { cms:'HubSpot',     score: (h.includes('hs-scripts')?40:0)+(h.includes('hscta-wrapper')?25:0) },
+    { cms:'Next.js',     score: (h.includes('/_next/static/')?40:0)+(h.includes('__next')?20:0) },
+    { cms:'Gatsby',      score: (h.includes('___gatsby')?40:0)+(h.includes('/static/gatsby')?30:0) },
+    { cms:'Drupal',      score: (h.includes('drupalSettings')?40:0)+(h.includes('/sites/default/files/')?30:0) },
+    { cms:'Joomla',      score: (h.includes('/media/jui/')?40:0)+(h.includes('/components/com_')?30:0) },
+    { cms:'BigCommerce', score: (h.includes('cdn11.bigcommerce')?50:0)+(h.includes('bigcommerce.com')?30:0) },
   ];
-
-  // Find highest scoring match above threshold
   checks.sort((a,b) => b.score - a.score);
   const top = checks[0];
-  if (top.score >= 30) {
-    const confidence = Math.min(99, top.score);
-    return { cms: top.cms, confidence, source: 'html-sniff' };
-  }
-  return null;
+  return top.score >= 30 ? { cms: top.cms, confidence: Math.min(99, top.score), source: 'html-sniff' } : null;
 }
 
 async function detectCMS(url, rawHtml) {
-  // First try worker API
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({url}),
-      signal:AbortSignal.timeout(12000)
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url}), signal:AbortSignal.timeout(12000)
     });
     if (res.ok) {
       const data = await res.json();
-      // If worker returned Unknown or low confidence, try HTML sniff as override
-      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) {
-        return data;
-      }
+      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) return data;
     }
-  } catch(e) {
-    console.warn('[CMS] Worker failed, falling back to HTML sniff:', e.message);
-  }
-
-  // Fallback: sniff HTML if available
-  if (rawHtml) {
-    const sniffed = sniffCMSFromHtml(rawHtml);
-    if (sniffed) return sniffed;
-  }
-
-  return { cms: 'Unknown', confidence: 0 };
+  } catch(e) {}
+  if (rawHtml) { const s = _sniffCMSFromHtml(rawHtml); if (s) return s; }
+  return { cms:'Unknown', confidence:0 };
 }
 // ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
 
@@ -6619,143 +6485,43 @@ async function detectSitemapAndRobots(url, cachedPageHtml) {
   return result;
 }
 
-// ── CMS Fingerprinter — client-side HTML sniffing ───────────────────────────
-function sniffCMSFromHtml(html, headers) {
+function _sniffCMSFromHtml(html) {
   if (!html) return null;
   const h = html.toLowerCase();
   const checks = [
-    // Duda — highest priority, very distinctive
-    { cms:'Duda',        score: (
-        (h.includes('dmcdn.net') ? 40 : 0) +
-        (h.includes('irp-cdn.multiscreensite.com') ? 40 : 0) +
-        (h.includes('multiscreensite.com') ? 35 : 0) +
-        (h.includes('dudamobile.com') ? 35 : 0) +
-        (h.includes('duda-editor') ? 30 : 0) +
-        (h.includes('data-v-') && h.includes('dmcdn') ? 20 : 0) +
-        (/class="[^"]*u_[a-zA-Z0-9]{8,}/.test(html) ? 15 : 0) +
-        (h.includes('runtime-worker') && h.includes('dmcdn') ? 20 : 0) +
-        (h.includes('site-popup') && h.includes('dmcdn') ? 15 : 0)
-    )},
-    // WordPress
-    { cms:'WordPress',   score: (
-        (h.includes('/wp-content/') ? 50 : 0) +
-        (h.includes('/wp-includes/') ? 30 : 0) +
-        (h.includes('wp-json') ? 20 : 0) +
-        (h.includes('wordpress') ? 10 : 0)
-    )},
-    // Shopify
-    { cms:'Shopify',     score: (
-        (h.includes('cdn.shopify.com') ? 50 : 0) +
-        (h.includes('shopify.com/s/files') ? 40 : 0) +
-        (h.includes('myshopify.com') ? 30 : 0) +
-        (h.includes('shopify-analytics') ? 20 : 0)
-    )},
-    // Squarespace
-    { cms:'Squarespace', score: (
-        (h.includes('squarespace.com') ? 50 : 0) +
-        (h.includes('static1.squarespace.com') ? 40 : 0) +
-        (h.includes('squarespace-cdn.com') ? 30 : 0)
-    )},
-    // Wix
-    { cms:'Wix',         score: (
-        (h.includes('wix.com') ? 40 : 0) +
-        (h.includes('wixstatic.com') ? 40 : 0) +
-        (h.includes('parastorage.com') ? 20 : 0) +
-        (h.includes('x-wix-renderer') ? 30 : 0)
-    )},
-    // Webflow
-    { cms:'Webflow',     score: (
-        (h.includes('webflow.com') ? 40 : 0) +
-        (h.includes('assets-global.website-files.com') ? 30 : 0) +
-        (h.includes('uploads-ssl.webflow.com') ? 30 : 0) +
-        (h.includes('w-webflow-badge') ? 25 : 0)
-    )},
-    // Framer
-    { cms:'Framer',      score: (
-        (h.includes('framer.com') ? 40 : 0) +
-        (h.includes('framerusercontent.com') ? 40 : 0) +
-        (h.includes('framer-badge') ? 30 : 0)
-    )},
-    // Ghost
-    { cms:'Ghost',       score: (
-        (h.includes('ghost.io') ? 40 : 0) +
-        (h.includes('/ghost/') ? 30 : 0) +
-        (h.includes('ghost-theme') ? 20 : 0)
-    )},
-    // HubSpot CMS
-    { cms:'HubSpot',     score: (
-        (h.includes('hubspot.com') ? 40 : 0) +
-        (h.includes('hs-scripts') ? 30 : 0) +
-        (h.includes('hscta-wrapper') ? 25 : 0)
-    )},
-    // BigCommerce
-    { cms:'BigCommerce', score: (
-        (h.includes('bigcommerce.com') ? 40 : 0) +
-        (h.includes('cdn11.bigcommerce') ? 40 : 0)
-    )},
-    // Joomla
-    { cms:'Joomla',      score: (
-        (h.includes('/media/jui/') ? 40 : 0) +
-        (h.includes('joomla') ? 20 : 0) +
-        (h.includes('/components/com_') ? 30 : 0)
-    )},
-    // Drupal
-    { cms:'Drupal',      score: (
-        (h.includes('/sites/default/files/') ? 40 : 0) +
-        (h.includes('drupal') ? 20 : 0) +
-        (h.includes('drupalSettings') ? 30 : 0)
-    )},
-    // Next.js
-    { cms:'Next.js',     score: (
-        (h.includes('__next') ? 30 : 0) +
-        (h.includes('/_next/static/') ? 40 : 0) +
-        (h.includes('next/dist') ? 20 : 0)
-    )},
-    // Gatsby
-    { cms:'Gatsby',      score: (
-        (h.includes('gatsby') ? 20 : 0) +
-        (h.includes('/static/gatsby') ? 30 : 0) +
-        (h.includes('___gatsby') ? 30 : 0)
-    )},
+    { cms:'Duda',        score: (h.includes('dmcdn.net')?40:0)+(h.includes('irp-cdn.multiscreensite.com')?40:0)+(h.includes('multiscreensite.com')?35:0)+(h.includes('dudamobile.com')?35:0)+(h.includes('duda-editor')?30:0) },
+    { cms:'WordPress',   score: (h.includes('/wp-content/')?50:0)+(h.includes('/wp-includes/')?30:0)+(h.includes('wp-json')?20:0) },
+    { cms:'Shopify',     score: (h.includes('cdn.shopify.com')?50:0)+(h.includes('shopify.com/s/files')?40:0)+(h.includes('myshopify.com')?30:0) },
+    { cms:'Squarespace', score: (h.includes('squarespace.com')?50:0)+(h.includes('static1.squarespace.com')?40:0) },
+    { cms:'Wix',         score: (h.includes('wixstatic.com')?40:0)+(h.includes('parastorage.com')?20:0) },
+    { cms:'Webflow',     score: (h.includes('assets-global.website-files.com')?40:0)+(h.includes('uploads-ssl.webflow.com')?30:0)+(h.includes('w-webflow-badge')?25:0) },
+    { cms:'Framer',      score: (h.includes('framerusercontent.com')?40:0)+(h.includes('framer-badge')?30:0) },
+    { cms:'Ghost',       score: (h.includes('ghost.io')?40:0)+(h.includes('/ghost/')?30:0) },
+    { cms:'HubSpot',     score: (h.includes('hs-scripts')?40:0)+(h.includes('hscta-wrapper')?25:0) },
+    { cms:'Next.js',     score: (h.includes('/_next/static/')?40:0)+(h.includes('__next')?20:0) },
+    { cms:'Gatsby',      score: (h.includes('___gatsby')?40:0)+(h.includes('/static/gatsby')?30:0) },
+    { cms:'Drupal',      score: (h.includes('drupalSettings')?40:0)+(h.includes('/sites/default/files/')?30:0) },
+    { cms:'Joomla',      score: (h.includes('/media/jui/')?40:0)+(h.includes('/components/com_')?30:0) },
+    { cms:'BigCommerce', score: (h.includes('cdn11.bigcommerce')?50:0)+(h.includes('bigcommerce.com')?30:0) },
   ];
-
-  // Find highest scoring match above threshold
   checks.sort((a,b) => b.score - a.score);
   const top = checks[0];
-  if (top.score >= 30) {
-    const confidence = Math.min(99, top.score);
-    return { cms: top.cms, confidence, source: 'html-sniff' };
-  }
-  return null;
+  return top.score >= 30 ? { cms: top.cms, confidence: Math.min(99, top.score), source: 'html-sniff' } : null;
 }
 
 async function detectCMS(url, rawHtml) {
-  // First try worker API
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({url}),
-      signal:AbortSignal.timeout(12000)
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url}), signal:AbortSignal.timeout(12000)
     });
     if (res.ok) {
       const data = await res.json();
-      // If worker returned Unknown or low confidence, try HTML sniff as override
-      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) {
-        return data;
-      }
+      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) return data;
     }
-  } catch(e) {
-    console.warn('[CMS] Worker failed, falling back to HTML sniff:', e.message);
-  }
-
-  // Fallback: sniff HTML if available
-  if (rawHtml) {
-    const sniffed = sniffCMSFromHtml(rawHtml);
-    if (sniffed) return sniffed;
-  }
-
-  return { cms: 'Unknown', confidence: 0 };
+  } catch(e) {}
+  if (rawHtml) { const s = _sniffCMSFromHtml(rawHtml); if (s) return s; }
+  return { cms:'Unknown', confidence:0 };
 }
 // ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
 
@@ -8865,8 +8631,6 @@ async function exportCrawlExcel() {
 
 </script>
 
-</script>
-
 <script>
 // ═══════════════════════════════════════════════════════════════════
 // FAVICON CHECKER — Integrated into Dashboard
@@ -9205,7 +8969,7 @@ let creditsUserId = null;
 async function loadCredits() {
   try {
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) { console.warn('[Credits] No session'); return; }
+    if (!session) return;
     creditsUserId = session.user.id;
 
     const { data, error } = await sb
@@ -9214,38 +8978,28 @@ async function loadCredits() {
       .eq('user_id', creditsUserId)
       .single();
 
-    if (error) {
-      console.warn('[Credits] DB error:', error.code, error.message);
-      if (error.code === 'PGRST116') {
-        const defaultCredits = 100;
-        const { data: newRow, error: insertErr } = await sb
-          .from(CREDITS_TABLE)
-          .insert({ user_id: creditsUserId, credits: defaultCredits })
-          .select('credits')
-          .single();
-        if (!insertErr && newRow) {
-          userCredits = newRow.credits;
-          console.log('[Credits] Created row with', userCredits, 'credits');
-        } else {
-          console.warn('[Credits] Insert failed:', insertErr);
-          userCredits = defaultCredits;
-        }
-      } else if (error.code === '42P01') {
-        console.error('[Credits] Table "user_credits" not found!');
-        userCredits = 0;
-        const scbSub = document.getElementById('scb-sub');
-        if (scbSub) scbSub.innerHTML = '<span style="color:var(--red)">⚠ Table missing — see setup guide</span>';
+    if (error && error.code === 'PGRST116') {
+      // Row doesn't exist yet — create with default credits
+      const defaultCredits = 100;
+      const { data: newRow, error: insertErr } = await sb
+        .from(CREDITS_TABLE)
+        .insert({ user_id: creditsUserId, credits: defaultCredits })
+        .select('credits')
+        .single();
+      if (!insertErr && newRow) {
+        userCredits = newRow.credits;
       } else {
-        userCredits = userCredits ?? 0;
+        // Fallback: show credits from local state if DB insert fails
+        userCredits = defaultCredits;
       }
-    } else if (data) {
+    } else if (!error && data) {
       userCredits = data.credits;
-      console.log('[Credits] Loaded:', userCredits, 'credits');
     } else {
+      // DB unavailable — use cached local value or 0
       userCredits = userCredits ?? 0;
     }
   } catch (e) {
-    console.warn('[Credits] Load exception:', e);
+    console.warn('[Credits] Load failed:', e);
     userCredits = userCredits ?? 0;
   }
   renderCreditsUI();
@@ -9318,12 +9072,6 @@ function renderCreditsUI() {
 
   // Update bulk cost badge dynamically
   updateBulkCostBadge();
-
-  // Refresh KPI credits cell live
-  const kpiCred = document.getElementById('kpi-credits');
-  if (kpiCred) kpiCred.textContent = val.toLocaleString();
-  const kpiSub = document.getElementById('kpi-credits-sub');
-  if (kpiSub) kpiSub.textContent = val <= 10 ? '⚠ low balance' : 'available';
 }
 
 // ── Update bulk audit cost badge based on URL count ─────────────────
@@ -9409,33 +9157,38 @@ async function startBulkAudit() {
 
   const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
 
-  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
 
   const ok = userCredits !== null ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  if (cost > 0 && typeof _logBulkAuditActivity === 'function') _logBulkAuditActivity(urls, cost);
   _startBulkAuditCore();
 }
 
 // ── Gate: Site Crawl ─────────────────────────────────────────────────
 async function startSiteCrawl() {
   const rawInput = (document.getElementById('crawl-url-input')?.value || '').trim();
-  const sites = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
-  const cost = sites.length * CREDIT_COSTS.site_crawl_per_site;
+  const siteCount = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0).length;
+  const cost = siteCount * CREDIT_COSTS.site_crawl_per_site;
 
-  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
 
   const ok = userCredits !== null && cost > 0 ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   if (cost > 0) showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  if (cost > 0 && typeof _logCrawlActivity === 'function') _logCrawlActivity(sites, cost);
   _startSiteCrawlCore();
 }
 
 // ── Gate: Favicon Checker ────────────────────────────────────────────
+const _origFavCheckAll = _favCheckAllCore;
 async function favCheckAll() {
   const raw = document.getElementById('fav-url-input').value.trim();
   if (!raw) { _favCheckAllCore(); return; }
@@ -9446,280 +9199,228 @@ async function favCheckAll() {
 
   if (cost === 0) { _favCheckAllCore(); return; }
 
-  if (userCredits !== null && userCredits < cost) { showInsufficientCredits(cost); return; }
+  if (userCredits !== null && userCredits < cost) {
+    showInsufficientCredits(cost);
+    return;
+  }
 
   const ok = userCredits !== null ? await deductCredits(cost) : true;
   if (!ok) { showInsufficientCredits(cost); return; }
 
   showToast(`⚡ ${cost} credit${cost !== 1 ? 's' : ''} used — ${userCredits} remaining`, 'var(--gold)');
-  if (typeof _logFaviconActivity === 'function') _logFaviconActivity(newUrls, cost);
   _favCheckAllCore();
 }
 
 // ── Boot: load credits once session is confirmed ─────────────────────
-// Use both getSession (immediate) AND onAuthStateChange (catches delayed auth)
 sb.auth.getSession().then(({ data: { session } }) => {
   if (session) loadCredits();
-});
-sb.auth.onAuthStateChange((_event, session) => {
-  if (session && userCredits === null) loadCredits();
 });
 
 // ── Dev helper — type enableDevMode() in console to test top-ups ─────
 window.enableDevMode = () => { window._devMode = true; console.log('💛 Dev mode on — purchaseCredits() will add credits directly'); };
+</script>
 
+<script>
 // ═══════════════════════════════════════════════════════════════════
-// DASHBOARD ANALYTICS — Real data from Supabase + localStorage
+// DASHBOARD ANALYTICS — Real data via localStorage
+// No function redefinitions. Pure standalone helpers.
 // ═══════════════════════════════════════════════════════════════════
 
-const ACTIVITY_KEY  = 'rs_activity_log';   // localStorage key for activity
-const USAGE_KEY     = 'rs_tool_usage';     // localStorage key for tool counts
-const CRED_LOG_KEY  = 'rs_credit_log';     // localStorage key for credit history
+const ACTIVITY_KEY = 'rs_activity_log';
+const USAGE_KEY    = 'rs_tool_usage';
+const CRED_LOG_KEY = 'rs_credit_log';
 
-// ── Activity Log Helpers ─────────────────────────────────────────────
-function getActivityLog() {
-  try { return JSON.parse(localStorage.getItem(ACTIVITY_KEY) || '[]'); }
-  catch { return []; }
-}
-function saveActivityLog(log) {
-  localStorage.setItem(ACTIVITY_KEY, JSON.stringify(log.slice(0, 50)));
-}
-function logActivity(icon, iconClass, title, sub) {
-  const log = getActivityLog();
-  log.unshift({ icon, iconClass, title, sub, ts: Date.now() });
-  saveActivityLog(log);
-  renderActivityFeed();
-}
+function _getLog(key) { try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; } }
+function _saveLog(key, arr) { localStorage.setItem(key, JSON.stringify(arr.slice(0,50))); }
+function _getUsage() { try { return JSON.parse(localStorage.getItem(USAGE_KEY) || '{}'); } catch { return {}; } }
 
-// ── Tool Usage Helpers ───────────────────────────────────────────────
-function getUsage() {
-  try { return JSON.parse(localStorage.getItem(USAGE_KEY) || '{}'); }
-  catch { return {}; }
+function logActivity(icon, cls, title, sub) {
+  const log = _getLog(ACTIVITY_KEY);
+  log.unshift({ icon, cls, title, sub, ts: Date.now() });
+  _saveLog(ACTIVITY_KEY, log);
+  _renderActivity();
 }
-function bumpUsage(tool, count = 1) {
-  const u = getUsage();
-  u[tool] = (u[tool] || 0) + count;
+function bumpUsage(tool, n=1) {
+  const u = _getUsage(); u[tool] = (u[tool]||0) + n;
   localStorage.setItem(USAGE_KEY, JSON.stringify(u));
-  renderUsage();
-}
-
-// ── Credit Log Helpers ───────────────────────────────────────────────
-function getCreditLog() {
-  try { return JSON.parse(localStorage.getItem(CRED_LOG_KEY) || '[]'); }
-  catch { return []; }
+  _renderUsage();
 }
 function logCreditUse(tool, amount, detail) {
-  const log = getCreditLog();
+  const log = _getLog(CRED_LOG_KEY);
   log.unshift({ tool, amount, detail, ts: Date.now() });
-  localStorage.setItem(CRED_LOG_KEY, JSON.stringify(log.slice(0, 30)));
-  renderCreditsHistory();
+  _saveLog(CRED_LOG_KEY, log);
+  _renderCreditHistory();
 }
-
-// ── Relative time helper ─────────────────────────────────────────────
-function timeAgo(ts) {
-  const sec = Math.floor((Date.now() - ts) / 1000);
-  if (sec < 60)   return 'just now';
-  if (sec < 3600) return Math.floor(sec/60) + 'm ago';
-  if (sec < 86400) return Math.floor(sec/3600) + 'h ago';
-  if (sec < 604800) return Math.floor(sec/86400) + 'd ago';
-  return new Date(ts).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-}
-
-// ── Render: Activity Feed ────────────────────────────────────────────
-function renderActivityFeed() {
-  const list = document.getElementById('activity-list');
-  const emptyEl = document.getElementById('activity-empty');
-  if (!list) return;
-  const log = getActivityLog();
-  if (log.length === 0) {
-    list.innerHTML = `<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px" id="activity-empty">No activity yet — run your first audit!</div>`;
-    return;
-  }
-  list.innerHTML = log.slice(0, 8).map(item => `
-    <div class="activity-item">
-      <div class="activity-icon ${item.iconClass || 'seo'}">${item.icon}</div>
-      <div class="activity-body">
-        <div class="activity-title">${item.title}</div>
-        <div class="activity-sub">${item.sub}</div>
-      </div>
-      <div class="activity-time">${timeAgo(item.ts)}</div>
-    </div>`).join('');
-}
-
 function clearActivityLog() {
   localStorage.removeItem(ACTIVITY_KEY);
   localStorage.removeItem(USAGE_KEY);
   localStorage.removeItem(CRED_LOG_KEY);
-  renderActivityFeed();
-  renderUsage();
-  renderCreditsHistory();
-  renderKPIs();
+  _renderActivity(); _renderUsage(); _renderCreditHistory(); _renderKPIs();
 }
 
-// ── Render: Tool Usage Bars ──────────────────────────────────────────
-function renderUsage() {
-  const u = getUsage();
-  const bulk    = u.bulk    || 0;
-  const crawl   = u.crawl   || 0;
-  const favicon = u.favicon || 0;
-  const spent   = u.credits_spent || 0;
-  const maxTool = Math.max(bulk, crawl, favicon, 1);
-  const maxCred = Math.max(spent, 1);
+function _timeAgo(ts) {
+  const s = Math.floor((Date.now()-ts)/1000);
+  if (s<60) return 'just now';
+  if (s<3600) return Math.floor(s/60)+'m ago';
+  if (s<86400) return Math.floor(s/3600)+'h ago';
+  if (s<604800) return Math.floor(s/86400)+'d ago';
+  return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+function _setText(id, v) { const e=document.getElementById(id); if(e) e.textContent=v; }
+function _setW(id, pct) { const e=document.getElementById(id); if(e) e.style.width=pct+'%'; }
 
-  setText('usage-bulk',    bulk    + (bulk === 1 ? ' audit' : ' audits'));
-  setText('usage-crawl',   crawl   + (crawl === 1 ? ' crawl' : ' crawls'));
-  setText('usage-favicon', favicon + (favicon === 1 ? ' check' : ' checks'));
-  setText('usage-credits-spent', spent + ' credit' + (spent === 1 ? '' : 's') + ' spent');
-
-  setStyle('usage-bulk-bar',    'width', Math.round((bulk/maxTool)*100) + '%');
-  setStyle('usage-crawl-bar',   'width', Math.round((crawl/maxTool)*100) + '%');
-  setStyle('usage-favicon-bar', 'width', Math.round((favicon/maxTool)*100) + '%');
-  setStyle('usage-credits-bar', 'width', Math.min(100, Math.round((spent/Math.max(spent,200))*100)) + '%');
+function _renderActivity() {
+  const el = document.getElementById('activity-list');
+  if (!el) return;
+  const log = _getLog(ACTIVITY_KEY);
+  if (!log.length) { el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No activity yet — run your first audit!</div>'; return; }
+  el.innerHTML = log.slice(0,8).map(i=>`
+    <div class="activity-item">
+      <div class="activity-icon ${i.cls||'seo'}">${i.icon}</div>
+      <div class="activity-body">
+        <div class="activity-title">${i.title}</div>
+        <div class="activity-sub">${i.sub}</div>
+      </div>
+      <div class="activity-time">${_timeAgo(i.ts)}</div>
+    </div>`).join('');
 }
 
-// ── Render: Credits History ──────────────────────────────────────────
-function renderCreditsHistory() {
+function _renderCreditHistory() {
   const el = document.getElementById('credits-history-list');
   if (!el) return;
-  const log = getCreditLog();
-  if (log.length === 0) {
-    el.innerHTML = `<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No credit usage yet</div>`;
-    return;
-  }
-  el.innerHTML = log.slice(0, 6).map(entry => `
+  const log = _getLog(CRED_LOG_KEY);
+  if (!log.length) { el.innerHTML='<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:13px">No credit usage yet</div>'; return; }
+  el.innerHTML = log.slice(0,6).map(e=>`
     <div class="activity-item" style="padding:10px 0">
       <div class="activity-icon seo" style="font-size:13px;width:32px;height:32px;min-width:32px">⚡</div>
       <div class="activity-body">
-        <div class="activity-title" style="font-size:12px">${entry.tool}</div>
-        <div class="activity-sub">${entry.detail}</div>
+        <div class="activity-title" style="font-size:12px">${e.tool}</div>
+        <div class="activity-sub">${e.detail}</div>
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <div style="color:var(--gold);font-weight:700;font-size:13px">-${entry.amount}</div>
-        <div class="activity-time">${timeAgo(entry.ts)}</div>
+        <div style="color:var(--gold);font-weight:700;font-size:13px">-${e.amount}</div>
+        <div class="activity-time">${_timeAgo(e.ts)}</div>
       </div>
     </div>`).join('');
 }
 
-// ── Render: KPI Strip ───────────────────────────────────────────────
-function renderKPIs() {
-  const u = getUsage();
-  const log = getActivityLog();
-
-  // Credits from live userCredits var
-  setText('kpi-credits', userCredits !== null ? userCredits.toLocaleString() : '—');
-  setText('kpi-credits-sub', userCredits !== null
-    ? (userCredits <= 10 ? '⚠ low balance' : 'available')
-    : 'loading…');
-
-  // Audits run = activity log entries of type bulk+crawl
-  const auditCount = log.filter(i => i.iconClass === 'seo' || i.iconClass === 'research').length;
-  setText('kpi-audits', (u.bulk || 0) + (u.crawl || 0));
-  setText('kpi-audits-sub', 'bulk + crawl runs');
-
-  // URLs audited = from usage
-  setText('kpi-urls', (u.urls_audited || 0).toLocaleString());
-  setText('kpi-urls-sub', (u.credits_spent || 0) + ' credits spent');
+function _renderUsage() {
+  const u = _getUsage();
+  const bulk=u.bulk||0, crawl=u.crawl||0, fav=u.favicon||0, spent=u.credits_spent||0;
+  const mx = Math.max(bulk,crawl,fav,1);
+  _setText('usage-bulk',    bulk  +(bulk===1?' audit':' audits'));
+  _setText('usage-crawl',   crawl +(crawl===1?' crawl':' crawls'));
+  _setText('usage-favicon', fav   +(fav===1?' check':' checks'));
+  _setText('usage-credits-spent', spent+' credit'+(spent===1?'':'s')+' spent');
+  _setW('usage-bulk-bar',    Math.round(bulk/mx*100));
+  _setW('usage-crawl-bar',   Math.round(crawl/mx*100));
+  _setW('usage-favicon-bar', Math.round(fav/mx*100));
+  _setW('usage-credits-bar', Math.min(100,Math.round(spent/Math.max(spent,200)*100)));
 }
 
-// ── Render: Member Since (from Supabase) ────────────────────────────
-async function renderMemberSince() {
+function _renderKPIs() {
+  const u = _getUsage();
+  _setText('kpi-credits', userCredits !== null ? userCredits.toLocaleString() : '—');
+  _setText('kpi-credits-sub', userCredits !== null ? (userCredits<=10?'⚠ low balance':'available') : 'loading…');
+  _setText('kpi-audits', ((u.bulk||0)+(u.crawl||0)).toLocaleString());
+  _setText('kpi-audits-sub', 'bulk + crawl runs');
+  _setText('kpi-urls', (u.urls_audited||0).toLocaleString());
+  _setText('kpi-urls-sub', (u.credits_spent||0)+' credits spent');
+}
+
+async function _renderMemberSince() {
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) return;
-    const created = session.user.created_at;
-    const d = new Date(created);
-    const label = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    setText('kpi-since', label);
-    setText('memberSince', label);
-    // How many days ago
-    const days = Math.floor((Date.now() - d.getTime()) / 86400000);
-    setText('kpi-since-sub', days === 0 ? 'joined today! 🎉' : days + ' days ago');
-    setText('profileEmailStat', session.user.email || '—');
-  } catch(e) {
-    console.warn('[Dashboard] memberSince load failed', e);
-  }
+    const d = new Date(session.user.created_at);
+    const label = d.toLocaleDateString('en-US',{month:'short',year:'numeric'});
+    const days = Math.floor((Date.now()-d.getTime())/86400000);
+    _setText('kpi-since', label);
+    _setText('kpi-since-sub', days===0?'joined today! 🎉':days+'d ago');
+    _setText('memberSince', label);
+    _setText('profileEmailStat', session.user.email||'—');
+  } catch(e) {}
 }
 
-// ── Tiny DOM helpers ─────────────────────────────────────────────────
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
-function setStyle(id, prop, val) {
-  const el = document.getElementById(id);
-  if (el) el.style[prop] = val;
-}
-
-// ── Hook into the credit gates to log activity ───────────────────────
-// Wrap deductCredits to auto-log whenever credits are used
-const _origDeductCredits = deductCredits;
-async function deductCredits(amount) {
-  const result = await _origDeductCredits(amount);
-  // logging happens in the gate wrappers below
-  return result;
-}
-
-// ── Activity logging helpers called FROM the gate functions ──────────
-// These are standalone helpers — they do NOT redefine any existing function.
-// They are called explicitly inside startBulkAudit / startSiteCrawl / favCheckAll gates.
-
+// ── Standalone logging helpers called by gate functions ──────────────
 function _logBulkAuditActivity(urls, cost) {
   if (!urls.length) return;
-  const firstUrl = urls[0];
-  let domain = firstUrl;
-  try { domain = new URL(firstUrl.startsWith('http') ? firstUrl : 'https://'+firstUrl).hostname; } catch {}
-  logActivity('🧪', 'seo',
-    `Bulk audit — ${domain}${urls.length > 1 ? ` +${urls.length-1} more` : ''}`,
-    `${urls.length} URL${urls.length !== 1 ? 's' : ''} · ${cost} credits`);
-  bumpUsage('bulk');
-  bumpUsage('urls_audited', urls.length);
-  bumpUsage('credits_spent', cost);
+  let domain = urls[0];
+  try { domain = new URL(urls[0].startsWith('http')?urls[0]:'https://'+urls[0]).hostname; } catch{}
+  logActivity('🧪','seo',`Bulk audit — ${domain}${urls.length>1?` +${urls.length-1} more`:''}`,`${urls.length} URL${urls.length!==1?'s':''} · ${cost} credits`);
+  bumpUsage('bulk'); bumpUsage('urls_audited',urls.length); bumpUsage('credits_spent',cost);
   logCreditUse('🧪 Bulk Audit', cost, `${urls.length} URLs · ${domain}`);
-  renderKPIs();
+  _renderKPIs();
 }
-
 function _logCrawlActivity(sites, cost) {
   if (!sites.length) return;
   let domain = sites[0];
-  try { domain = new URL(sites[0].startsWith('http') ? sites[0] : 'https://'+sites[0]).hostname; } catch {}
-  logActivity('🕷️', 'research',
-    `Site crawl — ${domain}${sites.length > 1 ? ` +${sites.length-1} more` : ''}`,
-    `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${cost} credits`);
-  bumpUsage('crawl');
-  bumpUsage('credits_spent', cost);
-  logCreditUse('🕷️ Site Crawl', cost, `${sites.length} site${sites.length !== 1 ? 's' : ''} · ${domain}`);
-  renderKPIs();
+  try { domain = new URL(sites[0].startsWith('http')?sites[0]:'https://'+sites[0]).hostname; } catch{}
+  logActivity('🕷️','research',`Site crawl — ${domain}${sites.length>1?` +${sites.length-1} more`:''}`,`${sites.length} site${sites.length!==1?'s':''} · ${cost} credits`);
+  bumpUsage('crawl'); bumpUsage('credits_spent',cost);
+  logCreditUse('🕷️ Site Crawl', cost, `${sites.length} site${sites.length!==1?'s':''} · ${domain}`);
+  _renderKPIs();
 }
-
 function _logFaviconActivity(newUrls, cost) {
   if (!newUrls.length) return;
-  logActivity('🦴', 'seo',
-    `Favicon check — ${newUrls[0]}${newUrls.length > 1 ? ` +${newUrls.length-1} more` : ''}`,
-    `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''} · ${cost} credits`);
-  bumpUsage('favicon');
-  bumpUsage('credits_spent', cost);
-  logCreditUse('🦴 Favicon Checker', cost, `${newUrls.length} URL${newUrls.length !== 1 ? 's' : ''}`);
-  renderKPIs();
+  logActivity('🦴','seo',`Favicon check — ${newUrls[0]}${newUrls.length>1?` +${newUrls.length-1} more`:''}`,`${newUrls.length} URL${newUrls.length!==1?'s':''} · ${cost} credits`);
+  bumpUsage('favicon'); bumpUsage('credits_spent',cost);
+  logCreditUse('🦴 Favicon Checker', cost, `${newUrls.length} URL${newUrls.length!==1?'s':''}`);
+  _renderKPIs();
 }
 
-// ── Boot dashboard analytics ─────────────────────────────────────────
-function initDashboardAnalytics() {
-  renderActivityFeed();
-  renderUsage();
-  renderCreditsHistory();
-  renderKPIs();
-  renderMemberSince();
-  // Also refresh KPIs after credits load
-  setTimeout(() => { if (userCredits !== null) renderKPIs(); }, 2000);
-}
+// ── Patch gate functions to also call loggers (no redefinition!) ─────
+// We store refs AFTER all other scripts have run, then override once safely.
+window.addEventListener('load', () => {
+  // Patch startBulkAudit
+  const _origBulk = window.startBulkAudit;
+  window.startBulkAudit = async function() {
+    const urls = parseUrls(document.getElementById('url-textarea')?.value||'');
+    const cost = urls.length * CREDIT_COSTS.bulk_audit_per_url;
+    const creditsBefore = userCredits;
+    await _origBulk();
+    if (urls.length && creditsBefore !== userCredits) _logBulkAuditActivity(urls, cost);
+  };
 
-// Boot on page ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initDashboardAnalytics);
+  // Patch startSiteCrawl
+  const _origCrawl = window.startSiteCrawl;
+  window.startSiteCrawl = async function() {
+    const raw = document.getElementById('crawl-url-input')?.value||'';
+    const sites = raw.split('\n').map(l=>l.trim()).filter(Boolean);
+    const cost = sites.length * CREDIT_COSTS.site_crawl_per_site;
+    const creditsBefore = userCredits;
+    await _origCrawl();
+    if (sites.length && creditsBefore !== userCredits) _logCrawlActivity(sites, cost);
+  };
+
+  // Patch favCheckAll
+  const _origFav = window.favCheckAll;
+  window.favCheckAll = async function() {
+    const raw = document.getElementById('fav-url-input')?.value||'';
+    const newUrls = favParseUrls(raw).map(u=>favParseHostname(u)).filter(h=>h&&!favChecked.has(h));
+    const cost = newUrls.length * CREDIT_COSTS.favicon_per_url;
+    const creditsBefore = userCredits;
+    await _origFav();
+    if (newUrls.length && creditsBefore !== userCredits) _logFaviconActivity(newUrls, cost);
+  };
+
+  // Also refresh KPIs once credits are loaded
+  setTimeout(_renderKPIs, 2500);
+});
+
+// ── Boot ─────────────────────────────────────────────────────────────
+function _initAnalytics() {
+  _renderActivity();
+  _renderUsage();
+  _renderCreditHistory();
+  _renderKPIs();
+  _renderMemberSince();
+}
+if (document.readyState==='loading') {
+  document.addEventListener('DOMContentLoaded', _initAnalytics);
 } else {
-  initDashboardAnalytics();
+  _initAnalytics();
 }
-
 </script>
 
 </body>
