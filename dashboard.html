@@ -2687,7 +2687,7 @@ async function _startBulkAuditCore() {
       auditResults[idx].brokenLinks = brokenData;
       auditResults[idx].data = auditData;
       auditResults[idx].score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
-      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = 'AI unavailable — check Groq rate limits';
+      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = window._lastAIError || 'All AI providers failed — check Worker logs';
     } catch (err) {
       auditResults[idx].status = 'error';
       auditResults[idx].error = err.message || 'Failed';
@@ -3460,7 +3460,7 @@ function _parseAIJson(text) {
 async function _callGroq(messages) {
   if (_aiIsBlocked('groq')) {
     const s = Math.ceil((_aiCooloff.groq - Date.now()) / 1000);
-    console.warn(`[AI:Groq] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:Groq] Cooling off — ${s}s remaining, skipping to next provider`);
     return null;
   }
   try {
@@ -3471,27 +3471,35 @@ async function _callGroq(messages) {
       signal: AbortSignal.timeout(60000)
     });
     if (res.status === 429 || res.status === 503) {
-      const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
+      const ra = parseInt(res.headers.get('Retry-After') || '60', 10);
       _aiMarkRateLimited('groq', ra * 1000);
+      console.warn(`[AI:Groq] Rate limited — cooling ${ra}s, trying next provider`);
       return null;
     }
     if (!res.ok) {
-      console.warn(`[AI:Groq] HTTP ${res.status}`);
+      // Non-rate-limit error — brief cooloff then try next provider
+      _aiMarkRateLimited('groq', 10000);
+      console.warn(`[AI:Groq] HTTP ${res.status} — brief cooloff, trying next provider`);
       return null;
     }
     const data = await res.json();
     const errMsg = String(data?.error?.message || data?.error || '');
     if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
-      _aiMarkRateLimited('groq', 30000);
+      _aiMarkRateLimited('groq', 60000);
+      console.warn('[AI:Groq] Rate limit in body — cooling 60s, trying next provider');
+      return null;
+    }
+    if (errMsg) {
+      console.warn('[AI:Groq] API error:', errMsg.slice(0, 100));
       return null;
     }
     const text = data?.choices?.[0]?.message?.content || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:Groq] ✅ Success'); return parsed; }
-    console.warn('[AI:Groq] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:Groq] Bad JSON — trying next provider. Response:', text.slice(0, 200));
     return null;
   } catch(e) {
-    console.warn('[AI:Groq] fetch error:', e.message);
+    console.warn('[AI:Groq] fetch error:', e.message, '— trying next provider');
     return null;
   }
 }
@@ -3500,7 +3508,7 @@ async function _callGroq(messages) {
 async function _callCloudflareAI(messages) {
   if (_aiIsBlocked('cloudflare')) {
     const s = Math.ceil((_aiCooloff.cloudflare - Date.now()) / 1000);
-    console.warn(`[AI:Cloudflare] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:Cloudflare] Cooling off — ${s}s remaining, skipping to OpenRouter`);
     return null;
   }
   try {
@@ -3513,16 +3521,23 @@ async function _callCloudflareAI(messages) {
     if (res.status === 429 || res.status === 503) {
       const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
       _aiMarkRateLimited('cloudflare', ra * 1000);
+      console.warn(`[AI:Cloudflare] Rate limited — cooling ${ra}s, trying OpenRouter`);
       return null;
     }
     if (!res.ok) {
-      console.warn(`[AI:Cloudflare] HTTP ${res.status}`);
+      _aiMarkRateLimited('cloudflare', 10000);
+      console.warn(`[AI:Cloudflare] HTTP ${res.status} — trying OpenRouter`);
       return null;
     }
     const data = await res.json();
     const errMsg = String(data?.error?.message || data?.error || '');
     if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
       _aiMarkRateLimited('cloudflare', 30000);
+      console.warn('[AI:Cloudflare] Rate limit in body — trying OpenRouter');
+      return null;
+    }
+    if (errMsg) {
+      console.warn('[AI:Cloudflare] API error:', errMsg.slice(0, 100));
       return null;
     }
     // Cloudflare AI Workers returns { result: { response: '...' } } or OpenAI-compat choices
@@ -3532,10 +3547,10 @@ async function _callCloudflareAI(messages) {
       || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:Cloudflare] ✅ Success'); return parsed; }
-    console.warn('[AI:Cloudflare] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:Cloudflare] Bad JSON — trying OpenRouter. Response:', text.slice(0, 200));
     return null;
   } catch(e) {
-    console.warn('[AI:Cloudflare] fetch error:', e.message);
+    console.warn('[AI:Cloudflare] fetch error:', e.message, '— trying OpenRouter');
     return null;
   }
 }
@@ -3544,7 +3559,7 @@ async function _callCloudflareAI(messages) {
 async function _callOpenRouter(messages) {
   if (_aiIsBlocked('openrouter')) {
     const s = Math.ceil((_aiCooloff.openrouter - Date.now()) / 1000);
-    console.warn(`[AI:OpenRouter] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:OpenRouter] Cooling off — ${s}s remaining, all providers exhausted`);
     return null;
   }
   try {
@@ -3557,9 +3572,11 @@ async function _callOpenRouter(messages) {
     if (res.status === 429 || res.status === 503) {
       const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
       _aiMarkRateLimited('openrouter', ra * 1000);
+      console.warn(`[AI:OpenRouter] Rate limited — cooling ${ra}s`);
       return null;
     }
     if (!res.ok) {
+      _aiMarkRateLimited('openrouter', 10000);
       console.warn(`[AI:OpenRouter] HTTP ${res.status}`);
       return null;
     }
@@ -3567,13 +3584,17 @@ async function _callOpenRouter(messages) {
     const errMsg = String(data?.error?.message || data?.error || '');
     if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
       _aiMarkRateLimited('openrouter', 30000);
+      console.warn('[AI:OpenRouter] Rate limit in body');
       return null;
     }
-    // OpenRouter uses OpenAI-compatible format
+    if (errMsg) {
+      console.warn('[AI:OpenRouter] API error:', errMsg.slice(0, 100));
+      return null;
+    }
     const text = data?.choices?.[0]?.message?.content || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:OpenRouter] ✅ Success'); return parsed; }
-    console.warn('[AI:OpenRouter] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:OpenRouter] Bad JSON. Response:', text.slice(0, 200));
     return null;
   } catch(e) {
     console.warn('[AI:OpenRouter] fetch error:', e.message);
@@ -3585,68 +3606,6 @@ async function _callOpenRouter(messages) {
 async function runAIAudit(url, options, pageData, cmsData) {
   const pd = pageData || {};
   const cms = cmsData?.cms || 'Unknown';
-
-  const systemMsg = `You are an expert SEO auditor. Analyse the provided website data and respond ONLY with valid JSON — no markdown, no explanation, no code fences. Use this exact structure:
-{
-  "seo_score": <0-100>,
-  "categories": {
-    "on_page_seo": <0-100>,
-    "technical_seo": <0-100>,
-    "content_quality": <0-100>,
-    "user_experience": <0-100>
-  },
-  "suggestions": [
-    { "priority": "high"|"medium"|"low", "title": "<short title>", "detail": "<actionable explanation>" }
-  ],
-  "image_issues": [
-    { "url": "<full image URL>", "issue": "<what is wrong>", "location": "<page section or context>", "estKb": <estimated KB or null>, "format": "<jpg|png|webp|etc>" }
-  ],
-  "eeat_summary": "<1-2 sentence E-E-A-T assessment>"
-}
-IMPORTANT: If META DESCRIPTION is MISSING and the CMS is Squarespace, Wix, Webflow, or Framer, flag it as LOW priority with title 'Meta description may be JS-injected — verify manually' and explain that static HTML scraping cannot see JS-rendered content. Do not flag as high priority for these platforms.
-IMPORTANT: When images have issues (missing alt, heavy file size, wrong format, unoptimised), populate the "image_issues" array with the ACTUAL image URLs from the data provided. Include the estimated file size and what needs to be fixed for each image. The "location" field should describe where on the page the image appears (e.g. "hero section", "above the fold", "body content"). If no image issues exist, return an empty array for image_issues.`;
-
-  const userMsg = `Audit this website for SEO issues:
-
-URL: ${url}
-CMS: ${cms}
-HTTP Status: ${pd.statusCode || 'Unknown'}
-TTFB: ${pd.ttfb ? pd.ttfb + 'ms' : 'Unknown'}
-HTTPS: ${pd.isHttps ? 'Yes' : 'No'}
-
-TITLE: ${pd.title || 'MISSING'} (${pd.titleLen || 0} chars)
-META DESCRIPTION: ${pd.metaDesc || 'MISSING'} (${pd.descLen || 0} chars)
-CANONICAL: ${pd.canonical || 'MISSING'}
-LANG ATTRIBUTE: ${pd.lang || 'MISSING'}
-
-H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)} (accurate count of <h1> tags in static HTML — trust it exactly; do NOT suggest adding an H1 if count is 1 or more)
-H1 TEXT: ${pd.h1 ? pd.h1 + (pd.h1Inferred ? ' [INFERRED from ' + pd.h1Source + ' — H1 is likely JS-rendered, present in browser but not in static HTML; do NOT flag as missing]' : '') : (pd.headings?.h1 > 0 ? '(present but text not extracted)' : 'MISSING')}
-H2 COUNT: ${pd.headings?.h2 ?? 'Unknown'}
-H3 COUNT: ${pd.headings?.h3 ?? 'Unknown'}
-${pd.h2Texts?.length ? `H2 HEADINGS: ${pd.h2Texts.join(' | ')}` : ''}
-WORD COUNT: ${pd.wordCount || 0}
-IMPORTANT: seo_score and all category scores MUST be between 0 and 100. Never return negative numbers.
-PAGE SIZE: ${pd.pageSizeKb ? pd.pageSizeKb + 'kb' : 'Unknown'}
-
-HAS VIEWPORT: ${pd.hasViewport ? 'Yes' : 'No'}
-HAS ROBOTS.TXT: ${pd.hasRobotsTxt ? 'Yes' : 'No'}
-HAS SITEMAP: ${pd.hasSitemap ? 'Yes' : 'No'}
-ROBOTS META: ${pd.robotsMeta || 'none'}
-IS NOINDEX: ${pd.isNoindex ? 'YES - CRITICAL' : 'No'}
-
-IMAGES: ${pd.images?.total ?? 'Unknown'} total, ${pd.images?.missingAlt ?? 'Unknown'} missing alt text, ${pd.images?.heavy ?? 0} potentially heavy
-${pd.imageList?.length ? `TOP IMAGES (first 8):\n${pd.imageList.slice(0,8).map((img,i)=>`  ${i+1}. URL: ${img.url} | Alt: ${img.alt||'MISSING'} | Dimensions: ${img.width&&img.height?img.width+'×'+img.height+'px':'unknown'} | Est. uncompressed: ${img.estKb?img.estKb+'KB':'unknown'} | Format: ${img.format}`).join('\n')}` : 'IMAGE URLS: None detected'}
-SCHEMA TYPES: ${pd.schemaTypes?.length ? pd.schemaTypes.join(', ') : 'None found — flag as medium priority issue'}
-OG TAGS: title=${pd.openGraph?.title ? 'Yes' : 'No'}, image=${pd.openGraph?.image ? 'Yes' : 'No'}
-
-SECURITY HEADERS: HSTS=${pd.secHeaders?.hsts ? 'Yes' : 'No'}, X-Frame=${pd.secHeaders?.xFrame ? 'Yes' : 'No'}, CSP=${pd.secHeaders?.csp ? 'Yes' : 'No'}
-INTERNAL LINKS: ${pd.links?.internal ?? 'Unknown'}
-EXTERNAL LINKS: ${pd.links?.external ?? 'Unknown'}
-SCHEMA MARKUP: ${pd.schemaTypes?.length ? pd.schemaTypes.join(', ') : 'None detected'}
-INLINE SCRIPTS: ${pd.inlineScripts ?? 'Unknown'}
-
-Return ONLY the JSON object.`;
-
   const messages = [
     { role: 'system', content: systemMsg },
     { role: 'user',   content: userMsg }
@@ -3669,6 +3628,7 @@ Return ONLY the JSON object.`;
 
   // All providers failed
   console.error('[AI] ❌ All 3 AI providers failed for', url);
+  window._lastAIError = `All AI providers failed for ${url}. Check Worker logs for Groq/Cloudflare/OpenRouter errors.`;
   return null;
 }
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -4945,7 +4905,7 @@ async function crawlSingleSite(inputUrl, cap, queueIdx) {
         const [auditData, brokenData] = await Promise.all([runAIAudit(r.url, opts, pageData, cmsData), checkBrokenLinks(pageData)]);
         r.brokenLinks = brokenData; r.data = auditData;
         r.score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
-        r.status = auditData ? 'done' : 'error'; if (!auditData) r.error = 'AI unavailable — check Groq rate limits';
+        r.status = auditData ? 'done' : 'error'; if (!auditData) r.error = window._lastAIError || 'All AI providers failed — check Worker logs';
       } catch(e) { r.status = 'error'; r.error = e.message || 'Failed'; }
       auditedCount++;
       setCrawlStat('cs-audited', auditedCount);
@@ -5789,7 +5749,7 @@ async function _startBulkAuditCore() {
       auditResults[idx].brokenLinks = brokenData;
       auditResults[idx].data = auditData;
       auditResults[idx].score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
-      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = 'AI unavailable — check Groq rate limits';
+      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = window._lastAIError || 'All AI providers failed — check Worker logs';
     } catch (err) {
       auditResults[idx].status = 'error';
       auditResults[idx].error = err.message || 'Failed';
@@ -6562,193 +6522,99 @@ function _parseAIJson(text) {
 async function _callGroq(messages) {
   if (_aiIsBlocked('groq')) {
     const s = Math.ceil((_aiCooloff.groq - Date.now()) / 1000);
-    console.warn(`[AI:Groq] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:Groq] Cooling off — ${s}s remaining, skipping to next provider`);
     return null;
   }
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-      signal: AbortSignal.timeout(60000)
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
     });
     if (res.status === 429 || res.status === 503) {
-      const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
+      const ra = parseInt(res.headers.get('Retry-After') || '60', 10);
       _aiMarkRateLimited('groq', ra * 1000);
+      console.warn(`[AI:Groq] Rate limited — cooling ${ra}s, trying Cloudflare AI`);
       return null;
     }
-    if (!res.ok) {
-      console.warn(`[AI:Groq] HTTP ${res.status}`);
-      return null;
-    }
+    if (!res.ok) { _aiMarkRateLimited('groq', 10000); console.warn(`[AI:Groq] HTTP ${res.status} — trying Cloudflare AI`); return null; }
     const data = await res.json();
     const errMsg = String(data?.error?.message || data?.error || '');
-    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
-      _aiMarkRateLimited('groq', 30000);
-      return null;
-    }
+    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) { _aiMarkRateLimited('groq', 60000); console.warn('[AI:Groq] Rate limit in body — trying Cloudflare AI'); return null; }
+    if (errMsg) { console.warn('[AI:Groq] API error:', errMsg.slice(0,100)); return null; }
     const text = data?.choices?.[0]?.message?.content || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:Groq] ✅ Success'); return parsed; }
-    console.warn('[AI:Groq] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:Groq] Bad JSON — trying Cloudflare AI. Preview:', text.slice(0,200));
     return null;
-  } catch(e) {
-    console.warn('[AI:Groq] fetch error:', e.message);
-    return null;
-  }
+  } catch(e) { console.warn('[AI:Groq] fetch error:', e.message, '— trying Cloudflare AI'); return null; }
 }
 
 // ── PROVIDER 2: Cloudflare AI (via Worker /api/cloudflare endpoint) ───────────
 async function _callCloudflareAI(messages) {
   if (_aiIsBlocked('cloudflare')) {
     const s = Math.ceil((_aiCooloff.cloudflare - Date.now()) / 1000);
-    console.warn(`[AI:Cloudflare] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:Cloudflare] Cooling off — ${s}s remaining, trying OpenRouter`);
     return null;
   }
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/cloudflare', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-      signal: AbortSignal.timeout(60000)
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
     });
     if (res.status === 429 || res.status === 503) {
       const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
       _aiMarkRateLimited('cloudflare', ra * 1000);
+      console.warn(`[AI:Cloudflare] Rate limited — cooling ${ra}s, trying OpenRouter`);
       return null;
     }
-    if (!res.ok) {
-      console.warn(`[AI:Cloudflare] HTTP ${res.status}`);
-      return null;
-    }
+    if (!res.ok) { _aiMarkRateLimited('cloudflare', 10000); console.warn(`[AI:Cloudflare] HTTP ${res.status} — trying OpenRouter`); return null; }
     const data = await res.json();
     const errMsg = String(data?.error?.message || data?.error || '');
-    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
-      _aiMarkRateLimited('cloudflare', 30000);
-      return null;
-    }
-    // Cloudflare AI Workers returns { result: { response: '...' } } or OpenAI-compat choices
-    const text = data?.result?.response
-      || data?.choices?.[0]?.message?.content
-      || data?.response
-      || '';
+    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) { _aiMarkRateLimited('cloudflare', 30000); console.warn('[AI:Cloudflare] Rate limit — trying OpenRouter'); return null; }
+    if (errMsg) { console.warn('[AI:Cloudflare] API error:', errMsg.slice(0,100)); return null; }
+    const text = data?.result?.response || data?.choices?.[0]?.message?.content || data?.response || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:Cloudflare] ✅ Success'); return parsed; }
-    console.warn('[AI:Cloudflare] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:Cloudflare] Bad JSON — trying OpenRouter. Preview:', text.slice(0,200));
     return null;
-  } catch(e) {
-    console.warn('[AI:Cloudflare] fetch error:', e.message);
-    return null;
-  }
+  } catch(e) { console.warn('[AI:Cloudflare] fetch error:', e.message, '— trying OpenRouter'); return null; }
 }
 
 // ── PROVIDER 3: OpenRouter (via Worker /api/openrouter endpoint) ──────────────
 async function _callOpenRouter(messages) {
   if (_aiIsBlocked('openrouter')) {
     const s = Math.ceil((_aiCooloff.openrouter - Date.now()) / 1000);
-    console.warn(`[AI:OpenRouter] Still cooling off — ${s}s remaining`);
+    console.warn(`[AI:OpenRouter] Cooling off — ${s}s remaining, all providers exhausted`);
     return null;
   }
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
-      signal: AbortSignal.timeout(60000)
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
     });
     if (res.status === 429 || res.status === 503) {
       const ra = parseInt(res.headers.get('Retry-After') || '30', 10);
       _aiMarkRateLimited('openrouter', ra * 1000);
+      console.warn(`[AI:OpenRouter] Rate limited — cooling ${ra}s`);
       return null;
     }
-    if (!res.ok) {
-      console.warn(`[AI:OpenRouter] HTTP ${res.status}`);
-      return null;
-    }
+    if (!res.ok) { _aiMarkRateLimited('openrouter', 10000); console.warn(`[AI:OpenRouter] HTTP ${res.status}`); return null; }
     const data = await res.json();
     const errMsg = String(data?.error?.message || data?.error || '');
-    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) {
-      _aiMarkRateLimited('openrouter', 30000);
-      return null;
-    }
-    // OpenRouter uses OpenAI-compatible format
+    if (/rate.?limit|too many|token|quota|exceeded/i.test(errMsg)) { _aiMarkRateLimited('openrouter', 30000); console.warn('[AI:OpenRouter] Rate limit in body'); return null; }
+    if (errMsg) { console.warn('[AI:OpenRouter] API error:', errMsg.slice(0,100)); return null; }
     const text = data?.choices?.[0]?.message?.content || '';
     const parsed = _parseAIJson(text);
     if (parsed) { console.log('[AI:OpenRouter] ✅ Success'); return parsed; }
-    console.warn('[AI:OpenRouter] Bad JSON response:', text.slice(0, 200));
+    console.warn('[AI:OpenRouter] Bad JSON. Preview:', text.slice(0,200));
     return null;
-  } catch(e) {
-    console.warn('[AI:OpenRouter] fetch error:', e.message);
-    return null;
-  }
+  } catch(e) { console.warn('[AI:OpenRouter] fetch error:', e.message); return null; }
 }
 
 // ── MAIN AI AUDIT — tries all 3 providers in order ───────────────────────────
 async function runAIAudit(url, options, pageData, cmsData) {
   const pd = pageData || {};
   const cms = cmsData?.cms || 'Unknown';
-
-  const systemMsg = `You are an expert SEO auditor. Analyse the provided website data and respond ONLY with valid JSON — no markdown, no explanation, no code fences. Use this exact structure:
-{
-  "seo_score": <0-100>,
-  "categories": {
-    "on_page_seo": <0-100>,
-    "technical_seo": <0-100>,
-    "content_quality": <0-100>,
-    "user_experience": <0-100>
-  },
-  "suggestions": [
-    { "priority": "high"|"medium"|"low", "title": "<short title>", "detail": "<actionable explanation>" }
-  ],
-  "image_issues": [
-    { "url": "<full image URL>", "issue": "<what is wrong>", "location": "<page section or context>", "estKb": <estimated KB or null>, "format": "<jpg|png|webp|etc>" }
-  ],
-  "eeat_summary": "<1-2 sentence E-E-A-T assessment>"
-}
-IMPORTANT: If META DESCRIPTION is MISSING and the CMS is Squarespace, Wix, Webflow, or Framer, flag it as LOW priority with title 'Meta description may be JS-injected — verify manually' and explain that static HTML scraping cannot see JS-rendered content. Do not flag as high priority for these platforms.
-IMPORTANT: When images have issues (missing alt, heavy file size, wrong format, unoptimised), populate the "image_issues" array with the ACTUAL image URLs from the data provided. Include the estimated file size and what needs to be fixed for each image. The "location" field should describe where on the page the image appears (e.g. "hero section", "above the fold", "body content"). If no image issues exist, return an empty array for image_issues.`;
-
-  const userMsg = `Audit this website for SEO issues:
-
-URL: ${url}
-CMS: ${cms}
-HTTP Status: ${pd.statusCode || 'Unknown'}
-TTFB: ${pd.ttfb ? pd.ttfb + 'ms' : 'Unknown'}
-HTTPS: ${pd.isHttps ? 'Yes' : 'No'}
-
-TITLE: ${pd.title || 'MISSING'} (${pd.titleLen || 0} chars)
-META DESCRIPTION: ${pd.metaDesc || 'MISSING'} (${pd.descLen || 0} chars)
-CANONICAL: ${pd.canonical || 'MISSING'}
-LANG ATTRIBUTE: ${pd.lang || 'MISSING'}
-
-H1 COUNT: ${pd.headings?.h1 ?? (pd.h1 ? 1 : 0)} (accurate count of <h1> tags in static HTML — trust it exactly; do NOT suggest adding an H1 if count is 1 or more)
-H1 TEXT: ${pd.h1 ? pd.h1 + (pd.h1Inferred ? ' [INFERRED from ' + pd.h1Source + ' — H1 is likely JS-rendered, present in browser but not in static HTML; do NOT flag as missing]' : '') : (pd.headings?.h1 > 0 ? '(present but text not extracted)' : 'MISSING')}
-H2 COUNT: ${pd.headings?.h2 ?? 'Unknown'}
-H3 COUNT: ${pd.headings?.h3 ?? 'Unknown'}
-${pd.h2Texts?.length ? `H2 HEADINGS: ${pd.h2Texts.join(' | ')}` : ''}
-WORD COUNT: ${pd.wordCount || 0}
-IMPORTANT: seo_score and all category scores MUST be between 0 and 100. Never return negative numbers.
-PAGE SIZE: ${pd.pageSizeKb ? pd.pageSizeKb + 'kb' : 'Unknown'}
-
-HAS VIEWPORT: ${pd.hasViewport ? 'Yes' : 'No'}
-HAS ROBOTS.TXT: ${pd.hasRobotsTxt ? 'Yes' : 'No'}
-HAS SITEMAP: ${pd.hasSitemap ? 'Yes' : 'No'}
-ROBOTS META: ${pd.robotsMeta || 'none'}
-IS NOINDEX: ${pd.isNoindex ? 'YES - CRITICAL' : 'No'}
-
-IMAGES: ${pd.images?.total ?? 'Unknown'} total, ${pd.images?.missingAlt ?? 'Unknown'} missing alt text, ${pd.images?.heavy ?? 0} potentially heavy
-${pd.imageList?.length ? `TOP IMAGES (first 8):\n${pd.imageList.slice(0,8).map((img,i)=>`  ${i+1}. URL: ${img.url} | Alt: ${img.alt||'MISSING'} | Dimensions: ${img.width&&img.height?img.width+'×'+img.height+'px':'unknown'} | Est. uncompressed: ${img.estKb?img.estKb+'KB':'unknown'} | Format: ${img.format}`).join('\n')}` : 'IMAGE URLS: None detected'}
-SCHEMA TYPES: ${pd.schemaTypes?.length ? pd.schemaTypes.join(', ') : 'None found — flag as medium priority issue'}
-OG TAGS: title=${pd.openGraph?.title ? 'Yes' : 'No'}, image=${pd.openGraph?.image ? 'Yes' : 'No'}
-
-SECURITY HEADERS: HSTS=${pd.secHeaders?.hsts ? 'Yes' : 'No'}, X-Frame=${pd.secHeaders?.xFrame ? 'Yes' : 'No'}, CSP=${pd.secHeaders?.csp ? 'Yes' : 'No'}
-INTERNAL LINKS: ${pd.links?.internal ?? 'Unknown'}
-EXTERNAL LINKS: ${pd.links?.external ?? 'Unknown'}
-SCHEMA MARKUP: ${pd.schemaTypes?.length ? pd.schemaTypes.join(', ') : 'None detected'}
-INLINE SCRIPTS: ${pd.inlineScripts ?? 'Unknown'}
-
-Return ONLY the JSON object.`;
-
   const messages = [
     { role: 'system', content: systemMsg },
     { role: 'user',   content: userMsg }
@@ -6771,6 +6637,7 @@ Return ONLY the JSON object.`;
 
   // All providers failed
   console.error('[AI] ❌ All 3 AI providers failed for', url);
+  window._lastAIError = `All AI providers failed for ${url}. Check Worker logs for Groq/Cloudflare/OpenRouter errors.`;
   return null;
 }
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
@@ -8047,7 +7914,7 @@ async function crawlSingleSite(inputUrl, cap, queueIdx) {
         const [auditData, brokenData] = await Promise.all([runAIAudit(r.url, opts, pageData, cmsData), checkBrokenLinks(pageData)]);
         r.brokenLinks = brokenData; r.data = auditData;
         r.score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
-        r.status = auditData ? 'done' : 'error'; if (!auditData) r.error = 'AI unavailable — check Groq rate limits';
+        r.status = auditData ? 'done' : 'error'; if (!auditData) r.error = window._lastAIError || 'All AI providers failed — check Worker logs';
       } catch(e) { r.status = 'error'; r.error = e.message || 'Failed'; }
       auditedCount++;
       setCrawlStat('cs-audited', auditedCount);
