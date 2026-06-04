@@ -3607,7 +3607,7 @@ async function runAIAudit(url, options, pageData, cmsData) {
   const pd = pageData || {};
   const cms = cmsData?.cms || 'Unknown';
   const systemMsg = `You are an expert SEO auditor. Analyze the provided page data and return ONLY a valid JSON object (no markdown, no explanation) with the following structure: { "seo_score": <0-100>, "categories": { "technical": <0-100>, "content": <0-100>, "performance": <0-100> }, "issues": [ { "type": <string>, "severity": <"critical"|"warning"|"info">, "description": <string>, "recommendation": <string> } ], "summary": <string>, "topIssues": [ <string> ] }`;
-  const userMsg = \`Audit this URL for SEO issues:\nURL: \${url}\nCMS: \${cms}\nPage Data: \${JSON.stringify(pd).slice(0, 3000)}\`;
+  const userMsg = `Audit this URL for SEO issues:\nURL: ${url}\nCMS: ${cms}\nPage Data: ${JSON.stringify(pd).slice(0, 3000)}`;
   const messages = [
     { role: 'system', content: systemMsg },
     { role: 'user',   content: userMsg }
