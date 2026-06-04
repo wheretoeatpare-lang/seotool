@@ -2533,6 +2533,1040 @@ tr.row-zap td {
 </div><!-- end #panel-favicon -->
 
 <script>
+</script>
+    </div><!-- end bulk-auditor-view -->
+
+  </main>
+</div>
+
+<!-- CREDITS MODAL -->
+<div class="credits-modal-overlay" id="credits-modal-overlay" onclick="closeCreditsModalOutside(event)">
+  <div class="credits-modal">
+    <div class="cm-icon">⚡</div>
+    <div class="cm-title">Get More Credits</div>
+    <div class="cm-body">
+      You have <strong id="cm-current-credits">—</strong> credits remaining.<br>
+      Each URL audited costs <strong>1 credit</strong>. Site crawls cost <strong>5 credits per site</strong>.
+    </div>
+    <div class="cm-plans">
+      <div class="cm-plan selected" data-credits="100" data-price="$5" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">100</div>
+        <div class="plan-price">$5</div>
+        <div class="plan-name">Starter</div>
+      </div>
+      <div class="cm-plan" data-credits="500" data-price="$19" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">500</div>
+        <div class="plan-price">$19</div>
+        <div class="plan-name">Growth</div>
+      </div>
+      <div class="cm-plan" data-credits="2000" data-price="$59" onclick="selectCreditPlan(this)">
+        <div class="plan-credits">2000</div>
+        <div class="plan-price">$59</div>
+        <div class="plan-name">Agency</div>
+      </div>
+    </div>
+    <div class="cm-btn-row">
+      <button class="cm-btn-primary" onclick="purchaseCredits()">✦ Buy Credits</button>
+      <button class="cm-btn-secondary" onclick="closeCreditsModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025–2026 RankSorcery · Premium Member Dashboard</p>
+  <a href="mailto:webmasterjamez@gmail.com">Contact Support</a>
+</footer>
+
+<script>
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (!session) return
+
+    const user = session.user
+    const email = user.email || ''
+    const createdAt = user.created_at ? new Date(user.created_at) : null
+
+    // Nav email
+    document.getElementById('userEmail').textContent = email
+
+    // Hero first name
+    const firstName = email.split('@')[0].replace(/[._]/g, ' ')
+      .replace(/\b\w/g, c => c.toUpperCase())
+    document.getElementById('userFirstName').textContent = firstName
+    document.getElementById('profileName').textContent = firstName
+
+    // Profile
+    document.getElementById('profileEmail').textContent = email
+    document.getElementById('profileAvatar').textContent =
+      firstName.charAt(0).toUpperCase()
+
+    // Member since
+    if (createdAt) {
+      const opts = { month: 'short', year: 'numeric' }
+      document.getElementById('memberSince').textContent =
+        createdAt.toLocaleDateString('en-US', opts)
+    }
+  })
+
+
+  // ══════ BULK AUDITOR VIEW SWITCHER ══════
+  function showBulkAuditor(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.add('active');
+    switchMainTab('bulk');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-bulk-link').classList.add('active');
+  }
+  function showFaviconChecker(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.add('active');
+    switchMainTab('favicon');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-favicon-link').classList.add('active');
+  }
+  function showDashboard(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = '';
+    document.getElementById('bulk-auditor-view').classList.remove('active');
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-dashboard-link').classList.add('active');
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut()
+    window.location.href = '/login.html'
+  })
+</script>
+
+<script>
+// ── MAIN AI AUDIT — tries all 3 providers in order ───────────────────────────
+async function runAIAudit(url, options, pageData, cmsData) {
+  const pd = pageData || {};
+  const cms = cmsData?.cms || 'Unknown';
+  const systemMsg = `You are an expert SEO auditor. Analyze the provided page data and return ONLY a valid JSON object (no markdown, no explanation) with the following structure: { "score": <0-100>, "issues": [ { "type": <string>, "severity": <"critical"|"warning"|"info">, "description": <string>, "recommendation": <string> } ], "summary": <string>, "topIssues": [ <string> ] }`;
+  const userMsg = `Audit this URL for SEO issues:\nURL: ${url}\nCMS: ${cms}\nPage Data: ${JSON.stringify(pd).slice(0, 3000)}`;
+  const messages = [
+    { role: 'system', content: systemMsg },
+    { role: 'user',   content: userMsg }
+  ];
+
+  // ── Tier 1: Groq ─────────────────────────────────────────────────────────────
+  console.log('[AI] 🔄 Trying Groq for', url);
+  const groqResult = await _callGroq(messages);
+  if (groqResult) return groqResult;
+
+  // ── Tier 2: Cloudflare AI ────────────────────────────────────────────────────
+  console.log('[AI] 🔄 Groq failed — trying Cloudflare AI for', url);
+  const cfResult = await _callCloudflareAI(messages);
+  if (cfResult) return cfResult;
+
+  // ── Tier 3: OpenRouter ───────────────────────────────────────────────────────
+  console.log('[AI] 🔄 Cloudflare AI failed — trying OpenRouter for', url);
+  const orResult = await _callOpenRouter(messages);
+  if (orResult) return orResult;
+
+  // All providers failed
+  console.error('[AI] ❌ All 3 AI providers failed for', url);
+  window._lastAIError = `All AI providers failed for ${url}. Check Worker logs for Groq/Cloudflare/OpenRouter errors.`;
+  return null;
+}
+
+
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let auditResults = [];
+let auditRunning = false;
+let stopRequested = false;
+let expandedRows = new Set();
+
+// ── URL INPUT ────────────────────────────────────────────────────────────────
+document.getElementById('url-textarea').addEventListener('input', updateUrlCount);
+function updateUrlCount() {
+  const urls = parseUrls(document.getElementById('url-textarea').value);
+  document.getElementById('url-count').textContent = urls.length + ' URL' + (urls.length !== 1 ? 's' : '');
+}
+function parseUrls(text) {
+  return text.split('\n')
+    .map(l => l.trim().replace(/^[\s"',;]+|[\s"',;]+$/g,''))
+    .filter(l => l && !l.startsWith('#'))
+    .map(l => l.startsWith('http') ? l : 'https://' + l)
+    .filter(u => { try { const h = new URL(u).hostname; return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(h); } catch { return false; } })
+    .slice(0, 100);
+}
+function loadSampleUrls() {
+  document.getElementById('url-textarea').value = 'https://nytimes.com\nhttps://techcrunch.com\nhttps://smashingmagazine.com\nhttps://moz.com\nhttps://ahrefs.com';
+  updateUrlCount();
+}
+function clearUrls() { document.getElementById('url-textarea').value = ''; updateUrlCount(); }
+
+// ── MODE SWITCH ──────────────────────────────────────────────────────────────
+function switchMode(mode, btn) {
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('paste-mode').style.display = mode === 'paste' ? '' : 'none';
+  document.getElementById('csv-mode').style.display   = mode === 'csv'   ? '' : 'none';
+}
+
+// ── CSV ──────────────────────────────────────────────────────────────────────
+const csvDrop = document.getElementById('csv-drop');
+csvDrop.addEventListener('dragover', e => { e.preventDefault(); csvDrop.classList.add('dragover'); });
+csvDrop.addEventListener('dragleave', () => csvDrop.classList.remove('dragover'));
+csvDrop.addEventListener('drop', e => {
+  e.preventDefault(); csvDrop.classList.remove('dragover');
+  const f = e.dataTransfer.files[0]; if (f) parseCsvFile(f);
+});
+csvDrop.addEventListener('click', () => document.getElementById('csv-file').click());
+function handleCsvFile(e) { const f = e.target.files[0]; if (f) parseCsvFile(f); }
+function parseCsvFile(file) {
+  const r = new FileReader();
+  r.onload = ev => {
+    const lines = ev.target.result.split('\n');
+    const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+    const idx = header.findIndex(h => ['url','website','domain','site'].includes(h));
+    if (idx < 0) { document.getElementById('csv-status').textContent = '⚠ No url/website/domain column found.'; return; }
+    const urls = lines.slice(1).map(l => l.split(',')[idx]?.trim().replace(/"/g,'')).filter(Boolean).slice(0,100);
+    document.getElementById('url-textarea').value = urls.join('\n');
+    switchMode('paste', document.querySelectorAll('.mode-tab')[0]);
+    updateUrlCount();
+    showToast('✅ Loaded ' + urls.length + ' URLs from ' + file.name);
+  };
+  r.readAsText(file);
+}
+
+// ── SETTINGS ─────────────────────────────────────────────────────────────────
+function toggleChip(el) { el.classList.toggle('active'); }
+function getOptions() { return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name); }
+
+// ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
+async function _startBulkAuditCore() {
+  const urls = parseUrls(document.getElementById('url-textarea').value);
+  if (!urls.length) { showToast('⚠ Enter at least one valid URL!', 'var(--red)'); return; }
+
+  const concurrency = parseInt(document.getElementById('concurrency-select').value);
+  const options = getOptions();
+
+  auditResults = urls.map(url => ({ url, status: 'queued', score: null, data: null, error: null, cms: null, pageData: null }));
+  auditRunning = true;
+  // Clear sitemap/robots cache for fresh audit
+  Object.keys(_sitemapRobotsCache).forEach(k => delete _sitemapRobotsCache[k]);
+  stopRequested = false;
+  expandedRows.clear();
+  _auditStartTime = 0;
+
+  document.getElementById('audit-btn').disabled = true;
+  document.getElementById('audit-btn').textContent = 'Auditing…';
+  document.getElementById('stop-btn').style.display = '';
+  document.getElementById('export-btn').style.display = 'none';
+  document.getElementById('done-banner').style.display = 'none';
+  document.getElementById('progress-section').style.display = 'block';
+  document.getElementById('results-section').style.display = 'block';
+
+  renderTable();
+  updateProgress();
+  // Activate scan animation classes
+  document.querySelector('.progress-card')?.classList.add('scanning-active');
+  // JS-driven animated dots on scanning title (CSS content animation not supported)
+  let _dotsStep = 0;
+  const _dotsEl = document.querySelector('.scanning-dots');
+  if (_dotsEl) { _dotsEl._baseText = _dotsEl.textContent.replace(/\.+$/, '').trim(); }
+  const _dotsTimer = setInterval(() => {
+    const el = document.querySelector('.scanning-dots');
+    if (!el) return;
+    const base = el._baseText || '🔍 Auditing in Progress';
+    el.textContent = base + ['.','..','...',''][_dotsStep % 4];
+    _dotsStep++;
+  }, 500);
+  // Store for cleanup
+  window._scanDotsTimer = _dotsTimer;
+  const beam = document.getElementById('table-scan-beam');
+  if (beam) beam.style.display = 'block';
+
+  // Yield to browser paint — doubles up rAF + setTimeout to guarantee a real frame
+  const paint = (ms=0) => new Promise(r => requestAnimationFrame(() => setTimeout(r, ms)));
+
+  // Auto-scroll to results table so user sees the animation
+  await paint(80);
+  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await paint(300); // wait for scroll to settle
+
+  const queue = [...urls];
+  async function runNext() {
+    if (stopRequested || !queue.length) return;
+    const url = queue.shift();
+    const idx = auditResults.findIndex(r => r.url === url);
+    if (idx < 0) return;
+
+    auditResults[idx].status = 'scanning';
+    updateProgress();
+    updateRow(idx);
+
+    // Give browser at least 2 frames to paint the scanning animation
+    await paint(32);
+
+    const auditStart = Date.now();
+    try {
+      const pageData = await fetchPageData(url);
+      const [cmsData, sitemapRobots] = await Promise.all([
+        detectCMS(url, pageData?._rawHtml || ''),
+        detectSitemapAndRobots(url, pageData?._rawHtml || '')
+      ]);
+      // Merge sitemap/robots into pageData so AI prompt sees it
+      if (pageData) {
+        pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt;
+        pageData.hasSitemap   = sitemapRobots.hasSitemap;
+        pageData.sitemapUrl   = sitemapRobots.sitemapUrl;
+      }
+      auditResults[idx].pageData    = pageData;
+      auditResults[idx].cms         = cmsData;
+      auditResults[idx].sitemapRobots = sitemapRobots;
+      // Check broken links in parallel with AI audit
+      const [auditData, brokenData] = await Promise.all([
+        runAIAudit(url, options, pageData, cmsData),
+        checkBrokenLinks(pageData)
+      ]);
+      auditResults[idx].brokenLinks = brokenData;
+      auditResults[idx].data = auditData;
+      auditResults[idx].score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
+      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = window._lastAIError || 'All AI providers failed — check Worker logs';
+    } catch (err) {
+      auditResults[idx].status = 'error';
+      auditResults[idx].error = err.message || 'Failed';
+    }
+
+    // Guarantee scanning animation shows for at least 600ms so it's visible
+    const elapsed = Date.now() - auditStart;
+    if (elapsed < 600) await paint(600 - elapsed);
+
+    updateProgress();
+    updateRow(idx);
+    await paint(80); // let done-flash render
+    await runNext();
+  }
+
+  const workers = Array.from({ length: concurrency }, () => runNext());
+  await Promise.allSettled(workers);
+
+  // ── AUDIT DONE ──
+  auditRunning = false;
+  document.querySelector('.progress-card')?.classList.remove('scanning-active');
+  // Stop JS dots animation
+  clearInterval(window._scanDotsTimer);
+  const _dotsEl2 = document.querySelector('.scanning-dots');
+  if (_dotsEl2 && _dotsEl2._baseText) _dotsEl2.textContent = _dotsEl2._baseText;
+  const _beam = document.getElementById('table-scan-beam');
+  if (_beam) _beam.style.display = 'none';
+  const _etaTag = document.getElementById('eta-tag');
+  if (_etaTag) _etaTag.style.display = 'none';
+  document.getElementById('audit-btn').disabled = false;
+  document.getElementById('audit-btn').textContent = '⚡ Audit All Websites';
+  document.getElementById('stop-btn').style.display = 'none';
+  document.getElementById('export-btn').style.display = '';
+  document.getElementById('progress-section').style.display = 'none';
+
+  // Show completion banner
+  const done   = auditResults.filter(r => r.status === 'done').length;
+  const errors = auditResults.filter(r => r.status === 'error').length;
+  const good   = auditResults.filter(r => r.score >= 80).length;
+  const banner = document.getElementById('done-banner');
+  document.getElementById('done-banner-title').textContent = stopRequested
+    ? '⏹ Audit Stopped — ' + done + ' Sites Completed'
+    : '🎉 Bulk Audit Complete! All ' + done + ' Sites Done' + (errors ? ' (' + errors + ' errors)' : '');
+  document.getElementById('done-banner-desc').textContent =
+    good + ' sites scored 80+ (Good) · ' + (done - good) + ' sites need attention. ' +
+    'Download your Excel report for the full breakdown.';
+  banner.style.display = '';
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Big toast notification
+  showToast('✅ ' + done + ' sites audited! Download your Excel report.', 'var(--green)', 6000);
+
+  // Play a subtle done sound
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
+      gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + i * 0.15 + 0.05);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.15 + 0.3);
+      osc.start(ctx.currentTime + i * 0.15);
+      osc.stop(ctx.currentTime + i * 0.15 + 0.35);
+    });
+  } catch(e) {}
+
+  renderSummaryChips();
+  applyFilters();
+}
+
+function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(--amber)'); }
+
+// ── API CALLS ────────────────────────────────────────────────────────────────
+
+// Extract SEO data from raw HTML string using regex (reliable even on malformed HTML)
+function parseHtmlForSEO(html, url) {
+  const isHttps = url.startsWith('https://');
+
+  // ── PRE-CLEAN: strip comments, scripts, styles BEFORE any parsing ────────────
+  // This prevents matching tags inside JS strings or CSS content
+  const htmlClean = html
+    .replace(/<!--[\s\S]*?-->/g, '')           // HTML comments
+    .replace(/<script[\s\S]*?<\/script>/gi, '') // script blocks
+    .replace(/<style[\s\S]*?<\/style>/gi, '');  // style blocks
+
+  // ── ATTR EXTRACTOR: handles " ' or unquoted values ───────────────────────────
+  function getAttr(tag, name) {
+    // Double quotes
+    let m = tag.match(new RegExp(name + '\\s*=\\s*"([^"]*)"', 'i'));
+    if (m) return m[1].trim();
+    // Single quotes
+    m = tag.match(new RegExp(name + "\\s*=\\s*'([^']*)'", 'i'));
+    if (m) return m[1].trim();
+    // Unquoted
+    m = tag.match(new RegExp(name + '\\s*=\\s*([^\\s>]+)', 'i'));
+    if (m) return m[1].trim();
+    return '';
+  }
+
+  // ── META TAG PARSER ──────────────────────────────────────────────────────────
+  // Collect ALL <meta ...> tags first, then look them up — far more reliable
+  // than trying to match both attrs in a single regex pass
+  const metaTags = [];
+  const metaRx = /<meta\b([^>]*?)(?:\/>|>)/gi;
+  let mm;
+  while ((mm = metaRx.exec(htmlClean)) !== null) {
+    metaTags.push(mm[1]);
+  }
+
+  function getMeta(nameAttr, nameVal) {
+    // nameAttr = 'name' or 'property', nameVal = 'description', 'og:title', etc.
+    for (const attrs of metaTags) {
+      const attrVal = getAttr(attrs, nameAttr);
+      if (attrVal.toLowerCase() === nameVal.toLowerCase()) {
+        return getAttr(attrs, 'content');
+      }
+    }
+    return '';
+  }
+
+  // ── TITLE ────────────────────────────────────────────────────────────────────
+  const titleMatch = htmlClean.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+  const title = titleMatch
+    ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&apos;/g,"'").trim()
+    : '';
+
+  // ── META DESC ────────────────────────────────────────────────────────────────
+  const metaDesc = getMeta('name', 'description') || getMeta('property', 'og:description') || '';
+
+  // ── VIEWPORT ─────────────────────────────────────────────────────────────────
+  const hasViewport = metaTags.some(attrs => {
+    const n = getAttr(attrs, 'name').toLowerCase();
+    return n === 'viewport';
+  });
+
+  // ── CANONICAL ────────────────────────────────────────────────────────────────
+  // Collect all <link> tags and find rel=canonical
+  const linkRx = /<link\b([^>]*?)(?:\/>|>)/gi;
+  let lm; let canonical = '';
+  while ((lm = linkRx.exec(htmlClean)) !== null) {
+    const attrs = lm[1];
+    const rel = getAttr(attrs, 'rel').toLowerCase();
+    if (rel === 'canonical') {
+      canonical = getAttr(attrs, 'href');
+      break;
+    }
+  }
+
+  // ── LANG ─────────────────────────────────────────────────────────────────────
+  const htmlTagMatch = html.match(/<html\b([^>]*)>/i);
+  const lang = htmlTagMatch ? getAttr(htmlTagMatch[1], 'lang') : '';
+
+  // ── ROBOTS ───────────────────────────────────────────────────────────────────
+  const robotsMeta = getMeta('name', 'robots');
+
+  // ── OG TAGS ──────────────────────────────────────────────────────────────────
+  const ogTitle = getMeta('property', 'og:title');
+  const ogImage = getMeta('property', 'og:image');
+
+  // ── WORD COUNT ───────────────────────────────────────────────────────────────
+  const stripped = htmlClean.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
+
+  // ── HEADING DETECTION ────────────────────────────────────────────────────────
+  // htmlClean already has scripts/styles/comments stripped
+  // Count by opening tags only — far more reliable than trying to match open+close
+  // on large pages where regex backtracking can fail
+  const countHeadingTags = (level) => {
+    // Match <h1 ... > or <h1> — just the opening tag, not the full block
+    const rx = new RegExp('<h' + level + '(?:[\\s>])', 'gi');
+    return (htmlClean.match(rx) || []).length;
+  };
+
+  const h1Count = countHeadingTags(1);
+  const h2Count = countHeadingTags(2);
+  const h3Count = countHeadingTags(3);
+
+  // Extract H1 text — strip all nested tags, decode entities
+  const decodeEntities = (s) => s
+    .replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"').replace(/&#039;/gi, "'").replace(/&nbsp;/gi, ' ')
+    .replace(/&#(\d+);/gi, (_, n) => String.fromCharCode(parseInt(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
+
+  // ── H1 EXTRACTION — 6-strategy cascade for JS-rendered sites ─────────────────
+  // Many modern sites (Next.js, Nuxt, React, WooCommerce) render H1 via JS.
+  // Static HTML proxies never see it. We try multiple fallback signals.
+  let h1 = "";
+  let h1Source = ""; // track where we got it from (for transparency)
+
+  // Strategy 1: standard <h1>...</h1> block in static HTML
+  const h1BlockRx = /<h1(?:\s[^>]*)?>([\s\S]{0,800}?)<\/h1\s*>/i;
+  const h1Block = htmlClean.match(h1BlockRx);
+  if (h1Block) {
+    h1 = decodeEntities(h1Block[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+    if (h1) h1Source = "html";
+  }
+
+  // Strategy 2: aria-label / data-heading on the <h1> tag (some frameworks do this)
+  if (!h1 && h1Count > 0) {
+    const h1Tag = htmlClean.match(/<h1\b([^>]{0,300})>/i);
+    if (h1Tag) {
+      h1 = getAttr(h1Tag[1], "aria-label") || getAttr(h1Tag[1], "data-heading") || "";
+      if (h1) h1Source = "aria";
+    }
+  }
+
+  // Strategy 3: JSON-LD structured data — name / headline field
+  // (Next.js / Gatsby / Shopify almost always emit this even when H1 is JS-rendered)
+  if (!h1) {
+    const jsonLdH1Rx = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    let jldMatch;
+    while ((jldMatch = jsonLdH1Rx.exec(html)) !== null && !h1) {
+      try {
+        const obj = JSON.parse(jldMatch[1].trim());
+        const candidates = Array.isArray(obj) ? obj : [obj];
+        for (const o of candidates) {
+          const val = o.headline || o.name || o.title || '';
+          if (val && typeof val === 'string' && val.length > 2 && val.length < 200) {
+            h1 = decodeEntities(val.trim());
+            h1Source = "json-ld";
+            break;
+          }
+        }
+      } catch(e) {}
+    }
+  }
+
+  // Strategy 4: OG title — present on virtually every JS-rendered page
+  if (!h1 && ogTitle && ogTitle.length > 2) {
+    // Strip site name suffix (e.g. "Page Title | Site Name" → "Page Title")
+    const ogClean = ogTitle.split(/\s*[|–—-]\s+/)[0].trim();
+    if (ogClean.length > 2) {
+      h1 = decodeEntities(ogClean);
+      h1Source = "og:title";
+    }
+  }
+
+  // Strategy 5: <title> tag, strip site name suffix
+  // Use only when nothing else worked — noisier than OG title but always present
+  if (!h1 && title && title.length > 2) {
+    const titleClean = title.split(/\s*[|–—]\s+/)[0].trim();
+    if (titleClean.length > 2 && titleClean.length < 120) {
+      h1 = decodeEntities(titleClean);
+      h1Source = "title";
+    }
+  }
+
+  // Append source tag so the AI and UI know this was inferred (not a real H1)
+  // We store both the raw value and whether it's inferred
+  const h1Inferred = h1Source !== "html" && h1Source !== "aria" && !!h1;
+
+  // Also extract all H2 texts (first 5) for the AI prompt
+  const h2Texts = [];
+  const h2BlockRx = /<h2[\s>][^]*?<\/h2\s*>/gi;
+  let h2m;
+  while ((h2m = h2BlockRx.exec(htmlClean)) !== null && h2Texts.length < 5) {
+    const txt = decodeEntities(h2m[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
+    if (txt) h2Texts.push(txt);
+  }
+
+  // ── IMAGE EXTRACTION ────────────────────────────────────────────────────────
+  // Parse every <img> tag and collect src, alt, width, height
+  const imgTagRx = /<img\b([^>]*?)(?:\/>|>)/gi;
+  const extractAttr = (attrs, name) => {
+    const m = attrs.match(new RegExp(name + '=["\']([^"\']*)["\']', 'i'))
+           || attrs.match(new RegExp(name + "='([^']*)'", 'i'))
+           || attrs.match(new RegExp(name + '=([^\\s>]+)', 'i'));
+    return m ? m[1].trim() : '';
+  };
+  const rawImgs = [];
+  let imgMatch;
+  while ((imgMatch = imgTagRx.exec(htmlClean)) !== null) {
+    const attrs = imgMatch[1];
+    const src   = extractAttr(attrs, 'src') || extractAttr(attrs, 'data-src') || extractAttr(attrs, 'data-lazy-src');
+    if (!src || src.startsWith('data:')) continue; // skip inline base64
+    const alt   = extractAttr(attrs, 'alt');
+    const wAttr = parseInt(extractAttr(attrs, 'width'))  || 0;
+    const hAttr = parseInt(extractAttr(attrs, 'height')) || 0;
+    rawImgs.push({ src, alt, width: wAttr, height: hAttr });
+  }
+
+  // Resolve relative URLs to absolute
+  let baseOrigin = '';
+  try { const u = new URL(url); baseOrigin = u.origin; } catch {}
+  const resolveUrl = (src) => {
+    if (/^https?:\/\//i.test(src)) return src;
+    if (src.startsWith('//')) return 'https:' + src;
+    if (src.startsWith('/')) return baseOrigin + src;
+    return baseOrigin + '/' + src;
+  };
+
+  const images = rawImgs.map(img => ({
+    url:    resolveUrl(img.src),
+    alt:    img.alt,
+    width:  img.width,
+    height: img.height,
+    estKb:  img.width && img.height ? Math.round(img.width * img.height * 3 / 1024) : null,
+    hasAlt: img.alt.length > 0,
+    // Only flag as heavy if we KNOW dimensions and they're large (>200KB uncompressed)
+    // Don't flag unknown-dimension images as heavy — too many false positives
+    likelyHeavy: (img.width && img.height) ? (img.width * img.height * 3 / 1024 > 200) : false,
+    format: (img.src.match(/\.(\w{2,5})(?:\?|$)/i)||[])[1]?.toLowerCase() || 'unknown'
+  }));
+
+  const imagesWithoutAlt = images.filter(i => !i.hasAlt);
+  const heavyImages      = images.filter(i => i.likelyHeavy);
+  const unoptimisedFmt   = images.filter(i => ['bmp','tiff','tif'].includes(i.format));
+
+  // ── SCHEMA DETECTION ──────────────────────────────────────────────────────
+  // Look for JSON-LD and microdata schema types in cleaned HTML
+  const schemaTypes = [];
+  const jsonLdRx = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let jldm;
+  // Use original html for JSON-LD since we stripped scripts from htmlClean
+  const htmlForSchema = html;
+  while ((jldm = jsonLdRx.exec(htmlForSchema)) !== null) {
+    try {
+      const obj = JSON.parse(jldm[1].trim());
+      const types = Array.isArray(obj) ? obj.map(o => o['@type']).filter(Boolean) : [obj['@type']].filter(Boolean);
+      types.forEach(t => { if (t && !schemaTypes.includes(t)) schemaTypes.push(t); });
+    } catch(e) { /* malformed JSON-LD */ }
+  }
+  // Also check itemtype microdata
+  const microRx = /itemtype=["']https?:\/\/schema\.org\/([^"'\s]+)["']/gi;
+  let microm;
+  while ((microm = microRx.exec(htmlClean)) !== null) {
+    const t = microm[1]; if (!schemaTypes.includes(t)) schemaTypes.push(t);
+  }
+
+  // ── INTERNAL/EXTERNAL LINK EXTRACTION ───────────────────────────────────────
+  let baseOriginForLinks = '';
+  try { baseOriginForLinks = new URL(url).origin; } catch {}
+  const aTagRx = /<a[^>]*href=["']([^"'#\s][^"']*?)["'][^>]*>/gi;
+  let am; const internalLinks = []; const externalLinks = [];
+  while ((am = aTagRx.exec(htmlClean)) !== null) {
+    const href = am[1].trim();
+    if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) continue;
+    try {
+      const abs = href.startsWith('http') ? href : href.startsWith('//') ? 'https:' + href : baseOriginForLinks + (href.startsWith('/') ? href : '/' + href);
+      const linkHost = new URL(abs).origin;
+      if (linkHost === baseOriginForLinks) { if (!internalLinks.includes(abs)) internalLinks.push(abs); }
+      else { if (!externalLinks.includes(abs)) externalLinks.push(abs); }
+    } catch(e) {}
+  }
+
+  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, lang, h1, h1Inferred, h1Source, robotsMeta, ogTitle, ogImage,
+    // Heading data — use tag counts (reliable) not just text presence
+    // If H1 was inferred from fallback signals, bump the count to 1 so AI doesn't flag it as missing
+    headings: { h1: h1Inferred && h1Count === 0 ? 1 : h1Count, h2: h2Count, h3: h3Count },
+    h2Texts,
+    schemaTypes,
+    internalLinks: internalLinks.slice(0, 100),
+    externalLinks: externalLinks.slice(0, 50),
+    links: { internal: internalLinks.length, external: externalLinks.length },
+    imageList: images,
+    images: { total: images.length, missingAlt: imagesWithoutAlt.length, heavy: heavyImages.length, unoptimisedFmt: unoptimisedFmt.length }
+  };
+}
+
+// CLIENT-SIDE FALLBACK: use our own Cloudflare Worker to fetch page HTML (no CORS issues)
+// ── PROXY CACHE & RETRY SYSTEM ──────────────────────────────────────────────
+// Remembers which proxy worked last — tries it first next time
+const _proxyCache = {
+  winner: null,        // index of last successful proxy
+  failures: {},        // { proxyIndex: failCount }
+  rateLimited: {},     // { proxyIndex: unblockTimestamp }
+  record(idx, success) {
+    if (success) {
+      this.winner = idx;
+      this.failures[idx] = 0;
+      console.log(`[Proxy] ✅ Cached winner: proxy #${idx}`);
+    } else {
+      this.failures[idx] = (this.failures[idx] || 0) + 1;
+    }
+  },
+  markRateLimited(idx) {
+    const backoff = Math.min(60000, 5000 * Math.pow(2, this.failures[idx] || 0));
+    this.rateLimited[idx] = Date.now() + backoff;
+    this.failures[idx] = (this.failures[idx] || 0) + 1;
+    console.warn(`[Proxy] ⏳ Proxy #${idx} rate-limited — cooling off ${backoff}ms`);
+  },
+  isBlocked(idx) {
+    return this.rateLimited[idx] && Date.now() < this.rateLimited[idx];
+  },
+  // Returns proxy indices sorted: winner first, then by fewest failures, skipping blocked
+  orderedIndices(total) {
+    const all = Array.from({ length: total }, (_, i) => i);
+    return all
+      .filter(i => !this.isBlocked(i))
+      .sort((a, b) => {
+        if (a === this.winner) return -1;
+        if (b === this.winner) return 1;
+        return (this.failures[a] || 0) - (this.failures[b] || 0);
+      });
+  }
+};
+
+// Detects error/block pages from proxy responses
+function _isProxyErrorPage(html) {
+  if (!html || html.length < 100) return true;
+  const lc = html.toLowerCase();
+  return (
+    html.length < 5000 &&
+    /429|too many requests|rate.?limit|access denied|403 forbidden|cloudflare ray id|just a moment|blocked|ddos|captcha/i.test(lc)
+  );
+}
+
+// Proxy definitions — each returns { html, ttfb } or throws
+const _PROXY_DEFS = [
+  // 0: allorigins — JSON wrapper, reliable, handles many sites
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) throw new Error(`allorigins ${res.status}`);
+    const json = await res.json();
+    const html = json.contents || '';
+    return { html, ttfb: Date.now() - t0 };
+  },
+  // 1: corsproxy.io — fast passthrough
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) throw new Error(`corsproxy ${res.status}`);
+    const html = await res.text();
+    return { html, ttfb: Date.now() - t0 };
+  },
+  // 2: codetabs — good AU/Asia coverage
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) throw new Error(`codetabs ${res.status}`);
+    const html = await res.text();
+    return { html, ttfb: Date.now() - t0 };
+  },
+  // 3: htmldriven / thingproxy — lightweight fallback
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://thingproxy.freeboard.io/fetch/' + url, { signal: AbortSignal.timeout(12000) });
+    if (!res.ok) throw new Error(`thingproxy ${res.status}`);
+    const html = await res.text();
+    return { html, ttfb: Date.now() - t0 };
+  },
+  // 4: cors.sh — newer reliable option
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://proxy.cors.sh/' + url, {
+      headers: { 'x-cors-api-key': 'temp_' + Math.random().toString(36).slice(2) },
+      signal: AbortSignal.timeout(12000)
+    });
+    if (!res.ok) throw new Error(`cors.sh ${res.status}`);
+    const html = await res.text();
+    return { html, ttfb: Date.now() - t0 };
+  },
+  // 5: cors-anywhere heroku — last resort, often throttled
+  async (url) => {
+    const t0 = Date.now();
+    const res = await fetch('https://cors-anywhere.herokuapp.com/' + url, {
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      signal: AbortSignal.timeout(14000)
+    });
+    if (!res.ok) throw new Error(`cors-anywhere ${res.status}`);
+    const html = await res.text();
+    return { html, ttfb: Date.now() - t0 };
+  },
+];
+
+// Smart proxy runner — tries cached winner first, skips blocked, exponential backoff on 429
+async function _fetchViaSmartProxy(url, maxRetries = 2) {
+  const order = _proxyCache.orderedIndices(_PROXY_DEFS.length);
+  if (order.length === 0) {
+    // All proxies blocked — wait for the soonest one to unblock
+    const soonest = Math.min(...Object.values(_proxyCache.rateLimited));
+    const wait = Math.max(0, soonest - Date.now());
+    console.warn(`[Proxy] All proxies cooling off — waiting ${wait}ms`);
+    await new Promise(r => setTimeout(r, wait));
+    return _fetchViaSmartProxy(url, maxRetries);
+  }
+
+  for (const idx of order) {
+    let attempt = 0;
+    while (attempt <= maxRetries) {
+      try {
+        const result = await _PROXY_DEFS[idx](url);
+        const { html } = result;
+
+        // Detect rate-limit response body even if status was 200
+        if (/429|too many requests|rate.?limit/i.test(html.slice(0, 2000))) {
+          _proxyCache.markRateLimited(idx);
+          break; // move to next proxy
+        }
+
+        if (_isProxyErrorPage(html)) {
+          _proxyCache.record(idx, false);
+          break; // move to next proxy
+        }
+
+        _proxyCache.record(idx, true);
+        console.log(`[Proxy] ✅ proxy #${idx} succeeded for ${url}`);
+        return result;
+
+      } catch (e) {
+        const msg = e.message || '';
+        if (/429|rate.?limit/i.test(msg)) {
+          _proxyCache.markRateLimited(idx);
+          break;
+        }
+        attempt++;
+        if (attempt <= maxRetries) {
+          const delay = 500 * Math.pow(2, attempt - 1); // 500ms, 1000ms
+          console.warn(`[Proxy] ⚠ proxy #${idx} attempt ${attempt} failed (${msg}) — retry in ${delay}ms`);
+          await new Promise(r => setTimeout(r, delay));
+        } else {
+          _proxyCache.record(idx, false);
+        }
+      }
+    }
+  }
+  return null; // all proxies failed
+}
+
+// ── MAIN PAGE FETCH — Worker first, smart proxy fallback ─────────────────────
+const WORKER_BASE_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+
+async function fetchPageData(url) {
+  // ─── 1️⃣  Try Cloudflare Worker (most accurate — server-side fetch, no CORS) ───
+  try {
+    const t0 = Date.now();
+    const res = await fetch(WORKER_BASE_URL + '/api/page-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(20000)
+    });
+    const ttfb = Date.now() - t0;
+    if (res.ok) {
+      const data = await res.json();
+      const html = data.html || '';
+      // Worker returned full HTML — parse client-side for accurate headings/images/schema/links
+      if (html.length > 300) {
+        const parsed = parseHtmlForSEO(html, url);
+        console.log('[Fetch] ✅ Worker (html) succeeded for', url);
+        return {
+          ...parsed,
+          ttfb: data.ttfb || ttfb,
+          statusCode: data.statusCode || parsed.statusCode,
+          _rawHtml: html,
+          _source: 'worker'
+        };
+      }
+      // Worker returned pre-parsed JSON (no html field) — re-parse links from rawHtml if provided
+      if (data.title || data.metaDesc || data.statusCode) {
+        console.log('[Fetch] ✅ Worker (parsed) succeeded for', url);
+        const rawHtml = data.rawHtml || data._rawHtml || '';
+        let linkData = {};
+        if (rawHtml.length > 300) {
+          const lp = parseHtmlForSEO(rawHtml, url);
+          linkData = {
+            internalLinks: lp.internalLinks || [],
+            externalLinks: lp.externalLinks || [],
+            links: lp.links || {},
+            headings: lp.headings || data.headings || { h1: 0, h2: 0, h3: 0 },
+            h1: lp.h1 || data.h1 || '',
+            h2Texts: lp.h2Texts || [],
+            imageList: lp.imageList || [],
+            images: lp.images || {},
+          };
+        }
+        return { ...data, ...linkData, ttfb: data.ttfb || ttfb, _rawHtml: rawHtml, _source: 'worker' };
+      }
+    }
+    console.warn('[Fetch] Worker returned bad data for', url, '— falling back to proxies');
+  } catch(e) {
+    console.warn('[Fetch] Worker failed for', url, ':', e.message, '— falling back to proxies');
+  }
+
+  // ─── 2️⃣  Smart proxy fallback (only reached if Worker fails) ───────────────
+  console.log('[Fetch] Trying smart proxy for', url);
+  const proxyResult = await _fetchViaSmartProxy(url);
+  if (!proxyResult) {
+    console.error('[Fetch] All proxies failed for', url);
+    return null;
+  }
+
+  const { html, ttfb } = proxyResult;
+  const parsed = parseHtmlForSEO(html, url);
+
+  // Reject if title/H1 looks like an error page
+  const badTitle = /429|too many requests|rate.?limit|access denied|403|just a moment|cloudflare|forbidden/i;
+  if (badTitle.test(parsed.title || '') || badTitle.test(parsed.h1 || '')) {
+    console.error('[Fetch] Proxy returned error page for', url);
+    return null;
+  }
+
+  return { ...parsed, ttfb, _rawHtml: html, _source: 'proxy' };
+}
+
+// Legacy alias — fetchPageDataClientSide now just calls the smart proxy directly
+async function fetchPageDataClientSide(url) {
+  const proxyResult = await _fetchViaSmartProxy(url);
+  if (!proxyResult) return null;
+  const { html, ttfb } = proxyResult;
+  const parsed = parseHtmlForSEO(html, url);
+  return { ...parsed, ttfb, _rawHtml: html, _source: 'proxy' };
+}
+// ── BROKEN LINK CHECKER ─────────────────────────────────────────────────────
+// Checks a sample of internal links from the page for 404s
+async function checkBrokenLinks(pageData) {
+  if (!pageData?.internalLinks?.length) return { checked: 0, broken: [], brokenCount: 0 };
+  // Sample up to 10 internal links to avoid hammering the server
+  const toCheck = pageData.internalLinks.slice(0, 10);
+  const broken = [];
+  await Promise.allSettled(toCheck.map(async (href) => {
+    try {
+      const res = await fetch(href, { method: 'HEAD', signal: AbortSignal.timeout(8000), redirect: 'follow' });
+      if (res.status === 404 || res.status === 410) broken.push({ url: href, status: res.status });
+    } catch(e) { /* network error — skip, don't flag as broken */ }
+  }));
+  return { checked: toCheck.length, broken, brokenCount: broken.length };
+}
+
+// Cache sitemap/robots results per domain — same result for all pages on same domain
+const _sitemapRobotsCache = {};
+
+async function detectSitemapAndRobots(url, cachedPageHtml) {
+  let baseUrl = '';
+  try { const u = new URL(url); baseUrl = u.origin; } catch { return { hasRobotsTxt: false, hasSitemap: false, sitemapUrl: '' }; }
+
+  // Return cached result if we already checked this domain
+  if (_sitemapRobotsCache[baseUrl]) return _sitemapRobotsCache[baseUrl];
+
+  // If we have the homepage HTML already, check for sitemap link tag to avoid extra fetches
+  let sitemapFromHtml = '';
+  if (cachedPageHtml) {
+    const sitemapLinkMatch = cachedPageHtml.match(/<link[^>]+rel=["']sitemap["'][^>]*href=["']([^"']+)["']/i);
+    if (sitemapLinkMatch) sitemapFromHtml = sitemapLinkMatch[1];
+  }
+
+  // Fetch a URL through the shared smart proxy system (caches winner, handles retries)
+  async function fetchViaProxy(targetUrl) {
+    // Try direct fetch first — works for robots.txt/sitemap.xml on many servers
+    try {
+      const r = await fetch(targetUrl, { signal: AbortSignal.timeout(6000) });
+      if (r.ok) {
+        const text = await r.text();
+        if (text && text.length > 10) return text;
+      }
+    } catch(e) { /* fall through to proxy */ }
+    // Use shared smart proxy (benefits from cached winner)
+    const result = await _fetchViaSmartProxy(targetUrl, 1);
+    return result ? result.html : null;
+  }
+
+  // Fetch robots.txt and sitemap.xml in parallel via proxies
+  const [robotsTxt, sitemapTxt] = await Promise.all([
+    fetchViaProxy(baseUrl + '/robots.txt'),
+    fetchViaProxy(baseUrl + '/sitemap.xml'),
+  ]);
+
+  // robots.txt — must contain User-agent directives to be valid
+  let hasRobotsTxt = false;
+  let sitemapFromRobots = '';
+  if (robotsTxt) {
+    hasRobotsTxt = robotsTxt.length > 10 && /user-agent/i.test(robotsTxt);
+    const sitemapLine = robotsTxt.match(/^sitemap:\s*(.+)$/im);
+    if (sitemapLine) sitemapFromRobots = sitemapLine[1].trim();
+  }
+
+  // sitemap.xml — check if response is valid XML sitemap
+  let hasSitemap = false;
+  let sitemapUrl = sitemapFromRobots || sitemapFromHtml || '';
+  if (sitemapTxt && sitemapTxt.length > 20 && (/<urlset/i.test(sitemapTxt) || /<sitemapindex/i.test(sitemapTxt) || /<?xml/i.test(sitemapTxt))) {
+    hasSitemap = true;
+    if (!sitemapUrl) sitemapUrl = baseUrl + '/sitemap.xml';
+  }
+
+  // Try sitemap_index.xml as fallback
+  if (!hasSitemap) {
+    try {
+      const txt2 = await fetchViaProxy(baseUrl + '/sitemap_index.xml');
+      if (txt2 && /<sitemapindex/i.test(txt2)) { hasSitemap = true; sitemapUrl = baseUrl + '/sitemap_index.xml'; }
+    } catch(e) {}
+  }
+
+  // Trust robots.txt sitemap hint even if we couldn't fetch the sitemap directly
+  if (!hasSitemap && sitemapFromRobots) hasSitemap = true;
+
+  const result = { hasRobotsTxt, hasSitemap, sitemapUrl };
+  _sitemapRobotsCache[baseUrl] = result; // cache for all other pages on this domain
+  return result;
+}
+
+function _sniffCMSFromHtml(html) {
+  if (!html) return null;
+  const h = html.toLowerCase();
+  const checks = [
+    { cms:'Duda',        score: (h.includes('dmcdn.net')?40:0)+(h.includes('irp-cdn.multiscreensite.com')?40:0)+(h.includes('multiscreensite.com')?35:0)+(h.includes('dudamobile.com')?35:0)+(h.includes('duda-editor')?30:0) },
+    { cms:'WordPress',   score: (h.includes('/wp-content/')?50:0)+(h.includes('/wp-includes/')?30:0)+(h.includes('wp-json')?20:0) },
+    { cms:'Shopify',     score: (h.includes('cdn.shopify.com')?50:0)+(h.includes('shopify.com/s/files')?40:0)+(h.includes('myshopify.com')?30:0) },
+    { cms:'Squarespace', score: (h.includes('squarespace.com')?50:0)+(h.includes('static1.squarespace.com')?40:0) },
+    { cms:'Wix',         score: (h.includes('wixstatic.com')?40:0)+(h.includes('parastorage.com')?20:0) },
+    { cms:'Webflow',     score: (h.includes('assets-global.website-files.com')?40:0)+(h.includes('uploads-ssl.webflow.com')?30:0)+(h.includes('w-webflow-badge')?25:0) },
+    { cms:'Framer',      score: (h.includes('framerusercontent.com')?40:0)+(h.includes('framer-badge')?30:0) },
+    { cms:'Ghost',       score: (h.includes('ghost.io')?40:0)+(h.includes('/ghost/')?30:0) },
+    { cms:'HubSpot',     score: (h.includes('hs-scripts')?40:0)+(h.includes('hscta-wrapper')?25:0) },
+    { cms:'Next.js',     score: (h.includes('/_next/static/')?40:0)+(h.includes('__next')?20:0) },
+    { cms:'Gatsby',      score: (h.includes('___gatsby')?40:0)+(h.includes('/static/gatsby')?30:0) },
+    { cms:'Drupal',      score: (h.includes('drupalSettings')?40:0)+(h.includes('/sites/default/files/')?30:0) },
+    { cms:'Joomla',      score: (h.includes('/media/jui/')?40:0)+(h.includes('/components/com_')?30:0) },
+    { cms:'BigCommerce', score: (h.includes('cdn11.bigcommerce')?50:0)+(h.includes('bigcommerce.com')?30:0) },
+  ];
+  checks.sort((a,b) => b.score - a.score);
+  const top = checks[0];
+  return top.score >= 30 ? { cms: top.cms, confidence: Math.min(99, top.score), source: 'html-sniff' } : null;
+}
+
+async function detectCMS(url, rawHtml) {
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url}), signal:AbortSignal.timeout(12000)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) return data;
+    }
+  } catch(e) {}
+  if (rawHtml) { const s = _sniffCMSFromHtml(rawHtml); if (s) return s; }
+  return { cms:'Unknown', confidence:0 };
+}
+// ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
+
+
+
 // ── STATE ────────────────────────────────────────────────────────────────────
 let auditResults = [];
 let auditRunning = false;
@@ -5459,1036 +6493,9 @@ async function exportCrawlExcel() {
 
 // _rawHtml is now always attached directly by fetchPageData — no patch needed
 
-</script>
-    </div><!-- end bulk-auditor-view -->
 
-  </main>
-</div>
 
-<!-- CREDITS MODAL -->
-<div class="credits-modal-overlay" id="credits-modal-overlay" onclick="closeCreditsModalOutside(event)">
-  <div class="credits-modal">
-    <div class="cm-icon">⚡</div>
-    <div class="cm-title">Get More Credits</div>
-    <div class="cm-body">
-      You have <strong id="cm-current-credits">—</strong> credits remaining.<br>
-      Each URL audited costs <strong>1 credit</strong>. Site crawls cost <strong>5 credits per site</strong>.
-    </div>
-    <div class="cm-plans">
-      <div class="cm-plan selected" data-credits="100" data-price="$5" onclick="selectCreditPlan(this)">
-        <div class="plan-credits">100</div>
-        <div class="plan-price">$5</div>
-        <div class="plan-name">Starter</div>
-      </div>
-      <div class="cm-plan" data-credits="500" data-price="$19" onclick="selectCreditPlan(this)">
-        <div class="plan-credits">500</div>
-        <div class="plan-price">$19</div>
-        <div class="plan-name">Growth</div>
-      </div>
-      <div class="cm-plan" data-credits="2000" data-price="$59" onclick="selectCreditPlan(this)">
-        <div class="plan-credits">2000</div>
-        <div class="plan-price">$59</div>
-        <div class="plan-name">Agency</div>
-      </div>
-    </div>
-    <div class="cm-btn-row">
-      <button class="cm-btn-primary" onclick="purchaseCredits()">✦ Buy Credits</button>
-      <button class="cm-btn-secondary" onclick="closeCreditsModal()">Maybe later</button>
-    </div>
-  </div>
-</div>
 
-<!-- FOOTER -->
-<footer>
-  <p>© 2025–2026 RankSorcery · Premium Member Dashboard</p>
-  <a href="mailto:webmasterjamez@gmail.com">Contact Support</a>
-</footer>
-
-<script>
-  sb.auth.getSession().then(({ data: { session } }) => {
-    if (!session) return
-
-    const user = session.user
-    const email = user.email || ''
-    const createdAt = user.created_at ? new Date(user.created_at) : null
-
-    // Nav email
-    document.getElementById('userEmail').textContent = email
-
-    // Hero first name
-    const firstName = email.split('@')[0].replace(/[._]/g, ' ')
-      .replace(/\b\w/g, c => c.toUpperCase())
-    document.getElementById('userFirstName').textContent = firstName
-    document.getElementById('profileName').textContent = firstName
-
-    // Profile
-    document.getElementById('profileEmail').textContent = email
-    document.getElementById('profileAvatar').textContent =
-      firstName.charAt(0).toUpperCase()
-
-    // Member since
-    if (createdAt) {
-      const opts = { month: 'short', year: 'numeric' }
-      document.getElementById('memberSince').textContent =
-        createdAt.toLocaleDateString('en-US', opts)
-    }
-  })
-
-
-  // ══════ BULK AUDITOR VIEW SWITCHER ══════
-  function showBulkAuditor(e) {
-    if (e) e.preventDefault();
-    document.getElementById('dashboard-view').style.display = 'none';
-    document.getElementById('bulk-auditor-view').classList.add('active');
-    switchMainTab('bulk');
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    document.getElementById('sidebar-bulk-link').classList.add('active');
-  }
-  function showFaviconChecker(e) {
-    if (e) e.preventDefault();
-    document.getElementById('dashboard-view').style.display = 'none';
-    document.getElementById('bulk-auditor-view').classList.add('active');
-    switchMainTab('favicon');
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    document.getElementById('sidebar-favicon-link').classList.add('active');
-  }
-  function showDashboard(e) {
-    if (e) e.preventDefault();
-    document.getElementById('dashboard-view').style.display = '';
-    document.getElementById('bulk-auditor-view').classList.remove('active');
-    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-    document.getElementById('sidebar-dashboard-link').classList.add('active');
-  }
-
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    await sb.auth.signOut()
-    window.location.href = '/login.html'
-  })
-</script>
-
-<script>
-// ── STATE ────────────────────────────────────────────────────────────────────
-let auditResults = [];
-let auditRunning = false;
-let stopRequested = false;
-let expandedRows = new Set();
-
-// ── URL INPUT ────────────────────────────────────────────────────────────────
-document.getElementById('url-textarea').addEventListener('input', updateUrlCount);
-function updateUrlCount() {
-  const urls = parseUrls(document.getElementById('url-textarea').value);
-  document.getElementById('url-count').textContent = urls.length + ' URL' + (urls.length !== 1 ? 's' : '');
-}
-function parseUrls(text) {
-  return text.split('\n')
-    .map(l => l.trim().replace(/^[\s"',;]+|[\s"',;]+$/g,''))
-    .filter(l => l && !l.startsWith('#'))
-    .map(l => l.startsWith('http') ? l : 'https://' + l)
-    .filter(u => { try { const h = new URL(u).hostname; return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/.test(h); } catch { return false; } })
-    .slice(0, 100);
-}
-function loadSampleUrls() {
-  document.getElementById('url-textarea').value = 'https://nytimes.com\nhttps://techcrunch.com\nhttps://smashingmagazine.com\nhttps://moz.com\nhttps://ahrefs.com';
-  updateUrlCount();
-}
-function clearUrls() { document.getElementById('url-textarea').value = ''; updateUrlCount(); }
-
-// ── MODE SWITCH ──────────────────────────────────────────────────────────────
-function switchMode(mode, btn) {
-  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('paste-mode').style.display = mode === 'paste' ? '' : 'none';
-  document.getElementById('csv-mode').style.display   = mode === 'csv'   ? '' : 'none';
-}
-
-// ── CSV ──────────────────────────────────────────────────────────────────────
-const csvDrop = document.getElementById('csv-drop');
-csvDrop.addEventListener('dragover', e => { e.preventDefault(); csvDrop.classList.add('dragover'); });
-csvDrop.addEventListener('dragleave', () => csvDrop.classList.remove('dragover'));
-csvDrop.addEventListener('drop', e => {
-  e.preventDefault(); csvDrop.classList.remove('dragover');
-  const f = e.dataTransfer.files[0]; if (f) parseCsvFile(f);
-});
-csvDrop.addEventListener('click', () => document.getElementById('csv-file').click());
-function handleCsvFile(e) { const f = e.target.files[0]; if (f) parseCsvFile(f); }
-function parseCsvFile(file) {
-  const r = new FileReader();
-  r.onload = ev => {
-    const lines = ev.target.result.split('\n');
-    const header = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
-    const idx = header.findIndex(h => ['url','website','domain','site'].includes(h));
-    if (idx < 0) { document.getElementById('csv-status').textContent = '⚠ No url/website/domain column found.'; return; }
-    const urls = lines.slice(1).map(l => l.split(',')[idx]?.trim().replace(/"/g,'')).filter(Boolean).slice(0,100);
-    document.getElementById('url-textarea').value = urls.join('\n');
-    switchMode('paste', document.querySelectorAll('.mode-tab')[0]);
-    updateUrlCount();
-    showToast('✅ Loaded ' + urls.length + ' URLs from ' + file.name);
-  };
-  r.readAsText(file);
-}
-
-// ── SETTINGS ─────────────────────────────────────────────────────────────────
-function toggleChip(el) { el.classList.toggle('active'); }
-function getOptions() { return Array.from(document.querySelectorAll('.setting-chip.active input')).map(i => i.name); }
-
-// ── MAIN BULK AUDIT ──────────────────────────────────────────────────────────
-async function _startBulkAuditCore() {
-  const urls = parseUrls(document.getElementById('url-textarea').value);
-  if (!urls.length) { showToast('⚠ Enter at least one valid URL!', 'var(--red)'); return; }
-
-  const concurrency = parseInt(document.getElementById('concurrency-select').value);
-  const options = getOptions();
-
-  auditResults = urls.map(url => ({ url, status: 'queued', score: null, data: null, error: null, cms: null, pageData: null }));
-  auditRunning = true;
-  // Clear sitemap/robots cache for fresh audit
-  Object.keys(_sitemapRobotsCache).forEach(k => delete _sitemapRobotsCache[k]);
-  stopRequested = false;
-  expandedRows.clear();
-  _auditStartTime = 0;
-
-  document.getElementById('audit-btn').disabled = true;
-  document.getElementById('audit-btn').textContent = 'Auditing…';
-  document.getElementById('stop-btn').style.display = '';
-  document.getElementById('export-btn').style.display = 'none';
-  document.getElementById('done-banner').style.display = 'none';
-  document.getElementById('progress-section').style.display = 'block';
-  document.getElementById('results-section').style.display = 'block';
-
-  renderTable();
-  updateProgress();
-  // Activate scan animation classes
-  document.querySelector('.progress-card')?.classList.add('scanning-active');
-  // JS-driven animated dots on scanning title (CSS content animation not supported)
-  let _dotsStep = 0;
-  const _dotsEl = document.querySelector('.scanning-dots');
-  if (_dotsEl) { _dotsEl._baseText = _dotsEl.textContent.replace(/\.+$/, '').trim(); }
-  const _dotsTimer = setInterval(() => {
-    const el = document.querySelector('.scanning-dots');
-    if (!el) return;
-    const base = el._baseText || '🔍 Auditing in Progress';
-    el.textContent = base + ['.','..','...',''][_dotsStep % 4];
-    _dotsStep++;
-  }, 500);
-  // Store for cleanup
-  window._scanDotsTimer = _dotsTimer;
-  const beam = document.getElementById('table-scan-beam');
-  if (beam) beam.style.display = 'block';
-
-  // Yield to browser paint — doubles up rAF + setTimeout to guarantee a real frame
-  const paint = (ms=0) => new Promise(r => requestAnimationFrame(() => setTimeout(r, ms)));
-
-  // Auto-scroll to results table so user sees the animation
-  await paint(80);
-  document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  await paint(300); // wait for scroll to settle
-
-  const queue = [...urls];
-  async function runNext() {
-    if (stopRequested || !queue.length) return;
-    const url = queue.shift();
-    const idx = auditResults.findIndex(r => r.url === url);
-    if (idx < 0) return;
-
-    auditResults[idx].status = 'scanning';
-    updateProgress();
-    updateRow(idx);
-
-    // Give browser at least 2 frames to paint the scanning animation
-    await paint(32);
-
-    const auditStart = Date.now();
-    try {
-      const pageData = await fetchPageData(url);
-      const [cmsData, sitemapRobots] = await Promise.all([
-        detectCMS(url, pageData?._rawHtml || ''),
-        detectSitemapAndRobots(url, pageData?._rawHtml || '')
-      ]);
-      // Merge sitemap/robots into pageData so AI prompt sees it
-      if (pageData) {
-        pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt;
-        pageData.hasSitemap   = sitemapRobots.hasSitemap;
-        pageData.sitemapUrl   = sitemapRobots.sitemapUrl;
-      }
-      auditResults[idx].pageData    = pageData;
-      auditResults[idx].cms         = cmsData;
-      auditResults[idx].sitemapRobots = sitemapRobots;
-      // Check broken links in parallel with AI audit
-      const [auditData, brokenData] = await Promise.all([
-        runAIAudit(url, options, pageData, cmsData),
-        checkBrokenLinks(pageData)
-      ]);
-      auditResults[idx].brokenLinks = brokenData;
-      auditResults[idx].data = auditData;
-      auditResults[idx].score = auditData ? (auditData.seo_score ?? auditData.score ?? null) : null;
-      auditResults[idx].status = auditData ? 'done' : 'error'; if (!auditData) auditResults[idx].error = window._lastAIError || 'All AI providers failed — check Worker logs';
-    } catch (err) {
-      auditResults[idx].status = 'error';
-      auditResults[idx].error = err.message || 'Failed';
-    }
-
-    // Guarantee scanning animation shows for at least 600ms so it's visible
-    const elapsed = Date.now() - auditStart;
-    if (elapsed < 600) await paint(600 - elapsed);
-
-    updateProgress();
-    updateRow(idx);
-    await paint(80); // let done-flash render
-    await runNext();
-  }
-
-  const workers = Array.from({ length: concurrency }, () => runNext());
-  await Promise.allSettled(workers);
-
-  // ── AUDIT DONE ──
-  auditRunning = false;
-  document.querySelector('.progress-card')?.classList.remove('scanning-active');
-  // Stop JS dots animation
-  clearInterval(window._scanDotsTimer);
-  const _dotsEl2 = document.querySelector('.scanning-dots');
-  if (_dotsEl2 && _dotsEl2._baseText) _dotsEl2.textContent = _dotsEl2._baseText;
-  const _beam = document.getElementById('table-scan-beam');
-  if (_beam) _beam.style.display = 'none';
-  const _etaTag = document.getElementById('eta-tag');
-  if (_etaTag) _etaTag.style.display = 'none';
-  document.getElementById('audit-btn').disabled = false;
-  document.getElementById('audit-btn').textContent = '⚡ Audit All Websites';
-  document.getElementById('stop-btn').style.display = 'none';
-  document.getElementById('export-btn').style.display = '';
-  document.getElementById('progress-section').style.display = 'none';
-
-  // Show completion banner
-  const done   = auditResults.filter(r => r.status === 'done').length;
-  const errors = auditResults.filter(r => r.status === 'error').length;
-  const good   = auditResults.filter(r => r.score >= 80).length;
-  const banner = document.getElementById('done-banner');
-  document.getElementById('done-banner-title').textContent = stopRequested
-    ? '⏹ Audit Stopped — ' + done + ' Sites Completed'
-    : '🎉 Bulk Audit Complete! All ' + done + ' Sites Done' + (errors ? ' (' + errors + ' errors)' : '');
-  document.getElementById('done-banner-desc').textContent =
-    good + ' sites scored 80+ (Good) · ' + (done - good) + ' sites need attention. ' +
-    'Download your Excel report for the full breakdown.';
-  banner.style.display = '';
-  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-  // Big toast notification
-  showToast('✅ ' + done + ' sites audited! Download your Excel report.', 'var(--green)', 6000);
-
-  // Play a subtle done sound
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [523, 659, 784].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.15);
-      gain.gain.linearRampToValueAtTime(0.15, ctx.currentTime + i * 0.15 + 0.05);
-      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.15 + 0.3);
-      osc.start(ctx.currentTime + i * 0.15);
-      osc.stop(ctx.currentTime + i * 0.15 + 0.35);
-    });
-  } catch(e) {}
-
-  renderSummaryChips();
-  applyFilters();
-}
-
-function stopAudit() { stopRequested = true; showToast('⏹ Stopping…', 'var(--amber)'); }
-
-// ── API CALLS ────────────────────────────────────────────────────────────────
-
-// Extract SEO data from raw HTML string using regex (reliable even on malformed HTML)
-function parseHtmlForSEO(html, url) {
-  const isHttps = url.startsWith('https://');
-
-  // ── PRE-CLEAN: strip comments, scripts, styles BEFORE any parsing ────────────
-  // This prevents matching tags inside JS strings or CSS content
-  const htmlClean = html
-    .replace(/<!--[\s\S]*?-->/g, '')           // HTML comments
-    .replace(/<script[\s\S]*?<\/script>/gi, '') // script blocks
-    .replace(/<style[\s\S]*?<\/style>/gi, '');  // style blocks
-
-  // ── ATTR EXTRACTOR: handles " ' or unquoted values ───────────────────────────
-  function getAttr(tag, name) {
-    // Double quotes
-    let m = tag.match(new RegExp(name + '\\s*=\\s*"([^"]*)"', 'i'));
-    if (m) return m[1].trim();
-    // Single quotes
-    m = tag.match(new RegExp(name + "\\s*=\\s*'([^']*)'", 'i'));
-    if (m) return m[1].trim();
-    // Unquoted
-    m = tag.match(new RegExp(name + '\\s*=\\s*([^\\s>]+)', 'i'));
-    if (m) return m[1].trim();
-    return '';
-  }
-
-  // ── META TAG PARSER ──────────────────────────────────────────────────────────
-  // Collect ALL <meta ...> tags first, then look them up — far more reliable
-  // than trying to match both attrs in a single regex pass
-  const metaTags = [];
-  const metaRx = /<meta\b([^>]*?)(?:\/>|>)/gi;
-  let mm;
-  while ((mm = metaRx.exec(htmlClean)) !== null) {
-    metaTags.push(mm[1]);
-  }
-
-  function getMeta(nameAttr, nameVal) {
-    // nameAttr = 'name' or 'property', nameVal = 'description', 'og:title', etc.
-    for (const attrs of metaTags) {
-      const attrVal = getAttr(attrs, nameAttr);
-      if (attrVal.toLowerCase() === nameVal.toLowerCase()) {
-        return getAttr(attrs, 'content');
-      }
-    }
-    return '';
-  }
-
-  // ── TITLE ────────────────────────────────────────────────────────────────────
-  const titleMatch = htmlClean.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const title = titleMatch
-    ? titleMatch[1].replace(/&amp;/g,'&').replace(/&#039;/g,"'").replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&apos;/g,"'").trim()
-    : '';
-
-  // ── META DESC ────────────────────────────────────────────────────────────────
-  const metaDesc = getMeta('name', 'description') || getMeta('property', 'og:description') || '';
-
-  // ── VIEWPORT ─────────────────────────────────────────────────────────────────
-  const hasViewport = metaTags.some(attrs => {
-    const n = getAttr(attrs, 'name').toLowerCase();
-    return n === 'viewport';
-  });
-
-  // ── CANONICAL ────────────────────────────────────────────────────────────────
-  // Collect all <link> tags and find rel=canonical
-  const linkRx = /<link\b([^>]*?)(?:\/>|>)/gi;
-  let lm; let canonical = '';
-  while ((lm = linkRx.exec(htmlClean)) !== null) {
-    const attrs = lm[1];
-    const rel = getAttr(attrs, 'rel').toLowerCase();
-    if (rel === 'canonical') {
-      canonical = getAttr(attrs, 'href');
-      break;
-    }
-  }
-
-  // ── LANG ─────────────────────────────────────────────────────────────────────
-  const htmlTagMatch = html.match(/<html\b([^>]*)>/i);
-  const lang = htmlTagMatch ? getAttr(htmlTagMatch[1], 'lang') : '';
-
-  // ── ROBOTS ───────────────────────────────────────────────────────────────────
-  const robotsMeta = getMeta('name', 'robots');
-
-  // ── OG TAGS ──────────────────────────────────────────────────────────────────
-  const ogTitle = getMeta('property', 'og:title');
-  const ogImage = getMeta('property', 'og:image');
-
-  // ── WORD COUNT ───────────────────────────────────────────────────────────────
-  const stripped = htmlClean.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
-  const wordCount = stripped ? stripped.split(' ').filter(Boolean).length : 0;
-
-  // ── HEADING DETECTION ────────────────────────────────────────────────────────
-  // htmlClean already has scripts/styles/comments stripped
-  // Count by opening tags only — far more reliable than trying to match open+close
-  // on large pages where regex backtracking can fail
-  const countHeadingTags = (level) => {
-    // Match <h1 ... > or <h1> — just the opening tag, not the full block
-    const rx = new RegExp('<h' + level + '(?:[\\s>])', 'gi');
-    return (htmlClean.match(rx) || []).length;
-  };
-
-  const h1Count = countHeadingTags(1);
-  const h2Count = countHeadingTags(2);
-  const h3Count = countHeadingTags(3);
-
-  // Extract H1 text — strip all nested tags, decode entities
-  const decodeEntities = (s) => s
-    .replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"').replace(/&#039;/gi, "'").replace(/&nbsp;/gi, ' ')
-    .replace(/&#(\d+);/gi, (_, n) => String.fromCharCode(parseInt(n)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
-
-  // ── H1 EXTRACTION — 6-strategy cascade for JS-rendered sites ─────────────────
-  // Many modern sites (Next.js, Nuxt, React, WooCommerce) render H1 via JS.
-  // Static HTML proxies never see it. We try multiple fallback signals.
-  let h1 = "";
-  let h1Source = ""; // track where we got it from (for transparency)
-
-  // Strategy 1: standard <h1>...</h1> block in static HTML
-  const h1BlockRx = /<h1(?:\s[^>]*)?>([\s\S]{0,800}?)<\/h1\s*>/i;
-  const h1Block = htmlClean.match(h1BlockRx);
-  if (h1Block) {
-    h1 = decodeEntities(h1Block[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
-    if (h1) h1Source = "html";
-  }
-
-  // Strategy 2: aria-label / data-heading on the <h1> tag (some frameworks do this)
-  if (!h1 && h1Count > 0) {
-    const h1Tag = htmlClean.match(/<h1\b([^>]{0,300})>/i);
-    if (h1Tag) {
-      h1 = getAttr(h1Tag[1], "aria-label") || getAttr(h1Tag[1], "data-heading") || "";
-      if (h1) h1Source = "aria";
-    }
-  }
-
-  // Strategy 3: JSON-LD structured data — name / headline field
-  // (Next.js / Gatsby / Shopify almost always emit this even when H1 is JS-rendered)
-  if (!h1) {
-    const jsonLdH1Rx = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-    let jldMatch;
-    while ((jldMatch = jsonLdH1Rx.exec(html)) !== null && !h1) {
-      try {
-        const obj = JSON.parse(jldMatch[1].trim());
-        const candidates = Array.isArray(obj) ? obj : [obj];
-        for (const o of candidates) {
-          const val = o.headline || o.name || o.title || '';
-          if (val && typeof val === 'string' && val.length > 2 && val.length < 200) {
-            h1 = decodeEntities(val.trim());
-            h1Source = "json-ld";
-            break;
-          }
-        }
-      } catch(e) {}
-    }
-  }
-
-  // Strategy 4: OG title — present on virtually every JS-rendered page
-  if (!h1 && ogTitle && ogTitle.length > 2) {
-    // Strip site name suffix (e.g. "Page Title | Site Name" → "Page Title")
-    const ogClean = ogTitle.split(/\s*[|–—-]\s+/)[0].trim();
-    if (ogClean.length > 2) {
-      h1 = decodeEntities(ogClean);
-      h1Source = "og:title";
-    }
-  }
-
-  // Strategy 5: <title> tag, strip site name suffix
-  // Use only when nothing else worked — noisier than OG title but always present
-  if (!h1 && title && title.length > 2) {
-    const titleClean = title.split(/\s*[|–—]\s+/)[0].trim();
-    if (titleClean.length > 2 && titleClean.length < 120) {
-      h1 = decodeEntities(titleClean);
-      h1Source = "title";
-    }
-  }
-
-  // Append source tag so the AI and UI know this was inferred (not a real H1)
-  // We store both the raw value and whether it's inferred
-  const h1Inferred = h1Source !== "html" && h1Source !== "aria" && !!h1;
-
-  // Also extract all H2 texts (first 5) for the AI prompt
-  const h2Texts = [];
-  const h2BlockRx = /<h2[\s>][^]*?<\/h2\s*>/gi;
-  let h2m;
-  while ((h2m = h2BlockRx.exec(htmlClean)) !== null && h2Texts.length < 5) {
-    const txt = decodeEntities(h2m[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim());
-    if (txt) h2Texts.push(txt);
-  }
-
-  // ── IMAGE EXTRACTION ────────────────────────────────────────────────────────
-  // Parse every <img> tag and collect src, alt, width, height
-  const imgTagRx = /<img\b([^>]*?)(?:\/>|>)/gi;
-  const extractAttr = (attrs, name) => {
-    const m = attrs.match(new RegExp(name + '=["\']([^"\']*)["\']', 'i'))
-           || attrs.match(new RegExp(name + "='([^']*)'", 'i'))
-           || attrs.match(new RegExp(name + '=([^\\s>]+)', 'i'));
-    return m ? m[1].trim() : '';
-  };
-  const rawImgs = [];
-  let imgMatch;
-  while ((imgMatch = imgTagRx.exec(htmlClean)) !== null) {
-    const attrs = imgMatch[1];
-    const src   = extractAttr(attrs, 'src') || extractAttr(attrs, 'data-src') || extractAttr(attrs, 'data-lazy-src');
-    if (!src || src.startsWith('data:')) continue; // skip inline base64
-    const alt   = extractAttr(attrs, 'alt');
-    const wAttr = parseInt(extractAttr(attrs, 'width'))  || 0;
-    const hAttr = parseInt(extractAttr(attrs, 'height')) || 0;
-    rawImgs.push({ src, alt, width: wAttr, height: hAttr });
-  }
-
-  // Resolve relative URLs to absolute
-  let baseOrigin = '';
-  try { const u = new URL(url); baseOrigin = u.origin; } catch {}
-  const resolveUrl = (src) => {
-    if (/^https?:\/\//i.test(src)) return src;
-    if (src.startsWith('//')) return 'https:' + src;
-    if (src.startsWith('/')) return baseOrigin + src;
-    return baseOrigin + '/' + src;
-  };
-
-  const images = rawImgs.map(img => ({
-    url:    resolveUrl(img.src),
-    alt:    img.alt,
-    width:  img.width,
-    height: img.height,
-    estKb:  img.width && img.height ? Math.round(img.width * img.height * 3 / 1024) : null,
-    hasAlt: img.alt.length > 0,
-    // Only flag as heavy if we KNOW dimensions and they're large (>200KB uncompressed)
-    // Don't flag unknown-dimension images as heavy — too many false positives
-    likelyHeavy: (img.width && img.height) ? (img.width * img.height * 3 / 1024 > 200) : false,
-    format: (img.src.match(/\.(\w{2,5})(?:\?|$)/i)||[])[1]?.toLowerCase() || 'unknown'
-  }));
-
-  const imagesWithoutAlt = images.filter(i => !i.hasAlt);
-  const heavyImages      = images.filter(i => i.likelyHeavy);
-  const unoptimisedFmt   = images.filter(i => ['bmp','tiff','tif'].includes(i.format));
-
-  // ── SCHEMA DETECTION ──────────────────────────────────────────────────────
-  // Look for JSON-LD and microdata schema types in cleaned HTML
-  const schemaTypes = [];
-  const jsonLdRx = /<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
-  let jldm;
-  // Use original html for JSON-LD since we stripped scripts from htmlClean
-  const htmlForSchema = html;
-  while ((jldm = jsonLdRx.exec(htmlForSchema)) !== null) {
-    try {
-      const obj = JSON.parse(jldm[1].trim());
-      const types = Array.isArray(obj) ? obj.map(o => o['@type']).filter(Boolean) : [obj['@type']].filter(Boolean);
-      types.forEach(t => { if (t && !schemaTypes.includes(t)) schemaTypes.push(t); });
-    } catch(e) { /* malformed JSON-LD */ }
-  }
-  // Also check itemtype microdata
-  const microRx = /itemtype=["']https?:\/\/schema\.org\/([^"'\s]+)["']/gi;
-  let microm;
-  while ((microm = microRx.exec(htmlClean)) !== null) {
-    const t = microm[1]; if (!schemaTypes.includes(t)) schemaTypes.push(t);
-  }
-
-  // ── INTERNAL/EXTERNAL LINK EXTRACTION ───────────────────────────────────────
-  let baseOriginForLinks = '';
-  try { baseOriginForLinks = new URL(url).origin; } catch {}
-  const aTagRx = /<a[^>]*href=["']([^"'#\s][^"']*?)["'][^>]*>/gi;
-  let am; const internalLinks = []; const externalLinks = [];
-  while ((am = aTagRx.exec(htmlClean)) !== null) {
-    const href = am[1].trim();
-    if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) continue;
-    try {
-      const abs = href.startsWith('http') ? href : href.startsWith('//') ? 'https:' + href : baseOriginForLinks + (href.startsWith('/') ? href : '/' + href);
-      const linkHost = new URL(abs).origin;
-      if (linkHost === baseOriginForLinks) { if (!internalLinks.includes(abs)) internalLinks.push(abs); }
-      else { if (!externalLinks.includes(abs)) externalLinks.push(abs); }
-    } catch(e) {}
-  }
-
-  return { title, metaDesc, hasViewport, isHttps, wordCount, canonical, lang, h1, h1Inferred, h1Source, robotsMeta, ogTitle, ogImage,
-    // Heading data — use tag counts (reliable) not just text presence
-    // If H1 was inferred from fallback signals, bump the count to 1 so AI doesn't flag it as missing
-    headings: { h1: h1Inferred && h1Count === 0 ? 1 : h1Count, h2: h2Count, h3: h3Count },
-    h2Texts,
-    schemaTypes,
-    internalLinks: internalLinks.slice(0, 100),
-    externalLinks: externalLinks.slice(0, 50),
-    links: { internal: internalLinks.length, external: externalLinks.length },
-    imageList: images,
-    images: { total: images.length, missingAlt: imagesWithoutAlt.length, heavy: heavyImages.length, unoptimisedFmt: unoptimisedFmt.length }
-  };
-}
-
-// CLIENT-SIDE FALLBACK: use our own Cloudflare Worker to fetch page HTML (no CORS issues)
-// ── PROXY CACHE & RETRY SYSTEM ──────────────────────────────────────────────
-// Remembers which proxy worked last — tries it first next time
-const _proxyCache = {
-  winner: null,        // index of last successful proxy
-  failures: {},        // { proxyIndex: failCount }
-  rateLimited: {},     // { proxyIndex: unblockTimestamp }
-  record(idx, success) {
-    if (success) {
-      this.winner = idx;
-      this.failures[idx] = 0;
-      console.log(`[Proxy] ✅ Cached winner: proxy #${idx}`);
-    } else {
-      this.failures[idx] = (this.failures[idx] || 0) + 1;
-    }
-  },
-  markRateLimited(idx) {
-    const backoff = Math.min(60000, 5000 * Math.pow(2, this.failures[idx] || 0));
-    this.rateLimited[idx] = Date.now() + backoff;
-    this.failures[idx] = (this.failures[idx] || 0) + 1;
-    console.warn(`[Proxy] ⏳ Proxy #${idx} rate-limited — cooling off ${backoff}ms`);
-  },
-  isBlocked(idx) {
-    return this.rateLimited[idx] && Date.now() < this.rateLimited[idx];
-  },
-  // Returns proxy indices sorted: winner first, then by fewest failures, skipping blocked
-  orderedIndices(total) {
-    const all = Array.from({ length: total }, (_, i) => i);
-    return all
-      .filter(i => !this.isBlocked(i))
-      .sort((a, b) => {
-        if (a === this.winner) return -1;
-        if (b === this.winner) return 1;
-        return (this.failures[a] || 0) - (this.failures[b] || 0);
-      });
-  }
-};
-
-// Detects error/block pages from proxy responses
-function _isProxyErrorPage(html) {
-  if (!html || html.length < 100) return true;
-  const lc = html.toLowerCase();
-  return (
-    html.length < 5000 &&
-    /429|too many requests|rate.?limit|access denied|403 forbidden|cloudflare ray id|just a moment|blocked|ddos|captcha/i.test(lc)
-  );
-}
-
-// Proxy definitions — each returns { html, ttfb } or throws
-const _PROXY_DEFS = [
-  // 0: allorigins — JSON wrapper, reliable, handles many sites
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error(`allorigins ${res.status}`);
-    const json = await res.json();
-    const html = json.contents || '';
-    return { html, ttfb: Date.now() - t0 };
-  },
-  // 1: corsproxy.io — fast passthrough
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error(`corsproxy ${res.status}`);
-    const html = await res.text();
-    return { html, ttfb: Date.now() - t0 };
-  },
-  // 2: codetabs — good AU/Asia coverage
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(url), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error(`codetabs ${res.status}`);
-    const html = await res.text();
-    return { html, ttfb: Date.now() - t0 };
-  },
-  // 3: htmldriven / thingproxy — lightweight fallback
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://thingproxy.freeboard.io/fetch/' + url, { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error(`thingproxy ${res.status}`);
-    const html = await res.text();
-    return { html, ttfb: Date.now() - t0 };
-  },
-  // 4: cors.sh — newer reliable option
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://proxy.cors.sh/' + url, {
-      headers: { 'x-cors-api-key': 'temp_' + Math.random().toString(36).slice(2) },
-      signal: AbortSignal.timeout(12000)
-    });
-    if (!res.ok) throw new Error(`cors.sh ${res.status}`);
-    const html = await res.text();
-    return { html, ttfb: Date.now() - t0 };
-  },
-  // 5: cors-anywhere heroku — last resort, often throttled
-  async (url) => {
-    const t0 = Date.now();
-    const res = await fetch('https://cors-anywhere.herokuapp.com/' + url, {
-      headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      signal: AbortSignal.timeout(14000)
-    });
-    if (!res.ok) throw new Error(`cors-anywhere ${res.status}`);
-    const html = await res.text();
-    return { html, ttfb: Date.now() - t0 };
-  },
-];
-
-// Smart proxy runner — tries cached winner first, skips blocked, exponential backoff on 429
-async function _fetchViaSmartProxy(url, maxRetries = 2) {
-  const order = _proxyCache.orderedIndices(_PROXY_DEFS.length);
-  if (order.length === 0) {
-    // All proxies blocked — wait for the soonest one to unblock
-    const soonest = Math.min(...Object.values(_proxyCache.rateLimited));
-    const wait = Math.max(0, soonest - Date.now());
-    console.warn(`[Proxy] All proxies cooling off — waiting ${wait}ms`);
-    await new Promise(r => setTimeout(r, wait));
-    return _fetchViaSmartProxy(url, maxRetries);
-  }
-
-  for (const idx of order) {
-    let attempt = 0;
-    while (attempt <= maxRetries) {
-      try {
-        const result = await _PROXY_DEFS[idx](url);
-        const { html } = result;
-
-        // Detect rate-limit response body even if status was 200
-        if (/429|too many requests|rate.?limit/i.test(html.slice(0, 2000))) {
-          _proxyCache.markRateLimited(idx);
-          break; // move to next proxy
-        }
-
-        if (_isProxyErrorPage(html)) {
-          _proxyCache.record(idx, false);
-          break; // move to next proxy
-        }
-
-        _proxyCache.record(idx, true);
-        console.log(`[Proxy] ✅ proxy #${idx} succeeded for ${url}`);
-        return result;
-
-      } catch (e) {
-        const msg = e.message || '';
-        if (/429|rate.?limit/i.test(msg)) {
-          _proxyCache.markRateLimited(idx);
-          break;
-        }
-        attempt++;
-        if (attempt <= maxRetries) {
-          const delay = 500 * Math.pow(2, attempt - 1); // 500ms, 1000ms
-          console.warn(`[Proxy] ⚠ proxy #${idx} attempt ${attempt} failed (${msg}) — retry in ${delay}ms`);
-          await new Promise(r => setTimeout(r, delay));
-        } else {
-          _proxyCache.record(idx, false);
-        }
-      }
-    }
-  }
-  return null; // all proxies failed
-}
-
-// ── MAIN PAGE FETCH — Worker first, smart proxy fallback ─────────────────────
-const WORKER_BASE_URL = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
-
-async function fetchPageData(url) {
-  // ─── 1️⃣  Try Cloudflare Worker (most accurate — server-side fetch, no CORS) ───
-  try {
-    const t0 = Date.now();
-    const res = await fetch(WORKER_BASE_URL + '/api/page-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url }),
-      signal: AbortSignal.timeout(20000)
-    });
-    const ttfb = Date.now() - t0;
-    if (res.ok) {
-      const data = await res.json();
-      const html = data.html || '';
-      // Worker returned full HTML — parse client-side for accurate headings/images/schema/links
-      if (html.length > 300) {
-        const parsed = parseHtmlForSEO(html, url);
-        console.log('[Fetch] ✅ Worker (html) succeeded for', url);
-        return {
-          ...parsed,
-          ttfb: data.ttfb || ttfb,
-          statusCode: data.statusCode || parsed.statusCode,
-          _rawHtml: html,
-          _source: 'worker'
-        };
-      }
-      // Worker returned pre-parsed JSON (no html field) — re-parse links from rawHtml if provided
-      if (data.title || data.metaDesc || data.statusCode) {
-        console.log('[Fetch] ✅ Worker (parsed) succeeded for', url);
-        const rawHtml = data.rawHtml || data._rawHtml || '';
-        let linkData = {};
-        if (rawHtml.length > 300) {
-          const lp = parseHtmlForSEO(rawHtml, url);
-          linkData = {
-            internalLinks: lp.internalLinks || [],
-            externalLinks: lp.externalLinks || [],
-            links: lp.links || {},
-            headings: lp.headings || data.headings || { h1: 0, h2: 0, h3: 0 },
-            h1: lp.h1 || data.h1 || '',
-            h2Texts: lp.h2Texts || [],
-            imageList: lp.imageList || [],
-            images: lp.images || {},
-          };
-        }
-        return { ...data, ...linkData, ttfb: data.ttfb || ttfb, _rawHtml: rawHtml, _source: 'worker' };
-      }
-    }
-    console.warn('[Fetch] Worker returned bad data for', url, '— falling back to proxies');
-  } catch(e) {
-    console.warn('[Fetch] Worker failed for', url, ':', e.message, '— falling back to proxies');
-  }
-
-  // ─── 2️⃣  Smart proxy fallback (only reached if Worker fails) ───────────────
-  console.log('[Fetch] Trying smart proxy for', url);
-  const proxyResult = await _fetchViaSmartProxy(url);
-  if (!proxyResult) {
-    console.error('[Fetch] All proxies failed for', url);
-    return null;
-  }
-
-  const { html, ttfb } = proxyResult;
-  const parsed = parseHtmlForSEO(html, url);
-
-  // Reject if title/H1 looks like an error page
-  const badTitle = /429|too many requests|rate.?limit|access denied|403|just a moment|cloudflare|forbidden/i;
-  if (badTitle.test(parsed.title || '') || badTitle.test(parsed.h1 || '')) {
-    console.error('[Fetch] Proxy returned error page for', url);
-    return null;
-  }
-
-  return { ...parsed, ttfb, _rawHtml: html, _source: 'proxy' };
-}
-
-// Legacy alias — fetchPageDataClientSide now just calls the smart proxy directly
-async function fetchPageDataClientSide(url) {
-  const proxyResult = await _fetchViaSmartProxy(url);
-  if (!proxyResult) return null;
-  const { html, ttfb } = proxyResult;
-  const parsed = parseHtmlForSEO(html, url);
-  return { ...parsed, ttfb, _rawHtml: html, _source: 'proxy' };
-}
-// ── BROKEN LINK CHECKER ─────────────────────────────────────────────────────
-// Checks a sample of internal links from the page for 404s
-async function checkBrokenLinks(pageData) {
-  if (!pageData?.internalLinks?.length) return { checked: 0, broken: [], brokenCount: 0 };
-  // Sample up to 10 internal links to avoid hammering the server
-  const toCheck = pageData.internalLinks.slice(0, 10);
-  const broken = [];
-  await Promise.allSettled(toCheck.map(async (href) => {
-    try {
-      const res = await fetch(href, { method: 'HEAD', signal: AbortSignal.timeout(8000), redirect: 'follow' });
-      if (res.status === 404 || res.status === 410) broken.push({ url: href, status: res.status });
-    } catch(e) { /* network error — skip, don't flag as broken */ }
-  }));
-  return { checked: toCheck.length, broken, brokenCount: broken.length };
-}
-
-// Cache sitemap/robots results per domain — same result for all pages on same domain
-const _sitemapRobotsCache = {};
-
-async function detectSitemapAndRobots(url, cachedPageHtml) {
-  let baseUrl = '';
-  try { const u = new URL(url); baseUrl = u.origin; } catch { return { hasRobotsTxt: false, hasSitemap: false, sitemapUrl: '' }; }
-
-  // Return cached result if we already checked this domain
-  if (_sitemapRobotsCache[baseUrl]) return _sitemapRobotsCache[baseUrl];
-
-  // If we have the homepage HTML already, check for sitemap link tag to avoid extra fetches
-  let sitemapFromHtml = '';
-  if (cachedPageHtml) {
-    const sitemapLinkMatch = cachedPageHtml.match(/<link[^>]+rel=["']sitemap["'][^>]*href=["']([^"']+)["']/i);
-    if (sitemapLinkMatch) sitemapFromHtml = sitemapLinkMatch[1];
-  }
-
-  // Fetch a URL through the shared smart proxy system (caches winner, handles retries)
-  async function fetchViaProxy(targetUrl) {
-    // Try direct fetch first — works for robots.txt/sitemap.xml on many servers
-    try {
-      const r = await fetch(targetUrl, { signal: AbortSignal.timeout(6000) });
-      if (r.ok) {
-        const text = await r.text();
-        if (text && text.length > 10) return text;
-      }
-    } catch(e) { /* fall through to proxy */ }
-    // Use shared smart proxy (benefits from cached winner)
-    const result = await _fetchViaSmartProxy(targetUrl, 1);
-    return result ? result.html : null;
-  }
-
-  // Fetch robots.txt and sitemap.xml in parallel via proxies
-  const [robotsTxt, sitemapTxt] = await Promise.all([
-    fetchViaProxy(baseUrl + '/robots.txt'),
-    fetchViaProxy(baseUrl + '/sitemap.xml'),
-  ]);
-
-  // robots.txt — must contain User-agent directives to be valid
-  let hasRobotsTxt = false;
-  let sitemapFromRobots = '';
-  if (robotsTxt) {
-    hasRobotsTxt = robotsTxt.length > 10 && /user-agent/i.test(robotsTxt);
-    const sitemapLine = robotsTxt.match(/^sitemap:\s*(.+)$/im);
-    if (sitemapLine) sitemapFromRobots = sitemapLine[1].trim();
-  }
-
-  // sitemap.xml — check if response is valid XML sitemap
-  let hasSitemap = false;
-  let sitemapUrl = sitemapFromRobots || sitemapFromHtml || '';
-  if (sitemapTxt && sitemapTxt.length > 20 && (/<urlset/i.test(sitemapTxt) || /<sitemapindex/i.test(sitemapTxt) || /<?xml/i.test(sitemapTxt))) {
-    hasSitemap = true;
-    if (!sitemapUrl) sitemapUrl = baseUrl + '/sitemap.xml';
-  }
-
-  // Try sitemap_index.xml as fallback
-  if (!hasSitemap) {
-    try {
-      const txt2 = await fetchViaProxy(baseUrl + '/sitemap_index.xml');
-      if (txt2 && /<sitemapindex/i.test(txt2)) { hasSitemap = true; sitemapUrl = baseUrl + '/sitemap_index.xml'; }
-    } catch(e) {}
-  }
-
-  // Trust robots.txt sitemap hint even if we couldn't fetch the sitemap directly
-  if (!hasSitemap && sitemapFromRobots) hasSitemap = true;
-
-  const result = { hasRobotsTxt, hasSitemap, sitemapUrl };
-  _sitemapRobotsCache[baseUrl] = result; // cache for all other pages on this domain
-  return result;
-}
-
-function _sniffCMSFromHtml(html) {
-  if (!html) return null;
-  const h = html.toLowerCase();
-  const checks = [
-    { cms:'Duda',        score: (h.includes('dmcdn.net')?40:0)+(h.includes('irp-cdn.multiscreensite.com')?40:0)+(h.includes('multiscreensite.com')?35:0)+(h.includes('dudamobile.com')?35:0)+(h.includes('duda-editor')?30:0) },
-    { cms:'WordPress',   score: (h.includes('/wp-content/')?50:0)+(h.includes('/wp-includes/')?30:0)+(h.includes('wp-json')?20:0) },
-    { cms:'Shopify',     score: (h.includes('cdn.shopify.com')?50:0)+(h.includes('shopify.com/s/files')?40:0)+(h.includes('myshopify.com')?30:0) },
-    { cms:'Squarespace', score: (h.includes('squarespace.com')?50:0)+(h.includes('static1.squarespace.com')?40:0) },
-    { cms:'Wix',         score: (h.includes('wixstatic.com')?40:0)+(h.includes('parastorage.com')?20:0) },
-    { cms:'Webflow',     score: (h.includes('assets-global.website-files.com')?40:0)+(h.includes('uploads-ssl.webflow.com')?30:0)+(h.includes('w-webflow-badge')?25:0) },
-    { cms:'Framer',      score: (h.includes('framerusercontent.com')?40:0)+(h.includes('framer-badge')?30:0) },
-    { cms:'Ghost',       score: (h.includes('ghost.io')?40:0)+(h.includes('/ghost/')?30:0) },
-    { cms:'HubSpot',     score: (h.includes('hs-scripts')?40:0)+(h.includes('hscta-wrapper')?25:0) },
-    { cms:'Next.js',     score: (h.includes('/_next/static/')?40:0)+(h.includes('__next')?20:0) },
-    { cms:'Gatsby',      score: (h.includes('___gatsby')?40:0)+(h.includes('/static/gatsby')?30:0) },
-    { cms:'Drupal',      score: (h.includes('drupalSettings')?40:0)+(h.includes('/sites/default/files/')?30:0) },
-    { cms:'Joomla',      score: (h.includes('/media/jui/')?40:0)+(h.includes('/components/com_')?30:0) },
-    { cms:'BigCommerce', score: (h.includes('cdn11.bigcommerce')?50:0)+(h.includes('bigcommerce.com')?30:0) },
-  ];
-  checks.sort((a,b) => b.score - a.score);
-  const top = checks[0];
-  return top.score >= 30 ? { cms: top.cms, confidence: Math.min(99, top.score), source: 'html-sniff' } : null;
-}
-
-async function detectCMS(url, rawHtml) {
-  try {
-    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({url}), signal:AbortSignal.timeout(12000)
-    });
-    if (res.ok) {
-      const data = await res.json();
-      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) return data;
-    }
-  } catch(e) {}
-  if (rawHtml) { const s = _sniffCMSFromHtml(rawHtml); if (s) return s; }
-  return { cms:'Unknown', confidence:0 };
-}
-// ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
-
-
-// ── MAIN AI AUDIT — tries all 3 providers in order ───────────────────────────
-async function runAIAudit(url, options, pageData, cmsData) {
-  const pd = pageData || {};
-  const cms = cmsData?.cms || 'Unknown';
-  const systemMsg = `You are an expert SEO auditor. Analyze the provided page data and return ONLY a valid JSON object (no markdown, no explanation) with the following structure: { "score": <0-100>, "issues": [ { "type": <string>, "severity": <"critical"|"warning"|"info">, "description": <string>, "recommendation": <string> } ], "summary": <string>, "topIssues": [ <string> ] }`;
-  const userMsg = `Audit this URL for SEO issues:\nURL: ${url}\nCMS: ${cms}\nPage Data: ${JSON.stringify(pd).slice(0, 3000)}`;
-  const messages = [
-    { role: 'system', content: systemMsg },
-    { role: 'user',   content: userMsg }
-  ];
-
-  // ── Tier 1: Groq ─────────────────────────────────────────────────────────────
-  console.log('[AI] 🔄 Trying Groq for', url);
-  const groqResult = await _callGroq(messages);
-  if (groqResult) return groqResult;
-
-  // ── Tier 2: Cloudflare AI ────────────────────────────────────────────────────
-  console.log('[AI] 🔄 Groq failed — trying Cloudflare AI for', url);
-  const cfResult = await _callCloudflareAI(messages);
-  if (cfResult) return cfResult;
-
-  // ── Tier 3: OpenRouter ───────────────────────────────────────────────────────
-  console.log('[AI] 🔄 Cloudflare AI failed — trying OpenRouter for', url);
-  const orResult = await _callOpenRouter(messages);
-  if (orResult) return orResult;
-
-  // All providers failed
-  console.error('[AI] ❌ All 3 AI providers failed for', url);
-  window._lastAIError = `All AI providers failed for ${url}. Check Worker logs for Groq/Cloudflare/OpenRouter errors.`;
-  return null;
-}
 // ── PROGRESS ─────────────────────────────────────────────────────────────────
 let _auditStartTime = 0;
 function updateProgress() {
