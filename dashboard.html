@@ -2699,10 +2699,11 @@ async function _startBulkAuditCore() {
 
     const auditStart = Date.now();
     try {
-      const [pageData, cmsData] = await Promise.all([
-        fetchPageData(url), detectCMS(url)
+      const pageData = await fetchPageData(url);
+      const [cmsData, sitemapRobots] = await Promise.all([
+        detectCMS(url, pageData?._rawHtml || ''),
+        detectSitemapAndRobots(url, pageData?._rawHtml || '')
       ]);
-      const sitemapRobots = await detectSitemapAndRobots(url, pageData?._rawHtml || '');
       // Merge sitemap/robots into pageData so AI prompt sees it
       if (pageData) {
         pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt;
@@ -3416,11 +3417,143 @@ async function detectSitemapAndRobots(url, cachedPageHtml) {
   return result;
 }
 
-async function detectCMS(url) {
+// ── CMS Fingerprinter — client-side HTML sniffing ───────────────────────────
+function sniffCMSFromHtml(html, headers) {
+  if (!html) return null;
+  const h = html.toLowerCase();
+  const checks = [
+    // Duda — highest priority, very distinctive
+    { cms:'Duda',        score: (
+        (h.includes('dmcdn.net') ? 40 : 0) +
+        (h.includes('irp-cdn.multiscreensite.com') ? 40 : 0) +
+        (h.includes('multiscreensite.com') ? 35 : 0) +
+        (h.includes('dudamobile.com') ? 35 : 0) +
+        (h.includes('duda-editor') ? 30 : 0) +
+        (h.includes('data-v-') && h.includes('dmcdn') ? 20 : 0) +
+        (/class="[^"]*u_[a-zA-Z0-9]{8,}/.test(html) ? 15 : 0) +
+        (h.includes('runtime-worker') && h.includes('dmcdn') ? 20 : 0) +
+        (h.includes('site-popup') && h.includes('dmcdn') ? 15 : 0)
+    )},
+    // WordPress
+    { cms:'WordPress',   score: (
+        (h.includes('/wp-content/') ? 50 : 0) +
+        (h.includes('/wp-includes/') ? 30 : 0) +
+        (h.includes('wp-json') ? 20 : 0) +
+        (h.includes('wordpress') ? 10 : 0)
+    )},
+    // Shopify
+    { cms:'Shopify',     score: (
+        (h.includes('cdn.shopify.com') ? 50 : 0) +
+        (h.includes('shopify.com/s/files') ? 40 : 0) +
+        (h.includes('myshopify.com') ? 30 : 0) +
+        (h.includes('shopify-analytics') ? 20 : 0)
+    )},
+    // Squarespace
+    { cms:'Squarespace', score: (
+        (h.includes('squarespace.com') ? 50 : 0) +
+        (h.includes('static1.squarespace.com') ? 40 : 0) +
+        (h.includes('squarespace-cdn.com') ? 30 : 0)
+    )},
+    // Wix
+    { cms:'Wix',         score: (
+        (h.includes('wix.com') ? 40 : 0) +
+        (h.includes('wixstatic.com') ? 40 : 0) +
+        (h.includes('parastorage.com') ? 20 : 0) +
+        (h.includes('x-wix-renderer') ? 30 : 0)
+    )},
+    // Webflow
+    { cms:'Webflow',     score: (
+        (h.includes('webflow.com') ? 40 : 0) +
+        (h.includes('assets-global.website-files.com') ? 30 : 0) +
+        (h.includes('uploads-ssl.webflow.com') ? 30 : 0) +
+        (h.includes('w-webflow-badge') ? 25 : 0)
+    )},
+    // Framer
+    { cms:'Framer',      score: (
+        (h.includes('framer.com') ? 40 : 0) +
+        (h.includes('framerusercontent.com') ? 40 : 0) +
+        (h.includes('framer-badge') ? 30 : 0)
+    )},
+    // Ghost
+    { cms:'Ghost',       score: (
+        (h.includes('ghost.io') ? 40 : 0) +
+        (h.includes('/ghost/') ? 30 : 0) +
+        (h.includes('ghost-theme') ? 20 : 0)
+    )},
+    // HubSpot CMS
+    { cms:'HubSpot',     score: (
+        (h.includes('hubspot.com') ? 40 : 0) +
+        (h.includes('hs-scripts') ? 30 : 0) +
+        (h.includes('hscta-wrapper') ? 25 : 0)
+    )},
+    // BigCommerce
+    { cms:'BigCommerce', score: (
+        (h.includes('bigcommerce.com') ? 40 : 0) +
+        (h.includes('cdn11.bigcommerce') ? 40 : 0)
+    )},
+    // Joomla
+    { cms:'Joomla',      score: (
+        (h.includes('/media/jui/') ? 40 : 0) +
+        (h.includes('joomla') ? 20 : 0) +
+        (h.includes('/components/com_') ? 30 : 0)
+    )},
+    // Drupal
+    { cms:'Drupal',      score: (
+        (h.includes('/sites/default/files/') ? 40 : 0) +
+        (h.includes('drupal') ? 20 : 0) +
+        (h.includes('drupalSettings') ? 30 : 0)
+    )},
+    // Next.js
+    { cms:'Next.js',     score: (
+        (h.includes('__next') ? 30 : 0) +
+        (h.includes('/_next/static/') ? 40 : 0) +
+        (h.includes('next/dist') ? 20 : 0)
+    )},
+    // Gatsby
+    { cms:'Gatsby',      score: (
+        (h.includes('gatsby') ? 20 : 0) +
+        (h.includes('/static/gatsby') ? 30 : 0) +
+        (h.includes('___gatsby') ? 30 : 0)
+    )},
+  ];
+
+  // Find highest scoring match above threshold
+  checks.sort((a,b) => b.score - a.score);
+  const top = checks[0];
+  if (top.score >= 30) {
+    const confidence = Math.min(99, top.score);
+    return { cms: top.cms, confidence, source: 'html-sniff' };
+  }
+  return null;
+}
+
+async function detectCMS(url, rawHtml) {
+  // First try worker API
   try {
-    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(15000) });
-    if (!res.ok) return {cms:'Unknown',confidence:0}; return await res.json();
-  } catch { return {cms:'Unknown',confidence:0}; }
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url}),
+      signal:AbortSignal.timeout(12000)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // If worker returned Unknown or low confidence, try HTML sniff as override
+      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) {
+        return data;
+      }
+    }
+  } catch(e) {
+    console.warn('[CMS] Worker failed, falling back to HTML sniff:', e.message);
+  }
+
+  // Fallback: sniff HTML if available
+  if (rawHtml) {
+    const sniffed = sniffCMSFromHtml(rawHtml);
+    if (sniffed) return sniffed;
+  }
+
+  return { cms: 'Unknown', confidence: 0 };
 }
 // ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
 
@@ -4938,7 +5071,7 @@ async function crawlSingleSite(inputUrl, cap, queueIdx) {
         const cachedPage = discoveredPageData[r.url] || null;
         const [pageData, cmsData] = await Promise.all([
           cachedPage ? Promise.resolve(cachedPage) : fetchPageData(r.url),
-          detectCMS(r.url)
+          detectCMS(r.url, r.pageData?._rawHtml || '')
         ]);
         const sitemapRobots = await detectSitemapAndRobots(r.url, pageData?._rawHtml || '');
         if (pageData) { pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt; pageData.hasSitemap = sitemapRobots.hasSitemap; pageData.sitemapUrl = sitemapRobots.sitemapUrl; }
@@ -5769,10 +5902,11 @@ async function _startBulkAuditCore() {
 
     const auditStart = Date.now();
     try {
-      const [pageData, cmsData] = await Promise.all([
-        fetchPageData(url), detectCMS(url)
+      const pageData = await fetchPageData(url);
+      const [cmsData, sitemapRobots] = await Promise.all([
+        detectCMS(url, pageData?._rawHtml || ''),
+        detectSitemapAndRobots(url, pageData?._rawHtml || '')
       ]);
-      const sitemapRobots = await detectSitemapAndRobots(url, pageData?._rawHtml || '');
       // Merge sitemap/robots into pageData so AI prompt sees it
       if (pageData) {
         pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt;
@@ -6486,11 +6620,143 @@ async function detectSitemapAndRobots(url, cachedPageHtml) {
   return result;
 }
 
-async function detectCMS(url) {
+// ── CMS Fingerprinter — client-side HTML sniffing ───────────────────────────
+function sniffCMSFromHtml(html, headers) {
+  if (!html) return null;
+  const h = html.toLowerCase();
+  const checks = [
+    // Duda — highest priority, very distinctive
+    { cms:'Duda',        score: (
+        (h.includes('dmcdn.net') ? 40 : 0) +
+        (h.includes('irp-cdn.multiscreensite.com') ? 40 : 0) +
+        (h.includes('multiscreensite.com') ? 35 : 0) +
+        (h.includes('dudamobile.com') ? 35 : 0) +
+        (h.includes('duda-editor') ? 30 : 0) +
+        (h.includes('data-v-') && h.includes('dmcdn') ? 20 : 0) +
+        (/class="[^"]*u_[a-zA-Z0-9]{8,}/.test(html) ? 15 : 0) +
+        (h.includes('runtime-worker') && h.includes('dmcdn') ? 20 : 0) +
+        (h.includes('site-popup') && h.includes('dmcdn') ? 15 : 0)
+    )},
+    // WordPress
+    { cms:'WordPress',   score: (
+        (h.includes('/wp-content/') ? 50 : 0) +
+        (h.includes('/wp-includes/') ? 30 : 0) +
+        (h.includes('wp-json') ? 20 : 0) +
+        (h.includes('wordpress') ? 10 : 0)
+    )},
+    // Shopify
+    { cms:'Shopify',     score: (
+        (h.includes('cdn.shopify.com') ? 50 : 0) +
+        (h.includes('shopify.com/s/files') ? 40 : 0) +
+        (h.includes('myshopify.com') ? 30 : 0) +
+        (h.includes('shopify-analytics') ? 20 : 0)
+    )},
+    // Squarespace
+    { cms:'Squarespace', score: (
+        (h.includes('squarespace.com') ? 50 : 0) +
+        (h.includes('static1.squarespace.com') ? 40 : 0) +
+        (h.includes('squarespace-cdn.com') ? 30 : 0)
+    )},
+    // Wix
+    { cms:'Wix',         score: (
+        (h.includes('wix.com') ? 40 : 0) +
+        (h.includes('wixstatic.com') ? 40 : 0) +
+        (h.includes('parastorage.com') ? 20 : 0) +
+        (h.includes('x-wix-renderer') ? 30 : 0)
+    )},
+    // Webflow
+    { cms:'Webflow',     score: (
+        (h.includes('webflow.com') ? 40 : 0) +
+        (h.includes('assets-global.website-files.com') ? 30 : 0) +
+        (h.includes('uploads-ssl.webflow.com') ? 30 : 0) +
+        (h.includes('w-webflow-badge') ? 25 : 0)
+    )},
+    // Framer
+    { cms:'Framer',      score: (
+        (h.includes('framer.com') ? 40 : 0) +
+        (h.includes('framerusercontent.com') ? 40 : 0) +
+        (h.includes('framer-badge') ? 30 : 0)
+    )},
+    // Ghost
+    { cms:'Ghost',       score: (
+        (h.includes('ghost.io') ? 40 : 0) +
+        (h.includes('/ghost/') ? 30 : 0) +
+        (h.includes('ghost-theme') ? 20 : 0)
+    )},
+    // HubSpot CMS
+    { cms:'HubSpot',     score: (
+        (h.includes('hubspot.com') ? 40 : 0) +
+        (h.includes('hs-scripts') ? 30 : 0) +
+        (h.includes('hscta-wrapper') ? 25 : 0)
+    )},
+    // BigCommerce
+    { cms:'BigCommerce', score: (
+        (h.includes('bigcommerce.com') ? 40 : 0) +
+        (h.includes('cdn11.bigcommerce') ? 40 : 0)
+    )},
+    // Joomla
+    { cms:'Joomla',      score: (
+        (h.includes('/media/jui/') ? 40 : 0) +
+        (h.includes('joomla') ? 20 : 0) +
+        (h.includes('/components/com_') ? 30 : 0)
+    )},
+    // Drupal
+    { cms:'Drupal',      score: (
+        (h.includes('/sites/default/files/') ? 40 : 0) +
+        (h.includes('drupal') ? 20 : 0) +
+        (h.includes('drupalSettings') ? 30 : 0)
+    )},
+    // Next.js
+    { cms:'Next.js',     score: (
+        (h.includes('__next') ? 30 : 0) +
+        (h.includes('/_next/static/') ? 40 : 0) +
+        (h.includes('next/dist') ? 20 : 0)
+    )},
+    // Gatsby
+    { cms:'Gatsby',      score: (
+        (h.includes('gatsby') ? 20 : 0) +
+        (h.includes('/static/gatsby') ? 30 : 0) +
+        (h.includes('___gatsby') ? 30 : 0)
+    )},
+  ];
+
+  // Find highest scoring match above threshold
+  checks.sort((a,b) => b.score - a.score);
+  const top = checks[0];
+  if (top.score >= 30) {
+    const confidence = Math.min(99, top.score);
+    return { cms: top.cms, confidence, source: 'html-sniff' };
+  }
+  return null;
+}
+
+async function detectCMS(url, rawHtml) {
+  // First try worker API
   try {
-    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({url}), signal:AbortSignal.timeout(15000) });
-    if (!res.ok) return {cms:'Unknown',confidence:0}; return await res.json();
-  } catch { return {cms:'Unknown',confidence:0}; }
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/detect-cms', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({url}),
+      signal:AbortSignal.timeout(12000)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      // If worker returned Unknown or low confidence, try HTML sniff as override
+      if (data.cms && data.cms !== 'Unknown' && data.confidence > 30) {
+        return data;
+      }
+    }
+  } catch(e) {
+    console.warn('[CMS] Worker failed, falling back to HTML sniff:', e.message);
+  }
+
+  // Fallback: sniff HTML if available
+  if (rawHtml) {
+    const sniffed = sniffCMSFromHtml(rawHtml);
+    if (sniffed) return sniffed;
+  }
+
+  return { cms: 'Unknown', confidence: 0 };
 }
 // ── AI AUDIT — 3-tier fallback: Groq → Cloudflare AI → OpenRouter ───────────
 
@@ -8008,7 +8274,7 @@ async function crawlSingleSite(inputUrl, cap, queueIdx) {
         const cachedPage = discoveredPageData[r.url] || null;
         const [pageData, cmsData] = await Promise.all([
           cachedPage ? Promise.resolve(cachedPage) : fetchPageData(r.url),
-          detectCMS(r.url)
+          detectCMS(r.url, r.pageData?._rawHtml || '')
         ]);
         const sitemapRobots = await detectSitemapAndRobots(r.url, pageData?._rawHtml || '');
         if (pageData) { pageData.hasRobotsTxt = sitemapRobots.hasRobotsTxt; pageData.hasSitemap = sitemapRobots.hasSitemap; pageData.sitemapUrl = sitemapRobots.sitemapUrl; }
@@ -8940,7 +9206,7 @@ let creditsUserId = null;
 async function loadCredits() {
   try {
     const { data: { session } } = await sb.auth.getSession();
-    if (!session) return;
+    if (!session) { console.warn('[Credits] No session'); return; }
     creditsUserId = session.user.id;
 
     const { data, error } = await sb
@@ -8949,28 +9215,38 @@ async function loadCredits() {
       .eq('user_id', creditsUserId)
       .single();
 
-    if (error && error.code === 'PGRST116') {
-      // Row doesn't exist yet — create with default credits
-      const defaultCredits = 100;
-      const { data: newRow, error: insertErr } = await sb
-        .from(CREDITS_TABLE)
-        .insert({ user_id: creditsUserId, credits: defaultCredits })
-        .select('credits')
-        .single();
-      if (!insertErr && newRow) {
-        userCredits = newRow.credits;
+    if (error) {
+      console.warn('[Credits] DB error:', error.code, error.message);
+      if (error.code === 'PGRST116') {
+        const defaultCredits = 100;
+        const { data: newRow, error: insertErr } = await sb
+          .from(CREDITS_TABLE)
+          .insert({ user_id: creditsUserId, credits: defaultCredits })
+          .select('credits')
+          .single();
+        if (!insertErr && newRow) {
+          userCredits = newRow.credits;
+          console.log('[Credits] Created row with', userCredits, 'credits');
+        } else {
+          console.warn('[Credits] Insert failed:', insertErr);
+          userCredits = defaultCredits;
+        }
+      } else if (error.code === '42P01') {
+        console.error('[Credits] Table "user_credits" not found!');
+        userCredits = 0;
+        const scbSub = document.getElementById('scb-sub');
+        if (scbSub) scbSub.innerHTML = '<span style="color:var(--red)">⚠ Table missing — see setup guide</span>';
       } else {
-        // Fallback: show credits from local state if DB insert fails
-        userCredits = defaultCredits;
+        userCredits = userCredits ?? 0;
       }
-    } else if (!error && data) {
+    } else if (data) {
       userCredits = data.credits;
+      console.log('[Credits] Loaded:', userCredits, 'credits');
     } else {
-      // DB unavailable — use cached local value or 0
       userCredits = userCredits ?? 0;
     }
   } catch (e) {
-    console.warn('[Credits] Load failed:', e);
+    console.warn('[Credits] Load exception:', e);
     userCredits = userCredits ?? 0;
   }
   renderCreditsUI();
@@ -9189,8 +9465,12 @@ async function favCheckAll() {
 }
 
 // ── Boot: load credits once session is confirmed ─────────────────────
+// Use both getSession (immediate) AND onAuthStateChange (catches delayed auth)
 sb.auth.getSession().then(({ data: { session } }) => {
   if (session) loadCredits();
+});
+sb.auth.onAuthStateChange((_event, session) => {
+  if (session && userCredits === null) loadCredits();
 });
 
 // ── Dev helper — type enableDevMode() in console to test top-ups ─────
