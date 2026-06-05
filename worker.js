@@ -877,7 +877,7 @@ function cmsfix_wp(issue) {
 function cmsfix_shopify(issue) {
   const m = {
     https:          'Shopify provides free SSL by default. Go to Online Store > Domains and ensure your custom domain shows a padlock. Click "Enable SSL" if not active.',
-    canonical:      'Shopify adds canonical tags automatically on product and collection pages. For custom pages, add <link rel="canonical" href="..."> in your theme\'s page.liquid template.',
+    canonical:      'Shopify adds canonical tags automatically on product and collection pages. For custom pages, add <link rel="canonical" href="..."> in your theme\'s page.liquid template. Ensure you\'re not duplicating content across collections and products.',
     title:          'Go to Shopify Admin > Online Store > Pages (or Products). Click the page and scroll to "Search engine listing preview". Click "Edit" to set the page title.',
     meta_desc:      'In Shopify Admin, go to the page/product, scroll to "Search engine listing preview" and click "Edit website SEO". Fill in the meta description.',
     add_schema:     'Install "JSON-LD for SEO" or "Schema Plus for SEO" from the Shopify App Store. For products, Shopify adds Product schema automatically. Add Organization schema via app.',
@@ -885,7 +885,6 @@ function cmsfix_shopify(issue) {
     ttfb:           'Shopify hosting speed is managed by Shopify. Optimize by: removing unused apps (each adds load time), compressing images with TinyIMG app, enabling lazy loading.',
     page_size:      'Use TinyIMG or Crush.pics app for image compression. Audit and remove unused Shopify apps — each app adds JavaScript to every page.',
     alt_text:       'In Shopify Admin, go to Products > click a product > click each image > add Alt text in the image editor dialog.',
-    canonical:      'Shopify manages canonicals automatically. Ensure you\'re not duplicating content across collections and products.',
   };
   return m[issue] || 'Go to Shopify Admin > Online Store > Preferences or the page-specific SEO settings to address this issue.';
 }
