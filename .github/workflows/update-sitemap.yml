@@ -20,13 +20,13 @@ jobs:
     steps:
       # 1. Me grab repo with big stick
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       # 2. Me set up Node rock tool
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '20'
 
       # 3. Me make sitemap fire
       - name: Generate sitemap.xml
@@ -46,7 +46,8 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          command: deploy --name seotool
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
 
       # 6. Me yell at Google (also covers Google AI Mode / Gemini!)
       #    Me yell at Bing (also covers DuckDuckGo — DDG has no ping URL!)
@@ -59,7 +60,6 @@ jobs:
           curl -s "https://www.bing.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Bing + DuckDuckGo covered"
 
       # 7. Me use magic IndexNow rock — ONE ping covers Bing, Yandex, Naver, Seznam + more!
-      #    Add INDEXNOW_KEY secret to repo first! Get key at: https://www.indexnow.org
       - name: Ping IndexNow (multi-engine one-shot)
         run: |
           echo "Pinging IndexNow (covers Bing, Yandex, Naver, Seznam...)..."
