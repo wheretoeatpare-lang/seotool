@@ -29,7 +29,7 @@ const EXCLUDE_FILES = new Set([
 // Priority + changefreq rules (matched by URL path, first match wins)
 const RULES = [
   { match: /^\/$|^\/index\.html$/i,  priority: '1.0', changefreq: 'daily'   },
-  { match: /\/blog\//i,              priority: '0.7', changefreq: 'weekly'  },
+  { match: /\/blog\//i,              priority: '0.7', changefreq: 'daily'   },
   { match: /\//,                     priority: '0.8', changefreq: 'weekly'  }, // everything else
 ];
 
