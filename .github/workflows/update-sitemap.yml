@@ -1,57 +1,66 @@
 name: Auto-Update Sitemap
 
 on:
-  # ① Runs every time you push to main (new page added, file edited, etc.)
   push:
     branches:
       - main
 
-  # ② Runs every day at midnight UTC automatically
   schedule:
     - cron: '0 7 * * *'
 
-  # ③ Lets you trigger it manually from GitHub Actions tab anytime
   workflow_dispatch:
 
 permissions:
-  contents: write   # needed to commit the new sitemap.xml back to the repo
+  contents: write
 
 jobs:
   generate-sitemap:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out your full repository
+      # 1. Me grab repo with big stick
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      # 2. Set up Node.js (used by the sitemap generator script)
+      # 2. Me set up Node rock tool
       - name: Set up Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '24'
 
-      # 3. Run the sitemap generator script
+      # 3. Me make sitemap fire
       - name: Generate sitemap.xml
         run: node scripts/generate-sitemap.js
 
-      # 4. Commit and push the updated sitemap.xml back to the repo
-      #    (only if something actually changed — skips empty commits)
+      # 4. Me push sitemap back to cave wall (git)
       - name: Commit updated sitemap
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add sitemap.xml
-          # Only commit if sitemap.xml actually changed
           git diff --staged --quiet || git commit -m "chore: auto-update sitemap.xml [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git push
 
-      # 5. Ping Google & Bing to notify them of the updated sitemap
-      #    This tells search engines to crawl your new pages immediately
-      - name: Ping search engines
-        run: |
-          echo "Pinging Google..."
-          curl -s "https://www.google.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Google pinged"
+      # 5. Me throw sitemap at Cloudflare cave with Wrangler club
+      - name: Deploy to Cloudflare with Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: deploy --name seotool
 
-          echo "Pinging Bing..."
-          curl -s "https://www.bing.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Bing pinged"
+      # 6. Me yell at Google (also covers Google AI Mode / Gemini!)
+      #    Me yell at Bing (also covers DuckDuckGo — DDG has no ping URL!)
+      - name: Ping Google and Bing
+        run: |
+          echo "Pinging Google (also covers Gemini AI search)..."
+          curl -s "https://www.google.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Google + Gemini AI covered"
+
+          echo "Pinging Bing (also covers DuckDuckGo)..."
+          curl -s "https://www.bing.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Bing + DuckDuckGo covered"
+
+      # 7. Me use magic IndexNow rock — ONE ping covers Bing, Yandex, Naver, Seznam + more!
+      #    Add INDEXNOW_KEY secret to repo first! Get key at: https://www.indexnow.org
+      - name: Ping IndexNow (multi-engine one-shot)
+        run: |
+          echo "Pinging IndexNow (covers Bing, Yandex, Naver, Seznam...)..."
+          curl -s "https://api.indexnow.org/indexnow?url=https://ranksorcery.com/sitemap.xml&key=${{ secrets.INDEXNOW_KEY }}" && echo " ✓ IndexNow multi-engine pinged"
