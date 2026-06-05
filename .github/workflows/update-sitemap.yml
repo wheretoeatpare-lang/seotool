@@ -41,7 +41,13 @@ jobs:
           git diff --staged --quiet || git commit -m "chore: auto-update sitemap.xml [$(date -u '+%Y-%m-%d %H:%M UTC')]"
           git push
 
-      # 5. Me throw sitemap at Cloudflare cave with Wrangler club
+      # 5. Me destroy node_modules before Wrangler see them!
+      - name: Clean before deploy
+        run: |
+          rm -rf node_modules
+          rm -rf netlify
+
+      # 6. Me throw sitemap at Cloudflare cave with Wrangler club
       - name: Deploy to Cloudflare with Wrangler
         uses: cloudflare/wrangler-action@v3
         with:
@@ -49,7 +55,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
 
-      # 6. Me yell at Google (also covers Google AI Mode / Gemini!)
+      # 7. Me yell at Google (also covers Google AI Mode / Gemini!)
       #    Me yell at Bing (also covers DuckDuckGo — DDG has no ping URL!)
       - name: Ping Google and Bing
         run: |
@@ -59,7 +65,7 @@ jobs:
           echo "Pinging Bing (also covers DuckDuckGo)..."
           curl -s "https://www.bing.com/ping?sitemap=https://ranksorcery.com/sitemap.xml" && echo " ✓ Bing + DuckDuckGo covered"
 
-      # 7. Me use magic IndexNow rock — ONE ping covers Bing, Yandex, Naver, Seznam + more!
+      # 8. Me use magic IndexNow rock — ONE ping covers Bing, Yandex, Naver, Seznam + more!
       - name: Ping IndexNow (multi-engine one-shot)
         run: |
           echo "Pinging IndexNow (covers Bing, Yandex, Naver, Seznam...)..."
