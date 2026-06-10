@@ -1601,7 +1601,7 @@ tr.row-zap td {
     <a class="sidebar-link" href="/competitor.html">
       <span class="sidebar-icon">⚔️</span> Competitor
     </a>
-    <a class="sidebar-link" href="/ai-search.html">
+    <a class="sidebar-link" href="#" id="sidebar-aisearch-link" onclick="showAiSearch(event)">
       <span class="sidebar-icon">🤖</span> AI Visibility
     </a>
 
@@ -1709,7 +1709,7 @@ tr.row-zap td {
           <a class="quick-btn" href="/competitor.html">
             <div class="quick-btn-icon red">⚔️</div>Competitor Gap Report<span class="quick-btn-arrow">→</span>
           </a>
-          <a class="quick-btn" href="/ai-search.html">
+          <a class="quick-btn" href="#" onclick="showAiSearch(event)">
             <div class="quick-btn-icon gold">🤖</div>Check AI Visibility<span class="quick-btn-arrow">→</span>
           </a>
         </div>
@@ -5492,6 +5492,34 @@ async function exportCrawlExcel() {
 </script>
     </div><!-- end bulk-auditor-view -->
 
+    <!-- AI SEARCH VIEW -->
+    <div id="ai-search-view" style="display:none">
+      <div class="hero" style="margin-bottom:20px">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span>AI Visibility</span>
+          <div class="hero-eyebrow-line"></div>
+        </div>
+        <div class="hero-row">
+          <div>
+            <h1>🤖 AI Search <span class="grad">Visibility</span></h1>
+            <p>See how your brand appears in ChatGPT, Perplexity, Gemini, and other AI engines.</p>
+          </div>
+          <a class="btn-secondary" href="/ai-search.html" target="_blank" style="font-size:12px;padding:8px 16px">↗ Open in new tab</a>
+        </div>
+      </div>
+      <div style="border-radius:14px;overflow:hidden;border:1px solid var(--border);background:var(--surface)">
+        <iframe
+          id="ai-search-iframe"
+          src=""
+          data-src="/ai-search.html"
+          style="width:100%;height:calc(100vh - 220px);min-height:600px;border:none;display:block"
+          title="AI Search Visibility Tool"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div><!-- end ai-search-view -->
+
   </main>
 </div>
 
@@ -5566,9 +5594,23 @@ async function exportCrawlExcel() {
 
 
   // ══════ BULK AUDITOR VIEW SWITCHER ══════
+  function showAiSearch(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.remove('active');
+    // Lazy-load iframe src on first open
+    const iframe = document.getElementById('ai-search-iframe');
+    if (!iframe.src || iframe.src === window.location.href) {
+      iframe.src = iframe.dataset.src;
+    }
+    document.getElementById('ai-search-view').style.display = '';
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-aisearch-link').classList.add('active');
+  }
   function showBulkAuditor(e) {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('ai-search-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -5577,6 +5619,7 @@ async function exportCrawlExcel() {
   function showFaviconChecker(e) {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('ai-search-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('favicon');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -5586,6 +5629,7 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = '';
     document.getElementById('bulk-auditor-view').classList.remove('active');
+    document.getElementById('ai-search-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-dashboard-link').classList.add('active');
   }
