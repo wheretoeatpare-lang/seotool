@@ -1531,7 +1531,14 @@ tr.row-zap td {
 /* ══════════════════════════════════════════════
    AI SEARCH VISIBILITY — integrated view styles
    ══════════════════════════════════════════════ */
-#ai-search-view { display: none; }
+#ai-search-view {
+  display: none;
+  width: 100%;
+  animation: fadeInView 0.25s ease;
+}
+#ai-search-view.active {
+  display: block;
+}
 #ai-search-view .ais-hero {
   margin-bottom: 28px;
 }
@@ -6005,7 +6012,7 @@ async function exportCrawlExcel() {
   function showBulkAuditor(e) {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
-    document.getElementById('ai-search-view').style.display = 'none';
+    document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6014,7 +6021,7 @@ async function exportCrawlExcel() {
   function showFaviconChecker(e) {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
-    document.getElementById('ai-search-view').style.display = 'none';
+    document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('favicon');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6024,7 +6031,7 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = '';
     document.getElementById('bulk-auditor-view').classList.remove('active');
-    document.getElementById('ai-search-view').style.display = 'none';
+    document.getElementById('ai-search-view').classList.remove('active');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-dashboard-link').classList.add('active');
   }
@@ -6032,7 +6039,7 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.remove('active');
-    document.getElementById('ai-search-view').style.display = '';
+    document.getElementById('ai-search-view').classList.add('active');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-aisearch-link').classList.add('active');
   }
