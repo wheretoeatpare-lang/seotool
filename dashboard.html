@@ -6848,18 +6848,36 @@ async function aisRunCheck() {
   document.getElementById('ais-results').style.display = 'none';
   document.getElementById('ais-loading').style.display = 'block';
 
+  // Animate steps to show progress while waiting for real API
   const stepIds = ['ais-step-chatgpt','ais-step-perplexity','ais-step-gemini','ais-step-claude','ais-step-copilot','ais-step-analyze'];
-  for (let i = 0; i < stepIds.length; i++) {
+  let stepIdx = 0;
+  function aisActivateStep(i) {
+    if (i >= stepIds.length) return;
     const el = document.getElementById(stepIds[i]);
     if (el) { el.classList.add('active'); el.querySelector('.step-icon').textContent = '◉'; }
-    await aisSlp(i < stepIds.length - 1 ? 1600 : 800);
+  }
+  function aisDoneStep(i) {
+    if (i >= stepIds.length) return;
+    const el = document.getElementById(stepIds[i]);
     if (el) { el.classList.remove('active'); el.classList.add('done'); el.querySelector('.step-icon').textContent = '✓'; }
   }
+  aisActivateStep(0);
+  const stepTimer = setInterval(() => {
+    aisDoneStep(stepIdx);
+    stepIdx++;
+    if (stepIdx < stepIds.length) aisActivateStep(stepIdx);
+    else clearInterval(stepTimer);
+  }, 3000);
 
   try {
     const data = await aisFetchVisibility(brand, engines);
+    clearInterval(stepTimer);
+    // Mark all steps done
+    stepIds.forEach((_,i) => { aisDoneStep(i); });
+    await aisSlp(300);
     aisRenderResults(brand, data, engines);
   } catch(err) {
+    clearInterval(stepTimer);
     document.getElementById('ais-loading').style.display = 'none';
     aisShowError('Failed to analyse AI visibility. Please try again. ' + err.message);
   } finally {
@@ -6869,99 +6887,151 @@ async function aisRunCheck() {
 
 function aisSlp(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ── AI Visibility JSON parser (separate from _parseAIJson which expects seo_score) ──
+function _parseAisJson(text) {
+  if (!text) return null;
+  let clean = text.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
+  const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+  if (s === -1 || e === -1 || e <= s) return null;
+  clean = clean.slice(s, e + 1);
+  try {
+    const d = JSON.parse(clean);
+    if (d.visibility_score === undefined) return null;
+    d.visibility_score = Math.min(100, Math.max(0, Math.round(Number(d.visibility_score) || 0)));
+    return d;
+  } catch(e) { return null; }
+}
+
 async function aisFetchVisibility(brand, engines) {
-  await aisSlp(400);
-  let seed = brand.toLowerCase().split('').reduce((a,c) => (a*31+c.charCodeAt(0)) & 0xfffffff, 0);
-  function rng() { seed = (seed*1664525+1013904223) & 0xfffffff; return seed/0xfffffff; }
-  function rInt(mn,mx) { return mn+Math.floor(rng()*(mx-mn+1)); }
-  function rPick(a) { return a[Math.floor(rng()*a.length)]; }
+  const engineList = engines.join(', ');
 
-  const visScore     = rInt(18,82);
-  const nPresent     = Math.max(1, Math.min(engines.length, rInt(Math.ceil(engines.length*.4), engines.length)));
-  const present      = [...engines].sort(()=>rng()-.5).slice(0,nPresent);
-  const SENTS        = ['positive','positive','positive','neutral','neutral','negative'];
-  const PROMPTS      = [
-    `What are the best tools for SEO and digital marketing?`,
-    `Compare ${brand} vs top competitors in 2024`,
-    `Is ${brand} a reliable platform?`,
-    `${brand} reviews and honest alternatives`,
-    `Best software for online visibility tracking`,
-    `How does ${brand} help with search rankings?`,
-    `Top recommended brands in the SEO industry`,
-    `What do experts say about ${brand}?`,
+  const systemMsg = `You are an AI search visibility analyst. Your job is to assess how well-known a brand is to AI language models like yourself, and how likely it is to appear in AI-generated recommendations.
+
+Respond ONLY with a valid JSON object — no markdown, no explanation, no text before or after the JSON.
+
+JSON structure:
+{
+  "visibility_score": <integer 0-100, based on how well-known and recommended the brand is in AI responses>,
+  "engines_present": <integer, how many of the checked engines would likely mention this brand>,
+  "total_mentions": <integer>,
+  "positive_mentions": <integer>,
+  "negative_mentions": <integer>,
+  "summary": <string, 2-3 sentences of honest analysis about this brand's AI search presence>,
+  "engine_breakdown": [
+    { "engine": <engine name>, "visibility": <0-100>, "mentions": <integer>, "sentiment": <"positive"|"neutral"|"negative"> }
+  ],
+  "mentions": [
+    {
+      "engine": <engine name from the list>,
+      "prompt": <a realistic query someone might ask that would surface this brand>,
+      "excerpt": <a realistic AI response excerpt mentioning the brand — use [[BRAND]] as placeholder for the brand name>,
+      "sentiment": <"positive"|"neutral"|"negative">,
+      "context": <"recommendation"|"comparison"|"brand mention"|"review">,
+      "ranking_position": <integer 1-7>
+    }
+  ],
+  "opportunities": [
+    { "icon": <single emoji>, "title": <string>, "description": <string>, "action": <string>, "priority": <"high"|"medium"|"low"> }
+  ],
+  "risks": [
+    { "title": <string>, "description": <string>, "severity": <"high"|"medium"|"low">, "fix": <string> }
+  ],
+  "competitors": [
+    { "name": <competitor brand name>, "visibility": <0-100> }
+  ]
+}
+
+Rules:
+- Be honest and accurate based on your actual knowledge of this brand
+- If the brand is unknown to you, give a low visibility_score (10-25) and explain why
+- Include 2-5 mentions across the selected engines
+- Include 2-4 opportunities and 0-3 risks based on the brand's real situation
+- Include 3-4 realistic competitors from the same industry
+- engine_breakdown must only include engines from the provided list
+- engines_present must be <= total engines checked`;
+
+  const userMsg = `Analyse the AI search visibility of this brand: "${brand}"
+Engines to check: ${engineList}
+Total engines: ${engines.length}
+
+Based on your knowledge of this brand, how would it appear across these AI engines? Is it a well-known brand, niche brand, or unknown? What industry is it in? Give an honest, accurate assessment.`;
+
+  const messages = [
+    { role: 'system', content: systemMsg },
+    { role: 'user',   content: userMsg }
   ];
-  const EXCERPTS = [
-    `[[BRAND]] is frequently cited as a strong contender in this space, praised for its intuitive interface and reliable data accuracy.`,
-    `When evaluating options, [[BRAND]] consistently appears in AI recommendations, particularly for teams focused on measurable growth.`,
-    `[[BRAND]] has earned a solid reputation among digital marketers. Users highlight its comprehensive dashboard and responsive support.`,
-    `For professionals exploring alternatives, [[BRAND]] is mentioned alongside category leaders, with specific praise for its reporting capabilities.`,
-    `[[BRAND]] offers a compelling value proposition for its price point. Most users find it delivers clear, actionable insights quickly.`,
-    `Industry experts often recommend [[BRAND]] when discussing tools that provide a well-rounded view of search visibility trends.`,
-    `[[BRAND]] stands out in comparisons for its ease of onboarding and the depth of its competitive analysis features.`,
-    `AI-generated recommendations frequently include [[BRAND]] in lists of must-try platforms for brands serious about their online presence.`,
-  ];
 
-  const mentions = present.flatMap((eng, i) =>
-    Array.from({ length: rInt(1,4) }, (_,j) => ({
-      engine: eng, prompt: PROMPTS[(i*3+j)%PROMPTS.length],
-      excerpt: EXCERPTS[(i*3+j+1)%EXCERPTS.length],
-      sentiment: rPick(SENTS), context: rPick(['recommendation','comparison','brand mention','review']),
-      ranking_position: rInt(1,7),
-    }))
-  );
-  const totalMentions    = mentions.length;
-  const positiveMentions = mentions.filter(m=>m.sentiment==='positive').length;
-  const negativeMentions = mentions.filter(m=>m.sentiment==='negative').length;
-
-  const engineBreakdown = present.map(eng => {
-    const em = mentions.filter(m=>m.engine===eng);
-    return { engine: eng, visibility: rInt(15,88), mentions: em.length, sentiment: em.length ? em[Math.floor(em.length/2)].sentiment : 'neutral' };
-  });
-
-  const competitors = [
-    { name:'HubSpot',   visibility: rInt(62,90) },
-    { name:'Semrush',   visibility: rInt(55,85) },
-    { name:'Ahrefs',    visibility: rInt(50,80) },
-    { name:'Moz',       visibility: rInt(35,65) },
-    { name:'BrightEdge',visibility: rInt(28,60) },
-  ].slice(0, rInt(3,4));
-
-  const opportunities = [
-    { icon:'🎯', title:'Optimise for conversational queries',
-      description:`${brand} is missing from AI results for common "how to" questions in your niche.`,
-      action:'Create FAQ-style content addressing top user questions with clear, concise answers.', priority:'high' },
-    { icon:'📝', title:'Add structured data markup',
-      description:'AI engines use schema markup to better understand and cite your brand.',
-      action:'Implement Organisation, Product, and FAQ schema across key landing pages.', priority:'medium' },
-    { icon:'🔗', title:'Increase authoritative citations',
-      description:'Brands cited by credible sources rank higher in AI search results.',
-      action:'Pursue mentions in industry publications, Wikipedia, and niche directories.', priority:'high' },
-    { icon:'✍️', title:'Publish expert-led content',
-      description:'E-E-A-T signals help AI engines confidently recommend your brand.',
-      action:'Launch author bios, thought leadership articles, and case studies with named experts.', priority:'medium' },
-  ].slice(0, rInt(3,4));
-
-  const risks = [];
-  if (visScore < 40) {
-    risks.push({ title:'Low Brand Presence in AI Recommendations',
-      description:`${brand} is rarely surfaced in AI engine responses, giving competitors a significant visibility advantage.`,
-      severity:'high', fix:'Focus on building topical authority through consistent content publishing and earning quality backlinks.' });
-  } else if (rng() > 0.6) {
-    risks.push({ title:'Mixed Sentiment Detected in Some Engines',
-      description:'A subset of AI engines are surfacing slightly negative content about your brand.',
-      severity:'medium', fix:'Address common complaints proactively with updated documentation and improved customer communication.' });
+  // ── Tier 1: Groq ──────────────────────────────────────────────────────────
+  console.log('[AIS] 🔄 Trying Groq for brand:', brand);
+  let result = null;
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }),
+      signal: AbortSignal.timeout(60000)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      result = _parseAisJson(text);
+      if (result) console.log('[AIS] ✅ Groq success');
+      else console.warn('[AIS] Groq bad JSON:', text.slice(0, 200));
+    } else {
+      console.warn('[AIS] Groq HTTP', res.status);
+    }
+  } catch(e) {
+    console.warn('[AIS] Groq error:', e.message);
   }
 
-  const sl = visScore>=65?'solid':visScore>=40?'moderate':'limited';
-  const sentL = positiveMentions>negativeMentions?'predominantly positive sentiment':'an opportunity to improve sentiment';
-  const covN = nPresent<engines.length
-    ? `Notably, ${brand} is absent from ${engines.length-nPresent} of the ${engines.length} engines checked.`
-    : `The brand has a presence across all checked engines — a strong foundation.`;
-  const summary = `${brand} shows ${sl} AI search visibility with a score of ${visScore}/100. The brand demonstrates ${sentL}. ${covN} Key priorities include strengthening E-E-A-T signals, expanding authoritative citations, and creating more structured, AI-friendly content.`;
+  // ── Tier 2: OpenRouter fallback ───────────────────────────────────────────
+  if (!result) {
+    console.log('[AIS] 🔄 Groq failed — trying OpenRouter');
+    try {
+      const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages }),
+        signal: AbortSignal.timeout(60000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const text = data?.choices?.[0]?.message?.content || '';
+        result = _parseAisJson(text);
+        if (result) console.log('[AIS] ✅ OpenRouter success');
+        else console.warn('[AIS] OpenRouter bad JSON:', text.slice(0, 200));
+      } else {
+        console.warn('[AIS] OpenRouter HTTP', res.status);
+      }
+    } catch(e) {
+      console.warn('[AIS] OpenRouter error:', e.message);
+    }
+  }
 
-  return { visibility_score: visScore, engines_present: nPresent, total_mentions: totalMentions,
-    positive_mentions: positiveMentions, negative_mentions: negativeMentions,
-    engine_breakdown: engineBreakdown, mentions, opportunities, risks, competitors, summary };
+  // ── All providers failed ──────────────────────────────────────────────────
+  if (!result) {
+    throw new Error('All AI providers failed. Please try again in a moment.');
+  }
+
+  // ── Sanitize & fill in any missing fields ────────────────────────────────
+  result.visibility_score  = Math.min(100, Math.max(0, Number(result.visibility_score) || 0));
+  result.engines_present   = Math.min(engines.length, Math.max(0, Number(result.engines_present) || 0));
+  result.total_mentions    = Number(result.total_mentions)    || (result.mentions?.length ?? 0);
+  result.positive_mentions = Number(result.positive_mentions) || 0;
+  result.negative_mentions = Number(result.negative_mentions) || 0;
+  result.mentions          = Array.isArray(result.mentions)          ? result.mentions          : [];
+  result.engine_breakdown  = Array.isArray(result.engine_breakdown)  ? result.engine_breakdown  : [];
+  result.opportunities     = Array.isArray(result.opportunities)     ? result.opportunities     : [];
+  result.risks             = Array.isArray(result.risks)             ? result.risks             : [];
+  result.competitors       = Array.isArray(result.competitors)       ? result.competitors       : [];
+  result.summary           = result.summary || `AI visibility analysis for ${brand} is complete.`;
+
+  // Clamp engine breakdown scores
+  result.engine_breakdown = result.engine_breakdown.map(e => ({
+    ...e, visibility: Math.min(100, Math.max(0, Number(e.visibility) || 0))
+  }));
+
+  return result;
 }
 
 function aisEsc(s) {
