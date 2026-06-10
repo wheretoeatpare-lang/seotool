@@ -6952,7 +6952,11 @@ Be honest — if the brand is unknown, give a low score (10-25). Include 2-4 men
   try {
     const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/claude', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Referer': 'https://ranksorcery.com/',
+        'Origin': 'https://ranksorcery.com'
+      },
       body: JSON.stringify({ messages }),
       signal: AbortSignal.timeout(60000)
     });
@@ -6979,7 +6983,11 @@ Be honest — if the brand is unknown, give a low score (10-25). Include 2-4 men
     try {
       const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Referer': 'https://ranksorcery.com/',
+          'Origin': 'https://ranksorcery.com'
+        },
         body: JSON.stringify({ messages }),
         signal: AbortSignal.timeout(60000)
       });
