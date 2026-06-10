@@ -6890,71 +6890,56 @@ function aisSlp(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ── AI Visibility JSON parser (separate from _parseAIJson which expects seo_score) ──
 function _parseAisJson(text) {
   if (!text) return null;
-  let clean = text.replace(/```json\s*/gi, '').replace(/```/g, '').trim();
-  const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
-  if (s === -1 || e === -1 || e <= s) return null;
+  // Strip markdown code fences
+  let clean = text.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+  // Find outermost JSON object
+  const s = clean.indexOf('{');
+  const e = clean.lastIndexOf('}');
+  if (s === -1 || e === -1 || e <= s) {
+    console.warn('[AIS] _parseAisJson: no JSON object found in:', clean.slice(0, 200));
+    return null;
+  }
   clean = clean.slice(s, e + 1);
   try {
     const d = JSON.parse(clean);
-    if (d.visibility_score === undefined) return null;
+    // Must have at minimum a visibility_score
+    if (d.visibility_score === undefined && d.score === undefined) {
+      console.warn('[AIS] _parseAisJson: missing visibility_score in:', JSON.stringify(d).slice(0, 200));
+      return null;
+    }
+    // Normalise alternate field names
+    if (d.score !== undefined && d.visibility_score === undefined) d.visibility_score = d.score;
     d.visibility_score = Math.min(100, Math.max(0, Math.round(Number(d.visibility_score) || 0)));
     return d;
-  } catch(e) { return null; }
+  } catch(err) {
+    console.warn('[AIS] _parseAisJson: JSON.parse failed:', err.message, '| text:', clean.slice(0, 300));
+    return null;
+  }
 }
 
 async function aisFetchVisibility(brand, engines) {
   const engineList = engines.join(', ');
 
-  const systemMsg = `You are an AI search visibility analyst. Your job is to assess how well-known a brand is to AI language models like yourself, and how likely it is to appear in AI-generated recommendations.
+  const systemMsg = `You are an AI search visibility analyst. Analyse the brand and return ONLY a valid JSON object — no markdown, no explanation, nothing else before or after the JSON.
 
-Respond ONLY with a valid JSON object — no markdown, no explanation, no text before or after the JSON.
-
-JSON structure:
+Required JSON structure:
 {
-  "visibility_score": <integer 0-100, based on how well-known and recommended the brand is in AI responses>,
-  "engines_present": <integer, how many of the checked engines would likely mention this brand>,
+  "visibility_score": <0-100 integer>,
+  "engines_present": <how many of the checked engines would mention this brand, integer>,
   "total_mentions": <integer>,
   "positive_mentions": <integer>,
   "negative_mentions": <integer>,
-  "summary": <string, 2-3 sentences of honest analysis about this brand's AI search presence>,
-  "engine_breakdown": [
-    { "engine": <engine name>, "visibility": <0-100>, "mentions": <integer>, "sentiment": <"positive"|"neutral"|"negative"> }
-  ],
-  "mentions": [
-    {
-      "engine": <engine name from the list>,
-      "prompt": <a realistic query someone might ask that would surface this brand>,
-      "excerpt": <a realistic AI response excerpt mentioning the brand — use [[BRAND]] as placeholder for the brand name>,
-      "sentiment": <"positive"|"neutral"|"negative">,
-      "context": <"recommendation"|"comparison"|"brand mention"|"review">,
-      "ranking_position": <integer 1-7>
-    }
-  ],
-  "opportunities": [
-    { "icon": <single emoji>, "title": <string>, "description": <string>, "action": <string>, "priority": <"high"|"medium"|"low"> }
-  ],
-  "risks": [
-    { "title": <string>, "description": <string>, "severity": <"high"|"medium"|"low">, "fix": <string> }
-  ],
-  "competitors": [
-    { "name": <competitor brand name>, "visibility": <0-100> }
-  ]
+  "summary": "<2-3 sentence honest analysis>",
+  "engine_breakdown": [{"engine":"<name>","visibility":<0-100>,"mentions":<int>,"sentiment":"<positive|neutral|negative>"}],
+  "mentions": [{"engine":"<name>","prompt":"<realistic query>","excerpt":"<AI response using [[BRAND]] as placeholder>","sentiment":"<positive|neutral|negative>","context":"<recommendation|comparison|brand mention|review>","ranking_position":<1-7>}],
+  "opportunities": [{"icon":"<emoji>","title":"<string>","description":"<string>","action":"<string>","priority":"<high|medium|low>"}],
+  "risks": [{"title":"<string>","description":"<string>","severity":"<high|medium|low>","fix":"<string>"}],
+  "competitors": [{"name":"<competitor>","visibility":<0-100>}]
 }
 
-Rules:
-- Be honest and accurate based on your actual knowledge of this brand
-- If the brand is unknown to you, give a low visibility_score (10-25) and explain why
-- Include 2-5 mentions across the selected engines
-- Include 2-4 opportunities and 0-3 risks based on the brand's real situation
-- Include 3-4 realistic competitors from the same industry
-- engine_breakdown must only include engines from the provided list
-- engines_present must be <= total engines checked`;
+Be honest — if the brand is unknown, give a low score (10-25). Include 2-4 mentions, 2-3 opportunities, 0-2 risks, 3-4 real competitors from the same industry.`;
 
-  const userMsg = `Analyse the AI search visibility of this brand: "${brand}"
-Engines to check: ${engineList}
-Total engines: ${engines.length}
-
-Based on your knowledge of this brand, how would it appear across these AI engines? Is it a well-known brand, niche brand, or unknown? What industry is it in? Give an honest, accurate assessment.`;
+  const userMsg = `Brand to analyse: "${brand}"\nEngines to check: ${engineList} (${engines.length} total)\n\nAssess this brand's AI search visibility honestly based on your knowledge.`;
 
   const messages = [
     { role: 'system', content: systemMsg },
@@ -6971,14 +6956,18 @@ Based on your knowledge of this brand, how would it appear across these AI engin
       body: JSON.stringify({ messages }),
       signal: AbortSignal.timeout(60000)
     });
+    console.log('[AIS] Groq HTTP status:', res.status);
     if (res.ok) {
       const data = await res.json();
+      console.log('[AIS] Groq raw data:', JSON.stringify(data).slice(0, 500));
       const text = data?.choices?.[0]?.message?.content || '';
+      console.log('[AIS] Groq text content:', text.slice(0, 500));
       result = _parseAisJson(text);
       if (result) console.log('[AIS] ✅ Groq success');
-      else console.warn('[AIS] Groq bad JSON:', text.slice(0, 200));
+      else console.warn('[AIS] Groq bad JSON - full text:', text);
     } else {
-      console.warn('[AIS] Groq HTTP', res.status);
+      const errText = await res.text();
+      console.warn('[AIS] Groq HTTP', res.status, errText.slice(0, 300));
     }
   } catch(e) {
     console.warn('[AIS] Groq error:', e.message);
@@ -6994,14 +6983,18 @@ Based on your knowledge of this brand, how would it appear across these AI engin
         body: JSON.stringify({ messages }),
         signal: AbortSignal.timeout(60000)
       });
+      console.log('[AIS] OpenRouter HTTP status:', res.status);
       if (res.ok) {
         const data = await res.json();
+        console.log('[AIS] OpenRouter raw data:', JSON.stringify(data).slice(0, 500));
         const text = data?.choices?.[0]?.message?.content || '';
+        console.log('[AIS] OpenRouter text content:', text.slice(0, 500));
         result = _parseAisJson(text);
         if (result) console.log('[AIS] ✅ OpenRouter success');
-        else console.warn('[AIS] OpenRouter bad JSON:', text.slice(0, 200));
+        else console.warn('[AIS] OpenRouter bad JSON - full text:', text);
       } else {
-        console.warn('[AIS] OpenRouter HTTP', res.status);
+        const errText = await res.text();
+        console.warn('[AIS] OpenRouter HTTP', res.status, errText.slice(0, 300));
       }
     } catch(e) {
       console.warn('[AIS] OpenRouter error:', e.message);
