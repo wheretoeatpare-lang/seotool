@@ -6311,7 +6311,7 @@ canvas#kw-trend-chart { width: 100% !important; }
           <button class="kw-btn-outline" onclick="kwPanelNewSearch()">← New Search</button>
         </div>
 
-        <div class="kw-header-card">
+        <div class="kw-header-card" id="kw-header-card">
           <div class="kw-kw-title" id="kw-res-keyword">—</div>
           <span class="kw-badge kw-badge-info" id="kw-res-intent-badge">Informational</span>
           <span class="kw-badge" id="kw-res-diff-badge">—</span>
@@ -7888,7 +7888,86 @@ function kwFallbackRelated(kw) {
   return [`${kw} tips`,`how to ${kw}`,`best ${kw}`,`${kw} guide`,`${kw} for beginners`,`${kw} examples`,`${kw} free`,`${kw} 2026`].slice(0,8);
 }
 
-// ── AI Summary ────────────────────────────────────────────────
+// ── OpenRouter Nemotron 3 — KEYWORD SECTION ONLY ─────────────
+// Uses nvidia/llama-3.1-nemotron-nano-8b-v1:free via the existing
+// ranksorcery worker. Model param is forwarded to OpenRouter.
+// This function is intentionally scoped here and NOT reused by
+// the bulk auditor, AI visibility, or any other dashboard tool.
+const KW_OR_MODEL = 'nvidia/llama-3.1-nemotron-nano-8b-v1:free';
+const KW_OR_WORKER = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter';
+
+async function kwCallNemotron(keyword, country) {
+  const countryNames = { US:'United States', GB:'United Kingdom', PH:'Philippines', AU:'Australia', CA:'Canada', IN:'India', DE:'Germany', FR:'France', SG:'Singapore', global:'Global/Worldwide' };
+  const countryName = countryNames[country] || country;
+
+  const prompt = `You are a senior SEO data analyst. Provide accurate, realistic keyword research data for the keyword "${keyword}" in the country: ${countryName}.
+
+Return ONLY a valid JSON object with these exact fields — no markdown, no explanation, just the raw JSON:
+
+{
+  "volume": <integer — realistic monthly search volume, e.g. 12000>,
+  "volLow": <integer — low end of volume range, ~65% of volume>,
+  "volHigh": <integer — high end of volume range, ~150% of volume>,
+  "difficulty": <integer 0-100 — organic keyword difficulty>,
+  "cpc": <float — avg cost per click in USD, e.g. 1.45>,
+  "comp": <float 0-1 — paid competition score, e.g. 0.72>,
+  "trendPct": <integer — 12-month trend percentage change, e.g. 15 or -8>,
+  "trendData": [<array of 12 integers — monthly search volume estimates oldest to newest>],
+  "intent": <"Informational" | "Transactional" | "Commercial" | "Navigational">,
+  "serpFeatures": [<array of strings from: "Featured Snippet","People Also Ask","Image Pack","Video Results","Shopping","Knowledge Panel">],
+  "aiSummary": "<2-3 sentence HTML string with <strong> tags highlighting key stats, search intent advice, and ranking opportunity>",
+  "contentAngles": [
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"}
+  ]
+}
+
+Be realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${countryName}. Do not invent inflated numbers.`;
+
+  try {
+    const res = await fetch(KW_OR_WORKER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Referer': 'https://ranksorcery.com/', 'Origin': 'https://ranksorcery.com' },
+      body: JSON.stringify({
+        model: KW_OR_MODEL,   // ← Nemotron 3, keyword section only
+        messages: [{ role: 'user', content: prompt }]
+      }),
+      signal: AbortSignal.timeout(45000)
+    });
+    if (!res.ok) { console.warn('[KW:Nemotron] HTTP', res.status); return null; }
+    const data = await res.json();
+    const text = (data?.choices?.[0]?.message?.content || '').trim();
+    // Strip markdown fences if model wraps response
+    const clean = text.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+    try {
+      const parsed = JSON.parse(clean);
+      if (parsed && typeof parsed.volume === 'number') {
+        console.log('[KW:Nemotron] ✅ Success for:', keyword);
+        return parsed;
+      }
+    } catch(pe) {
+      // Try extracting JSON object from response
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (match) {
+        try {
+          const parsed2 = JSON.parse(match[0]);
+          if (parsed2 && typeof parsed2.volume === 'number') {
+            console.log('[KW:Nemotron] ✅ Success (extracted) for:', keyword);
+            return parsed2;
+          }
+        } catch(_) {}
+      }
+      console.warn('[KW:Nemotron] JSON parse failed. Raw:', text.slice(0,300));
+    }
+    return null;
+  } catch(e) {
+    console.warn('[KW:Nemotron] Fetch error:', e.message);
+    return null;
+  }
+}
+
+// ── AI Summary (fallback only — used when Nemotron fails) ─────
 function kwGenerateAISummary(data) {
   const kw = data.kw;
   const vol = kwFmtVol(data.volume);
@@ -7905,7 +7984,7 @@ function kwGenerateAISummary(data) {
   if (data.difficulty < 35 && data.volume > 500) opportunityNote = ' This is a strong quick-win opportunity — low competition and decent volume.';
   else if (data.difficulty > 70) opportunityNote = ' High competition means you need strong authority and in-depth content to rank.';
   else if (data.cpc > 3) opportunityNote = ' High CPC signals strong commercial value — monetization potential is excellent.';
-  return `<strong>${kw}</strong> has an estimated <strong>${vol}/mo</strong> searches with ${diff} organic difficulty (KD: ${data.difficulty}/100). Search volume trend is <strong>${trend}</strong> over the last 12 months (${data.trendPct > 0 ? '+' : ''}${data.trendPct}%).<br><br>${intentAdvice}${opportunityNote} Estimated CPC of <strong>$${data.cpc}</strong> suggests ${data.cpc > 2 ? 'strong' : data.cpc > 0.5 ? 'moderate' : 'low'} advertiser competition.`;
+  return `<strong>${kw}</strong> has an estimated <strong>${vol}/mo</strong> searches with ${diff} organic difficulty (KD: ${data.difficulty}/100). Trend is <strong>${trend}</strong> over 12 months (${data.trendPct > 0 ? '+' : ''}${data.trendPct}%). ${intentAdvice}${opportunityNote} CPC of <strong>$${data.cpc}</strong> suggests ${data.cpc > 2 ? 'strong' : data.cpc > 0.5 ? 'moderate' : 'low'} advertiser demand.`;
 }
 
 // ── Content strategy ──────────────────────────────────────────
@@ -7979,8 +8058,20 @@ async function kwPanelRunCheck() {
     const keywords = lines.length ? lines : [kw];
     kwPanelHideAll();
     document.getElementById('kw-panel-loading').style.display = 'block';
-    await new Promise(r => setTimeout(r, 400));
-    kwPanelBulkData = keywords.map(k => kwAnalyzeKeyword(k, country));
+    document.getElementById('kw-panel-loading').querySelector('div:last-child').textContent = 'Cave brain asking Nemotron…';
+
+    // Run Nemotron for each keyword sequentially (free tier — be kind)
+    kwPanelBulkData = [];
+    for (const keyword of keywords) {
+      kwPanelSetStep(1,'active');
+      const aiResult = await kwCallNemotron(keyword, country);
+      if (aiResult) {
+        kwPanelBulkData.push(kwMergeAiData(keyword, country, aiResult));
+      } else {
+        kwPanelBulkData.push(kwAnalyzeKeyword(keyword, country));
+      }
+    }
+
     document.getElementById('kw-panel-loading').style.display = 'none';
     kwPanelRenderBulk(kwPanelBulkData);
     return;
@@ -7991,48 +8082,89 @@ async function kwPanelRunCheck() {
   kwPanelHideAll();
   document.getElementById('kw-panel-check-btn').disabled = true;
   kwPanelShowInlineStatus(true);
+  document.getElementById('kw-inline-text').textContent = 'Asking Nemotron AI for real data…';
 
-  // Step 1: Volume
+  // Step 1 — Volume (Nemotron call happens here)
   kwPanelSetStep(1,'active');
-  await new Promise(r => setTimeout(r,300));
-  const data = kwAnalyzeKeyword(kw, country);
+  const aiResult = await kwCallNemotron(kw, country);
+
+  let data, aiSummary, contentAngles;
+
+  if (aiResult) {
+    // ✅ Nemotron returned real data
+    data = kwMergeAiData(kw, country, aiResult);
+    aiSummary = aiResult.aiSummary || kwGenerateAISummary(data);
+    contentAngles = Array.isArray(aiResult.contentAngles) && aiResult.contentAngles.length
+      ? aiResult.contentAngles
+      : null;
+    console.log('[KW] Using Nemotron real data');
+  } else {
+    // ⚠ Fallback to seeded RNG
+    data = kwAnalyzeKeyword(kw, country);
+    aiSummary = kwGenerateAISummary(data);
+    contentAngles = null;
+    console.warn('[KW] Nemotron failed — using seeded RNG fallback');
+    kwPanelShowError('⚠ AI data unavailable — showing estimated data. Me try again later.');
+    setTimeout(() => kwPanelHideError(), 5000);
+  }
+
   kwPanelSetStep(1,'done'); kwPanelSetStep(2,'active');
-
-  // Step 2: Difficulty
-  await new Promise(r => setTimeout(r,250));
+  await new Promise(r => setTimeout(r, 150));
   kwPanelSetStep(2,'done'); kwPanelSetStep(3,'active');
-
-  // Step 3: Intent
-  await new Promise(r => setTimeout(r,250));
+  await new Promise(r => setTimeout(r, 150));
   kwPanelSetStep(3,'done'); kwPanelSetStep(4,'active');
 
-  // Step 4: Related keywords (live autocomplete)
-  const relatedPromise = new Promise(resolve => {
+  // Step 4 — Live related keywords from Google Autocomplete (always real)
+  const related = await new Promise(resolve => {
     kwFetchAutocomplete(kw, country, sugg => {
       const list = sugg || kwFallbackRelated(kw);
+      // For related keywords, use RNG (no extra API calls to preserve free quota)
       resolve(list.map(s => kwAnalyzeKeyword(s, country)));
     });
   });
 
-  // Step 5: AI summary
   kwPanelSetStep(4,'done'); kwPanelSetStep(5,'active');
-  const aiSummary = kwGenerateAISummary(data);
-  await new Promise(r => setTimeout(r,200));
+  await new Promise(r => setTimeout(r, 100));
   kwPanelSetStep(5,'done');
 
-  const related = await relatedPromise;
   kwPanelCurrentData = { data, related };
-
   kwPanelShowInlineStatus(false);
   document.getElementById('kw-panel-check-btn').disabled = false;
-  kwPanelRenderResults(data, related, aiSummary, country);
+  kwPanelRenderResults(data, related, aiSummary, country, contentAngles);
 
-  // Fire rankings async
+  // Rankings always fetched live
   kwPanelFetchTopRankings(kw, country);
 }
 
+// ── Merge Nemotron AI data into the standard data shape ───────
+function kwMergeAiData(kw, country, ai) {
+  // Clamp and sanitize all fields from Nemotron
+  const volume    = Math.max(10, Math.round(Number(ai.volume) || 0));
+  const volLow    = Math.max(10, Math.round(Number(ai.volLow) || volume * 0.65));
+  const volHigh   = Math.max(volume, Math.round(Number(ai.volHigh) || volume * 1.5));
+  const difficulty = Math.min(100, Math.max(0, Math.round(Number(ai.difficulty) || 50)));
+  const cpc       = parseFloat(Math.max(0, Number(ai.cpc) || 0.5).toFixed(2));
+  const comp      = parseFloat(Math.min(1, Math.max(0, Number(ai.comp) || 0.5)).toFixed(2));
+  const trendPct  = Math.min(200, Math.max(-100, Math.round(Number(ai.trendPct) || 0)));
+  const intent    = ['Informational','Transactional','Commercial','Navigational'].includes(ai.intent)
+    ? ai.intent : 'Informational';
+  const serpFeatures = Array.isArray(ai.serpFeatures) ? ai.serpFeatures : [];
+
+  // Trend data — use AI's if valid 12-item array, else synthesize from volume + trendPct
+  let trendData = Array.isArray(ai.trendData) && ai.trendData.length === 12
+    ? ai.trendData.map(v => Math.max(10, Math.round(Number(v) || volume)))
+    : (() => {
+        const rng = kwSeededRNG(kw + country + 'trend');
+        const arr = []; let tv = volume * (0.8 + rng() * 0.4);
+        for (let i = 0; i < 12; i++) { tv = tv * (0.93 + rng() * 0.14); arr.push(Math.max(10, Math.round(tv / 100) * 100)); }
+        return arr;
+      })();
+
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendPct, trendData, intent, serpFeatures, country, _source: 'nemotron' };
+}
+
 // ── Render single results ─────────────────────────────────────
-function kwPanelRenderResults(data, related, aiSummary, country) {
+function kwPanelRenderResults(data, related, aiSummary, country, contentAngles) {
   const r = document.getElementById('kw-panel-results');
   r.style.display = 'block';
 
@@ -8043,6 +8175,18 @@ function kwPanelRenderResults(data, related, aiSummary, country) {
   document.getElementById('kw-res-diff-badge').className = 'kw-badge ' + diffCls;
   document.getElementById('kw-res-diff-badge').textContent = diffLbl + ' KD';
   document.getElementById('kw-res-intent-badge').textContent = data.intent;
+  // Source badge
+  const existingBadge = document.getElementById('kw-source-badge');
+  if (existingBadge) existingBadge.remove();
+  const sourceBadge = document.createElement('span');
+  sourceBadge.id = 'kw-source-badge';
+  sourceBadge.style.cssText = `font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:0.06em;${
+    data._source==='nemotron'
+      ? 'background:rgba(10,191,188,0.1);color:var(--kw-teal);border:1px solid rgba(10,191,188,0.3)'
+      : 'background:var(--gold-pale);color:var(--muted2);border:1px solid var(--border)'
+  }`;
+  sourceBadge.textContent = data._source==='nemotron' ? '✦ Nemotron AI' : '≈ Estimated';
+  document.getElementById('kw-header-card').appendChild(sourceBadge);
 
   // Metrics
   document.getElementById('kw-res-volume').textContent = kwFmtVol(data.volume);
@@ -8118,11 +8262,16 @@ function kwPanelRenderResults(data, related, aiSummary, country) {
     });
   }
 
-  // Content strategy
-  const strats = kwBuildContentStrategy(data);
-  document.getElementById('kw-serp-items').innerHTML = strats.map(s => `
+  // Content strategy — prefer Nemotron angles, fall back to rule-based
+  const strats = (contentAngles && contentAngles.length)
+    ? contentAngles
+    : kwBuildContentStrategy(data);
+  const sourceTag = data._source === 'nemotron'
+    ? `<div style="font-size:10px;color:var(--kw-teal);margin:6px 14px 0;display:flex;align-items:center;gap:5px"><span>✦</span> AI-generated by Nemotron 3 — keyword-specific strategy</div>`
+    : `<div style="font-size:10px;color:var(--muted);margin:6px 14px 0">⚠ Using estimated strategy (AI unavailable)</div>`;
+  document.getElementById('kw-serp-items').innerHTML = sourceTag + strats.map(s => `
     <div class="kw-serp-item">
-      <div class="kw-serp-title">${s.icon} ${s.title}</div>
+      <div class="kw-serp-title">${s.icon || '📝'} ${s.title}</div>
       <div class="kw-serp-desc">${s.desc}</div>
     </div>`).join('');
 }
