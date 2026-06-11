@@ -7893,8 +7893,8 @@ function kwFallbackRelated(kw) {
 // ranksorcery worker. Model param is forwarded to OpenRouter.
 // This function is intentionally scoped here and NOT reused by
 // the bulk auditor, AI visibility, or any other dashboard tool.
-const KW_OR_MODEL = 'nvidia/nemotron-3-ultra-550b-a55b:free';
-const KW_OR_WORKER = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter';
+const KW_OR_MODEL = 'nemotron-3-ultra-550b-a55b:free';
+const KW_OR_WORKER = 'https://nemotron-ai-ranksorcer.webmasterjamez.workers.dev/';
 
 async function kwCallNemotron(keyword, country) {
   const countryNames = { US:'United States', GB:'United Kingdom', PH:'Philippines', AU:'Australia', CA:'Canada', IN:'India', DE:'Germany', FR:'France', SG:'Singapore', global:'Global/Worldwide' };
@@ -7926,15 +7926,21 @@ Return ONLY a valid JSON object with these exact fields — no markdown, no expl
 Be realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${countryName}. Do not invent inflated numbers.`;
 
   try {
-    console.log('[KW:Nemotron] Calling worker with model:', KW_OR_MODEL);
+    console.log('[KW:Nemotron] Calling Naga.ac worker with model:', KW_OR_MODEL);
     const res = await fetch(KW_OR_WORKER, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Referer': 'https://ranksorcery.com/', 'Origin': 'https://ranksorcery.com' },
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Target-URL': 'https://api.naga.ac/v1/chat/completions',
+        'Referer': 'https://ranksorcery.com/',
+        'Origin': 'https://ranksorcery.com'
+      },
       body: JSON.stringify({
         model: KW_OR_MODEL,
-        messages: [{ role: 'user', content: prompt }]
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2
       }),
-      signal: AbortSignal.timeout(45000)
+      signal: AbortSignal.timeout(60000)
     });
     if (!res.ok) {
       let errBody = '';
