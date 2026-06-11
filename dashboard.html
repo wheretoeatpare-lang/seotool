@@ -7894,6 +7894,7 @@ function kwFallbackRelated(kw) {
 // This function is intentionally scoped here and NOT reused by
 // the bulk auditor, AI visibility, or any other dashboard tool.
 const KW_OR_MODEL = 'nemotron-3-super-120b-a12b:free';
+const KW_GROQ_MODEL = 'deepseek-r1-distill-llama-70b';
 const KW_OR_WORKER = 'https://nemotron-ai-ranksorcer.webmasterjamez.workers.dev/';
 
 async function kwCallNemotron(keyword, country) {
@@ -7978,6 +7979,76 @@ Be realistic and accurate. Base volume on actual SEO industry knowledge for "${k
     return null;
   } catch(e) {
     console.warn('[KW:Nemotron] Fetch error:', e.message, e);
+    return null;
+  }
+}
+
+// ── Groq DeepSeek R1 — KEYWORD SECTION PRIMARY ───────────────
+// Uses deepseek-r1-distill-llama-70b via Groq endpoint on the
+// nemotron worker. This is the PRIMARY provider; Nemotron is the
+// fallback. DeepSeek R1 wraps output in <think>…</think> tags
+// which are stripped before JSON parsing.
+async function kwCallGroq(keyword, country) {
+  const countryNames = { US:'United States', GB:'United Kingdom', PH:'Philippines', AU:'Australia', CA:'Canada', IN:'India', DE:'Germany', FR:'France', SG:'Singapore', global:'Global/Worldwide' };
+  const countryName = countryNames[country] || country;
+
+  const prompt = `You are a senior SEO data analyst. Provide accurate, realistic keyword research data for the keyword "${keyword}" in the country: ${countryName}.\n\nReturn ONLY a valid JSON object with these exact fields — no markdown, no explanation, just the raw JSON:\n\n{\n  "volume": <integer — realistic monthly search volume, e.g. 12000>,\n  "volLow": <integer — low end of volume range, ~65% of volume>,\n  "volHigh": <integer — high end of volume range, ~150% of volume>,\n  "difficulty": <integer 0-100 — organic keyword difficulty>,\n  "cpc": <float — avg cost per click in USD, e.g. 1.45>,\n  "comp": <float 0-1 — paid competition score, e.g. 0.72>,\n  "trendPct": <integer — 12-month trend percentage change, e.g. 15 or -8>,\n  "trendData": [<array of 12 integers — monthly search volume estimates oldest to newest>],\n  "intent": <"Informational" | "Transactional" | "Commercial" | "Navigational">,\n  "serpFeatures": [<array of strings from: "Featured Snippet","People Also Ask","Image Pack","Video Results","Shopping","Knowledge Panel">],\n  "aiSummary": "<2-3 sentence HTML string with <strong> tags highlighting key stats, search intent advice, and ranking opportunity>",\n  "contentAngles": [\n    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},\n    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},\n    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"}\n  ]\n}\n\nBe realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${countryName}. Do not invent inflated numbers.`;
+
+  try {
+    console.log('[KW:Groq] Calling worker with model:', KW_GROQ_MODEL);
+    const res = await fetch(KW_OR_WORKER, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Target-URL': 'https://api.groq.com/openai/v1/chat/completions',
+        'Referer': 'https://ranksorcery.com/',
+        'Origin': 'https://ranksorcery.com'
+      },
+      body: JSON.stringify({
+        model: KW_GROQ_MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.2
+      }),
+      signal: AbortSignal.timeout(90000)
+    });
+    if (!res.ok) {
+      let errBody = '';
+      try { errBody = await res.text(); } catch(_) {}
+      console.warn('[KW:Groq] HTTP', res.status, res.statusText, '| Body:', errBody.slice(0, 500));
+      return null;
+    }
+    const data = await res.json();
+    console.log('[KW:Groq] Raw response:', JSON.stringify(data).slice(0, 600));
+    const rawText = (data?.choices?.[0]?.message?.content || '').trim();
+    if (!rawText) { console.warn('[KW:Groq] Empty content. Full data:', JSON.stringify(data).slice(0,600)); return null; }
+    // Strip <think>…</think> reasoning block that DeepSeek R1 prepends
+    const text = rawText.replace(/<think>[\s\S]*?<\/think>/i, '').trim();
+    // Strip markdown fences if model wraps response
+    const clean = text.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+    try {
+      const parsed = JSON.parse(clean);
+      if (parsed && typeof parsed.volume === 'number') {
+        console.log('[KW:Groq] ✅ Success for:', keyword);
+        return { ...parsed, _kwSource: 'groq' };
+      }
+      console.warn('[KW:Groq] Parsed JSON missing volume. Got:', JSON.stringify(parsed).slice(0,300));
+    } catch(pe) {
+      // Try extracting JSON object from response
+      const match = clean.match(/\{[\s\S]*\}/);
+      if (match) {
+        try {
+          const parsed2 = JSON.parse(match[0]);
+          if (parsed2 && typeof parsed2.volume === 'number') {
+            console.log('[KW:Groq] ✅ Success (extracted) for:', keyword);
+            return { ...parsed2, _kwSource: 'groq' };
+          }
+        } catch(_) {}
+      }
+      console.warn('[KW:Groq] JSON parse failed. Raw text:', text.slice(0,500));
+    }
+    return null;
+  } catch(e) {
+    console.warn('[KW:Groq] Fetch error:', e.message, e);
     return null;
   }
 }
@@ -8073,13 +8144,18 @@ async function kwPanelRunCheck() {
     const keywords = lines.length ? lines : [kw];
     kwPanelHideAll();
     document.getElementById('kw-panel-loading').style.display = 'block';
-    document.getElementById('kw-panel-loading').querySelector('div:last-child').textContent = 'Cave brain asking Nemotron…';
+    document.getElementById('kw-panel-loading').querySelector('div:last-child').textContent = 'Cave brain asking DeepSeek R1…';
 
-    // Run Nemotron for each keyword sequentially (free tier — be kind)
+    // Run Groq (DeepSeek R1) first, fall back to Nemotron, then RNG
     kwPanelBulkData = [];
     for (const keyword of keywords) {
       kwPanelSetStep(1,'active');
-      const aiResult = await kwCallNemotron(keyword, country);
+      let aiResult = await kwCallGroq(keyword, country);
+      if (!aiResult) {
+        console.log('[KW:Bulk] Groq failed — trying Nemotron for:', keyword);
+        document.getElementById('kw-panel-loading').querySelector('div:last-child').textContent = 'DeepSeek busy — asking Nemotron…';
+        aiResult = await kwCallNemotron(keyword, country);
+      }
       if (aiResult) {
         kwPanelBulkData.push(kwMergeAiData(keyword, country, aiResult));
       } else {
@@ -8097,28 +8173,34 @@ async function kwPanelRunCheck() {
   kwPanelHideAll();
   document.getElementById('kw-panel-check-btn').disabled = true;
   kwPanelShowInlineStatus(true);
-  document.getElementById('kw-inline-text').textContent = 'Asking Nemotron AI for real data…';
+  document.getElementById('kw-inline-text').textContent = 'Asking DeepSeek R1 AI for real data…';
 
-  // Step 1 — Volume (Nemotron call happens here)
+  // Step 1 — Volume (Groq primary, Nemotron fallback)
   kwPanelSetStep(1,'active');
-  const aiResult = await kwCallNemotron(kw, country);
+  let aiResult = await kwCallGroq(kw, country);
+
+  if (!aiResult) {
+    console.log('[KW] Groq/DeepSeek failed — falling back to Nemotron');
+    document.getElementById('kw-inline-text').textContent = 'DeepSeek busy — asking Nemotron…';
+    aiResult = await kwCallNemotron(kw, country);
+  }
 
   let data, aiSummary, contentAngles;
 
   if (aiResult) {
-    // ✅ Nemotron returned real data
+    // ✅ AI returned real data
     data = kwMergeAiData(kw, country, aiResult);
     aiSummary = aiResult.aiSummary || kwGenerateAISummary(data);
     contentAngles = Array.isArray(aiResult.contentAngles) && aiResult.contentAngles.length
       ? aiResult.contentAngles
       : null;
-    console.log('[KW] Using Nemotron real data');
+    console.log('[KW] Using', data._source, 'real data');
   } else {
     // ⚠ Fallback to seeded RNG
     data = kwAnalyzeKeyword(kw, country);
     aiSummary = kwGenerateAISummary(data);
     contentAngles = null;
-    console.warn('[KW] Nemotron failed — using seeded RNG fallback');
+    console.warn('[KW] All AI failed — using seeded RNG fallback');
     kwPanelShowError('⚠ AI data unavailable — showing estimated data. Me try again later.');
     setTimeout(() => kwPanelHideError(), 5000);
   }
@@ -8175,7 +8257,8 @@ function kwMergeAiData(kw, country, ai) {
         return arr;
       })();
 
-  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendPct, trendData, intent, serpFeatures, country, _source: 'nemotron' };
+  const _source = (ai && ai._kwSource === 'groq') ? 'groq' : 'nemotron';
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendPct, trendData, intent, serpFeatures, country, _source };
 }
 
 // ── Render single results ─────────────────────────────────────
@@ -8196,11 +8279,11 @@ function kwPanelRenderResults(data, related, aiSummary, country, contentAngles) 
   const sourceBadge = document.createElement('span');
   sourceBadge.id = 'kw-source-badge';
   sourceBadge.style.cssText = `font-size:10px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:0.06em;${
-    data._source==='nemotron'
+    (data._source==='groq' || data._source==='nemotron')
       ? 'background:rgba(10,191,188,0.1);color:var(--kw-teal);border:1px solid rgba(10,191,188,0.3)'
       : 'background:var(--gold-pale);color:var(--muted2);border:1px solid var(--border)'
   }`;
-  sourceBadge.textContent = data._source==='nemotron' ? '✦ Nemotron 30B AI' : '≈ Estimated';
+  sourceBadge.textContent = data._source==='groq' ? '✦ DeepSeek R1 AI' : data._source==='nemotron' ? '✦ Nemotron 30B AI' : '≈ Estimated';
   document.getElementById('kw-header-card').appendChild(sourceBadge);
 
   // Metrics
@@ -8281,7 +8364,9 @@ function kwPanelRenderResults(data, related, aiSummary, country, contentAngles) 
   const strats = (contentAngles && contentAngles.length)
     ? contentAngles
     : kwBuildContentStrategy(data);
-  const sourceTag = data._source === 'nemotron'
+  const sourceTag = data._source === 'groq'
+    ? `<div style="font-size:10px;color:var(--kw-teal);margin:6px 14px 0;display:flex;align-items:center;gap:5px"><span>✦</span> AI-generated by DeepSeek R1 (Groq) — keyword-specific strategy</div>`
+    : data._source === 'nemotron'
     ? `<div style="font-size:10px;color:var(--kw-teal);margin:6px 14px 0;display:flex;align-items:center;gap:5px"><span>✦</span> AI-generated by Nemotron Ultra 550B — keyword-specific strategy</div>`
     : `<div style="font-size:10px;color:var(--muted);margin:6px 14px 0">⚠ Using estimated strategy (AI unavailable)</div>`;
   document.getElementById('kw-serp-items').innerHTML = sourceTag + strats.map(s => `
