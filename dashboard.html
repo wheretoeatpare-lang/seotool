@@ -7893,7 +7893,7 @@ function kwFallbackRelated(kw) {
 // ranksorcery worker. Model param is forwarded to OpenRouter.
 // This function is intentionally scoped here and NOT reused by
 // the bulk auditor, AI visibility, or any other dashboard tool.
-const KW_OR_MODEL = 'nvidia/llama-3.1-nemotron-nano-8b-v1:free';
+const KW_OR_MODEL = 'nvidia/nemotron-3-nano-30b-a3b:free';
 const KW_OR_WORKER = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter';
 
 async function kwCallNemotron(keyword, country) {
@@ -7943,7 +7943,7 @@ Be realistic and accurate. Base volume on actual SEO industry knowledge for "${k
     try {
       const parsed = JSON.parse(clean);
       if (parsed && typeof parsed.volume === 'number') {
-        console.log('[KW:Nemotron] ✅ Success for:', keyword);
+        console.log('[KW:Nemotron30B] ✅ Success for:', keyword);
         return parsed;
       }
     } catch(pe) {
@@ -7953,7 +7953,7 @@ Be realistic and accurate. Base volume on actual SEO industry knowledge for "${k
         try {
           const parsed2 = JSON.parse(match[0]);
           if (parsed2 && typeof parsed2.volume === 'number') {
-            console.log('[KW:Nemotron] ✅ Success (extracted) for:', keyword);
+            console.log('[KW:Nemotron30B] ✅ Success (extracted) for:', keyword);
             return parsed2;
           }
         } catch(_) {}
@@ -8185,7 +8185,7 @@ function kwPanelRenderResults(data, related, aiSummary, country, contentAngles) 
       ? 'background:rgba(10,191,188,0.1);color:var(--kw-teal);border:1px solid rgba(10,191,188,0.3)'
       : 'background:var(--gold-pale);color:var(--muted2);border:1px solid var(--border)'
   }`;
-  sourceBadge.textContent = data._source==='nemotron' ? '✦ Nemotron AI' : '≈ Estimated';
+  sourceBadge.textContent = data._source==='nemotron' ? '✦ Nemotron 30B AI' : '≈ Estimated';
   document.getElementById('kw-header-card').appendChild(sourceBadge);
 
   // Metrics
