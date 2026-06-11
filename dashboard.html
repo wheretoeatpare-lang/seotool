@@ -7926,18 +7926,26 @@ Return ONLY a valid JSON object with these exact fields — no markdown, no expl
 Be realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${countryName}. Do not invent inflated numbers.`;
 
   try {
+    console.log('[KW:Nemotron] Calling worker with model:', KW_OR_MODEL);
     const res = await fetch(KW_OR_WORKER, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Referer': 'https://ranksorcery.com/', 'Origin': 'https://ranksorcery.com' },
       body: JSON.stringify({
-        model: KW_OR_MODEL,   // ← Nemotron 3, keyword section only
+        model: KW_OR_MODEL,
         messages: [{ role: 'user', content: prompt }]
       }),
       signal: AbortSignal.timeout(45000)
     });
-    if (!res.ok) { console.warn('[KW:Nemotron] HTTP', res.status); return null; }
+    if (!res.ok) {
+      let errBody = '';
+      try { errBody = await res.text(); } catch(_) {}
+      console.warn('[KW:Nemotron] HTTP', res.status, res.statusText, '| Body:', errBody.slice(0, 500));
+      return null;
+    }
     const data = await res.json();
+    console.log('[KW:Nemotron] Raw response:', JSON.stringify(data).slice(0, 600));
     const text = (data?.choices?.[0]?.message?.content || '').trim();
+    if (!text) { console.warn('[KW:Nemotron] Empty content. Full data:', JSON.stringify(data).slice(0,600)); return null; }
     // Strip markdown fences if model wraps response
     const clean = text.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
     try {
@@ -7946,6 +7954,7 @@ Be realistic and accurate. Base volume on actual SEO industry knowledge for "${k
         console.log('[KW:Nemotron550B] ✅ Success for:', keyword);
         return parsed;
       }
+      console.warn('[KW:Nemotron] Parsed JSON missing volume. Got:', JSON.stringify(parsed).slice(0,300));
     } catch(pe) {
       // Try extracting JSON object from response
       const match = clean.match(/\{[\s\S]*\}/);
@@ -7958,11 +7967,11 @@ Be realistic and accurate. Base volume on actual SEO industry knowledge for "${k
           }
         } catch(_) {}
       }
-      console.warn('[KW:Nemotron] JSON parse failed. Raw:', text.slice(0,300));
+      console.warn('[KW:Nemotron] JSON parse failed. Raw text:', text.slice(0,500));
     }
     return null;
   } catch(e) {
-    console.warn('[KW:Nemotron] Fetch error:', e.message);
+    console.warn('[KW:Nemotron] Fetch error:', e.message, e);
     return null;
   }
 }
