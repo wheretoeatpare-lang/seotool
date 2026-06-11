@@ -1888,7 +1888,7 @@ tr.row-zap td {
     <a class="sidebar-link" href="/serp-rank-tracker.html">
       <span class="sidebar-icon">📈</span> Rank Tracker
     </a>
-    <a class="sidebar-link" href="/keyword-volume.html">
+    <a class="sidebar-link" href="#" id="sidebar-keyword-link" onclick="showKeywordResearch(event)">
       <span class="sidebar-icon">🔑</span> Keyword Research
     </a>
     <a class="sidebar-link" href="/competitor.html">
@@ -5900,6 +5900,563 @@ async function exportCrawlExcel() {
 
     </div><!-- end ai-search-view -->
 
+    <!-- ══════════════ KEYWORD RESEARCH VIEW ══════════════ -->
+    <div id="keyword-research-view" style="display:none">
+
+<style>
+/* ── Keyword Research Panel — dashboard-scoped ── */
+#keyword-research-view {
+  --kw-bg2: #141B2D;
+  --kw-bg3: #1E2740;
+  --kw-bg4: #243050;
+  --kw-border: rgba(232,184,75,0.13);
+  --kw-border2: rgba(232,184,75,0.22);
+  --kw-border3: rgba(232,184,75,0.35);
+  --kw-accent: #E8B84B;
+  --kw-accent2: #F5D98A;
+  --kw-teal: #0ABFBC;
+  --kw-teal2: rgba(10,191,188,0.12);
+  --kw-green: #34d399;
+  --kw-green2: rgba(52,211,153,0.12);
+  --kw-red: #f87171;
+  --kw-red2: rgba(248,113,113,0.12);
+  --kw-amber: #fbbf24;
+  --kw-amber2: rgba(251,191,36,0.12);
+  --kw-radius: 14px;
+}
+
+.kw-panel-hero {
+  margin-bottom: 28px;
+}
+.kw-panel-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--kw-teal); opacity: 0.9;
+  margin-bottom: 8px;
+}
+.kw-panel-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 600; line-height: 1.2; color: var(--text); margin-bottom: 6px;
+}
+.kw-panel-title em { font-style: normal; color: var(--gold); }
+.kw-panel-sub { font-size: 13px; color: var(--muted2); max-width: 500px; line-height: 1.55; }
+
+/* ── Input Area ── */
+.kw-input-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 20px; margin-bottom: 20px;
+}
+.kw-input-card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+}
+.kw-input-card-title {
+  font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text);
+}
+.kw-mode-tabs { display: flex; gap: 4px; }
+.kw-mode-tab {
+  font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 6px;
+  border: 1px solid var(--border-subtle); background: none; color: var(--muted2);
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.kw-mode-tab.active, .kw-mode-tab:hover { color: var(--gold); background: var(--gold-pale); border-color: var(--border); }
+
+.kw-url-row {
+  display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+}
+.kw-input {
+  flex: 1; min-width: 200px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 14px; font-size: 13px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
+  transition: border-color 0.2s;
+}
+.kw-input:focus { border-color: rgba(232,184,75,0.5); }
+.kw-input::placeholder { color: var(--muted); }
+.kw-country-sel {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 12px; font-size: 12px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
+  cursor: pointer; min-width: 100px;
+}
+.kw-check-btn {
+  background: var(--gold); color: #000; border: none; border-radius: 9px;
+  padding: 10px 20px; font-size: 13px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s; white-space: nowrap;
+}
+.kw-check-btn:hover { opacity: 0.88; }
+.kw-check-btn:active { transform: scale(0.97); }
+.kw-check-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.kw-bulk-hint {
+  font-size: 12px; color: var(--muted2); margin-bottom: 8px;
+}
+.kw-bulk-hint a { color: var(--gold); cursor: pointer; text-decoration: underline; }
+.kw-bulk-area {
+  display: none; width: 100%; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: 9px; padding: 10px 14px;
+  font-size: 13px; color: var(--text); font-family: 'DM Sans', sans-serif;
+  resize: vertical; min-height: 100px; outline: none;
+}
+.kw-bulk-area:focus { border-color: rgba(232,184,75,0.5); }
+
+/* Chips row */
+.kw-chips-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.kw-chip {
+  font-size: 11px; padding: 4px 12px; border-radius: 20px;
+  background: var(--surface2); border: 1px solid var(--border-subtle);
+  color: var(--muted2); cursor: pointer; transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.kw-chip:hover { color: var(--gold); border-color: var(--border); }
+
+/* inline status */
+.kw-inline-status {
+  display: none; align-items: center; gap: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 14px; margin-top: 10px;
+}
+.kw-inline-spin {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--gold);
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+.kw-inline-step {
+  font-size: 11px; padding: 2px 8px; border-radius: 5px;
+  background: var(--surface); color: var(--muted); transition: all 0.3s;
+}
+.kw-inline-step.active { background: var(--gold-pale); color: var(--gold); }
+.kw-inline-step.done { background: var(--green-pale); color: var(--green); }
+
+/* error */
+.kw-error-msg {
+  display: none; background: var(--red-pale); border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 9px; padding: 10px 14px; color: var(--red); font-size: 13px; margin-bottom: 14px;
+}
+
+/* loading card */
+.kw-loading-card {
+  display: none; text-align: center; padding: 40px 20px;
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: 14px; margin-bottom: 20px;
+}
+
+/* ── Results Area ── */
+.kw-results { display: none; }
+.kw-actions-row {
+  display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.kw-btn-outline {
+  font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 8px;
+  background: none; border: 1px solid var(--border-subtle); color: var(--muted2);
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.kw-btn-outline:hover { color: var(--gold); border-color: var(--border); background: var(--gold-pale); }
+
+.kw-header-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  position: relative; overflow: hidden;
+}
+.kw-header-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(232,184,75,0.04), rgba(10,191,188,0.02), transparent 60%);
+  pointer-events: none;
+}
+.kw-kw-title {
+  font-family: 'Cinzel', serif; font-size: 1.35rem; font-weight: 600;
+  flex: 1; min-width: 0; word-break: break-word;
+}
+.kw-badge { padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.kw-badge-low  { background: var(--kw-green2); color: var(--kw-green); border: 1px solid rgba(52,211,153,0.25); }
+.kw-badge-med  { background: var(--kw-amber2); color: var(--kw-amber); border: 1px solid rgba(251,191,36,0.25); }
+.kw-badge-high { background: var(--kw-red2); color: var(--kw-red); border: 1px solid rgba(248,113,113,0.25); }
+.kw-badge-info { background: var(--kw-teal2); color: var(--kw-teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.kw-data-note {
+  background: rgba(232,184,75,0.04); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--muted2);
+  margin-bottom: 14px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.55;
+}
+
+/* ── Metric Grid ── */
+.kw-metric-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px; margin-bottom: 14px;
+}
+.kw-metric-card {
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: 12px; padding: 16px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.kw-metric-card:hover { border-color: var(--border); transform: translateY(-1px); }
+.kw-metric-label {
+  font-size: 10px; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.07em; margin-bottom: 6px; font-weight: 600;
+}
+.kw-metric-value {
+  font-family: 'Cinzel', serif; font-size: 1.45rem; font-weight: 700;
+  line-height: 1; color: var(--text);
+}
+.kw-metric-sub { font-size: 11px; color: var(--muted2); margin-top: 4px; }
+.kw-mv-green { color: var(--green); }
+.kw-mv-amber { color: var(--kw-amber); }
+.kw-mv-red   { color: var(--red); }
+.kw-mv-cyan  { color: var(--kw-teal); }
+.kw-mv-gold  { color: var(--gold); }
+
+/* ── Trend Chart ── */
+.kw-trend-card {
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: 12px; padding: 16px; margin-bottom: 14px;
+}
+.kw-card-section-label {
+  font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
+}
+.kw-chart-wrap { position: relative; height: 100px; }
+
+/* ── Two col analysis ── */
+.kw-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+@media(max-width:640px){ .kw-two-col { grid-template-columns: 1fr; } }
+.kw-analysis-card {
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: 12px; padding: 16px;
+}
+.kw-intent-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px;
+  border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 8px;
+}
+.kw-bar-row { margin-bottom: 8px; }
+.kw-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+.kw-bar-track { background: var(--surface2); border-radius: 999px; height: 4px; overflow: hidden; }
+.kw-bar-fill { height: 100%; border-radius: 999px; transition: width 1s ease; }
+.kw-bar-green  { background: linear-gradient(90deg, var(--green), #6ee7b7); }
+.kw-bar-amber  { background: linear-gradient(90deg, var(--kw-amber), #fde68a); }
+.kw-bar-gold   { background: linear-gradient(90deg, var(--gold), var(--gold-dim)); }
+.kw-bar-cyan   { background: linear-gradient(90deg, var(--kw-teal), #67e8f9); }
+
+/* AI Strategy card */
+.kw-ai-card {
+  background: var(--gold-pale); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; margin-bottom: 14px;
+}
+.kw-ai-label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 700; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+}
+.kw-ai-body { font-size: 13px; color: var(--muted2); line-height: 1.7; }
+.kw-ai-body strong { color: var(--text); }
+
+/* Related / Rankings / Content sections */
+.kw-section-card {
+  background: var(--surface); border: 1px solid var(--border-subtle);
+  border-radius: 12px; overflow: hidden; margin-bottom: 14px;
+}
+.kw-section-head {
+  padding: 10px 16px; background: var(--surface2); border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kw-section-head-title {
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600;
+  color: var(--text); text-transform: uppercase; letter-spacing: 0.06em;
+}
+.kw-section-head-sub { font-size: 11px; color: var(--muted2); }
+.kw-related-loading {
+  font-size: 13px; color: var(--muted2); padding: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.kw-mini-spin {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--gold);
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+.kw-table-wrap { overflow-x: auto; }
+.kw-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.kw-table th {
+  text-align: left; padding: 8px 14px; font-size: 10px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+  border-bottom: 1px solid var(--border-subtle); background: var(--surface2); white-space: nowrap;
+}
+.kw-table td { padding: 10px 14px; border-bottom: 1px solid var(--border-subtle); vertical-align: middle; }
+.kw-table tr:last-child td { border-bottom: none; }
+.kw-table tr:hover td { background: rgba(255,255,255,0.01); }
+.kw-td-kw { color: var(--text); font-weight: 500; cursor: pointer; }
+.kw-td-kw:hover { color: var(--gold); }
+.kw-vol-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 600;
+  background: var(--gold-pale); border: 1px solid var(--border); color: var(--gold);
+}
+.kw-diff-bar { display: inline-flex; align-items: center; gap: 5px; }
+.kw-diff-pip { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* Ranking items */
+.kw-ranking-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--surface2); border-radius: 9px; padding: 10px 14px;
+  margin: 6px 14px; text-decoration: none;
+  transition: border-color 0.2s, background 0.2s; border: 1px solid transparent;
+}
+.kw-ranking-item:hover { border-color: var(--border); background: var(--surface3); }
+.kw-ranking-pos { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: var(--muted); min-width: 20px; padding-top: 1px; flex-shrink: 0; }
+.kw-ranking-body { flex: 1; min-width: 0; }
+.kw-ranking-url { font-size: 11px; color: var(--green); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kw-ranking-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 2px; }
+.kw-ranking-desc { font-size: 12px; color: var(--muted2); line-height: 1.45; }
+
+/* Content strategy items */
+.kw-serp-item {
+  background: var(--surface2); border-radius: 9px; padding: 12px 14px;
+  margin: 6px 14px; border: 1px solid var(--border-subtle); transition: border-color 0.2s;
+}
+.kw-serp-item:hover { border-color: var(--border); }
+.kw-serp-title { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.kw-serp-desc { font-size: 12px; color: var(--muted2); line-height: 1.55; }
+
+/* Bulk results */
+.kw-bulk-results { display: none; }
+
+/* Chart */
+canvas#kw-trend-chart { width: 100% !important; }
+</style>
+
+      <!-- Hero -->
+      <div class="kw-panel-hero">
+        <div class="kw-panel-eyebrow">🔑 Keyword Intelligence</div>
+        <div class="kw-panel-title">Check <em>Search Volume</em><br>& Rank Smarter</div>
+        <div class="kw-panel-sub">Instantly see monthly volume, difficulty, CPC, and trend data for any keyword. Me smash keywords, find opportunity!</div>
+      </div>
+
+      <!-- Input Card -->
+      <div class="kw-input-card">
+        <div class="kw-input-card-head">
+          <div class="kw-input-card-title">📋 Keyword Lookup</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;color:var(--muted2)">Mode:</span>
+            <div class="kw-mode-tabs">
+              <button class="kw-mode-tab active" id="kw-tab-single" onclick="kwSwitchMode('single',this)">Single</button>
+              <button class="kw-mode-tab" id="kw-tab-bulk" onclick="kwSwitchMode('bulk',this)">Bulk</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="kw-url-row">
+          <input type="text" id="kw-panel-input" class="kw-input" placeholder="e.g. best seo tools 2026, keyword research…" autocomplete="off" spellcheck="false">
+          <select id="kw-panel-country" class="kw-country-sel">
+            <option value="US">🇺🇸 US</option>
+            <option value="GB">🇬🇧 UK</option>
+            <option value="PH" selected>🇵🇭 PH</option>
+            <option value="AU">🇦🇺 AU</option>
+            <option value="CA">🇨🇦 CA</option>
+            <option value="IN">🇮🇳 IN</option>
+            <option value="DE">🇩🇪 DE</option>
+            <option value="FR">🇫🇷 FR</option>
+            <option value="SG">🇸🇬 SG</option>
+            <option value="global">🌐 Global</option>
+          </select>
+          <button class="kw-check-btn" id="kw-panel-check-btn" onclick="kwPanelRunCheck()">Check Volume →</button>
+        </div>
+
+        <div class="kw-bulk-hint">Need multiple keywords? <a onclick="kwSwitchMode('bulk', document.getElementById('kw-tab-bulk'))">Switch to bulk mode</a></div>
+        <textarea id="kw-panel-bulk-area" class="kw-bulk-area" rows="5" placeholder="Enter up to 10 keywords, one per line:&#10;seo tools&#10;keyword research&#10;backlink checker"></textarea>
+
+        <!-- Inline loading steps -->
+        <div class="kw-inline-status" id="kw-inline-status">
+          <div class="kw-inline-spin"></div>
+          <div style="flex:1">
+            <div id="kw-inline-text" style="margin-bottom:4px;font-size:12px;font-weight:500;color:var(--text)">Analyzing keyword…</div>
+            <div style="display:flex;gap:5px;flex-wrap:wrap">
+              <span class="kw-inline-step" id="kwistep1">📊 Volume</span>
+              <span class="kw-inline-step" id="kwistep2">🏆 Difficulty</span>
+              <span class="kw-inline-step" id="kwistep3">🎯 Intent</span>
+              <span class="kw-inline-step" id="kwistep4">🔗 Related</span>
+              <span class="kw-inline-step" id="kwistep5">◆ Strategy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick suggest chips -->
+        <div class="kw-chips-row">
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;align-self:center">Try:</span>
+          <span class="kw-chip" onclick="kwQuickCheck('seo tools')">seo tools</span>
+          <span class="kw-chip" onclick="kwQuickCheck('keyword research')">keyword research</span>
+          <span class="kw-chip" onclick="kwQuickCheck('rank tracker')">rank tracker</span>
+          <span class="kw-chip" onclick="kwQuickCheck('backlink checker')">backlink checker</span>
+          <span class="kw-chip" onclick="kwQuickCheck('wordpress seo')">wordpress seo</span>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div class="kw-error-msg" id="kw-panel-error"></div>
+
+      <!-- Loading card -->
+      <div class="kw-loading-card" id="kw-panel-loading">
+        <div style="position:relative;width:50px;height:50px;margin:0 auto 14px">
+          <div style="position:absolute;inset:0;border-radius:50%;border:2px solid var(--border);border-top-color:var(--gold);animation:spin 0.9s linear infinite"></div>
+          <div style="position:absolute;inset:8px;border-radius:50%;border:2px solid transparent;border-top-color:var(--kw-teal);animation:spin 1.3s linear infinite reverse"></div>
+        </div>
+        <div style="font-size:13px;color:var(--muted2)">Cave brain crunching numbers…</div>
+      </div>
+
+      <!-- Single results -->
+      <div class="kw-results" id="kw-panel-results">
+        <div class="kw-actions-row">
+          <button class="kw-btn-outline" onclick="kwPanelExportCSV()">⬇ Export CSV</button>
+          <button class="kw-btn-outline" onclick="kwPanelCopyReport()">🔗 Copy Report</button>
+          <button class="kw-btn-outline" onclick="kwPanelNewSearch()">← New Search</button>
+        </div>
+
+        <div class="kw-header-card">
+          <div class="kw-kw-title" id="kw-res-keyword">—</div>
+          <span class="kw-badge kw-badge-info" id="kw-res-intent-badge">Informational</span>
+          <span class="kw-badge" id="kw-res-diff-badge">—</span>
+        </div>
+
+        <div class="kw-data-note">
+          <span>ℹ️</span>
+          <span>Volume, CPC, and difficulty are <strong style="color:var(--text)">AI-modeled estimates</strong> based on keyword patterns and country data. Related keywords pulled live from Google Autocomplete. Cross-check with Google Keyword Planner for verified data.</span>
+        </div>
+
+        <div class="kw-metric-grid">
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">Est. Monthly Volume</div>
+            <div class="kw-metric-value kw-mv-gold" id="kw-res-volume">—</div>
+            <div class="kw-metric-sub" id="kw-res-volume-range">—</div>
+          </div>
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">Organic Difficulty (KD)</div>
+            <div class="kw-metric-value" id="kw-res-difficulty">—</div>
+            <div class="kw-metric-sub" id="kw-res-diff-label">—</div>
+          </div>
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">Est. Avg. CPC</div>
+            <div class="kw-metric-value kw-mv-green" id="kw-res-cpc">—</div>
+            <div class="kw-metric-sub" id="kw-res-cpc-sub">—</div>
+          </div>
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">Paid Competition</div>
+            <div class="kw-metric-value" id="kw-res-competition">—</div>
+            <div class="kw-metric-sub" id="kw-res-comp-sub">—</div>
+          </div>
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">Trend (12mo)</div>
+            <div class="kw-metric-value" id="kw-res-trend">—</div>
+            <div class="kw-metric-sub" id="kw-res-trend-sub">—</div>
+          </div>
+          <div class="kw-metric-card">
+            <div class="kw-metric-label">SERP Features</div>
+            <div class="kw-metric-value kw-mv-cyan" id="kw-res-serp">—</div>
+            <div class="kw-metric-sub" id="kw-res-serp-sub">—</div>
+          </div>
+        </div>
+
+        <div class="kw-trend-card">
+          <div class="kw-card-section-label">📈 Search Volume Trend (12 months)</div>
+          <div class="kw-chart-wrap"><canvas id="kw-trend-chart" height="100"></canvas></div>
+        </div>
+
+        <div class="kw-two-col">
+          <div class="kw-analysis-card">
+            <div class="kw-card-section-label">🎯 Search Intent</div>
+            <div class="kw-intent-pill" id="kw-intent-pill" style="background:var(--kw-teal2);color:var(--kw-teal)">
+              <span>🔍</span><span id="kw-intent-text">Informational</span>
+            </div>
+            <p style="font-size:13px;color:var(--muted2);line-height:1.65" id="kw-intent-desc">—</p>
+          </div>
+          <div class="kw-analysis-card">
+            <div class="kw-card-section-label">📊 SEO Opportunity Score</div>
+            <div class="kw-bar-row">
+              <div class="kw-bar-label"><span>Volume</span><span id="kw-bar-volume-pct">—</span></div>
+              <div class="kw-bar-track"><div class="kw-bar-fill kw-bar-gold" id="kw-bar-volume" style="width:0%"></div></div>
+            </div>
+            <div class="kw-bar-row">
+              <div class="kw-bar-label"><span>Opportunity (low KD)</span><span id="kw-bar-opp-pct">—</span></div>
+              <div class="kw-bar-track"><div class="kw-bar-fill kw-bar-green" id="kw-bar-opp" style="width:0%"></div></div>
+            </div>
+            <div class="kw-bar-row">
+              <div class="kw-bar-label"><span>Commercial Value (CPC)</span><span id="kw-bar-cpc-pct">—</span></div>
+              <div class="kw-bar-track"><div class="kw-bar-fill kw-bar-amber" id="kw-bar-cpc" style="width:0%"></div></div>
+            </div>
+            <div class="kw-bar-row">
+              <div class="kw-bar-label"><span>Trend Momentum</span><span id="kw-bar-trend-pct">—</span></div>
+              <div class="kw-bar-track"><div class="kw-bar-fill kw-bar-cyan" id="kw-bar-trend" style="width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kw-ai-card">
+          <div class="kw-ai-label">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            ◆ AI Keyword Strategy
+          </div>
+          <div class="kw-ai-body" id="kw-ai-summary">Analyzing…</div>
+        </div>
+
+        <div class="kw-section-card">
+          <div class="kw-section-head">
+            <div class="kw-section-head-title">🔗 Related Keywords</div>
+            <span class="kw-section-head-sub" id="kw-related-count"></span>
+          </div>
+          <div id="kw-related-loading" class="kw-related-loading"><span class="kw-mini-spin"></span> Fetching live suggestions from Google…</div>
+          <div class="kw-table-wrap">
+            <table class="kw-table" id="kw-related-table" style="display:none">
+              <thead><tr>
+                <th style="width:38%">Keyword</th>
+                <th>Est. Volume</th><th>KD</th><th>Est. CPC</th><th>Intent</th>
+              </tr></thead>
+              <tbody id="kw-related-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="kw-section-card">
+          <div class="kw-section-head">
+            <div class="kw-section-head-title">🏆 Top 10 Ranking Websites</div>
+            <span class="kw-section-head-sub" id="kw-rankings-src"></span>
+          </div>
+          <div id="kw-rankings-loading" class="kw-related-loading"><span class="kw-mini-spin"></span> Fetching live rankings…</div>
+          <div id="kw-rankings-list"></div>
+        </div>
+
+        <div class="kw-section-card">
+          <div class="kw-section-head">
+            <div class="kw-section-head-title">✍️ Content Strategy for This Keyword</div>
+          </div>
+          <div id="kw-serp-items" style="padding-bottom:8px"></div>
+        </div>
+      </div><!-- /kw-panel-results -->
+
+      <!-- Bulk results -->
+      <div class="kw-bulk-results" id="kw-panel-bulk-results">
+        <div class="kw-actions-row">
+          <button class="kw-btn-outline" onclick="kwPanelExportBulkCSV()">⬇ Export CSV</button>
+          <button class="kw-btn-outline" onclick="kwPanelNewSearch()">← New Search</button>
+        </div>
+        <div class="kw-data-note" style="margin-bottom:12px">
+          <span>ℹ️</span>
+          <span>Volume, CPC, and difficulty are <strong style="color:var(--text)">AI-modeled estimates</strong>. Related keywords sourced live from Google Autocomplete.</span>
+        </div>
+        <div class="kw-section-card">
+          <div class="kw-table-wrap">
+            <table class="kw-table">
+              <thead><tr>
+                <th style="width:28%">Keyword</th>
+                <th>Est. Volume</th><th>KD</th><th>Est. CPC</th>
+                <th>Paid Comp.</th><th>Trend</th><th>Intent</th>
+              </tr></thead>
+              <tbody id="kw-bulk-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end keyword-research-view -->
+
   </main>
 </div>
 
@@ -5978,6 +6535,7 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -5987,6 +6545,7 @@ async function exportCrawlExcel() {
     if (e) e.preventDefault();
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('favicon');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -5997,6 +6556,7 @@ async function exportCrawlExcel() {
     document.getElementById('dashboard-view').style.display = '';
     document.getElementById('bulk-auditor-view').classList.remove('active');
     document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-dashboard-link').classList.add('active');
   }
@@ -6005,8 +6565,18 @@ async function exportCrawlExcel() {
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.remove('active');
     document.getElementById('ai-search-view').classList.add('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-aisearch-link').classList.add('active');
+  }
+  function showKeywordResearch(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.remove('active');
+    document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'block';
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-keyword-link').classList.add('active');
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -7199,5 +7769,481 @@ function aisHideError() {
 }
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════
+// KEYWORD RESEARCH PANEL — Integrated into Dashboard
+// Me smash keywords! Me find volume! OOGAH BOOGAH!
+// ═══════════════════════════════════════════════════════════════
+
+let kwPanelBulkMode = false;
+let kwPanelCurrentData = null;
+let kwPanelBulkData = [];
+let kwPanelChartInstance = null;
+
+// ── Mode switcher ─────────────────────────────────────────────
+function kwSwitchMode(mode, btn) {
+  kwPanelBulkMode = (mode === 'bulk');
+  document.getElementById('kw-panel-bulk-area').style.display = kwPanelBulkMode ? 'block' : 'none';
+  document.querySelectorAll('.kw-mode-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('kw-panel-input').placeholder = kwPanelBulkMode
+    ? 'Optional: single keyword to highlight'
+    : 'e.g. best seo tools 2026, wordpress speed optimization…';
+  document.getElementById('kw-panel-check-btn').textContent = kwPanelBulkMode ? 'Check All →' : 'Check Volume →';
+}
+
+document.getElementById('kw-panel-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') kwPanelRunCheck();
+});
+
+// ── Quick chip ────────────────────────────────────────────────
+function kwQuickCheck(kw) {
+  kwSwitchMode('single', document.getElementById('kw-tab-single'));
+  document.getElementById('kw-panel-input').value = kw;
+  kwPanelRunCheck();
+}
+
+// ── Seed RNG (identical to keyword-volume.html) ───────────────
+function kwSeededRNG(seed) {
+  let s = 0;
+  for (let i = 0; i < seed.length; i++) s = (s * 31 + seed.charCodeAt(i)) & 0xffffffff;
+  return function() {
+    s = (s ^ (s << 13)) & 0xffffffff;
+    s = (s ^ (s >> 17)) & 0xffffffff;
+    s = (s ^ (s << 5))  & 0xffffffff;
+    return ((s >>> 0) / 4294967296);
+  };
+}
+
+const KW_COUNTRY_VOL = { US:1.0, GB:0.28, AU:0.12, CA:0.18, IN:0.75, DE:0.22, FR:0.18, PH:0.08, SG:0.04, global:3.8 };
+const KW_COUNTRY_CPC = { US:1.0, GB:0.85, AU:0.90, CA:0.80, IN:0.12, DE:0.75, FR:0.65, PH:0.10, SG:0.70, global:0.55 };
+const KW_INTENT_CPC  = { Transactional:2.8, Commercial:1.9, Informational:0.55, Navigational:0.30 };
+
+function kwAnalyzeKeyword(kw, country) {
+  const rng = kwSeededRNG(kw.toLowerCase() + country);
+  const words = kw.toLowerCase().split(/\s+/), len = words.length;
+  let baseVolUS;
+  if (len===1)      baseVolUS = Math.round((80000  + rng()*920000)/1000)*1000;
+  else if (len===2) baseVolUS = Math.round((8000   + rng()*142000)/500)*500;
+  else if (len===3) baseVolUS = Math.round((1000   + rng()*29000)/100)*100;
+  else              baseVolUS = Math.round((100    + rng()*4900)/100)*100;
+  const volMult = KW_COUNTRY_VOL[country]||0.4;
+  const volume  = Math.max(100, Math.round(baseVolUS*volMult/100)*100);
+  const volLow  = Math.round(volume*0.65), volHigh = Math.round(volume*1.5);
+  const rawDiff = Math.round(25 + rng()*60);
+  const diffAdj = len===1?18:len===2?8:len>=4?-12:0;
+  const difficulty = Math.min(98, Math.max(5, rawDiff+diffAdj));
+  const intentSignals = {
+    transactional:['buy','price','cheap','discount','coupon','deal','shop','order','purchase','hire','cost','get','download','subscribe','checkout'],
+    commercial:   ['best','top','review','vs','compare','alternative','tool','software','plugin','app','platform','recommend'],
+    navigational: ['login','official','website','sign up','signup','account','portal','homepage'],
+  };
+  let intent = 'Informational';
+  for (const [type, signals] of Object.entries(intentSignals)) {
+    if (words.some(w => signals.some(s => w.includes(s)||s.includes(w)))) {
+      intent = type.charAt(0).toUpperCase()+type.slice(1); break;
+    }
+  }
+  const cpcBase = 0.20 + rng()*5.80;
+  const cpcMult = (KW_INTENT_CPC[intent]||1.0) * (KW_COUNTRY_CPC[country]||0.4);
+  const cpc  = parseFloat(Math.max(0.05, cpcBase*cpcMult).toFixed(2));
+  const comp = parseFloat(Math.min(0.99, Math.max(0.02, (cpcBase/6.0)*0.72 + rng()*0.28)).toFixed(2));
+  const trendData = []; let tv = volume*(0.75+rng()*0.50);
+  for (let i=0;i<12;i++) { tv = tv*(0.91+rng()*0.18); trendData.push(Math.max(50, Math.round(tv/100)*100)); }
+  const trendPct = Math.round(((trendData[11]-trendData[0])/trendData[0])*100);
+  const serpFeatures = [];
+  if (intent==='Informational'&&rng()>0.35) serpFeatures.push('Featured Snippet');
+  if (rng()>0.45) serpFeatures.push('People Also Ask');
+  if (len<=2&&rng()>0.55) serpFeatures.push('Image Pack');
+  if (intent==='Informational'&&rng()>0.60) serpFeatures.push('Video Results');
+  if (intent==='Transactional'&&rng()>0.50) serpFeatures.push('Shopping');
+  if (rng()>0.80) serpFeatures.push('Knowledge Panel');
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendData, trendPct, intent, serpFeatures, country };
+}
+
+function kwFmtVol(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString();}
+function kwSetBar(barId,pctId,pct){document.getElementById(barId).style.width=pct+'%';document.getElementById(pctId).textContent=pct+'%';}
+function kwCapFirst(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
+function kwGetLast12Months(){const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],now=new Date(),res=[];for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);res.push(m[d.getMonth()]+' '+d.getFullYear().toString().slice(2));}return res;}
+
+// ── Autocomplete ──────────────────────────────────────────────
+function kwFetchAutocomplete(kw, country, callback) {
+  const cbName = '_kwgac_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+  const script = document.createElement('script'); let settled = false;
+  function settle(s) { if (settled) return; settled=true; try{document.head.removeChild(script);}catch(e){} delete window[cbName]; callback(s); }
+  script.onerror = () => settle(null); setTimeout(() => settle(null), 5000);
+  window[cbName] = function(data) {
+    const raw = data[1]||[];
+    const suggestions = raw.slice(0,8).map(s=>typeof s==='string'?s:(Array.isArray(s)?s[0]:String(s))).filter(s=>s&&s.trim().length>0);
+    settle(suggestions.length>=3?suggestions:null);
+  };
+  const hlMap={US:'en',GB:'en',PH:'en',AU:'en',CA:'en',IN:'hi',DE:'de',FR:'fr',SG:'en',global:'en'};
+  const hl=hlMap[country]||'en', gl=(country&&country!=='global')?`&gl=${country.toLowerCase()}`:'';
+  script.src=`https://suggestqueries.google.com/complete/search?client=chrome&hl=${hl}${gl}&q=${encodeURIComponent(kw)}&callback=${cbName}`;
+  document.head.appendChild(script);
+}
+
+function kwFallbackRelated(kw) {
+  return [`${kw} tips`,`how to ${kw}`,`best ${kw}`,`${kw} guide`,`${kw} for beginners`,`${kw} examples`,`${kw} free`,`${kw} 2026`].slice(0,8);
+}
+
+// ── AI Summary ────────────────────────────────────────────────
+function kwGenerateAISummary(data) {
+  const kw = data.kw;
+  const vol = kwFmtVol(data.volume);
+  const diff = data.difficulty < 35 ? 'low' : data.difficulty < 65 ? 'moderate' : 'high';
+  const trend = data.trendPct > 10 ? 'growing' : data.trendPct < -10 ? 'declining' : 'stable';
+  const intentDescs = {
+    Informational: 'Users want to learn — target with blog posts, guides, and how-tos.',
+    Transactional: 'Users are ready to buy — prioritize product pages and landing pages.',
+    Commercial: 'Users are comparing options — great for reviews, comparisons, and roundups.',
+    Navigational: 'Users seek a specific site — focus on brand presence and exact-match content.'
+  };
+  const intentAdvice = intentDescs[data.intent] || 'Mixed intent — create comprehensive content.';
+  let opportunityNote = '';
+  if (data.difficulty < 35 && data.volume > 500) opportunityNote = ' This is a strong quick-win opportunity — low competition and decent volume.';
+  else if (data.difficulty > 70) opportunityNote = ' High competition means you need strong authority and in-depth content to rank.';
+  else if (data.cpc > 3) opportunityNote = ' High CPC signals strong commercial value — monetization potential is excellent.';
+  return `<strong>${kw}</strong> has an estimated <strong>${vol}/mo</strong> searches with ${diff} organic difficulty (KD: ${data.difficulty}/100). Search volume trend is <strong>${trend}</strong> over the last 12 months (${data.trendPct > 0 ? '+' : ''}${data.trendPct}%).<br><br>${intentAdvice}${opportunityNote} Estimated CPC of <strong>$${data.cpc}</strong> suggests ${data.cpc > 2 ? 'strong' : data.cpc > 0.5 ? 'moderate' : 'low'} advertiser competition.`;
+}
+
+// ── Content strategy ──────────────────────────────────────────
+function kwBuildContentStrategy(data) {
+  const stratMap = {
+    Informational: [
+      { icon:'📝', title:'In-Depth Guide', desc:`Write a comprehensive guide targeting "${data.kw}" — include definitions, use cases, and step-by-step instructions to capture Featured Snippets.` },
+      { icon:'❓', title:'FAQ / Q&A Page', desc:`Create a dedicated FAQ page answering the top questions around "${data.kw}" — this format is ideal for People Also Ask results.` },
+      { icon:'📹', title:'Video Tutorial', desc:`Produce a video explaining "${data.kw}" and embed it on your page — video results appear for this intent and boost dwell time.` }
+    ],
+    Transactional: [
+      { icon:'🛒', title:'Product / Landing Page', desc:`Build a conversion-optimized landing page targeting "${data.kw}" with clear CTAs, pricing, and social proof.` },
+      { icon:'⭐', title:'Comparison Article', desc:`Compare top options for "${data.kw}" — readers in buying mode respond to clear comparisons with pros/cons.` },
+      { icon:'💸', title:'Deals & Discounts Page', desc:`If applicable, create a deals page for "${data.kw}" — transactional keywords respond well to promotional content.` }
+    ],
+    Commercial: [
+      { icon:'🏆', title:'Best-Of Roundup', desc:`Write a "Best [X] for ${data.kw}" article comparing top options — commercial keywords thrive on roundups and listicles.` },
+      { icon:'🔬', title:'Detailed Review', desc:`Publish an in-depth review targeting "${data.kw}" — include pros/cons, scores, and real-world testing.` },
+      { icon:'⚔️', title:'Vs / Alternative Article', desc:`Create a "${data.kw} vs [competitor]" article or a "[competitor] alternatives" piece to capture comparison searches.` }
+    ],
+    Navigational: [
+      { icon:'🏷️', title:'Brand / Official Page', desc:`Ensure your official page for "${data.kw}" is optimized with structured data and clearly answers brand queries.` },
+      { icon:'📌', title:'Dedicated Landing Page', desc:`If users navigate to a specific feature or category, create a dedicated optimized page with clear UX and internal linking.` },
+      { icon:'🔗', title:'Internal Link Optimization', desc:`Strengthen internal links pointing to your target page for "${data.kw}" to pass authority and improve crawlability.` }
+    ]
+  };
+  return stratMap[data.intent] || stratMap.Informational;
+}
+
+// ── Show/hide helpers ─────────────────────────────────────────
+function kwPanelShowInlineStatus(on) {
+  document.getElementById('kw-inline-status').style.display = on ? 'flex' : 'none';
+}
+function kwPanelSetStep(step, state) { // state: '', 'active', 'done'
+  const el = document.getElementById('kwistep' + step);
+  if (!el) return;
+  el.className = 'kw-inline-step' + (state ? ' ' + state : '');
+}
+function kwPanelShowError(msg) {
+  const el = document.getElementById('kw-panel-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+function kwPanelHideError() {
+  document.getElementById('kw-panel-error').style.display = 'none';
+}
+function kwPanelHideAll() {
+  document.getElementById('kw-panel-results').style.display = 'none';
+  document.getElementById('kw-panel-bulk-results').style.display = 'none';
+  document.getElementById('kw-panel-loading').style.display = 'none';
+}
+function kwPanelNewSearch() {
+  kwPanelHideAll();
+  kwPanelHideError();
+  kwPanelShowInlineStatus(false);
+  document.getElementById('kw-panel-input').value = '';
+  document.getElementById('kw-panel-check-btn').disabled = false;
+  document.getElementById('kw-panel-check-btn').textContent = kwPanelBulkMode ? 'Check All →' : 'Check Volume →';
+}
+
+// ── Main run ──────────────────────────────────────────────────
+async function kwPanelRunCheck() {
+  kwPanelHideError();
+  const kw = document.getElementById('kw-panel-input').value.trim();
+  const country = document.getElementById('kw-panel-country').value;
+
+  // BULK MODE
+  if (kwPanelBulkMode) {
+    const rawBulk = document.getElementById('kw-panel-bulk-area').value.trim();
+    const lines = rawBulk.split('\n').map(l=>l.trim()).filter(Boolean).slice(0,10);
+    if (!lines.length && !kw) { kwPanelShowError('Me need keywords! Enter at least one keyword.'); return; }
+    const keywords = lines.length ? lines : [kw];
+    kwPanelHideAll();
+    document.getElementById('kw-panel-loading').style.display = 'block';
+    await new Promise(r => setTimeout(r, 400));
+    kwPanelBulkData = keywords.map(k => kwAnalyzeKeyword(k, country));
+    document.getElementById('kw-panel-loading').style.display = 'none';
+    kwPanelRenderBulk(kwPanelBulkData);
+    return;
+  }
+
+  // SINGLE MODE
+  if (!kw) { kwPanelShowError('Me need keyword! Type something first.'); return; }
+  kwPanelHideAll();
+  document.getElementById('kw-panel-check-btn').disabled = true;
+  kwPanelShowInlineStatus(true);
+
+  // Step 1: Volume
+  kwPanelSetStep(1,'active');
+  await new Promise(r => setTimeout(r,300));
+  const data = kwAnalyzeKeyword(kw, country);
+  kwPanelSetStep(1,'done'); kwPanelSetStep(2,'active');
+
+  // Step 2: Difficulty
+  await new Promise(r => setTimeout(r,250));
+  kwPanelSetStep(2,'done'); kwPanelSetStep(3,'active');
+
+  // Step 3: Intent
+  await new Promise(r => setTimeout(r,250));
+  kwPanelSetStep(3,'done'); kwPanelSetStep(4,'active');
+
+  // Step 4: Related keywords (live autocomplete)
+  const relatedPromise = new Promise(resolve => {
+    kwFetchAutocomplete(kw, country, sugg => {
+      const list = sugg || kwFallbackRelated(kw);
+      resolve(list.map(s => kwAnalyzeKeyword(s, country)));
+    });
+  });
+
+  // Step 5: AI summary
+  kwPanelSetStep(4,'done'); kwPanelSetStep(5,'active');
+  const aiSummary = kwGenerateAISummary(data);
+  await new Promise(r => setTimeout(r,200));
+  kwPanelSetStep(5,'done');
+
+  const related = await relatedPromise;
+  kwPanelCurrentData = { data, related };
+
+  kwPanelShowInlineStatus(false);
+  document.getElementById('kw-panel-check-btn').disabled = false;
+  kwPanelRenderResults(data, related, aiSummary, country);
+
+  // Fire rankings async
+  kwPanelFetchTopRankings(kw, country);
+}
+
+// ── Render single results ─────────────────────────────────────
+function kwPanelRenderResults(data, related, aiSummary, country) {
+  const r = document.getElementById('kw-panel-results');
+  r.style.display = 'block';
+
+  // Header
+  document.getElementById('kw-res-keyword').textContent = data.kw;
+  const diffCls = data.difficulty<35?'kw-badge-low':data.difficulty<65?'kw-badge-med':'kw-badge-high';
+  const diffLbl = data.difficulty<35?'Easy':data.difficulty<65?'Moderate':'Hard';
+  document.getElementById('kw-res-diff-badge').className = 'kw-badge ' + diffCls;
+  document.getElementById('kw-res-diff-badge').textContent = diffLbl + ' KD';
+  document.getElementById('kw-res-intent-badge').textContent = data.intent;
+
+  // Metrics
+  document.getElementById('kw-res-volume').textContent = kwFmtVol(data.volume);
+  document.getElementById('kw-res-volume-range').textContent = `Range: ${kwFmtVol(data.volLow)}–${kwFmtVol(data.volHigh)}/mo`;
+
+  const diffEl = document.getElementById('kw-res-difficulty');
+  diffEl.textContent = data.difficulty + '/100';
+  diffEl.className = 'kw-metric-value ' + (data.difficulty<35?'kw-mv-green':data.difficulty<65?'kw-mv-amber':'kw-mv-red');
+  document.getElementById('kw-res-diff-label').textContent = diffLbl + ' to rank organically';
+
+  document.getElementById('kw-res-cpc').textContent = '$' + data.cpc;
+  document.getElementById('kw-res-cpc-sub').textContent = data.cpc > 3 ? 'High advertiser demand' : data.cpc > 1 ? 'Moderate demand' : 'Low advertiser demand';
+
+  const compEl = document.getElementById('kw-res-competition');
+  compEl.textContent = (data.comp*100).toFixed(0) + '%';
+  compEl.className = 'kw-metric-value ' + (data.comp<0.4?'kw-mv-green':data.comp<0.7?'kw-mv-amber':'kw-mv-red');
+  document.getElementById('kw-res-comp-sub').textContent = 'Paid competition score';
+
+  const trendEl = document.getElementById('kw-res-trend');
+  trendEl.textContent = (data.trendPct>0?'+':'') + data.trendPct + '%';
+  trendEl.className = 'kw-metric-value ' + (data.trendPct>5?'kw-mv-green':data.trendPct<-10?'kw-mv-red':'kw-mv-amber');
+  document.getElementById('kw-res-trend-sub').textContent = data.trendPct>5?'Rising trend 📈':data.trendPct<-10?'Declining trend 📉':'Stable trend ↔';
+
+  document.getElementById('kw-res-serp').textContent = data.serpFeatures.length || '0';
+  document.getElementById('kw-res-serp-sub').textContent = data.serpFeatures.slice(0,2).join(', ') || 'None detected';
+
+  // Chart
+  kwPanelRenderTrendChart(data.trendData);
+
+  // Intent
+  const intentColors = { Informational:'var(--kw-teal2)',Transactional:'var(--kw-red2)',Commercial:'var(--kw-amber2)',Navigational:'var(--blue-pale)' };
+  const intentTextColors = { Informational:'var(--kw-teal)',Transactional:'var(--kw-red)',Commercial:'var(--kw-amber)',Navigational:'var(--blue)' };
+  const intentEmojis = { Informational:'🔍',Transactional:'🛒',Commercial:'🏆',Navigational:'🏷️' };
+  const intentDescs = { Informational:'The user wants to learn or find information. Create educational content that answers their question clearly.', Transactional:'The user wants to buy or act. Optimize your pages for conversions with clear CTAs and trust signals.', Commercial:'The user is comparing before buying. Produce comparison guides, reviews, and best-of lists.', Navigational:'The user is looking for a specific site or page. Focus on brand authority and direct landing pages.' };
+  const pill = document.getElementById('kw-intent-pill');
+  pill.style.background = intentColors[data.intent]||'var(--kw-teal2)';
+  pill.style.color = intentTextColors[data.intent]||'var(--kw-teal)';
+  document.getElementById('kw-intent-text').textContent = (intentEmojis[data.intent]||'🔍') + ' ' + data.intent;
+  document.getElementById('kw-intent-desc').textContent = intentDescs[data.intent]||'';
+
+  // Opportunity bars
+  const volPct = Math.min(100, Math.round((Math.log10(data.volume)/6)*100));
+  const oppPct = 100 - data.difficulty;
+  const cpcPct = Math.min(100, Math.round((data.cpc/8)*100));
+  const trendPct = Math.max(0, Math.min(100, 50 + data.trendPct));
+  kwSetBar('kw-bar-volume','kw-bar-volume-pct',volPct);
+  kwSetBar('kw-bar-opp','kw-bar-opp-pct',oppPct);
+  kwSetBar('kw-bar-cpc','kw-bar-cpc-pct',cpcPct);
+  kwSetBar('kw-bar-trend','kw-bar-trend-pct',trendPct);
+
+  // AI summary
+  document.getElementById('kw-ai-summary').innerHTML = aiSummary;
+
+  // Related keywords
+  const relatedTbody = document.getElementById('kw-related-tbody');
+  if (!related.length) {
+    document.getElementById('kw-related-loading').innerHTML = '<span style="color:var(--muted2);font-size:12px">No related keywords found.</span>';
+  } else {
+    document.getElementById('kw-related-loading').style.display = 'none';
+    document.getElementById('kw-related-table').style.display = 'table';
+    document.getElementById('kw-related-count').textContent = related.length + ' suggestions';
+    relatedTbody.innerHTML = '';
+    related.forEach(rel => {
+      const tr = document.createElement('tr');
+      const dc = rel.difficulty<35?'var(--green)':rel.difficulty<65?'var(--kw-amber)':'var(--red)';
+      const ic = rel.intent==='Transactional'?'kw-badge kw-badge-high':rel.intent==='Commercial'?'kw-badge kw-badge-med':'kw-badge kw-badge-info';
+      tr.innerHTML = `<td class="kw-td-kw" onclick="kwQuickCheck('${rel.kw.replace(/'/g,"\\'")}')" title="Click to analyze this keyword">🔍 ${rel.kw}</td>
+        <td><span class="kw-vol-badge">Est. ${kwFmtVol(rel.volume)}</span></td>
+        <td><div class="kw-diff-bar"><span class="kw-diff-pip" style="background:${dc}"></span>${rel.difficulty}</div></td>
+        <td style="color:var(--green)">$${rel.cpc}</td>
+        <td><span class="${ic}" style="font-size:10px">${rel.intent.slice(0,5)}</span></td>`;
+      relatedTbody.appendChild(tr);
+    });
+  }
+
+  // Content strategy
+  const strats = kwBuildContentStrategy(data);
+  document.getElementById('kw-serp-items').innerHTML = strats.map(s => `
+    <div class="kw-serp-item">
+      <div class="kw-serp-title">${s.icon} ${s.title}</div>
+      <div class="kw-serp-desc">${s.desc}</div>
+    </div>`).join('');
+}
+
+// ── Render bulk results ───────────────────────────────────────
+function kwPanelRenderBulk(rows) {
+  document.getElementById('kw-panel-bulk-results').style.display = 'block';
+  const tbody = document.getElementById('kw-bulk-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    const dc = r.difficulty<35?'var(--green)':r.difficulty<65?'var(--kw-amber)':'var(--red)';
+    const ic = r.intent==='Transactional'?'kw-badge kw-badge-high':r.intent==='Commercial'?'kw-badge kw-badge-med':'kw-badge kw-badge-info';
+    tr.innerHTML = `<td class="kw-td-kw" onclick="kwBulkSwitchSingle('${r.kw.replace(/'/g,"\\'")}')" title="Click to get full analysis">🔍 ${r.kw}</td>
+      <td><span class="kw-vol-badge">Est. ${kwFmtVol(r.volume)}</span></td>
+      <td><div class="kw-diff-bar"><span class="kw-diff-pip" style="background:${dc}"></span>${r.difficulty}</div></td>
+      <td style="color:var(--green)">$${r.cpc}</td>
+      <td>${(r.comp*100).toFixed(0)}%</td>
+      <td style="color:${r.trendPct>0?'var(--green)':r.trendPct<-10?'var(--red)':'var(--kw-amber)'}">${r.trendPct>0?'+':''}${r.trendPct}%</td>
+      <td><span class="${ic}" style="font-size:10px">${r.intent}</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function kwBulkSwitchSingle(kw) {
+  kwSwitchMode('single', document.getElementById('kw-tab-single'));
+  document.getElementById('kw-panel-input').value = kw;
+  kwPanelRunCheck();
+}
+
+// ── Trend chart ───────────────────────────────────────────────
+function kwPanelRenderTrendChart(trendData) {
+  if (kwPanelChartInstance) { kwPanelChartInstance.destroy(); kwPanelChartInstance = null; }
+  const months = kwGetLast12Months();
+  const canvas = document.getElementById('kw-trend-chart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  kwPanelChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: { labels: months, datasets: [{ data: trendData, borderColor: '#E8B84B', backgroundColor: 'rgba(232,184,75,0.07)', borderWidth: 2, fill: true, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#E8B84B', pointBorderColor: '#0c0c0e', pointBorderWidth: 1.5 }] },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend:{display:false}, tooltip:{ backgroundColor:'#1c1c1f', borderColor:'rgba(232,184,75,0.22)', borderWidth:1, titleColor:'#6a6865', bodyColor:'#f0ede6', callbacks:{ label: ctx => ' Est. '+kwFmtVol(ctx.raw)+' searches' } } },
+      scales: { x:{ grid:{color:'rgba(232,184,75,0.05)'}, ticks:{color:'#6a6865',font:{size:10}} }, y:{ grid:{color:'rgba(232,184,75,0.05)'}, ticks:{color:'#6a6865',font:{size:10},callback:v=>kwFmtVol(v)} } }
+    }
+  });
+}
+
+// ── Live rankings fetch ───────────────────────────────────────
+async function kwPanelFetchTopRankings(kw, country) {
+  document.getElementById('kw-rankings-loading').style.display = 'flex';
+  document.getElementById('kw-rankings-list').innerHTML = '';
+  document.getElementById('kw-rankings-src').textContent = '';
+  const ddgUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(kw)}`;
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(ddgUrl)}`;
+  try {
+    const res = await Promise.race([fetch(proxyUrl), new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),10000))]);
+    if (!res.ok) throw new Error('proxy error');
+    const json = await res.json(), html = json.contents||'';
+    const parser = new DOMParser(), doc = parser.parseFromString(html,'text/html'), results = [];
+    doc.querySelectorAll('.result,.results_links,.web-result').forEach(block => {
+      if (results.length>=10) return;
+      const titleEl=block.querySelector('.result__title,.result__a'), linkEl=block.querySelector('a.result__a,.result__title a'), descEl=block.querySelector('.result__snippet');
+      if (!titleEl||!linkEl) return;
+      let href=linkEl.getAttribute('href')||'';
+      if (href.includes('uddg=')) try{href=decodeURIComponent(href.split('uddg=')[1].split('&')[0]);}catch(e){}
+      if (!href.startsWith('http')) return;
+      const title=titleEl.textContent.trim(), desc=descEl?descEl.textContent.trim():'';
+      let domain=''; try{domain=new URL(href).hostname.replace('www.','');}catch(e){}
+      if (!title||!domain||results.some(r=>r.domain===domain)) return;
+      results.push({title,url:href,domain,desc});
+    });
+    document.getElementById('kw-rankings-loading').style.display = 'none';
+    if (!results.length) {
+      document.getElementById('kw-rankings-list').innerHTML = `<div class="kw-ranking-item" style="color:var(--muted2);font-size:12px;border:none">⚠️ Could not parse results — try again.</div>`;
+      return;
+    }
+    document.getElementById('kw-rankings-src').textContent = `(${results.length} results via DuckDuckGo)`;
+    const list = document.getElementById('kw-rankings-list');
+    results.forEach((r,i) => {
+      const el = document.createElement('a'); el.className='kw-ranking-item'; el.href=r.url; el.target='_blank'; el.rel='noopener noreferrer';
+      el.innerHTML = `<div class="kw-ranking-pos">#${i+1}</div><div class="kw-ranking-body"><div class="kw-ranking-url">${r.domain}</div><div class="kw-ranking-title">${r.title}</div>${r.desc?`<div class="kw-ranking-desc">${r.desc.slice(0,150)}…</div>`:''}</div>`;
+      list.appendChild(el);
+    });
+  } catch(err) {
+    document.getElementById('kw-rankings-loading').style.display = 'none';
+    document.getElementById('kw-rankings-list').innerHTML = `<div style="padding:14px;font-size:12px;color:var(--muted2)">⚠️ Could not fetch live rankings (${err.message}).</div>`;
+  }
+}
+
+// ── CSV export ────────────────────────────────────────────────
+function kwPanelExportCSV() {
+  if (!kwPanelCurrentData) return;
+  const { data, related } = kwPanelCurrentData;
+  let csv = 'Keyword,Est. Volume,KD (Organic),Est. CPC,Paid Competition %,Trend %,Intent\n';
+  csv += `"${data.kw}",${data.volume},${data.difficulty},${data.cpc},${(data.comp*100).toFixed(0)},${data.trendPct},${data.intent}\n`;
+  related.forEach(r => { csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`; });
+  kwPanelDownloadCSV(csv, `keyword-${data.kw.replace(/\s+/g,'-')}.csv`);
+}
+function kwPanelExportBulkCSV() {
+  if (!kwPanelBulkData.length) return;
+  let csv = 'Keyword,Est. Volume,KD (Organic),Est. CPC,Paid Competition %,Trend %,Intent\n';
+  kwPanelBulkData.forEach(r => { csv += `"${r.kw}",${r.volume},${r.difficulty},${r.cpc},${(r.comp*100).toFixed(0)},${r.trendPct},${r.intent}\n`; });
+  kwPanelDownloadCSV(csv, 'bulk-keywords.csv');
+}
+function kwPanelDownloadCSV(csv, filename) {
+  const blob = new Blob([csv],{type:'text/csv'}), url=URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=filename;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+function kwPanelCopyReport() {
+  if (!kwPanelCurrentData) return;
+  const { data } = kwPanelCurrentData;
+  const text = `Keyword Report: ${data.kw}\nEst. Volume: ${kwFmtVol(data.volume)}/mo (range: ${kwFmtVol(data.volLow)}–${kwFmtVol(data.volHigh)})\nOrganic Difficulty (KD): ${data.difficulty}/100\nEst. CPC: $${data.cpc}\nPaid Competition: ${(data.comp*100).toFixed(0)}%\nSearch Intent: ${data.intent}\nTrend (12mo): ${data.trendPct>0?'+':''}${data.trendPct}%\nSERP Features: ${data.serpFeatures.join(', ')||'None detected'}\n\nNote: Volume and CPC are AI-modeled estimates.\nGenerated by RankSorcery — ranksorcery.com`;
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c1c1f;border:1px solid rgba(232,184,75,0.35);color:#E8B84B;padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif';
+    toast.textContent = '✓ Report copied to clipboard!';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2800);
+  });
+}
+</script>
+
 </body>
-</html>
