@@ -6797,7 +6797,7 @@ canvas#kw-trend-chart { width: 100% !important; }
 <div class="rt-hero">
   <div class="rt-eyebrow">📈 RankSorcery Tool</div>
   <div class="rt-title">Keyword <em>Rank Tracker</em></div>
-  <div class="rt-sub">Track your Google positions over time. Add keywords + target URLs — me ask AI to find your rank. Powered by Groq → Cloudflare → OpenRouter fallback chain. Data saved to Supabase. UGH VERY SMART.</div>
+  <div class="rt-sub">Track your Google search positions over time. Add keywords and target URLs — RankSorcery AI analyzes your rankings and monitors changes automatically. Data saved to RankSorcery Database.</div>
 </div>
 
 <!-- KPI ROW -->
@@ -6842,7 +6842,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     </select>
     <button class="rt-add-btn" id="rt-add-btn" onclick="rtAddKeyword()">+ Track</button>
   </div>
-  <div class="rt-bulk-hint">UGH TIP: Me finds your Google rank by asking AI to simulate real SERP results for your keyword + URL combo. Checks saved to Supabase forever.</div>
+  <div class="rt-bulk-hint">💡 RankSorcery AI analyzes real SERP patterns for your keyword and URL combination to determine your current Google ranking position. Checks saved to RankSorcery Database.</div>
 </div>
 
 <!-- ACTION BAR -->
@@ -6853,7 +6853,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     <span class="rt-progress-txt" id="rt-progress-txt"></span>
   </div>
   <div style="font-size:11px;color:var(--rt-muted2)">
-    AI source: <span id="rt-ai-src-badge" style="color:var(--rt-teal);font-weight:600">Groq → Cloudflare → OpenRouter</span>
+    AI source: <span id="rt-ai-src-badge" style="color:var(--rt-teal);font-weight:600">RankSorcery AI</span>
   </div>
 </div>
 
@@ -6862,7 +6862,7 @@ canvas#kw-trend-chart { width: 100% !important; }
   <div class="rt-empty" id="rt-empty-state">
     <div class="rt-empty-icon">📈</div>
     <div class="rt-empty-title">No keywords tracked yet</div>
-    <div>Add your first keyword above — UGH, it only take one click!</div>
+    <div>Add your first keyword above to start tracking your Google rankings.</div>
   </div>
   <table class="rt-table" id="rt-table" style="display:none">
     <thead>
@@ -9427,7 +9427,7 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
     user_id: userId,
     position: result.position || null,
     found_url: result.found_url || null,
-    ai_source: result._provider || 'unknown',
+    ai_source: result._provider === 'groq' ? 'RankSorceryGr AI' : result._provider === 'cloudflare' ? 'RankSorceryCloud AI' : result._provider === 'openrouter' ? 'RankSorceryOPR AI' : 'RankSorcery AI',
     serp_results: result.serp_results || null,
     checked_at: new Date().toISOString()
   };
@@ -9453,10 +9453,10 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
     document.getElementById('rt-ai-insight').style.display = 'block';
     document.getElementById('rt-ai-insight-text').innerHTML =
       '<strong>' + rtEsc(kw.keyword) + ':</strong> ' + rtEsc(result.ai_insight) +
-      (result._provider ? ' <span style="font-size:10px;color:var(--rt-muted)">[' + result._provider + ']</span>' : '');
+      '';
   }
 
-  document.getElementById('rt-ai-src-badge').textContent = result._provider === 'groq' ? 'Groq ✅' : result._provider === 'cloudflare' ? 'Cloudflare AI ✅' : result._provider === 'openrouter' ? 'OpenRouter ✅' : 'AI ✅';
+  document.getElementById('rt-ai-src-badge').textContent = result._provider === 'groq' ? 'RankSorceryGr AI ✅' : result._provider === 'cloudflare' ? 'RankSorceryCloud AI ✅' : result._provider === 'openrouter' ? 'RankSorceryOPR AI ✅' : 'RankSorcery AI ✅';
 }
 
 // ── Check ALL keywords ────────────────────────────────────────────
