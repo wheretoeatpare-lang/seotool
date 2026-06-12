@@ -6070,7 +6070,12 @@ async function exportCrawlExcel() {
   border-bottom: 1px solid var(--border-subtle);
 }
 .kw-city-opt:last-child { border-bottom: none; }
-.kw-city-opt:hover, .kw-city-opt.highlighted { background: var(--gold-pale); color: var(--gold); }
+.kw-city-opt:hover { background: var(--gold-pale); color: var(--text); }
+.kw-city-entire {
+  border-bottom: 1px solid var(--border) !important;
+  background: rgba(232,184,75,0.04);
+}
+.kw-city-entire:hover { background: var(--gold-pale) !important; }
 .kw-city-opt-name { font-weight: 500; }
 .kw-city-opt-meta { font-size: 10px; color: var(--muted); margin-left: auto; }
 .kw-local-badge {
@@ -8114,16 +8119,20 @@ function kwUpdateCityOptions() {
   kwCityList = KW_CITIES[country] || [];
   const cityInput = document.getElementById('kw-panel-city');
   const cityWrap = document.getElementById('kw-city-wrap');
-  if (!kwCityList.length) {
+  if (country === 'global') {
     cityInput.value = '';
     cityWrap.style.opacity = '0.45';
     cityWrap.style.pointerEvents = 'none';
-    cityInput.placeholder = '📍 No cities';
+    cityInput.placeholder = '📍 N/A';
   } else {
     cityWrap.style.opacity = '1';
     cityWrap.style.pointerEvents = 'auto';
+    // Default to "Entire [Country]" when switching countries
+    const countryObj = KW_COUNTRIES.find(c => c.code === country);
+    const entireLabel = countryObj ? `🌍 Entire ${countryObj.name}` : '🌍 Entire Country';
     cityInput.value = '';
-    cityInput.placeholder = '📍 City (optional)';
+    cityInput.placeholder = entireLabel;
+    cityInput.dataset.entire = entireLabel;
   }
   kwHideCitySuggest();
 }
@@ -8132,34 +8141,59 @@ function kwCityInputChange() {
   const country = document.getElementById('kw-panel-country').value;
   const cities = KW_CITIES[country] || [];
   const filtered = q ? cities.filter(c => c.name.toLowerCase().includes(q) || c.region.toLowerCase().includes(q)) : cities;
-  kwRenderCityDropdown(filtered);
+  kwRenderCityDropdown(filtered, !q);
 }
 function kwShowCitySuggest() {
   const country = document.getElementById('kw-panel-country').value;
-  const cities = KW_CITIES[country] || [];
-  if (!cities.length) return;
-  kwRenderCityDropdown(cities);
+  if (country === 'global') return;
+  kwRenderCityDropdown(KW_CITIES[country] || [], true);
 }
 function kwHideCitySuggest() {
   const dd = document.getElementById('kw-city-dropdown');
   if (dd) dd.style.display = 'none';
 }
-function kwRenderCityDropdown(cities) {
+function kwRenderCityDropdown(cities, showEntire) {
   const dd = document.getElementById('kw-city-dropdown');
-  if (!dd || !cities.length) { if(dd) dd.style.display='none'; return; }
-  dd.innerHTML = cities.slice(0,10).map((c,i) => {
-    const tag = c.volMult >= 1.3 ? '🔥 High' : c.volMult >= 0.9 ? '📊 Med' : '📉 Low';
-    return `<div class="kw-city-opt" onmousedown="kwSelectCity('${c.name.replace(/'/g,"\\'")}')">
-      <span class="kw-city-opt-name">📍 ${c.name}</span>
-      <span style="font-size:10px;color:var(--muted)">${c.region}</span>
-      <span class="kw-city-opt-meta">${tag} vol</span>
+  if (!dd) return;
+  const country = document.getElementById('kw-panel-country').value;
+  const countryObj = KW_COUNTRIES.find(c => c.code === country);
+  const countryName = countryObj ? countryObj.name : 'Country';
+
+  let html = '';
+
+  // Always show "Entire [Country]" as first option
+  if (showEntire) {
+    html += `<div class="kw-city-opt kw-city-entire" onmousedown="kwSelectCity('', true)">
+      <span class="kw-city-opt-name" style="color:var(--gold)">🌍 Entire ${countryName}</span>
+      <span class="kw-city-opt-meta" style="color:var(--muted2);font-size:10px">All regions</span>
     </div>`;
-  }).join('');
-  if (!cities.length) { dd.style.display='none'; return; }
+  }
+
+  if (cities.length) {
+    html += cities.slice(0,12).map(c => {
+      const tag = c.volMult >= 1.3 ? '🔥 High' : c.volMult >= 0.9 ? '📊 Med' : '📉 Low';
+      return `<div class="kw-city-opt" onmousedown="kwSelectCity('${c.name.replace(/'/g,"\\'")}')">
+        <span class="kw-city-opt-name">📍 ${c.name}</span>
+        <span style="font-size:10px;color:var(--muted)">${c.region}</span>
+        <span class="kw-city-opt-meta">${tag} vol</span>
+      </div>`;
+    }).join('');
+  }
+
+  if (!html) { dd.style.display='none'; return; }
+  dd.innerHTML = html;
   dd.style.display = 'block';
 }
-function kwSelectCity(name) {
-  document.getElementById('kw-panel-city').value = name;
+function kwSelectCity(name, isEntire) {
+  const inp = document.getElementById('kw-panel-city');
+  if (isEntire) {
+    inp.value = ''; // empty = entire country in the analysis
+    const country = document.getElementById('kw-panel-country').value;
+    const countryObj = KW_COUNTRIES.find(c => c.code === country);
+    inp.placeholder = countryObj ? `🌍 Entire ${countryObj.name}` : '🌍 Entire Country';
+  } else {
+    inp.value = name;
+  }
   kwHideCitySuggest();
 }
 
@@ -8169,6 +8203,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const initCountry = KW_COUNTRIES.find(c => c.code === kwSelectedCountry) || KW_COUNTRIES[2];
   document.getElementById('kw-country-flag').innerHTML = kwFlagImg(initCountry.code, true);
   document.getElementById('kw-country-label').textContent = initCountry.name;
+  // Set city placeholder to "Entire [Country]" on first load
+  const cityInp = document.getElementById('kw-panel-city');
+  if (cityInp) cityInp.placeholder = `🌍 Entire ${initCountry.name}`;
 });
 
 const KW_COUNTRY_VOL = { US:1.0, GB:0.28, AU:0.12, CA:0.18, IN:0.75, DE:0.22, FR:0.18, PH:0.08, SG:0.04, global:3.8 };
