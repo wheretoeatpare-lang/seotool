@@ -5987,7 +5987,7 @@ async function exportCrawlExcel() {
 }
 .kw-country-btn:hover { border-color: rgba(232,184,75,0.4); background: var(--surface3); }
 .kw-country-btn:focus { outline: none; border-color: rgba(232,184,75,0.5); }
-#kw-country-flag { font-size: 19px; line-height: 1; flex-shrink: 0; }
+#kw-country-flag { display:flex; align-items:center; flex-shrink:0; }
 #kw-country-label { flex: 1; text-align: left; font-size: 13px; font-weight: 500; }
 .kw-country-chevron { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; }
 .kw-country-picker.open .kw-country-chevron { transform: rotate(180deg); }
@@ -6032,7 +6032,7 @@ async function exportCrawlExcel() {
 .kw-country-opt:hover { background: rgba(232,184,75,0.07); }
 .kw-country-opt.selected { background: var(--gold-pale); }
 .kw-country-opt.selected .kw-co-name { color: var(--gold); }
-.kw-co-flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.kw-co-flag { display:flex; align-items:center; flex-shrink:0; width:30px; }
 .kw-co-name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
 .kw-co-tag {
   font-size: 10px; color: var(--muted); font-weight: 600;
@@ -6348,7 +6348,7 @@ canvas#kw-trend-chart { width: 100% !important; }
             <!-- Custom flag country picker -->
             <div class="kw-country-picker" id="kw-country-picker">
               <button type="button" class="kw-country-btn" id="kw-country-btn" onclick="kwToggleCountryDrop(event)">
-                <span id="kw-country-flag">🇵🇭</span>
+                <span id="kw-country-flag"><img src="https://flagcdn.com/w20/ph.png" width="20" height="15" style="border-radius:3px;display:block;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,0.4)" alt="PH"></span>
                 <span id="kw-country-label">Philippines</span>
                 <svg class="kw-country-chevron" id="kw-country-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
@@ -8038,17 +8038,24 @@ function kwGetCityMult(country, cityName) {
 }
 
 // ── Country Picker Data & Functions ──────────────────────────
+// Flag images via flagcdn.com — actual PNG flags, not emoji (works on all OS/browsers)
+function kwFlagImg(code, sm) {
+  if (code === 'global') return '<span style="font-size:20px;line-height:1;display:flex;align-items:center">🌐</span>';
+  const w = sm ? 20 : 28;
+  return `<img src="https://flagcdn.com/w${w}/${code.toLowerCase()}.png" width="${w}" height="${sm?15:21}" style="border-radius:3px;display:block;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,0.4)" alt="${code}" onerror="this.outerHTML='<span style=font-size:13px;color:var(--muted)>${code}</span>'">`;
+}
+
 const KW_COUNTRIES = [
-  { code:'US', flag:'🇺🇸', name:'United States',  tag:'Country' },
-  { code:'GB', flag:'🇬🇧', name:'United Kingdom', tag:'Country' },
-  { code:'PH', flag:'🇵🇭', name:'Philippines',    tag:'Country' },
-  { code:'AU', flag:'🇦🇺', name:'Australia',      tag:'Country' },
-  { code:'CA', flag:'🇨🇦', name:'Canada',         tag:'Country' },
-  { code:'IN', flag:'🇮🇳', name:'India',          tag:'Country' },
-  { code:'DE', flag:'🇩🇪', name:'Germany',        tag:'Country' },
-  { code:'FR', flag:'🇫🇷', name:'France',         tag:'Country' },
-  { code:'SG', flag:'🇸🇬', name:'Singapore',      tag:'Country' },
-  { code:'global', flag:'🌐', name:'Global / Worldwide', tag:'Global' },
+  { code:'US', name:'United States'     },
+  { code:'GB', name:'United Kingdom'    },
+  { code:'PH', name:'Philippines'       },
+  { code:'AU', name:'Australia'         },
+  { code:'CA', name:'Canada'            },
+  { code:'IN', name:'India'             },
+  { code:'DE', name:'Germany'           },
+  { code:'FR', name:'France'            },
+  { code:'SG', name:'Singapore'         },
+  { code:'global', name:'Global / Worldwide' },
 ];
 let kwSelectedCountry = 'PH';
 
@@ -8058,11 +8065,12 @@ function kwRenderCountryList(filter) {
   const q = (filter||'').toLowerCase().trim();
   const filtered = q ? KW_COUNTRIES.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)) : KW_COUNTRIES;
   if (!filtered.length) { list.innerHTML = '<div class="kw-co-empty">No countries found</div>'; return; }
+  const tag = c => c.code === 'global' ? 'Global' : 'Country';
   list.innerHTML = filtered.map(c => `
     <div class="kw-country-opt${c.code===kwSelectedCountry?' selected':''}" onmousedown="kwSelectCountry('${c.code}')">
-      <span class="kw-co-flag">${c.flag}</span>
+      <span class="kw-co-flag">${kwFlagImg(c.code)}</span>
       <span class="kw-co-name">${c.name}</span>
-      <span class="kw-co-tag">${c.tag}</span>
+      <span class="kw-co-tag">${tag(c)}</span>
       ${c.code===kwSelectedCountry ? '<span class="kw-co-check">✓</span>' : ''}
     </div>`).join('');
 }
@@ -8090,7 +8098,7 @@ function kwSelectCountry(code) {
   const c = KW_COUNTRIES.find(x => x.code === code);
   if (!c) return;
   kwSelectedCountry = code;
-  document.getElementById('kw-country-flag').textContent = c.flag;
+  document.getElementById('kw-country-flag').innerHTML = kwFlagImg(code, true);
   document.getElementById('kw-country-label').textContent = c.name;
   // sync hidden select
   const sel = document.getElementById('kw-panel-country');
@@ -8158,9 +8166,8 @@ function kwSelectCity(name) {
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
   kwUpdateCityOptions();
-  // Set initial country picker display
   const initCountry = KW_COUNTRIES.find(c => c.code === kwSelectedCountry) || KW_COUNTRIES[2];
-  document.getElementById('kw-country-flag').textContent = initCountry.flag;
+  document.getElementById('kw-country-flag').innerHTML = kwFlagImg(initCountry.code, true);
   document.getElementById('kw-country-label').textContent = initCountry.name;
 });
 
