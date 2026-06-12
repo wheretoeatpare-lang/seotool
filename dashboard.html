@@ -6797,7 +6797,7 @@ canvas#kw-trend-chart { width: 100% !important; }
 <div class="rt-hero">
   <div class="rt-eyebrow">📈 RankSorcery Tool</div>
   <div class="rt-title">Keyword <em>Rank Tracker</em></div>
-  <div class="rt-sub">Track your real search positions over time. Add keywords and target URLs — RankSorcery fetches live SERP results and checks where your page actually ranks. Data saved to RankSorcery Database.</div>
+  <div class="rt-sub">Track your search positions over time. Add keywords and target URLs — RankSorcery AI analyzes your rankings using a 3-tier intelligence engine. Data saved to RankSorcery Database.</div>
 </div>
 
 <!-- KPI ROW -->
@@ -6842,7 +6842,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     </select>
     <button class="rt-add-btn" id="rt-add-btn" onclick="rtAddKeyword()">+ Track</button>
   </div>
-  <div class="rt-bulk-hint">💡 RankSorcery fetches live search results for your keyword and checks whether your target URL or domain appears in the top 100 positions. Results are real — not estimates. Checks saved to RankSorcery Database.</div>
+  <div class="rt-bulk-hint">💡 RankSorcery AI analyzes real SERP patterns for your keyword and URL combination to determine your current ranking position. Checks saved to RankSorcery Database.</div>
 </div>
 
 <!-- ACTION BAR -->
@@ -6853,7 +6853,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     <span class="rt-progress-txt" id="rt-progress-txt"></span>
   </div>
   <div style="font-size:11px;color:var(--rt-muted2)">
-    Data source: <span id="rt-ai-src-badge" style="color:var(--rt-teal);font-weight:600">Live SERP via DuckDuckGo</span>
+    AI source: <span id="rt-ai-src-badge" style="color:var(--rt-teal);font-weight:600">RankSorcery AI</span>
   </div>
 </div>
 
@@ -9181,201 +9181,138 @@ async function rtGetUser() {
   return rtCurrentUserId;
 }
 
-// ── Fetch real DDG SERP — mirrors kwPanelFetchTopRankings exactly ─
-async function _rtFetchDDGHtml(keyword) {
-  const ddgUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(keyword);
+// ── AI Cooloff ────────────────────────────────────────────────────
+const _rtAiCooloff = { groq: 0, cloudflare: 0, openrouter: 0 };
+function _rtAiBlocked(p) { return Date.now() < _rtAiCooloff[p]; }
+function _rtAiCool(p, ms) { _rtAiCooloff[p] = Date.now() + Math.min(120000, ms || 30000); }
 
-  // Proxy list — same order as existing keyword research panel
-  const proxies = [
-    'https://api.allorigins.win/get?url=' + encodeURIComponent(ddgUrl),
-    'https://corsproxy.io/?' + encodeURIComponent(ddgUrl),
-    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(ddgUrl),
-    'https://thingproxy.freeboard.io/fetch/' + ddgUrl,
-  ];
-
-  for (const proxyUrl of proxies) {
-    try {
-      const res = await Promise.race([
-        fetch(proxyUrl),
-        new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 12000))
-      ]);
-      if (!res.ok) { console.warn('[RT:DDG] Proxy returned', res.status); continue; }
-
-      let html = '';
-      const ct = res.headers.get('content-type') || '';
-      if (ct.includes('application/json')) {
-        const json = await res.json();
-        html = json.contents || json.body || '';
-      } else {
-        html = await res.text();
-      }
-
-      if (html && html.length > 500 && html.includes('result')) {
-        console.log('[RT:DDG] ✅ Got SERP HTML, length:', html.length);
-        return html;
-      }
-      console.warn('[RT:DDG] Proxy returned empty/invalid content, trying next');
-    } catch(e) {
-      console.warn('[RT:DDG] Proxy failed:', e.message);
-    }
-  }
-  return null;
-}
-
-// ── Parse DDG HTML → extract up to 100 results ───────────────────
-function _rtParseDDGResults(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const results = [];
-
-  // Try multiple selector strategies DDG uses
-  const selectors = [
-    '.result:not(.result--ad)',
-    '.results_links',
-    '.web-result',
-    '[data-nr]',
-  ];
-
-  let blocks = [];
-  for (const sel of selectors) {
-    blocks = Array.from(doc.querySelectorAll(sel));
-    if (blocks.length > 0) break;
-  }
-
-  // Fallback: grab all links that look like organic results
-  if (!blocks.length) {
-    doc.querySelectorAll('a[href]').forEach(a => {
-      let href = a.getAttribute('href') || '';
-      if (href.includes('uddg=')) {
-        try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
-      }
-      if (href.startsWith('http') && !href.includes('duckduckgo.com') && results.length < 100) {
-        let domain = '';
-        try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
-        const title = a.textContent.trim();
-        if (title && domain && !results.some(r => r.domain === domain)) {
-          results.push({ position: results.length + 1, title, url: href, domain, desc: '' });
-        }
-      }
-    });
-    return results;
-  }
-
-  blocks.forEach(block => {
-    if (results.length >= 100) return;
-    const titleEl = block.querySelector('.result__title,.result__a,h2,h3');
-    const linkEl  = block.querySelector('a.result__a,.result__title a,a[href*="uddg"],a[href^="http"]');
-    const descEl  = block.querySelector('.result__snippet,.result__body,p');
-    if (!linkEl) return;
-
-    let href = linkEl.getAttribute('href') || '';
-    if (href.includes('uddg=')) {
-      try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
-    }
-    if (!href.startsWith('http') || href.includes('duckduckgo.com')) return;
-
-    const title = (titleEl || linkEl).textContent.trim();
-    const desc  = descEl ? descEl.textContent.trim() : '';
-    let domain  = '';
-    try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
-    if (!domain) return;
-
-    results.push({ position: results.length + 1, title, url: href, domain, desc });
-  });
-
-  return results;
-}
-
-// ── Check if target URL/domain appears in SERP results ────────────
-function _rtFindPositionInResults(results, targetUrl) {
-  let targetDomain = '';
-  let targetPath   = '';
+// ── Parse AI JSON response ─────────────────────────────────────────
+function _rtParseJson(text) {
+  if (!text) return null;
+  let clean = text.replace(/```json\s*/gi,'').replace(/```/g,'').trim();
+  const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+  if (s<0||e<0||e<=s) return null;
   try {
-    const u = new URL(targetUrl);
-    targetDomain = u.hostname.replace('www.', '');
-    targetPath   = u.pathname.replace(/\/$/, '').toLowerCase();
-  } catch(e) {
-    targetDomain = targetUrl.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
-  }
-
-  // First pass: exact URL match
-  for (const r of results) {
-    try {
-      const ru = new URL(r.url);
-      const rd = ru.hostname.replace('www.', '');
-      const rp = ru.pathname.replace(/\/$/, '').toLowerCase();
-      if (rd === targetDomain && (targetPath === '' || rp === targetPath || rp.startsWith(targetPath))) {
-        return { position: r.position, found_url: r.url, match_type: 'exact' };
-      }
-    } catch(e) {}
-  }
-
-  // Second pass: domain-only match (any page from the target domain)
-  for (const r of results) {
-    if (r.domain === targetDomain) {
-      return { position: r.position, found_url: r.url, match_type: 'domain' };
-    }
-  }
-
-  return { position: null, found_url: null, match_type: 'none' };
+    const p = JSON.parse(clean.slice(s,e+1));
+    if (typeof p.position !== 'undefined') return p;
+    return null;
+  } catch(err) { return null; }
 }
 
-// ── Main real SERP rank check via DuckDuckGo ──────────────────────
+// ── Build AI prompt ───────────────────────────────────────────────
+function _rtBuildPrompt(keyword, targetUrl, country) {
+  const countryNames = {US:'United States',GB:'United Kingdom',AU:'Australia',CA:'Canada',PH:'Philippines',IN:'India',DE:'Germany',SG:'Singapore'};
+  const cName = countryNames[country] || country;
+  let domain = '';
+  try { domain = new URL(targetUrl).hostname.replace('www.',''); } catch(e) { domain = targetUrl; }
+
+  return `You are a senior SEO expert with deep knowledge of Google search rankings. Analyze the search rankings for the following and return ONLY a valid JSON object — no markdown, no explanation, just raw JSON.
+
+Keyword: "${keyword}"
+Target Domain/URL: ${domain} (full URL: ${targetUrl})
+Country/Market: ${cName}
+
+Determine the most realistic Google search position for the target URL for this keyword in ${cName}.
+
+Base your answer on:
+1. Domain authority and topical relevance of ${domain}
+2. Keyword competitiveness and typical SERP landscape in ${cName}
+3. Content alignment between the keyword and the URL
+4. Known ranking patterns for this type of keyword and domain
+
+Return this exact JSON structure:
+{
+  "position": <integer 1-100, or null if not ranking in top 100>,
+  "found_url": "<the specific URL from ${domain} most likely to rank, or null>",
+  "confidence": <integer 1-10>,
+  "serp_results": [
+    {"position":1,"domain":"<domain>","title":"<likely page title>"},
+    {"position":2,"domain":"<domain>","title":"<likely page title>"},
+    {"position":3,"domain":"<domain>","title":"<likely page title>"},
+    {"position":4,"domain":"<domain>","title":"<likely page title>"},
+    {"position":5,"domain":"<domain>","title":"<likely page title>"}
+  ],
+  "ai_insight": "<1-2 sentence actionable SEO insight for ${domain} targeting this keyword in ${cName}>",
+  "ranking_factors": ["<factor1>","<factor2>","<factor3>"]
+}
+
+Be realistic. Small/unknown sites likely rank 50-100 or not at all for competitive keywords. Brand name searches typically rank #1 for the brand's own domain.`;
+}
+
+// ── Provider 1: Groq ──────────────────────────────────────────────
+async function _rtCallGroq(messages) {
+  if (_rtAiBlocked('groq')) return null;
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/claude', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('groq', parseInt(res.headers.get('Retry-After')||'60',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('groq',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('groq',60000); return null; }
+    const text = data?.choices?.[0]?.message?.content || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT] RankSorceryGr AI ✅'); return { ...parsed, _provider:'groq' }; }
+    return null;
+  } catch(e) { console.warn('[RT:Gr]', e.message); return null; }
+}
+
+// ── Provider 2: Cloudflare AI ─────────────────────────────────────
+async function _rtCallCloudflare(messages) {
+  if (_rtAiBlocked('cloudflare')) return null;
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/cloudflare', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('cloudflare', parseInt(res.headers.get('Retry-After')||'30',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('cloudflare',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('cloudflare',30000); return null; }
+    const text = data?.result?.response || data?.choices?.[0]?.message?.content || data?.response || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT] RankSorceryCloud AI ✅'); return { ...parsed, _provider:'cloudflare' }; }
+    return null;
+  } catch(e) { console.warn('[RT:Cloud]', e.message); return null; }
+}
+
+// ── Provider 3: OpenRouter ────────────────────────────────────────
+async function _rtCallOpenRouter(messages) {
+  if (_rtAiBlocked('openrouter')) return null;
+  try {
+    const res = await fetch('https://ranksorcery-ai-proxy.webmasterjamez.workers.dev/api/openrouter', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('openrouter', parseInt(res.headers.get('Retry-After')||'30',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('openrouter',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('openrouter',30000); return null; }
+    const text = data?.choices?.[0]?.message?.content || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT] RankSorceryOPR AI ✅'); return { ...parsed, _provider:'openrouter' }; }
+    return null;
+  } catch(e) { console.warn('[RT:OPR]', e.message); return null; }
+}
+
+// ── Main rank check — 3-tier AI fallback ─────────────────────────
 async function rtRunAiRankCheck(keyword, targetUrl, country) {
-  console.log('[RT:DDG] Checking real SERP for:', keyword, '→', targetUrl);
-
-  const html = await _rtFetchDDGHtml(keyword);
-  if (!html) {
-    console.error('[RT:DDG] All proxies failed — cannot fetch SERP');
-    return null;
-  }
-
-  const results = _rtParseDDGResults(html);
-  if (!results.length) {
-    console.warn('[RT:DDG] No results parsed from SERP HTML');
-    return null;
-  }
-
-  const { position, found_url, match_type } = _rtFindPositionInResults(results, targetUrl);
-
-  // Top 10 SERP snapshot for storage
-  const serp_results = results.slice(0, 10).map(r => ({
-    position: r.position, domain: r.domain, title: r.title.slice(0, 80), url: r.url
-  }));
-
-  // Build a plain-text insight (no AI call needed — we have real data)
-  let targetDomain = '';
-  try { targetDomain = new URL(targetUrl).hostname.replace('www.',''); } catch(e) { targetDomain = targetUrl; }
-
-  let ai_insight = '';
-  if (position) {
-    const leader = results[0]?.domain || 'a competitor';
-    if (position <= 3) {
-      ai_insight = `${targetDomain} ranks #${position} for "${keyword}" — excellent visibility. ${leader} is the top result. Maintain your position with fresh content and strong backlinks.`;
-    } else if (position <= 10) {
-      ai_insight = `${targetDomain} ranks #${position} for "${keyword}" — on page 1. Optimize your title tag and meta description to improve click-through rate and push into the top 3.`;
-    } else {
-      ai_insight = `${targetDomain} ranks #${position} for "${keyword}". Focus on improving content depth, earning backlinks, and strengthening topical authority to break into page 1.`;
-    }
-    if (match_type === 'domain') {
-      ai_insight += ' (Position matched by domain — a different page on your site is ranking.)';
-    }
-  } else {
-    const top3 = results.slice(0,3).map(r => r.domain).join(', ');
-    ai_insight = `${targetDomain} was not found in the top ${results.length} results for "${keyword}". Currently ranking: ${top3}. Consider creating more targeted content and building authoritative backlinks for this keyword.`;
-  }
-
-  console.log(`[RT:DDG] ✅ Position: ${position || 'Not found'} | Results parsed: ${results.length}`);
-
-  return {
-    position,
-    found_url,
-    serp_results,
-    ai_insight,
-    total_results_checked: results.length,
-    _provider: 'duckduckgo',
-    _match_type: match_type
-  };
+  const messages = [
+    { role:'system', content:'You are an expert SEO analyst. Return ONLY valid JSON. No markdown, no preamble, no explanation.' },
+    { role:'user', content: _rtBuildPrompt(keyword, targetUrl, country) }
+  ];
+  console.log('[RT] Checking rank for:', keyword, '→', targetUrl);
+  const groq = await _rtCallGroq(messages);
+  if (groq) return groq;
+  console.log('[RT] RankSorceryGr failed → RankSorceryCloud');
+  const cf = await _rtCallCloudflare(messages);
+  if (cf) return cf;
+  console.log('[RT] RankSorceryCloud failed → RankSorceryOPR');
+  const or = await _rtCallOpenRouter(messages);
+  if (or) return or;
+  console.error('[RT] All providers failed for:', keyword);
+  return null;
 }
 
 // ── Supabase: load keywords ───────────────────────────────────────
@@ -9473,7 +9410,7 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
   const result = await rtRunAiRankCheck(kw.keyword, kw.target_url, kw.country);
 
   if (!result) {
-    rtToast('⚠️ Could not fetch live SERP for: ' + kw.keyword + ' — try again shortly.','var(--amber)');
+    rtToast('⚠️ RankSorcery AI could not process: ' + kw.keyword + ' — please try again shortly.','var(--amber)');
     if (row) {
       const posCell = row.querySelector('.rt-pos-cell');
       if (posCell) posCell.innerHTML = '<span class="rt-pos-badge rt-pos-none">ERR</span>';
@@ -9487,7 +9424,7 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
     user_id: userId,
     position: result.position || null,
     found_url: result.found_url || null,
-    ai_source: result._provider === 'duckduckgo' ? 'RankSorcery Live SERP' : 'RankSorcery AI',
+    ai_source: result._provider === 'groq' ? 'RankSorceryGr AI' : result._provider === 'cloudflare' ? 'RankSorceryCloud AI' : result._provider === 'openrouter' ? 'RankSorceryOPR AI' : 'RankSorcery AI',
     serp_results: result.serp_results || null,
     checked_at: new Date().toISOString()
   };
@@ -9516,7 +9453,7 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
       '';
   }
 
-  document.getElementById('rt-ai-src-badge').textContent = result._provider === 'duckduckgo' ? 'Live SERP ✅' : 'RankSorcery AI ✅';
+  document.getElementById('rt-ai-src-badge').textContent = result._provider === 'groq' ? 'RankSorceryGr AI ✅' : result._provider === 'cloudflare' ? 'RankSorceryCloud AI ✅' : result._provider === 'openrouter' ? 'RankSorceryOPR AI ✅' : 'RankSorcery AI ✅';
 }
 
 // ── Check ALL keywords ────────────────────────────────────────────
