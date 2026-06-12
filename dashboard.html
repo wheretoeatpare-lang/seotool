@@ -1889,7 +1889,7 @@ tr.row-zap td {
       <span class="sidebar-icon">📈</span> Rank Tracker
     </a>
     <a class="sidebar-link" href="#" id="sidebar-keyword-link" onclick="showKeywordResearch(event)">
-      <span class="sidebar-icon">🔑</span> Keyword Research
+      <span class="sidebar-icon">🔑</span> Local Keyword Research
     </a>
     <a class="sidebar-link" href="/competitor.html">
       <span class="sidebar-icon">⚔️</span> Competitor
@@ -5975,12 +5975,73 @@ async function exportCrawlExcel() {
 }
 .kw-input:focus { border-color: rgba(232,184,75,0.5); }
 .kw-input::placeholder { color: var(--muted); }
-.kw-country-sel {
+/* ── Custom Country Picker (Mangools-style) ── */
+.kw-country-picker { position: relative; flex-shrink: 0; }
+.kw-country-btn {
+  display: flex; align-items: center; gap: 8px;
   background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 9px; padding: 10px 12px; font-size: 12px;
-  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
-  cursor: pointer; min-width: 80px;
+  border-radius: 9px; padding: 9px 12px; font-size: 13px;
+  color: var(--text); font-family: 'DM Sans', sans-serif;
+  cursor: pointer; white-space: nowrap; min-width: 165px;
+  transition: border-color 0.2s, background 0.2s; user-select: none;
 }
+.kw-country-btn:hover { border-color: rgba(232,184,75,0.4); background: var(--surface3); }
+.kw-country-btn:focus { outline: none; border-color: rgba(232,184,75,0.5); }
+#kw-country-flag { font-size: 19px; line-height: 1; flex-shrink: 0; }
+#kw-country-label { flex: 1; text-align: left; font-size: 13px; font-weight: 500; }
+.kw-country-chevron { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; }
+.kw-country-picker.open .kw-country-chevron { transform: rotate(180deg); }
+.kw-country-picker.open .kw-country-btn { border-color: rgba(232,184,75,0.5); background: var(--surface3); }
+
+.kw-country-drop {
+  display: none; position: absolute; top: calc(100% + 7px); left: 0;
+  min-width: 230px; z-index: 1000;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  animation: kwDropIn 0.15s ease both;
+}
+@keyframes kwDropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.kw-country-picker.open .kw-country-drop { display: block; }
+
+.kw-country-search-wrap {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface3);
+}
+.kw-country-search-input {
+  flex: 1; background: none; border: none; outline: none;
+  font-size: 12px; color: var(--text); font-family: 'DM Sans', sans-serif;
+}
+.kw-country-search-input::placeholder { color: var(--muted); }
+
+.kw-country-list {
+  max-height: 250px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.kw-country-list::-webkit-scrollbar { width: 4px; }
+.kw-country-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.kw-country-opt {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 14px; cursor: pointer;
+  transition: background 0.1s;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.kw-country-opt:last-child { border-bottom: none; }
+.kw-country-opt:hover { background: rgba(232,184,75,0.07); }
+.kw-country-opt.selected { background: var(--gold-pale); }
+.kw-country-opt.selected .kw-co-name { color: var(--gold); }
+.kw-co-flag { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.kw-co-name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+.kw-co-tag {
+  font-size: 10px; color: var(--muted); font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  background: var(--surface3); border: 1px solid var(--border-subtle);
+  border-radius: 4px; padding: 1px 6px;
+}
+.kw-co-check { font-size: 11px; color: var(--gold); flex-shrink: 0; margin-left: 2px; }
+.kw-co-empty { padding: 14px; font-size: 12px; color: var(--muted2); text-align: center; }
 .kw-location-wrap {
   display: flex; gap: 6px; align-items: center; flex-shrink: 0;
 }
@@ -6263,9 +6324,9 @@ canvas#kw-trend-chart { width: 100% !important; }
 
       <!-- Hero -->
       <div class="kw-panel-hero">
-        <div class="kw-panel-eyebrow">🔑 Keyword Intelligence</div>
-        <div class="kw-panel-title">Check <em>Search Volume</em><br>& Rank Smarter</div>
-        <div class="kw-panel-sub">Instantly see monthly volume, difficulty, CPC, and trend data for any keyword. Me smash keywords, find opportunity!</div>
+        <div class="kw-panel-eyebrow">📍 Local Keyword Intelligence</div>
+        <div class="kw-panel-title">Local <em>Keyword Research</em><br>& Rank Smarter</div>
+        <div class="kw-panel-sub">Target city-level search volumes, local difficulty, and CPC data. Me smash local keywords, find opportunity near you!</div>
       </div>
 
       <!-- Input Card -->
@@ -6284,17 +6345,30 @@ canvas#kw-trend-chart { width: 100% !important; }
         <div class="kw-url-row">
           <input type="text" id="kw-panel-input" class="kw-input" placeholder="e.g. best seo tools 2026, keyword research…" autocomplete="off" spellcheck="false">
           <div class="kw-location-wrap">
-            <select id="kw-panel-country" class="kw-country-sel" onchange="kwUpdateCityOptions()">
-              <option value="US">🇺🇸 US</option>
-              <option value="GB">🇬🇧 UK</option>
-              <option value="PH" selected>🇵🇭 PH</option>
-              <option value="AU">🇦🇺 AU</option>
-              <option value="CA">🇨🇦 CA</option>
-              <option value="IN">🇮🇳 IN</option>
-              <option value="DE">🇩🇪 DE</option>
-              <option value="FR">🇫🇷 FR</option>
-              <option value="SG">🇸🇬 SG</option>
-              <option value="global">🌐 Global</option>
+            <!-- Custom flag country picker -->
+            <div class="kw-country-picker" id="kw-country-picker">
+              <button type="button" class="kw-country-btn" id="kw-country-btn" onclick="kwToggleCountryDrop(event)">
+                <span id="kw-country-flag">🇵🇭</span>
+                <span id="kw-country-label">Philippines</span>
+                <svg class="kw-country-chevron" id="kw-country-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div class="kw-country-drop" id="kw-country-drop">
+                <div class="kw-country-search-wrap">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="flex-shrink:0;color:var(--muted)"><circle cx="5.5" cy="5.5" r="4" stroke="currentColor" stroke-width="1.4"/><path d="M9 9l2.5 2.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                  <input type="text" id="kw-country-search" class="kw-country-search-input" placeholder="Search country…" oninput="kwFilterCountries(this.value)" autocomplete="off">
+                </div>
+                <div class="kw-country-list" id="kw-country-list">
+                  <!-- populated by JS -->
+                </div>
+              </div>
+            </div>
+            <!-- hidden select keeps value for JS compatibility -->
+            <select id="kw-panel-country" style="display:none" onchange="kwUpdateCityOptions()">
+              <option value="US">US</option><option value="GB">GB</option>
+              <option value="PH" selected>PH</option><option value="AU">AU</option>
+              <option value="CA">CA</option><option value="IN">IN</option>
+              <option value="DE">DE</option><option value="FR">FR</option>
+              <option value="SG">SG</option><option value="global">global</option>
             </select>
             <div class="kw-city-wrap" id="kw-city-wrap">
               <input type="text" id="kw-panel-city" class="kw-city-input" placeholder="📍 City (optional)" autocomplete="off" spellcheck="false" oninput="kwCityInputChange()" onfocus="kwShowCitySuggest()" onblur="setTimeout(kwHideCitySuggest,200)">
@@ -7963,6 +8037,68 @@ function kwGetCityMult(country, cityName) {
   return city ? { volMult: city.volMult, cpcMult: city.cpcMult } : { volMult: 0.8, cpcMult: 0.85 };
 }
 
+// ── Country Picker Data & Functions ──────────────────────────
+const KW_COUNTRIES = [
+  { code:'US', flag:'🇺🇸', name:'United States',  tag:'Country' },
+  { code:'GB', flag:'🇬🇧', name:'United Kingdom', tag:'Country' },
+  { code:'PH', flag:'🇵🇭', name:'Philippines',    tag:'Country' },
+  { code:'AU', flag:'🇦🇺', name:'Australia',      tag:'Country' },
+  { code:'CA', flag:'🇨🇦', name:'Canada',         tag:'Country' },
+  { code:'IN', flag:'🇮🇳', name:'India',          tag:'Country' },
+  { code:'DE', flag:'🇩🇪', name:'Germany',        tag:'Country' },
+  { code:'FR', flag:'🇫🇷', name:'France',         tag:'Country' },
+  { code:'SG', flag:'🇸🇬', name:'Singapore',      tag:'Country' },
+  { code:'global', flag:'🌐', name:'Global / Worldwide', tag:'Global' },
+];
+let kwSelectedCountry = 'PH';
+
+function kwRenderCountryList(filter) {
+  const list = document.getElementById('kw-country-list');
+  if (!list) return;
+  const q = (filter||'').toLowerCase().trim();
+  const filtered = q ? KW_COUNTRIES.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)) : KW_COUNTRIES;
+  if (!filtered.length) { list.innerHTML = '<div class="kw-co-empty">No countries found</div>'; return; }
+  list.innerHTML = filtered.map(c => `
+    <div class="kw-country-opt${c.code===kwSelectedCountry?' selected':''}" onmousedown="kwSelectCountry('${c.code}')">
+      <span class="kw-co-flag">${c.flag}</span>
+      <span class="kw-co-name">${c.name}</span>
+      <span class="kw-co-tag">${c.tag}</span>
+      ${c.code===kwSelectedCountry ? '<span class="kw-co-check">✓</span>' : ''}
+    </div>`).join('');
+}
+function kwToggleCountryDrop(e) {
+  e && e.stopPropagation();
+  const picker = document.getElementById('kw-country-picker');
+  const isOpen = picker.classList.contains('open');
+  if (isOpen) { kwCloseCountryDrop(); return; }
+  picker.classList.add('open');
+  kwRenderCountryList('');
+  setTimeout(() => { const s = document.getElementById('kw-country-search'); if(s) { s.value=''; s.focus(); } }, 50);
+  // close on outside click
+  setTimeout(() => document.addEventListener('click', kwOutsideCountryClose, {once:true}), 10);
+}
+function kwOutsideCountryClose(e) {
+  const picker = document.getElementById('kw-country-picker');
+  if (picker && !picker.contains(e.target)) kwCloseCountryDrop();
+}
+function kwCloseCountryDrop() {
+  const picker = document.getElementById('kw-country-picker');
+  if (picker) picker.classList.remove('open');
+}
+function kwFilterCountries(q) { kwRenderCountryList(q); }
+function kwSelectCountry(code) {
+  const c = KW_COUNTRIES.find(x => x.code === code);
+  if (!c) return;
+  kwSelectedCountry = code;
+  document.getElementById('kw-country-flag').textContent = c.flag;
+  document.getElementById('kw-country-label').textContent = c.name;
+  // sync hidden select
+  const sel = document.getElementById('kw-panel-country');
+  if (sel) { sel.value = code; }
+  kwCloseCountryDrop();
+  kwUpdateCityOptions();
+}
+
 // ── City UI functions ─────────────────────────────────────────
 let kwCityList = [];
 function kwUpdateCityOptions() {
@@ -8020,7 +8156,13 @@ function kwSelectCity(name) {
 }
 
 // Initialize on load
-document.addEventListener('DOMContentLoaded', () => { kwUpdateCityOptions(); });
+document.addEventListener('DOMContentLoaded', () => {
+  kwUpdateCityOptions();
+  // Set initial country picker display
+  const initCountry = KW_COUNTRIES.find(c => c.code === kwSelectedCountry) || KW_COUNTRIES[2];
+  document.getElementById('kw-country-flag').textContent = initCountry.flag;
+  document.getElementById('kw-country-label').textContent = initCountry.name;
+});
 
 const KW_COUNTRY_VOL = { US:1.0, GB:0.28, AU:0.12, CA:0.18, IN:0.75, DE:0.22, FR:0.18, PH:0.08, SG:0.04, global:3.8 };
 const KW_COUNTRY_CPC = { US:1.0, GB:0.85, AU:0.90, CA:0.80, IN:0.12, DE:0.75, FR:0.65, PH:0.10, SG:0.70, global:0.55 };
