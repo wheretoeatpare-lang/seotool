@@ -9181,42 +9181,40 @@ async function rtGetUser() {
   return rtCurrentUserId;
 }
 
-// ── DuckDuckGo SERP proxies — same pattern as existing smart proxy ─
-const _RT_DDG_PROXIES = [
-  async (ddgUrl) => {
-    const res = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(ddgUrl), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error('allorigins ' + res.status);
-    const json = await res.json();
-    return json.contents || '';
-  },
-  async (ddgUrl) => {
-    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(ddgUrl), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error('corsproxy ' + res.status);
-    return await res.text();
-  },
-  async (ddgUrl) => {
-    const res = await fetch('https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(ddgUrl), { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error('codetabs ' + res.status);
-    return await res.text();
-  },
-  async (ddgUrl) => {
-    const res = await fetch('https://thingproxy.freeboard.io/fetch/' + ddgUrl, { signal: AbortSignal.timeout(12000) });
-    if (!res.ok) throw new Error('thingproxy ' + res.status);
-    return await res.text();
-  }
-];
-
-// ── Fetch real DDG SERP HTML — tries each proxy until one works ────
+// ── Fetch real DDG SERP — mirrors kwPanelFetchTopRankings exactly ─
 async function _rtFetchDDGHtml(keyword) {
-  // DuckDuckGo HTML endpoint — same one used in keyword research panel
   const ddgUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(keyword);
-  for (const proxy of _RT_DDG_PROXIES) {
+
+  // Proxy list — same order as existing keyword research panel
+  const proxies = [
+    'https://api.allorigins.win/get?url=' + encodeURIComponent(ddgUrl),
+    'https://corsproxy.io/?' + encodeURIComponent(ddgUrl),
+    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(ddgUrl),
+    'https://thingproxy.freeboard.io/fetch/' + ddgUrl,
+  ];
+
+  for (const proxyUrl of proxies) {
     try {
-      const html = await proxy(ddgUrl);
-      if (html && html.length > 500 && !/<title>.*?(429|rate|blocked)/i.test(html.slice(0,500))) {
-        console.log('[RT:DDG] ✅ Proxy succeeded');
+      const res = await Promise.race([
+        fetch(proxyUrl),
+        new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 12000))
+      ]);
+      if (!res.ok) { console.warn('[RT:DDG] Proxy returned', res.status); continue; }
+
+      let html = '';
+      const ct = res.headers.get('content-type') || '';
+      if (ct.includes('application/json')) {
+        const json = await res.json();
+        html = json.contents || json.body || '';
+      } else {
+        html = await res.text();
+      }
+
+      if (html && html.length > 500 && html.includes('result')) {
+        console.log('[RT:DDG] ✅ Got SERP HTML, length:', html.length);
         return html;
       }
+      console.warn('[RT:DDG] Proxy returned empty/invalid content, trying next');
     } catch(e) {
       console.warn('[RT:DDG] Proxy failed:', e.message);
     }
@@ -9224,30 +9222,67 @@ async function _rtFetchDDGHtml(keyword) {
   return null;
 }
 
-// ── Parse DDG HTML → extract top 100 results ──────────────────────
+// ── Parse DDG HTML → extract up to 100 results ───────────────────
 function _rtParseDDGResults(html) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   const results = [];
-  doc.querySelectorAll('.result,.results_links,.web-result').forEach(block => {
+
+  // Try multiple selector strategies DDG uses
+  const selectors = [
+    '.result:not(.result--ad)',
+    '.results_links',
+    '.web-result',
+    '[data-nr]',
+  ];
+
+  let blocks = [];
+  for (const sel of selectors) {
+    blocks = Array.from(doc.querySelectorAll(sel));
+    if (blocks.length > 0) break;
+  }
+
+  // Fallback: grab all links that look like organic results
+  if (!blocks.length) {
+    doc.querySelectorAll('a[href]').forEach(a => {
+      let href = a.getAttribute('href') || '';
+      if (href.includes('uddg=')) {
+        try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
+      }
+      if (href.startsWith('http') && !href.includes('duckduckgo.com') && results.length < 100) {
+        let domain = '';
+        try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
+        const title = a.textContent.trim();
+        if (title && domain && !results.some(r => r.domain === domain)) {
+          results.push({ position: results.length + 1, title, url: href, domain, desc: '' });
+        }
+      }
+    });
+    return results;
+  }
+
+  blocks.forEach(block => {
     if (results.length >= 100) return;
-    const titleEl = block.querySelector('.result__title,.result__a');
-    const linkEl  = block.querySelector('a.result__a,.result__title a');
-    const descEl  = block.querySelector('.result__snippet');
-    if (!titleEl || !linkEl) return;
+    const titleEl = block.querySelector('.result__title,.result__a,h2,h3');
+    const linkEl  = block.querySelector('a.result__a,.result__title a,a[href*="uddg"],a[href^="http"]');
+    const descEl  = block.querySelector('.result__snippet,.result__body,p');
+    if (!linkEl) return;
+
     let href = linkEl.getAttribute('href') || '';
-    // Decode DDG redirect URLs
     if (href.includes('uddg=')) {
       try { href = decodeURIComponent(href.split('uddg=')[1].split('&')[0]); } catch(e) {}
     }
-    if (!href.startsWith('http')) return;
-    const title  = titleEl.textContent.trim();
-    const desc   = descEl ? descEl.textContent.trim() : '';
-    let domain = '';
+    if (!href.startsWith('http') || href.includes('duckduckgo.com')) return;
+
+    const title = (titleEl || linkEl).textContent.trim();
+    const desc  = descEl ? descEl.textContent.trim() : '';
+    let domain  = '';
     try { domain = new URL(href).hostname.replace('www.', ''); } catch(e) {}
-    if (!title || !domain) return;
+    if (!domain) return;
+
     results.push({ position: results.length + 1, title, url: href, domain, desc });
   });
+
   return results;
 }
 
@@ -9384,15 +9419,15 @@ async function rtAddKeyword() {
   const url = (document.getElementById('rt-url-input').value||'').trim();
   const country = document.getElementById('rt-country-select').value;
 
-  if (!kw) { rtToast('UGH! Enter a keyword first!','var(--red)'); return; }
-  if (!url) { rtToast('UGH! Enter a target URL first!','var(--red)'); return; }
+  if (!kw) { rtToast('Please enter a keyword to track.','var(--red)'); return; }
+  if (!url) { rtToast('Please enter a target URL.','var(--red)'); return; }
 
   let cleanUrl = url;
   if (!cleanUrl.startsWith('http')) cleanUrl = 'https://' + cleanUrl;
-  try { new URL(cleanUrl); } catch(e) { rtToast('UGH! That URL looks wrong!','var(--red)'); return; }
+  try { new URL(cleanUrl); } catch(e) { rtToast('That URL does not appear to be valid. Please check and try again.','var(--red)'); return; }
 
   const userId = await rtGetUser();
-  if (!userId) { rtToast('Not logged in!','var(--red)'); return; }
+  if (!userId) { rtToast('You must be logged in to use Rank Tracker.','var(--red)'); return; }
 
   const btn = document.getElementById('rt-add-btn');
   btn.disabled = true; btn.textContent = 'Saving…';
@@ -9413,7 +9448,7 @@ async function rtAddKeyword() {
 
   document.getElementById('rt-kw-input').value = '';
   document.getElementById('rt-url-input').value = '';
-  rtToast('✅ Keyword added! UGH GOOD! Now run a rank check.','var(--green)');
+  rtToast('✅ Keyword added successfully. Running first rank check now…','var(--green)');
 
   rtKeywords.unshift(data);
   rtRenderTable();
@@ -9487,7 +9522,7 @@ async function rtCheckSingleKeyword(kw, isNew = false) {
 // ── Check ALL keywords ────────────────────────────────────────────
 async function rtCheckAll() {
   if (rtCheckingAll) { rtStopCheck = true; return; }
-  if (!rtKeywords.length) { rtToast('No keywords to check!','var(--amber)'); return; }
+  if (!rtKeywords.length) { rtToast('No keywords to check. Add a keyword first.','var(--amber)'); return; }
 
   rtCheckingAll = true;
   rtStopCheck = false;
@@ -9506,20 +9541,20 @@ async function rtCheckAll() {
   rtCheckingAll = false;
   rtStopCheck = false;
   btn.textContent = '🔄 Check All Rankings';
-  document.getElementById('rt-progress-txt').textContent = `✅ Done! Checked ${done} keywords.`;
+  document.getElementById('rt-progress-txt').textContent = `✅ Complete — checked ${done} keyword${done!==1?'s':''}.`;
   setTimeout(() => { document.getElementById('rt-progress-txt').textContent = ''; }, 4000);
 }
 
 // ── Delete keyword ────────────────────────────────────────────────
 async function rtDeleteKeyword(id) {
-  if (!confirm('Remove this keyword from tracking? UGH, this delete history too!')) return;
+  if (!confirm('Remove this keyword from tracking? This will also delete its rank history.')) return;
   const { error } = await sb.from('rank_tracker_keywords').delete().eq('id', id);
   if (error) { rtToast('Delete failed: ' + error.message,'var(--red)'); return; }
   rtKeywords = rtKeywords.filter(k => k.id !== id);
   delete rtHistoryMap[id];
   rtRenderTable();
   rtUpdateKpis();
-  rtToast('Keyword removed. UGH, gone forever.','var(--muted2)');
+  rtToast('Keyword removed from tracking.','var(--muted2)');
 }
 
 // ── Toggle history row ────────────────────────────────────────────
@@ -9631,7 +9666,7 @@ function rtRenderTableRow(kw) {
               <span class="rt-history-pos">${rtPosBadge(h.position)}</span>
               <span style="font-size:11px;color:var(--rt-muted2);flex:1">${h.found_url ? '→ ' + rtEsc(h.found_url.slice(0,60)) : ''}</span>
               <span style="font-size:10px;color:var(--rt-muted);background:var(--rt-surface2);padding:2px 8px;border-radius:4px">${h.ai_source || '—'}</span>
-            </div>`).join('') : '<div style="color:var(--rt-muted);font-size:12px;padding:8px 0">No history yet — run a check first!</div>'}
+            </div>`).join('') : '<div style="color:var(--rt-muted);font-size:12px;padding:8px 0">No history yet — run a rank check to see results here.</div>'}
         </div>
       </td>
     </tr>`;
