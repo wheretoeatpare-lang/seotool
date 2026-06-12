@@ -5979,7 +5979,43 @@ async function exportCrawlExcel() {
   background: var(--surface2); border: 1px solid var(--border);
   border-radius: 9px; padding: 10px 12px; font-size: 12px;
   color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
-  cursor: pointer; min-width: 100px;
+  cursor: pointer; min-width: 80px;
+}
+.kw-location-wrap {
+  display: flex; gap: 6px; align-items: center; flex-shrink: 0;
+}
+.kw-city-wrap {
+  position: relative;
+}
+.kw-city-input {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 12px; font-size: 12px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
+  width: 148px; transition: border-color 0.2s, width 0.2s;
+}
+.kw-city-input:focus { border-color: rgba(232,184,75,0.5); width: 170px; }
+.kw-city-input::placeholder { color: var(--muted); }
+.kw-city-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 999;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  max-height: 220px; overflow-y: auto;
+}
+.kw-city-opt {
+  padding: 8px 12px; font-size: 12px; color: var(--muted2);
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: background 0.1s, color 0.1s;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.kw-city-opt:last-child { border-bottom: none; }
+.kw-city-opt:hover, .kw-city-opt.highlighted { background: var(--gold-pale); color: var(--gold); }
+.kw-city-opt-name { font-weight: 500; }
+.kw-city-opt-meta { font-size: 10px; color: var(--muted); margin-left: auto; }
+.kw-local-badge {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 10px;
+  padding: 2px 7px; border-radius: 4px; background: rgba(96,165,250,0.12);
+  border: 1px solid rgba(96,165,250,0.25); color: var(--blue); margin-left: 8px;
 }
 .kw-check-btn {
   background: var(--gold); color: #000; border: none; border-radius: 9px;
@@ -6247,18 +6283,24 @@ canvas#kw-trend-chart { width: 100% !important; }
 
         <div class="kw-url-row">
           <input type="text" id="kw-panel-input" class="kw-input" placeholder="e.g. best seo tools 2026, keyword research…" autocomplete="off" spellcheck="false">
-          <select id="kw-panel-country" class="kw-country-sel">
-            <option value="US">🇺🇸 US</option>
-            <option value="GB">🇬🇧 UK</option>
-            <option value="PH" selected>🇵🇭 PH</option>
-            <option value="AU">🇦🇺 AU</option>
-            <option value="CA">🇨🇦 CA</option>
-            <option value="IN">🇮🇳 IN</option>
-            <option value="DE">🇩🇪 DE</option>
-            <option value="FR">🇫🇷 FR</option>
-            <option value="SG">🇸🇬 SG</option>
-            <option value="global">🌐 Global</option>
-          </select>
+          <div class="kw-location-wrap">
+            <select id="kw-panel-country" class="kw-country-sel" onchange="kwUpdateCityOptions()">
+              <option value="US">🇺🇸 US</option>
+              <option value="GB">🇬🇧 UK</option>
+              <option value="PH" selected>🇵🇭 PH</option>
+              <option value="AU">🇦🇺 AU</option>
+              <option value="CA">🇨🇦 CA</option>
+              <option value="IN">🇮🇳 IN</option>
+              <option value="DE">🇩🇪 DE</option>
+              <option value="FR">🇫🇷 FR</option>
+              <option value="SG">🇸🇬 SG</option>
+              <option value="global">🌐 Global</option>
+            </select>
+            <div class="kw-city-wrap" id="kw-city-wrap">
+              <input type="text" id="kw-panel-city" class="kw-city-input" placeholder="📍 City (optional)" autocomplete="off" spellcheck="false" oninput="kwCityInputChange()" onfocus="kwShowCitySuggest()" onblur="setTimeout(kwHideCitySuggest,200)">
+              <div class="kw-city-dropdown" id="kw-city-dropdown" style="display:none"></div>
+            </div>
+          </div>
           <button class="kw-check-btn" id="kw-panel-check-btn" onclick="kwPanelRunCheck()">Check Volume →</button>
         </div>
 
@@ -7816,24 +7858,198 @@ function kwSeededRNG(seed) {
   };
 }
 
+// ── LOCAL CITY DATA ───────────────────────────────────────────
+// Each city has: name, region (state/province), volMult (vs country avg), cpcMult, gl (Google geo code)
+const KW_CITIES = {
+  US: [
+    {name:'New York',       region:'NY', volMult:1.40, cpcMult:1.45, gl:'2112-US-NY'},
+    {name:'Los Angeles',    region:'CA', volMult:1.25, cpcMult:1.35, gl:'2110-US-CA'},
+    {name:'Chicago',        region:'IL', volMult:1.10, cpcMult:1.20, gl:'2113-US-IL'},
+    {name:'Houston',        region:'TX', volMult:1.05, cpcMult:1.10, gl:'2114-US-TX'},
+    {name:'Phoenix',        region:'AZ', volMult:0.85, cpcMult:0.95, gl:'2116-US-AZ'},
+    {name:'Philadelphia',   region:'PA', volMult:0.88, cpcMult:1.10, gl:'2115-US-PA'},
+    {name:'San Antonio',    region:'TX', volMult:0.75, cpcMult:0.90, gl:'2114-US-TX'},
+    {name:'San Diego',      region:'CA', volMult:0.90, cpcMult:1.15, gl:'2110-US-CA'},
+    {name:'Dallas',         region:'TX', volMult:1.00, cpcMult:1.05, gl:'2114-US-TX'},
+    {name:'Miami',          region:'FL', volMult:1.00, cpcMult:1.20, gl:'2111-US-FL'},
+    {name:'Atlanta',        region:'GA', volMult:0.95, cpcMult:1.05, gl:'2117-US-GA'},
+    {name:'Seattle',        region:'WA', volMult:0.92, cpcMult:1.30, gl:'2118-US-WA'},
+    {name:'San Francisco',  region:'CA', volMult:0.95, cpcMult:1.55, gl:'2110-US-CA'},
+    {name:'Denver',         region:'CO', volMult:0.80, cpcMult:1.10, gl:'2119-US-CO'},
+    {name:'Las Vegas',      region:'NV', volMult:0.85, cpcMult:1.00, gl:'2120-US-NV'},
+  ],
+  PH: [
+    {name:'Manila',         region:'NCR',    volMult:1.55, cpcMult:1.50, gl:'9048-PH'},
+    {name:'Quezon City',    region:'NCR',    volMult:1.30, cpcMult:1.30, gl:'9050-PH'},
+    {name:'Cebu City',      region:'VII',    volMult:1.10, cpcMult:1.10, gl:'9049-PH'},
+    {name:'Davao City',     region:'XI',     volMult:0.95, cpcMult:0.95, gl:'9051-PH'},
+    {name:'Taguig',         region:'NCR',    volMult:1.20, cpcMult:1.35, gl:'9052-PH'},
+    {name:'Makati',         region:'NCR',    volMult:1.25, cpcMult:1.45, gl:'9053-PH'},
+    {name:'Pasig',          region:'NCR',    volMult:1.10, cpcMult:1.20, gl:'9054-PH'},
+    {name:'Tarlac City',    region:'Tarlac', volMult:0.65, cpcMult:0.75, gl:'9055-PH'},
+    {name:'Baguio',         region:'CAR',    volMult:0.60, cpcMult:0.70, gl:'9056-PH'},
+    {name:'Iloilo City',    region:'VI',     volMult:0.70, cpcMult:0.80, gl:'9057-PH'},
+    {name:'Cagayan de Oro', region:'X',      volMult:0.72, cpcMult:0.78, gl:'9058-PH'},
+    {name:'Zamboanga City', region:'IX',     volMult:0.58, cpcMult:0.65, gl:'9059-PH'},
+    {name:'Caloocan',       region:'NCR',    volMult:0.90, cpcMult:0.95, gl:'9060-PH'},
+    {name:'Antipolo',       region:'IV-A',   volMult:0.72, cpcMult:0.80, gl:'9061-PH'},
+    {name:'Bacoor',         region:'IV-A',   volMult:0.65, cpcMult:0.72, gl:'9062-PH'},
+  ],
+  GB: [
+    {name:'London',         region:'England', volMult:1.55, cpcMult:1.50, gl:'1006886-GB'},
+    {name:'Birmingham',     region:'England', volMult:0.90, cpcMult:1.00, gl:'1006886-GB'},
+    {name:'Manchester',     region:'England', volMult:0.95, cpcMult:1.05, gl:'1006886-GB'},
+    {name:'Glasgow',        region:'Scotland',volMult:0.80, cpcMult:0.90, gl:'1006886-GB'},
+    {name:'Leeds',          region:'England', volMult:0.78, cpcMult:0.92, gl:'1006886-GB'},
+    {name:'Liverpool',      region:'England', volMult:0.80, cpcMult:0.90, gl:'1006886-GB'},
+    {name:'Edinburgh',      region:'Scotland',volMult:0.82, cpcMult:0.95, gl:'1006886-GB'},
+    {name:'Bristol',        region:'England', volMult:0.75, cpcMult:0.95, gl:'1006886-GB'},
+  ],
+  AU: [
+    {name:'Sydney',         region:'NSW',    volMult:1.45, cpcMult:1.40, gl:'21158-AU'},
+    {name:'Melbourne',      region:'VIC',    volMult:1.35, cpcMult:1.35, gl:'21155-AU'},
+    {name:'Brisbane',       region:'QLD',    volMult:1.00, cpcMult:1.10, gl:'21156-AU'},
+    {name:'Perth',          region:'WA',     volMult:0.85, cpcMult:1.00, gl:'21159-AU'},
+    {name:'Adelaide',       region:'SA',     volMult:0.72, cpcMult:0.95, gl:'21157-AU'},
+    {name:'Gold Coast',     region:'QLD',    volMult:0.70, cpcMult:1.00, gl:'21156-AU'},
+    {name:'Canberra',       region:'ACT',    volMult:0.58, cpcMult:1.05, gl:'21154-AU'},
+  ],
+  CA: [
+    {name:'Toronto',        region:'ON',     volMult:1.45, cpcMult:1.35, gl:'1003249-CA'},
+    {name:'Montreal',       region:'QC',     volMult:1.10, cpcMult:1.10, gl:'1003249-CA'},
+    {name:'Vancouver',      region:'BC',     volMult:1.05, cpcMult:1.30, gl:'1003249-CA'},
+    {name:'Calgary',        region:'AB',     volMult:0.88, cpcMult:1.10, gl:'1003249-CA'},
+    {name:'Edmonton',       region:'AB',     volMult:0.78, cpcMult:1.00, gl:'1003249-CA'},
+    {name:'Ottawa',         region:'ON',     volMult:0.75, cpcMult:1.10, gl:'1003249-CA'},
+  ],
+  IN: [
+    {name:'Mumbai',         region:'MH',     volMult:1.50, cpcMult:1.35, gl:'2380-IN'},
+    {name:'Delhi',          region:'DL',     volMult:1.55, cpcMult:1.30, gl:'2380-IN'},
+    {name:'Bangalore',      region:'KA',     volMult:1.40, cpcMult:1.40, gl:'2380-IN'},
+    {name:'Hyderabad',      region:'TS',     volMult:1.10, cpcMult:1.20, gl:'2380-IN'},
+    {name:'Chennai',        region:'TN',     volMult:1.00, cpcMult:1.10, gl:'2380-IN'},
+    {name:'Kolkata',        region:'WB',     volMult:0.90, cpcMult:0.90, gl:'2380-IN'},
+    {name:'Pune',           region:'MH',     volMult:0.95, cpcMult:1.15, gl:'2380-IN'},
+    {name:'Ahmedabad',      region:'GJ',     volMult:0.80, cpcMult:0.95, gl:'2380-IN'},
+  ],
+  DE: [
+    {name:'Berlin',         region:'BE',     volMult:1.40, cpcMult:1.30, gl:'1003854-DE'},
+    {name:'Hamburg',        region:'HH',     volMult:1.05, cpcMult:1.10, gl:'1003854-DE'},
+    {name:'Munich',         region:'BY',     volMult:1.15, cpcMult:1.25, gl:'1003854-DE'},
+    {name:'Frankfurt',      region:'HE',     volMult:0.95, cpcMult:1.20, gl:'1003854-DE'},
+    {name:'Cologne',        region:'NW',     volMult:0.88, cpcMult:1.05, gl:'1003854-DE'},
+  ],
+  FR: [
+    {name:'Paris',          region:'IDF',    volMult:1.55, cpcMult:1.45, gl:'1003854-FR'},
+    {name:'Marseille',      region:'PACA',   volMult:0.85, cpcMult:0.95, gl:'1003854-FR'},
+    {name:'Lyon',           region:'ARA',    volMult:0.88, cpcMult:1.00, gl:'1003854-FR'},
+    {name:'Toulouse',       region:'OCC',    volMult:0.75, cpcMult:0.90, gl:'1003854-FR'},
+    {name:'Nice',           region:'PACA',   volMult:0.70, cpcMult:0.92, gl:'1003854-FR'},
+  ],
+  SG: [
+    {name:'Singapore City', region:'Central',volMult:1.55, cpcMult:1.40, gl:'1003854-SG'},
+    {name:'Jurong East',    region:'West',   volMult:0.80, cpcMult:0.95, gl:'1003854-SG'},
+    {name:'Tampines',       region:'East',   volMult:0.75, cpcMult:0.90, gl:'1003854-SG'},
+    {name:'Woodlands',      region:'North',  volMult:0.70, cpcMult:0.85, gl:'1003854-SG'},
+  ],
+  global: []
+};
+
+// City multiplier lookup helper
+function kwGetCityMult(country, cityName) {
+  if (!cityName) return { volMult: 1.0, cpcMult: 1.0 };
+  const cities = KW_CITIES[country] || [];
+  const city = cities.find(c => c.name.toLowerCase() === cityName.toLowerCase());
+  return city ? { volMult: city.volMult, cpcMult: city.cpcMult } : { volMult: 0.8, cpcMult: 0.85 };
+}
+
+// ── City UI functions ─────────────────────────────────────────
+let kwCityList = [];
+function kwUpdateCityOptions() {
+  const country = document.getElementById('kw-panel-country').value;
+  kwCityList = KW_CITIES[country] || [];
+  const cityInput = document.getElementById('kw-panel-city');
+  const cityWrap = document.getElementById('kw-city-wrap');
+  if (!kwCityList.length) {
+    cityInput.value = '';
+    cityWrap.style.opacity = '0.45';
+    cityWrap.style.pointerEvents = 'none';
+    cityInput.placeholder = '📍 No cities';
+  } else {
+    cityWrap.style.opacity = '1';
+    cityWrap.style.pointerEvents = 'auto';
+    cityInput.value = '';
+    cityInput.placeholder = '📍 City (optional)';
+  }
+  kwHideCitySuggest();
+}
+function kwCityInputChange() {
+  const q = document.getElementById('kw-panel-city').value.toLowerCase().trim();
+  const country = document.getElementById('kw-panel-country').value;
+  const cities = KW_CITIES[country] || [];
+  const filtered = q ? cities.filter(c => c.name.toLowerCase().includes(q) || c.region.toLowerCase().includes(q)) : cities;
+  kwRenderCityDropdown(filtered);
+}
+function kwShowCitySuggest() {
+  const country = document.getElementById('kw-panel-country').value;
+  const cities = KW_CITIES[country] || [];
+  if (!cities.length) return;
+  kwRenderCityDropdown(cities);
+}
+function kwHideCitySuggest() {
+  const dd = document.getElementById('kw-city-dropdown');
+  if (dd) dd.style.display = 'none';
+}
+function kwRenderCityDropdown(cities) {
+  const dd = document.getElementById('kw-city-dropdown');
+  if (!dd || !cities.length) { if(dd) dd.style.display='none'; return; }
+  dd.innerHTML = cities.slice(0,10).map((c,i) => {
+    const tag = c.volMult >= 1.3 ? '🔥 High' : c.volMult >= 0.9 ? '📊 Med' : '📉 Low';
+    return `<div class="kw-city-opt" onmousedown="kwSelectCity('${c.name.replace(/'/g,"\\'")}')">
+      <span class="kw-city-opt-name">📍 ${c.name}</span>
+      <span style="font-size:10px;color:var(--muted)">${c.region}</span>
+      <span class="kw-city-opt-meta">${tag} vol</span>
+    </div>`;
+  }).join('');
+  if (!cities.length) { dd.style.display='none'; return; }
+  dd.style.display = 'block';
+}
+function kwSelectCity(name) {
+  document.getElementById('kw-panel-city').value = name;
+  kwHideCitySuggest();
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => { kwUpdateCityOptions(); });
+
 const KW_COUNTRY_VOL = { US:1.0, GB:0.28, AU:0.12, CA:0.18, IN:0.75, DE:0.22, FR:0.18, PH:0.08, SG:0.04, global:3.8 };
 const KW_COUNTRY_CPC = { US:1.0, GB:0.85, AU:0.90, CA:0.80, IN:0.12, DE:0.75, FR:0.65, PH:0.10, SG:0.70, global:0.55 };
 const KW_INTENT_CPC  = { Transactional:2.8, Commercial:1.9, Informational:0.55, Navigational:0.30 };
 
-function kwAnalyzeKeyword(kw, country) {
-  const rng = kwSeededRNG(kw.toLowerCase() + country);
+function kwAnalyzeKeyword(kw, country, city) {
+  const rng = kwSeededRNG(kw.toLowerCase() + country + (city||''));
   const words = kw.toLowerCase().split(/\s+/), len = words.length;
   let baseVolUS;
   if (len===1)      baseVolUS = Math.round((80000  + rng()*920000)/1000)*1000;
   else if (len===2) baseVolUS = Math.round((8000   + rng()*142000)/500)*500;
   else if (len===3) baseVolUS = Math.round((1000   + rng()*29000)/100)*100;
   else              baseVolUS = Math.round((100    + rng()*4900)/100)*100;
-  const volMult = KW_COUNTRY_VOL[country]||0.4;
-  const volume  = Math.max(100, Math.round(baseVolUS*volMult/100)*100);
+  const countryVolMult = KW_COUNTRY_VOL[country]||0.4;
+  const cityMults = kwGetCityMult(country, city);
+  // City narrows the scope: volume = country_volume × city_vol_share
+  // city.volMult is relative to country average (1.0 = avg city for that country)
+  // We estimate city volume as a fraction of country total
+  const cityShareMap = { US:0.08, GB:0.18, PH:0.20, AU:0.22, CA:0.16, IN:0.06, DE:0.14, FR:0.20, SG:0.40 };
+  const cityShareBase = city ? (cityShareMap[country]||0.12) : 1.0;
+  const cityVolShare = city ? cityShareBase * cityMults.volMult : 1.0;
+  const volMult = countryVolMult * cityVolShare;
+  const volume  = Math.max(50, Math.round(baseVolUS*volMult/100)*100);
   const volLow  = Math.round(volume*0.65), volHigh = Math.round(volume*1.5);
   const rawDiff = Math.round(25 + rng()*60);
+  // Local searches tend to have lower competition (less nationwide brands competing)
+  const localAdj = city ? -8 : 0;
   const diffAdj = len===1?18:len===2?8:len>=4?-12:0;
-  const difficulty = Math.min(98, Math.max(5, rawDiff+diffAdj));
+  const difficulty = Math.min(98, Math.max(5, rawDiff+diffAdj+localAdj));
   const intentSignals = {
     transactional:['buy','price','cheap','discount','coupon','deal','shop','order','purchase','hire','cost','get','download','subscribe','checkout'],
     commercial:   ['best','top','review','vs','compare','alternative','tool','software','plugin','app','platform','recommend'],
@@ -7846,7 +8062,7 @@ function kwAnalyzeKeyword(kw, country) {
     }
   }
   const cpcBase = 0.20 + rng()*5.80;
-  const cpcMult = (KW_INTENT_CPC[intent]||1.0) * (KW_COUNTRY_CPC[country]||0.4);
+  const cpcMult = (KW_INTENT_CPC[intent]||1.0) * (KW_COUNTRY_CPC[country]||0.4) * (city ? cityMults.cpcMult : 1.0);
   const cpc  = parseFloat(Math.max(0.05, cpcBase*cpcMult).toFixed(2));
   const comp = parseFloat(Math.min(0.99, Math.max(0.02, (cpcBase/6.0)*0.72 + rng()*0.28)).toFixed(2));
   const trendData = []; let tv = volume*(0.75+rng()*0.50);
@@ -7859,7 +8075,7 @@ function kwAnalyzeKeyword(kw, country) {
   if (intent==='Informational'&&rng()>0.60) serpFeatures.push('Video Results');
   if (intent==='Transactional'&&rng()>0.50) serpFeatures.push('Shopping');
   if (rng()>0.80) serpFeatures.push('Knowledge Panel');
-  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendData, trendPct, intent, serpFeatures, country };
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendData, trendPct, intent, serpFeatures, country, city: city||'' };
 }
 
 function kwFmtVol(n){if(n>=1000000)return(n/1000000).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString();}
@@ -7868,7 +8084,7 @@ function kwCapFirst(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
 function kwGetLast12Months(){const m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],now=new Date(),res=[];for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);res.push(m[d.getMonth()]+' '+d.getFullYear().toString().slice(2));}return res;}
 
 // ── Autocomplete ──────────────────────────────────────────────
-function kwFetchAutocomplete(kw, country, callback) {
+function kwFetchAutocomplete(kw, country, callback, city) {
   const cbName = '_kwgac_' + Date.now() + '_' + Math.floor(Math.random()*9999);
   const script = document.createElement('script'); let settled = false;
   function settle(s) { if (settled) return; settled=true; try{document.head.removeChild(script);}catch(e){} delete window[cbName]; callback(s); }
@@ -7880,7 +8096,9 @@ function kwFetchAutocomplete(kw, country, callback) {
   };
   const hlMap={US:'en',GB:'en',PH:'en',AU:'en',CA:'en',IN:'hi',DE:'de',FR:'fr',SG:'en',global:'en'};
   const hl=hlMap[country]||'en', gl=(country&&country!=='global')?`&gl=${country.toLowerCase()}`:'';
-  script.src=`https://suggestqueries.google.com/complete/search?client=chrome&hl=${hl}${gl}&q=${encodeURIComponent(kw)}&callback=${cbName}`;
+  // When a city is set, bias the autocomplete query with the city name for local intent
+  const localQ = (city && country !== 'global') ? `${kw} ${city}` : kw;
+  script.src=`https://suggestqueries.google.com/complete/search?client=chrome&hl=${hl}${gl}&q=${encodeURIComponent(localQ)}&callback=${cbName}`;
   document.head.appendChild(script);
 }
 
@@ -7896,34 +8114,38 @@ function kwFallbackRelated(kw) {
 const KW_OR_MODEL = 'nemotron-3-super-120b-a12b:free';
 const KW_OR_WORKER = 'https://nemotron-ai-ranksorcer.webmasterjamez.workers.dev/';
 
-async function kwCallNemotron(keyword, country) {
+async function kwCallNemotron(keyword, country, city) {
   const countryNames = { US:'United States', GB:'United Kingdom', PH:'Philippines', AU:'Australia', CA:'Canada', IN:'India', DE:'Germany', FR:'France', SG:'Singapore', global:'Global/Worldwide' };
   const countryName = countryNames[country] || country;
+  const locationLabel = (city && country !== 'global') ? `${city}, ${countryName}` : countryName;
+  const localNote = (city && country !== 'global')
+    ? `\n\nIMPORTANT: This is a LOCAL search for the city of "${city}" within ${countryName}. Adjust volume DOWNWARD significantly vs. country-level (city typically = 5–25% of national volume, vary by city size). Difficulty should reflect local competition (usually 8–15 points lower than national). CPC may be slightly higher or lower than national average depending on local advertiser density. The aiSummary should explicitly mention local SEO opportunity for ${city}.`
+    : '';
 
-  const prompt = `You are a senior SEO data analyst. Provide accurate, realistic keyword research data for the keyword "${keyword}" in the country: ${countryName}.
+  const prompt = `You are a senior SEO data analyst. Provide accurate, realistic keyword research data for the keyword "${keyword}" in the location: ${locationLabel}.${localNote}
 
 Return ONLY a valid JSON object with these exact fields — no markdown, no explanation, just the raw JSON:
 
 {
-  "volume": <integer — realistic monthly search volume, e.g. 12000>,
+  "volume": <integer — realistic monthly LOCAL search volume for ${locationLabel}, e.g. 1200>,
   "volLow": <integer — low end of volume range, ~65% of volume>,
   "volHigh": <integer — high end of volume range, ~150% of volume>,
-  "difficulty": <integer 0-100 — organic keyword difficulty>,
-  "cpc": <float — avg cost per click in USD, e.g. 1.45>,
+  "difficulty": <integer 0-100 — organic keyword difficulty for local results>,
+  "cpc": <float — avg cost per click in USD for ${locationLabel}, e.g. 1.45>,
   "comp": <float 0-1 — paid competition score, e.g. 0.72>,
   "trendPct": <integer — 12-month trend percentage change, e.g. 15 or -8>,
   "trendData": [<array of 12 integers — monthly search volume estimates oldest to newest>],
   "intent": <"Informational" | "Transactional" | "Commercial" | "Navigational">,
-  "serpFeatures": [<array of strings from: "Featured Snippet","People Also Ask","Image Pack","Video Results","Shopping","Knowledge Panel">],
-  "aiSummary": "<2-3 sentence HTML string with <strong> tags highlighting key stats, search intent advice, and ranking opportunity>",
+  "serpFeatures": [<array of strings from: "Featured Snippet","People Also Ask","Image Pack","Video Results","Shopping","Knowledge Panel","Local Pack">],
+  "aiSummary": "<2-3 sentence HTML string with <strong> tags highlighting key stats, search intent advice, and ranking opportunity${city ? ` specifically for ${city}` : ''}>",
   "contentAngles": [
-    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},
-    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"},
-    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword>"}
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword in ${locationLabel}>"},
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword in ${locationLabel}>"},
+    {"icon":"<emoji>","title":"<content type>","desc":"<specific actionable advice for this exact keyword in ${locationLabel}>"}
   ]
 }
 
-Be realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${countryName}. Do not invent inflated numbers.`;
+Be realistic and accurate. Base volume on actual SEO industry knowledge for "${keyword}" in ${locationLabel}. Do not invent inflated numbers.`;
 
   try {
     console.log('[KW:Nemotron] Calling Naga.ac worker with model:', KW_OR_MODEL);
@@ -8064,6 +8286,7 @@ async function kwPanelRunCheck() {
   kwPanelHideError();
   const kw = document.getElementById('kw-panel-input').value.trim();
   const country = document.getElementById('kw-panel-country').value;
+  const city = (document.getElementById('kw-panel-city').value||'').trim();
 
   // BULK MODE
   if (kwPanelBulkMode) {
@@ -8079,11 +8302,11 @@ async function kwPanelRunCheck() {
     kwPanelBulkData = [];
     for (const keyword of keywords) {
       kwPanelSetStep(1,'active');
-      const aiResult = await kwCallNemotron(keyword, country);
+      const aiResult = await kwCallNemotron(keyword, country, city);
       if (aiResult) {
-        kwPanelBulkData.push(kwMergeAiData(keyword, country, aiResult));
+        kwPanelBulkData.push(kwMergeAiData(keyword, country, aiResult, city));
       } else {
-        kwPanelBulkData.push(kwAnalyzeKeyword(keyword, country));
+        kwPanelBulkData.push(kwAnalyzeKeyword(keyword, country, city));
       }
     }
 
@@ -8097,17 +8320,17 @@ async function kwPanelRunCheck() {
   kwPanelHideAll();
   document.getElementById('kw-panel-check-btn').disabled = true;
   kwPanelShowInlineStatus(true);
-  document.getElementById('kw-inline-text').textContent = 'Asking Nemotron AI for real data…';
+  document.getElementById('kw-inline-text').textContent = city ? `Asking Nemotron AI for local data in ${city}…` : 'Asking Nemotron AI for real data…';
 
   // Step 1 — Volume (Nemotron call happens here)
   kwPanelSetStep(1,'active');
-  const aiResult = await kwCallNemotron(kw, country);
+  const aiResult = await kwCallNemotron(kw, country, city);
 
   let data, aiSummary, contentAngles;
 
   if (aiResult) {
     // ✅ Nemotron returned real data
-    data = kwMergeAiData(kw, country, aiResult);
+    data = kwMergeAiData(kw, country, aiResult, city);
     aiSummary = aiResult.aiSummary || kwGenerateAISummary(data);
     contentAngles = Array.isArray(aiResult.contentAngles) && aiResult.contentAngles.length
       ? aiResult.contentAngles
@@ -8115,7 +8338,7 @@ async function kwPanelRunCheck() {
     console.log('[KW] Using Nemotron real data');
   } else {
     // ⚠ Fallback to seeded RNG
-    data = kwAnalyzeKeyword(kw, country);
+    data = kwAnalyzeKeyword(kw, country, city);
     aiSummary = kwGenerateAISummary(data);
     contentAngles = null;
     console.warn('[KW] Nemotron failed — using seeded RNG fallback');
@@ -8134,8 +8357,8 @@ async function kwPanelRunCheck() {
     kwFetchAutocomplete(kw, country, sugg => {
       const list = sugg || kwFallbackRelated(kw);
       // For related keywords, use RNG (no extra API calls to preserve free quota)
-      resolve(list.map(s => kwAnalyzeKeyword(s, country)));
-    });
+      resolve(list.map(s => kwAnalyzeKeyword(s, country, city)));
+    }, city);
   });
 
   kwPanelSetStep(4,'done'); kwPanelSetStep(5,'active');
@@ -8152,7 +8375,7 @@ async function kwPanelRunCheck() {
 }
 
 // ── Merge Nemotron AI data into the standard data shape ───────
-function kwMergeAiData(kw, country, ai) {
+function kwMergeAiData(kw, country, ai, city) {
   // Clamp and sanitize all fields from Nemotron
   const volume    = Math.max(10, Math.round(Number(ai.volume) || 0));
   const volLow    = Math.max(10, Math.round(Number(ai.volLow) || volume * 0.65));
@@ -8175,7 +8398,7 @@ function kwMergeAiData(kw, country, ai) {
         return arr;
       })();
 
-  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendPct, trendData, intent, serpFeatures, country, _source: 'nemotron' };
+  return { kw, volume, volLow, volHigh, difficulty, cpc, comp, trendPct, trendData, intent, serpFeatures, country, city: city||'', _source: 'nemotron' };
 }
 
 // ── Render single results ─────────────────────────────────────
@@ -8190,6 +8413,16 @@ function kwPanelRenderResults(data, related, aiSummary, country, contentAngles) 
   document.getElementById('kw-res-diff-badge').className = 'kw-badge ' + diffCls;
   document.getElementById('kw-res-diff-badge').textContent = diffLbl + ' KD';
   document.getElementById('kw-res-intent-badge').textContent = data.intent;
+  // Local city badge
+  const existingLocal = document.getElementById('kw-local-badge');
+  if (existingLocal) existingLocal.remove();
+  if (data.city) {
+    const localBadge = document.createElement('span');
+    localBadge.id = 'kw-local-badge';
+    localBadge.className = 'kw-local-badge';
+    localBadge.innerHTML = `📍 ${data.city}`;
+    document.getElementById('kw-res-diff-badge').after(localBadge);
+  }
   // Source badge
   const existingBadge = document.getElementById('kw-source-badge');
   if (existingBadge) existingBadge.remove();
