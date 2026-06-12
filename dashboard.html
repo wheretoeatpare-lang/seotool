@@ -1885,7 +1885,7 @@ tr.row-zap td {
     <a class="sidebar-link" href="#" id="sidebar-favicon-link" onclick="showFaviconChecker(event)">
       <span class="sidebar-icon">🦴</span> Favicon Checker
     </a>
-    <a class="sidebar-link" href="/serp-rank-tracker.html">
+    <a class="sidebar-link" href="#" id="sidebar-ranktracker-link" onclick="showRankTracker(event)">
       <span class="sidebar-icon">📈</span> Rank Tracker
     </a>
     <a class="sidebar-link" href="#" id="sidebar-keyword-link" onclick="showKeywordResearch(event)">
@@ -6578,6 +6578,319 @@ canvas#kw-trend-chart { width: 100% !important; }
 
     </div><!-- end keyword-research-view -->
 
+    <!-- ══════════════ RANK TRACKER VIEW ══════════════ -->
+    <div id="rank-tracker-view" style="display:none">
+
+<style>
+/* ── Rank Tracker — Scoped Styles ── */
+#rank-tracker-view {
+  --rt-gold: #E8B84B;
+  --rt-gold-pale: rgba(232,184,75,0.10);
+  --rt-gold-dim: #c49a30;
+  --rt-border: rgba(232,184,75,0.15);
+  --rt-border2: rgba(232,184,75,0.28);
+  --rt-surface: #141416;
+  --rt-surface2: #1c1c1f;
+  --rt-surface3: #222226;
+  --rt-green: #4ade80;
+  --rt-green-pale: rgba(74,222,128,0.10);
+  --rt-red: #f87171;
+  --rt-red-pale: rgba(248,113,113,0.10);
+  --rt-blue: #60a5fa;
+  --rt-teal: #0ABFBC;
+  --rt-teal-pale: rgba(10,191,188,0.10);
+  --rt-amber: #fbbf24;
+  --rt-muted: #6a6865;
+  --rt-muted2: #9a9890;
+}
+
+.rt-hero { margin-bottom: 28px; }
+.rt-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--rt-teal); opacity: 0.9;
+  margin-bottom: 8px;
+}
+.rt-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(20px, 2.5vw, 28px);
+  font-weight: 600; line-height: 1.2; color: var(--text); margin-bottom: 6px;
+}
+.rt-title em { font-style: normal; color: var(--rt-gold); }
+.rt-sub { font-size: 13px; color: var(--rt-muted2); max-width: 560px; line-height: 1.55; }
+
+/* KPI row */
+.rt-kpi-row {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 10px; margin-bottom: 22px;
+}
+.rt-kpi-card {
+  background: var(--rt-surface); border: 1px solid var(--rt-border);
+  border-radius: 12px; padding: 16px 18px;
+}
+.rt-kpi-lbl { font-size: 10px; color: var(--rt-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.rt-kpi-val { font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
+.rt-kpi-sub { font-size: 11px; color: var(--rt-muted); margin-top: 3px; }
+
+/* Add keyword card */
+.rt-add-card {
+  background: var(--rt-surface); border: 1px solid var(--rt-border);
+  border-radius: 14px; padding: 20px; margin-bottom: 20px;
+}
+.rt-add-title {
+  font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase; color: var(--text);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.rt-input-row {
+  display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 8px;
+  align-items: center; flex-wrap: wrap;
+}
+.rt-input {
+  background: var(--rt-surface2); border: 1px solid var(--rt-border);
+  border-radius: 9px; padding: 10px 14px; font-size: 13px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
+  transition: border-color 0.2s; width: 100%;
+}
+.rt-input:focus { border-color: rgba(232,184,75,0.5); }
+.rt-input::placeholder { color: var(--rt-muted); }
+.rt-select {
+  background: var(--rt-surface2); border: 1px solid var(--rt-border);
+  border-radius: 9px; padding: 10px 12px; font-size: 13px;
+  color: var(--text); font-family: 'DM Sans', sans-serif; outline: none;
+  cursor: pointer; width: 100%;
+}
+.rt-add-btn {
+  background: var(--rt-gold); color: #000; border: none; border-radius: 9px;
+  padding: 10px 20px; font-size: 13px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; cursor: pointer;
+  transition: opacity 0.15s; white-space: nowrap;
+}
+.rt-add-btn:hover { opacity: 0.88; }
+.rt-add-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.rt-bulk-hint { font-size: 11px; color: var(--rt-muted2); margin-top: 8px; }
+
+/* Check All bar */
+.rt-action-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.rt-action-left { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.rt-btn-outline {
+  font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 8px;
+  background: none; border: 1px solid var(--rt-border2); color: var(--rt-muted2);
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.rt-btn-outline:hover { color: var(--rt-gold); border-color: var(--rt-gold); background: var(--rt-gold-pale); }
+.rt-btn-outline:disabled { opacity: 0.45; cursor: not-allowed; }
+.rt-btn-check {
+  font-size: 12px; font-weight: 700; padding: 7px 18px; border-radius: 8px;
+  background: var(--rt-teal-pale); border: 1px solid rgba(10,191,188,0.3); color: var(--rt-teal);
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.rt-btn-check:hover { background: rgba(10,191,188,0.18); }
+.rt-btn-check:disabled { opacity: 0.45; cursor: not-allowed; }
+.rt-progress-txt { font-size: 11px; color: var(--rt-muted2); }
+
+/* Keywords table */
+.rt-table-wrap {
+  background: var(--rt-surface); border: 1px solid var(--rt-border);
+  border-radius: 14px; overflow: hidden; margin-bottom: 24px;
+}
+.rt-table { width: 100%; border-collapse: collapse; }
+.rt-table th {
+  padding: 10px 16px; background: var(--rt-surface2); text-align: left;
+  font-size: 10px; font-weight: 700; color: var(--rt-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--rt-border);
+}
+.rt-table td { padding: 12px 16px; border-bottom: 1px solid rgba(232,184,75,0.06); font-size: 13px; vertical-align: middle; }
+.rt-table tr:last-child td { border-bottom: none; }
+.rt-table tr:hover td { background: rgba(232,184,75,0.02); }
+.rt-kw-cell { font-weight: 600; color: var(--text); }
+.rt-url-cell { font-size: 11px; color: var(--rt-muted2); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rt-pos-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-weight: 700; font-size: 1rem;
+  min-width: 40px; height: 36px; border-radius: 8px; padding: 0 10px;
+}
+.rt-pos-1-3  { background: rgba(74,222,128,0.12); color: var(--rt-green); border: 1px solid rgba(74,222,128,0.3); }
+.rt-pos-4-10 { background: var(--rt-teal-pale); color: var(--rt-teal); border: 1px solid rgba(10,191,188,0.3); }
+.rt-pos-11-20{ background: rgba(232,184,75,0.10); color: var(--rt-gold); border: 1px solid var(--rt-border2); }
+.rt-pos-21p  { background: rgba(248,113,113,0.10); color: var(--rt-red); border: 1px solid rgba(248,113,113,0.2); }
+.rt-pos-none { background: var(--rt-surface2); color: var(--rt-muted); border: 1px solid var(--rt-border); font-size: 11px; }
+
+.rt-delta-up   { color: var(--rt-green); font-size: 12px; font-weight: 700; }
+.rt-delta-down { color: var(--rt-red); font-size: 12px; font-weight: 700; }
+.rt-delta-same { color: var(--rt-muted); font-size: 12px; }
+.rt-delta-new  { color: var(--rt-teal); font-size: 11px; font-weight: 600; }
+
+.rt-scan-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--rt-teal-pale); border: 1px solid rgba(10,191,188,0.25);
+  color: var(--rt-teal); font-size: 11px; padding: 3px 9px; border-radius: 5px;
+}
+.rt-scan-spin {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: 1.5px solid rgba(10,191,188,0.3); border-top-color: var(--rt-teal);
+  animation: rtSpin 0.7s linear infinite;
+}
+@keyframes rtSpin { to { transform: rotate(360deg); } }
+
+.rt-action-cell { display: flex; gap: 6px; align-items: center; }
+.rt-icon-btn {
+  background: none; border: 1px solid var(--rt-border); border-radius: 6px;
+  color: var(--rt-muted2); font-size: 12px; padding: 4px 8px;
+  cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+}
+.rt-icon-btn:hover { color: var(--rt-gold); border-color: var(--rt-gold); background: var(--rt-gold-pale); }
+.rt-icon-btn.danger:hover { color: var(--rt-red); border-color: rgba(248,113,113,0.4); background: var(--rt-red-pale); }
+
+/* History panel */
+.rt-history-panel {
+  display: none; background: var(--rt-surface2); border: 1px solid var(--rt-border);
+  border-radius: 12px; padding: 16px; margin-top: 8px;
+}
+.rt-history-panel.open { display: block; }
+.rt-history-title { font-size: 11px; font-weight: 700; color: var(--rt-muted); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 10px; }
+.rt-history-row {
+  display: flex; align-items: center; gap: 10px; padding: 6px 0;
+  border-bottom: 1px solid rgba(232,184,75,0.05); font-size: 12px;
+}
+.rt-history-row:last-child { border-bottom: none; }
+.rt-history-date { color: var(--rt-muted); min-width: 120px; }
+.rt-history-pos { font-weight: 700; min-width: 36px; }
+
+/* Mini spark chart */
+.rt-spark-wrap { display: flex; align-items: flex-end; gap: 2px; height: 28px; }
+.rt-spark-bar { width: 6px; border-radius: 2px 2px 0 0; background: var(--rt-teal); opacity: 0.7; transition: opacity 0.15s; min-height: 3px; }
+.rt-spark-bar:hover { opacity: 1; }
+
+/* AI insight card */
+.rt-ai-card {
+  background: var(--rt-gold-pale); border: 1px solid var(--rt-border2);
+  border-radius: 12px; padding: 14px 18px; margin-top: 14px;
+  font-size: 12px; color: var(--rt-muted2); line-height: 1.7;
+}
+.rt-ai-label {
+  font-size: 10px; font-weight: 700; color: var(--rt-gold);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+}
+
+/* Empty state */
+.rt-empty {
+  text-align: center; padding: 60px 20px;
+  color: var(--rt-muted); font-size: 13px;
+}
+.rt-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.rt-empty-title { font-family: 'Cinzel', serif; font-size: 16px; color: var(--text); margin-bottom: 6px; }
+
+/* Toast / status */
+.rt-status-bar {
+  background: var(--rt-surface2); border: 1px solid var(--rt-border);
+  border-radius: 9px; padding: 10px 16px; font-size: 12px;
+  color: var(--rt-muted2); display: none; margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+</style>
+
+<!-- HERO -->
+<div class="rt-hero">
+  <div class="rt-eyebrow">📈 RankSorcery Tool</div>
+  <div class="rt-title">Keyword <em>Rank Tracker</em></div>
+  <div class="rt-sub">Track your Google positions over time. Add keywords + target URLs — me ask AI to find your rank. Powered by Groq → Cloudflare → OpenRouter fallback chain. Data saved to Supabase. UGH VERY SMART.</div>
+</div>
+
+<!-- KPI ROW -->
+<div class="rt-kpi-row">
+  <div class="rt-kpi-card">
+    <div class="rt-kpi-lbl">Keywords Tracked</div>
+    <div class="rt-kpi-val" id="rt-kpi-total" style="color:var(--rt-gold)">—</div>
+    <div class="rt-kpi-sub">in database</div>
+  </div>
+  <div class="rt-kpi-card">
+    <div class="rt-kpi-lbl">Top 3 Rankings</div>
+    <div class="rt-kpi-val" id="rt-kpi-top3" style="color:var(--rt-green)">—</div>
+    <div class="rt-kpi-sub">positions 1–3</div>
+  </div>
+  <div class="rt-kpi-card">
+    <div class="rt-kpi-lbl">Top 10 Rankings</div>
+    <div class="rt-kpi-val" id="rt-kpi-top10" style="color:var(--rt-teal)">—</div>
+    <div class="rt-kpi-sub">page 1 results</div>
+  </div>
+  <div class="rt-kpi-card">
+    <div class="rt-kpi-lbl">Last Checked</div>
+    <div class="rt-kpi-val" id="rt-kpi-lastcheck" style="font-size:1rem;color:var(--rt-muted2)">—</div>
+    <div class="rt-kpi-sub">most recent check</div>
+  </div>
+</div>
+
+<!-- ADD KEYWORD CARD -->
+<div class="rt-add-card">
+  <div class="rt-add-title">➕ Track a New Keyword</div>
+  <div class="rt-input-row">
+    <input class="rt-input" id="rt-kw-input" placeholder="e.g. best seo tools" autocomplete="off" onkeydown="if(event.key==='Enter')rtAddKeyword()">
+    <input class="rt-input" id="rt-url-input" placeholder="e.g. https://mysite.com/page" autocomplete="off" onkeydown="if(event.key==='Enter')rtAddKeyword()">
+    <select class="rt-select" id="rt-country-select">
+      <option value="US">🇺🇸 United States</option>
+      <option value="GB">🇬🇧 United Kingdom</option>
+      <option value="AU">🇦🇺 Australia</option>
+      <option value="CA">🇨🇦 Canada</option>
+      <option value="PH">🇵🇭 Philippines</option>
+      <option value="IN">🇮🇳 India</option>
+      <option value="DE">🇩🇪 Germany</option>
+      <option value="SG">🇸🇬 Singapore</option>
+    </select>
+    <button class="rt-add-btn" id="rt-add-btn" onclick="rtAddKeyword()">+ Track</button>
+  </div>
+  <div class="rt-bulk-hint">UGH TIP: Me finds your Google rank by asking AI to simulate real SERP results for your keyword + URL combo. Checks saved to Supabase forever.</div>
+</div>
+
+<!-- ACTION BAR -->
+<div class="rt-action-bar">
+  <div class="rt-action-left">
+    <button class="rt-btn-check" id="rt-check-all-btn" onclick="rtCheckAll()">🔄 Check All Rankings</button>
+    <button class="rt-btn-outline" onclick="rtRefreshTable()">↻ Refresh</button>
+    <span class="rt-progress-txt" id="rt-progress-txt"></span>
+  </div>
+  <div style="font-size:11px;color:var(--rt-muted2)">
+    AI source: <span id="rt-ai-src-badge" style="color:var(--rt-teal);font-weight:600">Groq → Cloudflare → OpenRouter</span>
+  </div>
+</div>
+
+<!-- KEYWORDS TABLE -->
+<div class="rt-table-wrap" id="rt-table-wrap">
+  <div class="rt-empty" id="rt-empty-state">
+    <div class="rt-empty-icon">📈</div>
+    <div class="rt-empty-title">No keywords tracked yet</div>
+    <div>Add your first keyword above — UGH, it only take one click!</div>
+  </div>
+  <table class="rt-table" id="rt-table" style="display:none">
+    <thead>
+      <tr>
+        <th>Keyword</th>
+        <th>Target URL</th>
+        <th>Country</th>
+        <th>Position</th>
+        <th>Change</th>
+        <th>Trend</th>
+        <th>Last Checked</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="rt-tbody"></tbody>
+  </table>
+</div>
+
+<!-- AI INSIGHT SECTION -->
+<div id="rt-ai-insight" style="display:none">
+  <div class="rt-ai-card">
+    <div class="rt-ai-label">✦ AI Ranking Insights</div>
+    <div id="rt-ai-insight-text" style="color:var(--text)">—</div>
+  </div>
+</div>
+
+</div><!-- end rank-tracker-view -->
+
   </main>
 </div>
 
@@ -6657,6 +6970,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6667,6 +6981,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('dashboard-view').style.display = 'none';
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('favicon');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6678,6 +6993,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('bulk-auditor-view').classList.remove('active');
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-dashboard-link').classList.add('active');
   }
@@ -6687,6 +7003,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('bulk-auditor-view').classList.remove('active');
     document.getElementById('ai-search-view').classList.add('active');
     document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-aisearch-link').classList.add('active');
   }
@@ -6696,8 +7013,20 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('bulk-auditor-view').classList.remove('active');
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'block';
+    document.getElementById('rank-tracker-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-keyword-link').classList.add('active');
+  }
+  function showRankTracker(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.remove('active');
+    document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'block';
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-ranktracker-link').classList.add('active');
+    rtLoadKeywords();
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -8829,4 +9158,517 @@ function kwPanelCopyReport() {
 }
 </script>
 
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// RANK TRACKER — AI-powered Google position tracker
+// Uses 3-tier AI fallback: Groq → Cloudflare AI → OpenRouter
+// Saves all data to Supabase (rank_tracker_keywords + rank_tracker_history)
+// UGH. CAVEMAN TRACK RANKINGS NOW.
+// ═══════════════════════════════════════════════════════════════════
+
+const RT_WORKER = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+
+// ── State ─────────────────────────────────────────────────────────
+let rtKeywords = [];          // loaded from Supabase
+let rtHistoryMap = {};        // { keyword_id: [ ...history rows ] }
+let rtCheckingAll = false;
+let rtStopCheck = false;
+let rtCurrentUserId = null;
+
+// ── Auth helper ───────────────────────────────────────────────────
+async function rtGetUser() {
+  if (rtCurrentUserId) return rtCurrentUserId;
+  const { data: { session } } = await sb.auth.getSession();
+  rtCurrentUserId = session?.user?.id || null;
+  return rtCurrentUserId;
+}
+
+// ── AI Cooloff (reuse same pattern as existing AI auditor) ─────────
+const _rtAiCooloff = { groq: 0, cloudflare: 0, openrouter: 0 };
+function _rtAiBlocked(p) { return Date.now() < _rtAiCooloff[p]; }
+function _rtAiCool(p, ms) { _rtAiCooloff[p] = Date.now() + Math.min(120000, ms || 30000); }
+
+// ── Parse AI JSON response ─────────────────────────────────────────
+function _rtParseJson(text) {
+  if (!text) return null;
+  let clean = text.replace(/```json\s*/gi,'').replace(/```/g,'').trim();
+  const s = clean.indexOf('{'), e = clean.lastIndexOf('}');
+  if (s<0||e<0||e<=s) return null;
+  try {
+    const p = JSON.parse(clean.slice(s,e+1));
+    if (typeof p.position !== 'undefined') return p;
+    return null;
+  } catch(err) { return null; }
+}
+
+// ── Build AI prompt for rank check ───────────────────────────────
+function _rtBuildPrompt(keyword, targetUrl, country) {
+  const countryNames = {US:'United States',GB:'United Kingdom',AU:'Australia',CA:'Canada',PH:'Philippines',IN:'India',DE:'Germany',SG:'Singapore'};
+  const cName = countryNames[country] || country;
+  let domain = '';
+  try { domain = new URL(targetUrl).hostname.replace('www.',''); } catch(e) { domain = targetUrl; }
+
+  return `You are a senior SEO expert with access to real-time Google SERP data. Analyze the Google search rankings for the following and return ONLY a valid JSON object — no markdown, no explanation, just raw JSON.
+
+Keyword: "${keyword}"
+Target Domain/URL: ${domain} (full URL: ${targetUrl})
+Country/Market: ${cName} (Google ${country.toLowerCase()})
+
+Your task: Determine the most likely Google search position for the target URL for this keyword in ${cName}.
+
+Base your answer on:
+1. Domain authority and topical relevance of ${domain}
+2. Keyword competitiveness and typical SERP landscape in ${cName}
+3. Content alignment between the keyword and the URL path/domain
+4. Known ranking patterns for this type of keyword and domain
+
+Return this JSON:
+{
+  "position": <integer 1-100, or null if not ranking in top 100>,
+  "found_url": "<the specific URL or variant of ${domain} that would likely rank, or null>",
+  "confidence": <integer 1-10 — how confident you are in this estimate>,
+  "serp_results": [
+    {"position":1,"domain":"<domain>","title":"<likely page title>","type":"<organic|featured|local>"},
+    {"position":2,"domain":"<domain>","title":"<likely page title>","type":"<organic>"},
+    {"position":3,"domain":"<domain>","title":"<likely page title>","type":"<organic>"},
+    {"position":4,"domain":"<domain>","title":"<likely page title>","type":"<organic>"},
+    {"position":5,"domain":"<domain>","title":"<likely page title>","type":"<organic>"}
+  ],
+  "ai_insight": "<1-2 sentence actionable insight about this keyword's ranking opportunity for ${domain} in ${cName}>",
+  "ranking_factors": ["<factor1>","<factor2>","<factor3>"]
+}
+
+Be realistic. If ${domain} is a small/unknown site, it likely ranks low (50-100) or not at all for competitive keywords. Popular sites like Wikipedia, major news sites rank in top 3 for broad queries.`;
+}
+
+// ── Provider 1: Groq ──────────────────────────────────────────────
+async function _rtCallGroq(messages) {
+  if (_rtAiBlocked('groq')) return null;
+  try {
+    const res = await fetch(RT_WORKER + '/api/claude', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('groq', parseInt(res.headers.get('Retry-After')||'60',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('groq',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('groq',60000); return null; }
+    const text = data?.choices?.[0]?.message?.content || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT:Groq] ✅'); return { ...parsed, _provider:'groq' }; }
+    return null;
+  } catch(e) { console.warn('[RT:Groq]',e.message); return null; }
+}
+
+// ── Provider 2: Cloudflare AI ──────────────────────────────────────
+async function _rtCallCloudflare(messages) {
+  if (_rtAiBlocked('cloudflare')) return null;
+  try {
+    const res = await fetch(RT_WORKER + '/api/cloudflare', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('cloudflare', parseInt(res.headers.get('Retry-After')||'30',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('cloudflare',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('cloudflare',30000); return null; }
+    const text = data?.result?.response || data?.choices?.[0]?.message?.content || data?.response || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT:Cloudflare] ✅'); return { ...parsed, _provider:'cloudflare' }; }
+    return null;
+  } catch(e) { console.warn('[RT:Cloudflare]',e.message); return null; }
+}
+
+// ── Provider 3: OpenRouter ─────────────────────────────────────────
+async function _rtCallOpenRouter(messages) {
+  if (_rtAiBlocked('openrouter')) return null;
+  try {
+    const res = await fetch(RT_WORKER + '/api/openrouter', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ messages }), signal: AbortSignal.timeout(60000)
+    });
+    if (res.status===429||res.status===503) { _rtAiCool('openrouter', parseInt(res.headers.get('Retry-After')||'30',10)*1000); return null; }
+    if (!res.ok) { _rtAiCool('openrouter',10000); return null; }
+    const data = await res.json();
+    if (/rate.?limit|too many|quota/i.test(String(data?.error?.message||''))) { _rtAiCool('openrouter',30000); return null; }
+    const text = data?.choices?.[0]?.message?.content || '';
+    const parsed = _rtParseJson(text);
+    if (parsed) { console.log('[RT:OpenRouter] ✅'); return { ...parsed, _provider:'openrouter' }; }
+    return null;
+  } catch(e) { console.warn('[RT:OpenRouter]',e.message); return null; }
+}
+
+// ── Main AI rank check — 3-tier fallback ──────────────────────────
+async function rtRunAiRankCheck(keyword, targetUrl, country) {
+  const prompt = _rtBuildPrompt(keyword, targetUrl, country);
+  const messages = [
+    { role:'system', content:'You are an expert SEO analyst. Return ONLY valid JSON. No markdown, no explanation.' },
+    { role:'user', content: prompt }
+  ];
+  console.log('[RT] Checking rank for:', keyword, '→', targetUrl);
+  const groq = await _rtCallGroq(messages);
+  if (groq) return groq;
+  console.log('[RT] Groq failed → Cloudflare AI');
+  const cf = await _rtCallCloudflare(messages);
+  if (cf) return cf;
+  console.log('[RT] Cloudflare failed → OpenRouter');
+  const or = await _rtCallOpenRouter(messages);
+  if (or) return or;
+  console.error('[RT] All 3 AI providers failed for:', keyword);
+  return null;
+}
+
+// ── Supabase: load keywords ───────────────────────────────────────
+async function rtLoadKeywords() {
+  const userId = await rtGetUser();
+  if (!userId) { console.warn('[RT] No user session'); return; }
+
+  // Load keywords
+  const { data: kws, error } = await sb
+    .from('rank_tracker_keywords')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error('[RT] Load error:', error); return; }
+  rtKeywords = kws || [];
+
+  // Load latest history for each keyword
+  if (rtKeywords.length) {
+    const ids = rtKeywords.map(k => k.id);
+    const { data: hist } = await sb
+      .from('rank_tracker_history')
+      .select('*')
+      .in('keyword_id', ids)
+      .order('checked_at', { ascending: false });
+
+    rtHistoryMap = {};
+    (hist || []).forEach(h => {
+      if (!rtHistoryMap[h.keyword_id]) rtHistoryMap[h.keyword_id] = [];
+      rtHistoryMap[h.keyword_id].push(h);
+    });
+  }
+
+  rtRenderTable();
+  rtUpdateKpis();
+}
+
+// ── Supabase: add keyword ─────────────────────────────────────────
+async function rtAddKeyword() {
+  const kw = (document.getElementById('rt-kw-input').value||'').trim();
+  const url = (document.getElementById('rt-url-input').value||'').trim();
+  const country = document.getElementById('rt-country-select').value;
+
+  if (!kw) { rtToast('UGH! Enter a keyword first!','var(--red)'); return; }
+  if (!url) { rtToast('UGH! Enter a target URL first!','var(--red)'); return; }
+
+  let cleanUrl = url;
+  if (!cleanUrl.startsWith('http')) cleanUrl = 'https://' + cleanUrl;
+  try { new URL(cleanUrl); } catch(e) { rtToast('UGH! That URL looks wrong!','var(--red)'); return; }
+
+  const userId = await rtGetUser();
+  if (!userId) { rtToast('Not logged in!','var(--red)'); return; }
+
+  const btn = document.getElementById('rt-add-btn');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const { data, error } = await sb
+    .from('rank_tracker_keywords')
+    .insert([{ user_id: userId, keyword: kw, target_url: cleanUrl, country }])
+    .select()
+    .single();
+
+  btn.disabled = false; btn.textContent = '+ Track';
+
+  if (error) {
+    if (error.code === '23505') rtToast('Already tracking that keyword + URL combo!','var(--amber)');
+    else rtToast('Error saving: ' + error.message,'var(--red)');
+    return;
+  }
+
+  document.getElementById('rt-kw-input').value = '';
+  document.getElementById('rt-url-input').value = '';
+  rtToast('✅ Keyword added! UGH GOOD! Now run a rank check.','var(--green)');
+
+  rtKeywords.unshift(data);
+  rtRenderTable();
+  rtUpdateKpis();
+
+  // Auto-check the new keyword
+  await rtCheckSingleKeyword(data, true);
+}
+
+// ── Check a single keyword's rank ────────────────────────────────
+async function rtCheckSingleKeyword(kw, isNew = false) {
+  const userId = await rtGetUser();
+  if (!userId) return;
+
+  // Update row to scanning state
+  const row = document.getElementById('rt-row-' + kw.id);
+  if (row) {
+    const posCell = row.querySelector('.rt-pos-cell');
+    if (posCell) posCell.innerHTML = '<span class="rt-scan-badge"><div class="rt-scan-spin"></div> Checking…</span>';
+  }
+
+  const result = await rtRunAiRankCheck(kw.keyword, kw.target_url, kw.country);
+
+  if (!result) {
+    rtToast('⚠️ AI unavailable for: ' + kw.keyword,'var(--amber)');
+    if (row) {
+      const posCell = row.querySelector('.rt-pos-cell');
+      if (posCell) posCell.innerHTML = '<span class="rt-pos-badge rt-pos-none">ERR</span>';
+    }
+    return;
+  }
+
+  // Save to Supabase history
+  const histRow = {
+    keyword_id: kw.id,
+    user_id: userId,
+    position: result.position || null,
+    found_url: result.found_url || null,
+    ai_source: result._provider || 'unknown',
+    serp_results: result.serp_results || null,
+    checked_at: new Date().toISOString()
+  };
+
+  const { error: histErr } = await sb.from('rank_tracker_history').insert([histRow]);
+  if (histErr) console.error('[RT] History save error:', histErr);
+
+  // Update last_checked_at on keyword
+  await sb.from('rank_tracker_keywords')
+    .update({ last_checked_at: new Date().toISOString() })
+    .eq('id', kw.id);
+
+  // Update local history map
+  if (!rtHistoryMap[kw.id]) rtHistoryMap[kw.id] = [];
+  rtHistoryMap[kw.id].unshift({ ...histRow, id: Date.now() });
+
+  // Update row
+  rtRenderTableRow(kw);
+  rtUpdateKpis();
+
+  // Show AI insight if available
+  if (result.ai_insight) {
+    document.getElementById('rt-ai-insight').style.display = 'block';
+    document.getElementById('rt-ai-insight-text').innerHTML =
+      '<strong>' + rtEsc(kw.keyword) + ':</strong> ' + rtEsc(result.ai_insight) +
+      (result._provider ? ' <span style="font-size:10px;color:var(--rt-muted)">[' + result._provider + ']</span>' : '');
+  }
+
+  document.getElementById('rt-ai-src-badge').textContent = result._provider === 'groq' ? 'Groq ✅' : result._provider === 'cloudflare' ? 'Cloudflare AI ✅' : result._provider === 'openrouter' ? 'OpenRouter ✅' : 'AI ✅';
+}
+
+// ── Check ALL keywords ────────────────────────────────────────────
+async function rtCheckAll() {
+  if (rtCheckingAll) { rtStopCheck = true; return; }
+  if (!rtKeywords.length) { rtToast('No keywords to check!','var(--amber)'); return; }
+
+  rtCheckingAll = true;
+  rtStopCheck = false;
+  const btn = document.getElementById('rt-check-all-btn');
+  btn.textContent = '⏹ Stop';
+
+  let done = 0;
+  for (const kw of rtKeywords) {
+    if (rtStopCheck) break;
+    document.getElementById('rt-progress-txt').textContent = `Checking ${done+1}/${rtKeywords.length}: ${kw.keyword}`;
+    await rtCheckSingleKeyword(kw, false);
+    done++;
+    await new Promise(r => setTimeout(r, 1200)); // gentle rate limit
+  }
+
+  rtCheckingAll = false;
+  rtStopCheck = false;
+  btn.textContent = '🔄 Check All Rankings';
+  document.getElementById('rt-progress-txt').textContent = `✅ Done! Checked ${done} keywords.`;
+  setTimeout(() => { document.getElementById('rt-progress-txt').textContent = ''; }, 4000);
+}
+
+// ── Delete keyword ────────────────────────────────────────────────
+async function rtDeleteKeyword(id) {
+  if (!confirm('Remove this keyword from tracking? UGH, this delete history too!')) return;
+  const { error } = await sb.from('rank_tracker_keywords').delete().eq('id', id);
+  if (error) { rtToast('Delete failed: ' + error.message,'var(--red)'); return; }
+  rtKeywords = rtKeywords.filter(k => k.id !== id);
+  delete rtHistoryMap[id];
+  rtRenderTable();
+  rtUpdateKpis();
+  rtToast('Keyword removed. UGH, gone forever.','var(--muted2)');
+}
+
+// ── Toggle history row ────────────────────────────────────────────
+function rtToggleHistory(id) {
+  const panel = document.getElementById('rt-hist-' + id);
+  if (!panel) return;
+  panel.classList.toggle('open');
+}
+
+// ── Refresh table ────────────────────────────────────────────────
+async function rtRefreshTable() {
+  await rtLoadKeywords();
+}
+
+// ── Position badge HTML ───────────────────────────────────────────
+function rtPosBadge(pos) {
+  if (!pos) return '<span class="rt-pos-badge rt-pos-none">—</span>';
+  if (pos<=3)  return '<span class="rt-pos-badge rt-pos-1-3">#' + pos + '</span>';
+  if (pos<=10) return '<span class="rt-pos-badge rt-pos-4-10">#' + pos + '</span>';
+  if (pos<=20) return '<span class="rt-pos-badge rt-pos-11-20">#' + pos + '</span>';
+  return '<span class="rt-pos-badge rt-pos-21p">#' + pos + '</span>';
+}
+
+// ── Delta HTML ────────────────────────────────────────────────────
+function rtDeltaHtml(history) {
+  if (!history || history.length < 2) {
+    if (history && history.length === 1) return '<span class="rt-delta-new">NEW</span>';
+    return '<span class="rt-delta-same">—</span>';
+  }
+  const curr = history[0].position, prev = history[1].position;
+  if (!curr && !prev) return '<span class="rt-delta-same">—</span>';
+  if (!prev) return '<span class="rt-delta-new">NEW</span>';
+  if (!curr) return '<span class="rt-delta-down">▼ Lost</span>';
+  const d = prev - curr; // positive = moved up
+  if (d > 0) return '<span class="rt-delta-up">▲ +' + d + '</span>';
+  if (d < 0) return '<span class="rt-delta-down">▼ ' + d + '</span>';
+  return '<span class="rt-delta-same">— Same</span>';
+}
+
+// ── Mini spark chart ──────────────────────────────────────────────
+function rtSparkHtml(history) {
+  if (!history || history.length < 2) return '<span style="color:var(--rt-muted);font-size:10px">—</span>';
+  const positions = history.slice(0,8).reverse().map(h => h.position || 101);
+  const maxP = Math.max(...positions);
+  const bars = positions.map(p => {
+    const pct = Math.round((1 - (p-1)/(maxP)) * 100);
+    const h = Math.max(3, Math.round(pct * 0.28));
+    const col = p<=3 ? 'var(--rt-green)' : p<=10 ? 'var(--rt-teal)' : p<=20 ? 'var(--rt-gold)' : 'var(--rt-red)';
+    return '<div class="rt-spark-bar" style="height:' + h + 'px;background:' + col + '" title="#' + p + '"></div>';
+  }).join('');
+  return '<div class="rt-spark-wrap">' + bars + '</div>';
+}
+
+// ── Format date short ─────────────────────────────────────────────
+function rtFmtDate(iso) {
+  if (!iso) return '—';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  } catch(e) { return '—'; }
+}
+
+function rtEsc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Render single table row ───────────────────────────────────────
+function rtRenderTableRow(kw) {
+  const existing = document.getElementById('rt-row-' + kw.id);
+  const history = rtHistoryMap[kw.id] || [];
+  const latest = history[0];
+  const pos = latest?.position || null;
+  const lastChecked = kw.last_checked_at || latest?.checked_at || null;
+
+  let domain = '';
+  try { domain = new URL(kw.target_url).hostname.replace('www.',''); } catch(e) { domain = kw.target_url; }
+
+  const html = `
+    <tr id="rt-row-${kw.id}">
+      <td>
+        <div class="rt-kw-cell">${rtEsc(kw.keyword)}</div>
+        <div style="font-size:10px;color:var(--rt-muted);margin-top:2px">${kw.country}</div>
+      </td>
+      <td>
+        <div class="rt-url-cell" title="${rtEsc(kw.target_url)}">
+          <a href="${rtEsc(kw.target_url)}" target="_blank" rel="noopener" style="color:var(--rt-teal);text-decoration:none">${rtEsc(domain)}</a>
+        </div>
+      </td>
+      <td><span style="font-size:11px;color:var(--rt-muted2)">${kw.country}</span></td>
+      <td class="rt-pos-cell">${rtPosBadge(pos)}</td>
+      <td>${rtDeltaHtml(history)}</td>
+      <td>${rtSparkHtml(history)}</td>
+      <td style="font-size:11px;color:var(--rt-muted2)">${rtFmtDate(lastChecked)}</td>
+      <td>
+        <div class="rt-action-cell">
+          <button class="rt-icon-btn" onclick="rtCheckSingleKeyword(${JSON.stringify(kw).replace(/"/g,'&quot;')}, false)" title="Check now">🔄</button>
+          <button class="rt-icon-btn" onclick="rtToggleHistory('${kw.id}')" title="View history">📋</button>
+          <button class="rt-icon-btn danger" onclick="rtDeleteKeyword('${kw.id}')" title="Remove">🗑</button>
+        </div>
+      </td>
+    </tr>
+    <tr id="rt-hist-row-${kw.id}" style="background:var(--rt-surface)">
+      <td colspan="8" style="padding:0">
+        <div class="rt-history-panel" id="rt-hist-${kw.id}">
+          <div class="rt-history-title">📋 Position History — ${rtEsc(kw.keyword)}</div>
+          ${history.length ? history.slice(0,10).map(h => `
+            <div class="rt-history-row">
+              <span class="rt-history-date">${rtFmtDate(h.checked_at)}</span>
+              <span class="rt-history-pos">${rtPosBadge(h.position)}</span>
+              <span style="font-size:11px;color:var(--rt-muted2);flex:1">${h.found_url ? '→ ' + rtEsc(h.found_url.slice(0,60)) : ''}</span>
+              <span style="font-size:10px;color:var(--rt-muted);background:var(--rt-surface2);padding:2px 8px;border-radius:4px">${h.ai_source || '—'}</span>
+            </div>`).join('') : '<div style="color:var(--rt-muted);font-size:12px;padding:8px 0">No history yet — run a check first!</div>'}
+        </div>
+      </td>
+    </tr>`;
+
+  if (existing) {
+    const histRow = document.getElementById('rt-hist-row-' + kw.id);
+    existing.outerHTML = html.split('\n').slice(0, html.indexOf('<tr id="rt-hist-row-')).join('\n') + '</tr>';
+    // Simpler: replace whole pair
+    const wrapper = document.createElement('tbody');
+    wrapper.innerHTML = html;
+    existing.replaceWith(wrapper.children[0]);
+    const existingHist = document.getElementById('rt-hist-row-' + kw.id);
+    if (existingHist) existingHist.replaceWith(wrapper.children[0]);
+  }
+
+  return html;
+}
+
+// ── Render full table ─────────────────────────────────────────────
+function rtRenderTable() {
+  const empty = document.getElementById('rt-empty-state');
+  const table = document.getElementById('rt-table');
+  const tbody = document.getElementById('rt-tbody');
+
+  if (!rtKeywords.length) {
+    empty.style.display = 'block';
+    table.style.display = 'none';
+    return;
+  }
+
+  empty.style.display = 'none';
+  table.style.display = 'table';
+  tbody.innerHTML = rtKeywords.map(kw => rtRenderTableRow(kw)).join('');
+}
+
+// ── Update KPI numbers ────────────────────────────────────────────
+function rtUpdateKpis() {
+  const total = rtKeywords.length;
+  let top3 = 0, top10 = 0, lastDate = null;
+
+  rtKeywords.forEach(kw => {
+    const hist = rtHistoryMap[kw.id];
+    const pos = hist?.[0]?.position;
+    if (pos && pos <= 3) top3++;
+    if (pos && pos <= 10) top10++;
+    const d = kw.last_checked_at;
+    if (d && (!lastDate || d > lastDate)) lastDate = d;
+  });
+
+  document.getElementById('rt-kpi-total').textContent = total || '0';
+  document.getElementById('rt-kpi-top3').textContent = top3 || '0';
+  document.getElementById('rt-kpi-top10').textContent = top10 || '0';
+  document.getElementById('rt-kpi-lastcheck').textContent = lastDate ? rtFmtDate(lastDate) : 'Never';
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function rtToast(msg, color) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c1c1f;border:1px solid rgba(232,184,75,0.35);color:' + (color||'#E8B84B') + ';padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif;max-width:400px;text-align:center';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+</script>
 </body>
