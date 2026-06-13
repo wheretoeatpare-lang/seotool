@@ -6970,13 +6970,13 @@ canvas#kw-trend-chart { width: 100% !important; }
 
 <div class="c4-eyebrow">🔍 RankSorcery Tool</div>
 <div class="c4-title">Broken Link <em>404 Checker</em></div>
-<div class="c4-sub">Enter your sitemap URL — RankSorcery extracts all pages and checks each one for broken 404 errors in real time. Export results to Excel when complete.</div>
+<div class="c4-sub">Enter your domain — RankSorcery discovers your sitemap (or crawls your site), checks every page for 404 errors, <strong>and scans every hyperlink on each page</strong> for broken &lt;a href&gt; links. Export to Excel when done.</div>
 
-<div class="c4-kpi-row">
+<div class="c4-kpi-row" style="grid-template-columns:repeat(5,1fr)">
   <div class="c4-kpi-card">
-    <div class="c4-kpi-lbl">Total URLs</div>
+    <div class="c4-kpi-lbl">Total Pages</div>
     <div class="c4-kpi-val" id="c4-kpi-total" style="color:var(--c4-gold)">—</div>
-    <div class="c4-kpi-sub">from sitemap</div>
+    <div class="c4-kpi-sub">from sitemap/crawl</div>
   </div>
   <div class="c4-kpi-card">
     <div class="c4-kpi-lbl">✅ OK (200)</div>
@@ -6984,9 +6984,14 @@ canvas#kw-trend-chart { width: 100% !important; }
     <div class="c4-kpi-sub">healthy pages</div>
   </div>
   <div class="c4-kpi-card">
-    <div class="c4-kpi-lbl">❌ Broken (404)</div>
+    <div class="c4-kpi-lbl">❌ Broken Pages</div>
     <div class="c4-kpi-val" id="c4-kpi-404" style="color:var(--c4-red)">—</div>
-    <div class="c4-kpi-sub">need fixing</div>
+    <div class="c4-kpi-sub">page 404 errors</div>
+  </div>
+  <div class="c4-kpi-card">
+    <div class="c4-kpi-lbl">🔗 Broken Links</div>
+    <div class="c4-kpi-val" id="c4-kpi-links" style="color:var(--c4-red)">—</div>
+    <div class="c4-kpi-sub">href 404 errors</div>
   </div>
   <div class="c4-kpi-card">
     <div class="c4-kpi-lbl">⚠️ Other</div>
@@ -7001,8 +7006,14 @@ canvas#kw-trend-chart { width: 100% !important; }
     <input class="c4-input" id="c4-sitemap-input" placeholder="e.g. https://yoursite.com" autocomplete="off" onkeydown="if(event.key==='Enter')c4Start()">
     <button class="c4-btn-primary" id="c4-start-btn" onclick="c4Start()">Start Scan</button>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
+    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:var(--c4-muted2)">
+      <input type="checkbox" id="c4-check-links" checked style="accent-color:var(--c4-gold);width:14px;height:14px;cursor:pointer">
+      <span>🔗 Also scan all hyperlinks (&lt;a href&gt;) on each page for broken links</span>
+    </label>
     <span id="c4-discovery-badge" style="display:none;font-size:11px;padding:3px 10px;border-radius:5px;background:var(--c4-teal-pale);border:1px solid rgba(10,191,188,.25);color:var(--c4-teal);font-weight:600"></span>
+  </div>
+  <div style="margin-top:8px">
     <span class="c4-hint" style="margin-top:0">💡 Just paste your domain — RankSorcery auto-discovers your sitemap across all CMS platforms. If no sitemap is found, it crawls your site instead.</span>
   </div>
 </div>
@@ -7020,7 +7031,8 @@ canvas#kw-trend-chart { width: 100% !important; }
   <div class="c4-action-left">
     <div class="c4-filter-tabs">
       <button class="c4-filter-tab active" onclick="c4Filter('all',this)">All</button>
-      <button class="c4-filter-tab" onclick="c4Filter('404',this)">❌ 404 Only</button>
+      <button class="c4-filter-tab" onclick="c4Filter('404',this)">❌ 404 Pages</button>
+      <button class="c4-filter-tab" onclick="c4Filter('broken-links',this)">🔗 Broken Links</button>
       <button class="c4-filter-tab" onclick="c4Filter('ok',this)">✅ OK Only</button>
       <button class="c4-filter-tab" onclick="c4Filter('other',this)">⚠️ Other</button>
     </div>
@@ -7042,10 +7054,12 @@ canvas#kw-trend-chart { width: 100% !important; }
     <thead>
       <tr>
         <th style="width:44px">#</th>
-        <th>URL</th>
+        <th>URL / Broken Link</th>
+        <th style="width:90px">Type</th>
         <th style="width:110px">Status</th>
         <th style="width:72px">Code</th>
         <th style="width:130px">Response Time</th>
+        <th>Found On Page</th>
       </tr>
     </thead>
     <tbody id="c4-tbody"></tbody>
@@ -10077,22 +10091,34 @@ function c4BadgeHtml(status) {
   return '<span class="c4-status c4-s-err">⚠ Error</span>';
 }
 
+// ── Type badge ────────────────────────────────────────────────────
+function c4TypeBadge(type) {
+  if (type === 'link') return '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:rgba(96,165,250,0.12);color:var(--c4-teal);border:1px solid rgba(96,165,250,0.25)">🔗 Hyperlink</span>';
+  return '<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:var(--c4-surface2);color:var(--c4-muted2);border:1px solid var(--c4-border)">📄 Page</span>';
+}
+
 // ── Render / update a single row ──────────────────────────────────
 function c4RenderRow(result) {
-  const { index, url, status, code, time } = result;
+  const { index, url, status, code, time, type, foundOn } = result;
   const existing = document.getElementById('c4-row-' + index);
   const visible  = c4ActiveFilter === 'all' ||
-    (c4ActiveFilter === '404'   && status === '404') ||
-    (c4ActiveFilter === 'ok'    && status === 'ok') ||
-    (c4ActiveFilter === 'other' && status !== 'ok' && status !== '404' && status !== 'checking');
+    (c4ActiveFilter === '404'          && status === '404' && (!type || type === 'page')) ||
+    (c4ActiveFilter === 'broken-links' && status === '404' && type === 'link') ||
+    (c4ActiveFilter === 'ok'           && status === 'ok') ||
+    (c4ActiveFilter === 'other'        && status !== 'ok' && status !== '404' && status !== 'checking');
 
   const codeColor = code === 404 ? 'var(--c4-red)' : code >= 200 && code < 300 ? 'var(--c4-green)' : 'var(--c4-amber)';
+  const foundOnHtml = foundOn
+    ? `<a class="c4-url-link" href="${c4Esc(foundOn)}" target="_blank" rel="noopener" style="font-size:11px;color:var(--c4-muted2)">${c4Esc(foundOn.replace(/^https?:\/\/(www\.)?/,'').slice(0,60))}${foundOn.length>60?'…':''}</a>`
+    : '<span style="color:var(--c4-muted);font-size:11px">—</span>';
   const html = `<tr id="c4-row-${index}"${status==='404'?' class="c4-row-404"':''} style="${visible?'':'display:none'}">
     <td style="color:var(--c4-muted);font-size:11px">${index}</td>
     <td><a class="c4-url-link" href="${c4Esc(url)}" target="_blank" rel="noopener">${c4Esc(url)}</a></td>
+    <td>${c4TypeBadge(type)}</td>
     <td>${c4BadgeHtml(status)}</td>
     <td style="font-family:'Cinzel',serif;font-size:12px;color:${codeColor}">${code || '—'}</td>
     <td style="font-size:11px;color:var(--c4-muted2)">${time ? time + ' ms' : '—'}</td>
+    <td>${foundOnHtml}</td>
   </tr>`;
 
   if (existing) existing.outerHTML = html;
@@ -10101,13 +10127,16 @@ function c4RenderRow(result) {
 
 // ── Update KPIs ───────────────────────────────────────────────────
 function c4UpdateKpis() {
-  const done  = c4Results.filter(r => r.status !== 'checking');
-  const ok    = done.filter(r => r.status === 'ok').length;
-  const f404  = done.filter(r => r.status === '404').length;
-  const other = done.filter(r => r.status !== 'ok' && r.status !== '404').length;
-  document.getElementById('c4-kpi-total').textContent = c4Results.length || '—';
+  const done        = c4Results.filter(r => r.status !== 'checking');
+  const ok          = done.filter(r => r.status === 'ok').length;
+  const f404pages   = done.filter(r => r.status === '404' && (!r.type || r.type === 'page')).length;
+  const f404links   = done.filter(r => r.status === '404' && r.type === 'link').length;
+  const other       = done.filter(r => r.status !== 'ok' && r.status !== '404').length;
+  const totalPages  = c4Results.filter(r => !r.type || r.type === 'page').length;
+  document.getElementById('c4-kpi-total').textContent = totalPages || '—';
   document.getElementById('c4-kpi-ok').textContent    = ok;
-  document.getElementById('c4-kpi-404').textContent   = f404;
+  document.getElementById('c4-kpi-404').textContent   = f404pages;
+  document.getElementById('c4-kpi-links').textContent = f404links || '—';
   document.getElementById('c4-kpi-other').textContent = other;
 }
 
@@ -10128,6 +10157,7 @@ function c4ShowDiscoveryBadge(msg) {
 async function c4Start() {
   const input = (document.getElementById('c4-sitemap-input').value || '').trim();
   if (!input) { c4Toast('Please enter a website URL.'); return; }
+  const checkLinks = document.getElementById('c4-check-links').checked;
 
   c4Reset(true);
   c4Scanning   = true;
@@ -10149,12 +10179,10 @@ async function c4Start() {
   const sitemapResult = await c4DiscoverSitemap(origin);
 
   if (sitemapResult && !c4ShouldStop) {
-    // Sitemap found — parse it
     c4SitemapFound = sitemapResult.url;
     c4SetProgress('Sitemap found — parsing URLs…', 30, sitemapResult.url);
     urls = c4ParseSitemapXml(sitemapResult.xml);
 
-    // Handle sitemap index: fetch first child sitemap
     if (!urls.length || (urls.length && urls[0].endsWith('.xml'))) {
       const isIndex = /<sitemapindex/i.test(sitemapResult.xml);
       if (isIndex && urls.length) {
@@ -10166,7 +10194,6 @@ async function c4Start() {
       }
     }
 
-    // Filter to only HTML pages (exclude .xml sub-sitemaps if index)
     urls = urls.filter(u => !u.endsWith('.xml'));
 
     if (!urls.length) {
@@ -10174,7 +10201,6 @@ async function c4Start() {
       urls = await c4CrawlSite(origin);
     }
   } else if (!c4ShouldStop) {
-    // ── Phase 2: No sitemap — crawl ──────────────────────────────
     c4SitemapFound = null;
     urls = await c4CrawlSite(origin);
   }
@@ -10182,21 +10208,19 @@ async function c4Start() {
   if (c4ShouldStop) { c4ScanDone(); return; }
   if (!urls.length) { c4Toast('No pages found to check.', 'var(--c4-amber)'); c4ScanDone(); return; }
 
-  // Cap at max
   if (urls.length > C4_MAX_URLS) {
     c4Toast(`Found ${urls.length} URLs — scanning first ${C4_MAX_URLS}.`, 'var(--c4-amber)');
     urls = urls.slice(0, C4_MAX_URLS);
   }
 
-  document.getElementById('c4-kpi-total').textContent = urls.length;
-
-  // Pre-populate table with "checking" rows
+  // Pre-populate table with "checking" rows (type: page)
   urls.forEach((url, i) => {
-    c4Results.push({ index: i+1, url, status: 'checking', code: null, time: null });
+    c4Results.push({ index: i+1, url, status: 'checking', code: null, time: null, type: 'page', foundOn: null });
     c4RenderRow(c4Results[i]);
   });
+  document.getElementById('c4-kpi-total').textContent = urls.length;
 
-  // ── Phase 3: Check each URL concurrently ─────────────────────
+  // ── Phase 3: Check each page URL concurrently ─────────────────
   let done = 0;
   const total = urls.length;
 
@@ -10205,7 +10229,7 @@ async function c4Start() {
     while (idx < total) {
       if (c4ShouldStop) break;
       const result = c4Results[idx];
-      c4SetProgress(`Checking ${done+1} of ${total} URLs…`, 58 + (done/total)*40, result.url);
+      c4SetProgress(`Checking page ${done+1} of ${total}…`, 58 + (done/total)*30, result.url);
       const { statusCode, time } = await c4CheckUrlStatus(result.url);
       result.code   = statusCode;
       result.time   = time;
@@ -10221,7 +10245,88 @@ async function c4Start() {
   for (let w = 0; w < C4_CONCURRENCY; w++) workers.push(runWorker(w));
   await Promise.all(workers);
 
+  if (c4ShouldStop) { c4ScanDone(); return; }
+
+  // ── Phase 4: Scan hyperlinks on each page ─────────────────────
+  if (checkLinks) {
+    c4SetProgress('Scanning hyperlinks on pages…', 88, origin);
+    await c4ScanHyperlinks(urls, origin);
+  }
+
   c4ScanDone();
+}
+
+// ── Phase 4: Extract & check all <a href> links on each page ─────
+async function c4ScanHyperlinks(pageUrls, origin) {
+  // Only fetch HTML from pages that were OK (200) — no point crawling broken pages
+  const okPages = c4Results.filter(r => r.type === 'page' && r.status === 'ok').map(r => r.url);
+  const checkedLinks = new Set(); // avoid re-checking same href across pages
+  let linkCount = 0;
+  const maxLinks = 800; // cap total hyperlinks checked
+
+  for (let pi = 0; pi < okPages.length; pi++) {
+    if (c4ShouldStop) break;
+    const pageUrl = okPages[pi];
+    c4SetProgress(`Scanning links on page ${pi+1}/${okPages.length}…`, 88 + (pi/okPages.length)*10, pageUrl);
+
+    let html = '';
+    try {
+      const data = await c4FetchRaw(pageUrl);
+      html = data.html || '';
+    } catch(e) { continue; }
+
+    if (!html) continue;
+
+    // Extract all <a href="..."> values
+    const hrefRegex = /href=["']([^"'#\s]+)["']/gi;
+    const hrefs = new Set();
+    let m;
+    while ((m = hrefRegex.exec(html)) !== null) {
+      let href = m[1].trim();
+      // Resolve relative URLs
+      try {
+        if (href.startsWith('//')) href = 'https:' + href;
+        else if (href.startsWith('/')) href = origin + href;
+        else if (!href.startsWith('http')) href = origin + '/' + href;
+        const u = new URL(href);
+        // Skip media, anchors, mailto, js, etc.
+        if (/^(mailto:|tel:|javascript:)/i.test(href)) continue;
+        if (/\.(jpg|jpeg|png|gif|webp|svg|ico|pdf|zip|css|js|woff|woff2|ttf|mp4|mp3)(\?|$)/i.test(u.pathname)) continue;
+        const clean = u.origin + u.pathname.replace(/\/$/, '') || u.origin + '/';
+        hrefs.add(clean);
+      } catch(e) {}
+    }
+
+    // Check each unique href (batch concurrently, skip already-checked)
+    const newHrefs = [...hrefs].filter(h => !checkedLinks.has(h));
+    if (!newHrefs.length) continue;
+
+    // Check in batches of C4_CONCURRENCY
+    for (let bi = 0; bi < newHrefs.length; bi += C4_CONCURRENCY) {
+      if (c4ShouldStop) break;
+      if (linkCount >= maxLinks) { c4Toast(`Hyperlink scan capped at ${maxLinks} links.`, 'var(--c4-amber)'); break; }
+
+      const batch = newHrefs.slice(bi, bi + C4_CONCURRENCY);
+      const checks = await Promise.all(batch.map(href => c4CheckUrlStatus(href)));
+
+      batch.forEach((href, i) => {
+        checkedLinks.add(href);
+        const { statusCode, time } = checks[i];
+        const status = c4StatusLabel(statusCode);
+
+        // Only add to results table if broken (404) or error — keeps table clean
+        if (status === '404' || status === 'error') {
+          linkCount++;
+          const idx = c4Results.length + 1;
+          c4Results.push({ index: idx, url: href, status, code: statusCode, time, type: 'link', foundOn: pageUrl });
+          c4RenderRow(c4Results[c4Results.length - 1]);
+          c4UpdateKpis();
+        }
+      });
+    }
+
+    if (linkCount >= maxLinks) break;
+  }
 }
 
 // ── Scan complete ─────────────────────────────────────────────────
@@ -10231,12 +10336,16 @@ function c4ScanDone() {
   document.getElementById('c4-stop-btn').style.display = 'none';
   document.getElementById('c4-progress-wrap').classList.remove('active');
   document.getElementById('c4-export-btn').disabled = c4Results.length === 0;
-  const f404 = c4Results.filter(r => r.status === '404').length;
+  const f404pages = c4Results.filter(r => r.status === '404' && (!r.type || r.type === 'page')).length;
+  const f404links = c4Results.filter(r => r.status === '404' && r.type === 'link').length;
   c4SetProgress('Scan complete.', 100, '');
-  if (f404 > 0) {
-    c4Toast(`Scan complete — found ${f404} broken page${f404!==1?'s':''}. Export to Excel to review.`, 'var(--c4-red)');
+  if (f404pages > 0 || f404links > 0) {
+    const parts = [];
+    if (f404pages > 0) parts.push(`${f404pages} broken page${f404pages!==1?'s':''}`);
+    if (f404links > 0) parts.push(`${f404links} broken hyperlink${f404links!==1?'s':''}`);
+    c4Toast(`Scan complete — found ${parts.join(' and ')}. Export to Excel to review.`, 'var(--c4-red)');
   } else if (c4Results.length > 0) {
-    c4Toast('Scan complete — no broken 404 pages found! 🎉', 'var(--c4-green)');
+    c4Toast('Scan complete — no broken pages or hyperlinks found! 🎉', 'var(--c4-green)');
   }
   c4UpdateKpis();
 }
@@ -10258,9 +10367,10 @@ function c4Filter(type, btn) {
     if (!row) return;
     row.style.display = (
       type === 'all' ||
-      (type === '404'   && r.status === '404') ||
-      (type === 'ok'    && r.status === 'ok') ||
-      (type === 'other' && r.status !== 'ok' && r.status !== '404' && r.status !== 'checking')
+      (type === '404'          && r.status === '404' && (!r.type || r.type === 'page')) ||
+      (type === 'broken-links' && r.status === '404' && r.type === 'link') ||
+      (type === 'ok'           && r.status === 'ok') ||
+      (type === 'other'        && r.status !== 'ok' && r.status !== '404' && r.status !== 'checking')
     ) ? '' : 'none';
   });
 }
@@ -10284,6 +10394,7 @@ function c4Reset(keepInput) {
   document.getElementById('c4-kpi-total').textContent = '—';
   document.getElementById('c4-kpi-ok').textContent    = '—';
   document.getElementById('c4-kpi-404').textContent   = '—';
+  document.getElementById('c4-kpi-links').textContent = '—';
   document.getElementById('c4-kpi-other').textContent = '—';
   document.querySelectorAll('.c4-filter-tab').forEach((t,i) => t.classList.toggle('active', i===0));
 }
@@ -10300,33 +10411,49 @@ async function c4ExportExcel() {
     });
   }
 
-  const rows = [['#', 'URL', 'Status', 'HTTP Code', 'Response Time (ms)', 'Broken?']];
+  const rows = [['#', 'Type', 'URL / Broken Link', 'Found On Page', 'Status', 'HTTP Code', 'Response Time (ms)', 'Broken?']];
   c4Results.forEach(r => rows.push([
-    r.index, r.url,
+    r.index,
+    r.type === 'link' ? 'Hyperlink' : 'Page',
+    r.url,
+    r.foundOn || '',
     r.status === 'ok' ? 'OK' : r.status === '404' ? 'BROKEN 404' : r.status === '3xx' ? 'Redirect' : 'Error',
     r.code || '', r.time || '', r.status === '404' ? 'YES' : 'NO'
   ]));
 
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{wch:5},{wch:70},{wch:14},{wch:10},{wch:18},{wch:10}];
+  ws['!cols'] = [{wch:5},{wch:12},{wch:65},{wch:65},{wch:14},{wch:10},{wch:18},{wch:10}];
   XLSX.utils.book_append_sheet(wb, ws, '404 Check Results');
 
   const domain = (() => { try { return new URL(document.getElementById('c4-sitemap-input').value).hostname.replace('www.',''); } catch(e) { return 'site'; }})();
-  const f404 = c4Results.filter(r => r.status === '404').length;
+  const f404pages = c4Results.filter(r => r.status === '404' && (!r.type || r.type === 'page')).length;
+  const f404links = c4Results.filter(r => r.status === '404' && r.type === 'link').length;
   const summaryRows = [
     ['RankSorcery 404 Checker — Scan Summary'], [],
     ['Website', document.getElementById('c4-sitemap-input').value],
     ['Sitemap Used', c4SitemapFound || 'None (site crawled)'],
     ['Scan Date', new Date().toLocaleString()], [],
-    ['Total URLs Scanned', c4Results.length],
+    ['Total Pages Scanned', c4Results.filter(r=>!r.type||r.type==='page').length],
+    ['Total Hyperlinks Scanned', c4Results.filter(r=>r.type==='link').length],
     ['✅ OK (200)', c4Results.filter(r=>r.status==='ok').length],
-    ['❌ Broken (404)', f404],
+    ['❌ Broken Pages (404)', f404pages],
+    ['🔗 Broken Hyperlinks (404)', f404links],
     ['⚠️ Other', c4Results.filter(r=>r.status!=='ok'&&r.status!=='404').length],
   ];
   const ws2 = XLSX.utils.aoa_to_sheet(summaryRows);
-  ws2['!cols'] = [{wch:24},{wch:50}];
+  ws2['!cols'] = [{wch:28},{wch:55}];
   XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+
+  // Broken links only sheet
+  const brokenLinks = c4Results.filter(r => r.status === '404' && r.type === 'link');
+  if (brokenLinks.length) {
+    const blRows = [['Broken Hyperlink URL', 'Found On Page', 'HTTP Code', 'Response Time (ms)']];
+    brokenLinks.forEach(r => blRows.push([r.url, r.foundOn || '', r.code || '', r.time || '']));
+    const ws3 = XLSX.utils.aoa_to_sheet(blRows);
+    ws3['!cols'] = [{wch:70},{wch:70},{wch:10},{wch:18}];
+    XLSX.utils.book_append_sheet(wb, ws3, 'Broken Hyperlinks');
+  }
 
   XLSX.writeFile(wb, '404-check-' + domain + '-' + new Date().toISOString().slice(0,10) + '.xlsx');
   c4Toast('✅ Excel file downloaded!', 'var(--c4-green)');
