@@ -6996,12 +6996,15 @@ canvas#kw-trend-chart { width: 100% !important; }
 </div>
 
 <div class="c4-input-card">
-  <div class="c4-card-title">🗺 Enter Sitemap URL</div>
+  <div class="c4-card-title">🌐 Enter Your Website URL</div>
   <div class="c4-input-row">
-    <input class="c4-input" id="c4-sitemap-input" placeholder="e.g. https://yoursite.com/sitemap.xml" autocomplete="off" onkeydown="if(event.key==='Enter')c4Start()">
+    <input class="c4-input" id="c4-sitemap-input" placeholder="e.g. https://yoursite.com" autocomplete="off" onkeydown="if(event.key==='Enter')c4Start()">
     <button class="c4-btn-primary" id="c4-start-btn" onclick="c4Start()">Start Scan</button>
   </div>
-  <div class="c4-hint">💡 Supports standard XML sitemaps and sitemap index files. Checks up to 500 URLs per scan. Fetched via your RankSorcery worker proxy.</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+    <span id="c4-discovery-badge" style="display:none;font-size:11px;padding:3px 10px;border-radius:5px;background:var(--c4-teal-pale);border:1px solid rgba(10,191,188,.25);color:var(--c4-teal);font-weight:600"></span>
+    <span class="c4-hint" style="margin-top:0">💡 Just paste your domain — RankSorcery auto-discovers your sitemap across all CMS platforms. If no sitemap is found, it crawls your site instead.</span>
+  </div>
 </div>
 
 <div class="c4-progress-wrap" id="c4-progress-wrap">
@@ -7033,7 +7036,7 @@ canvas#kw-trend-chart { width: 100% !important; }
   <div class="c4-empty" id="c4-empty-state">
     <div class="c4-empty-icon">🔍</div>
     <div class="c4-empty-title">No scan results yet</div>
-    <div>Enter a sitemap URL above and click <strong>Start Scan</strong> to begin.</div>
+    <div>Enter your website URL above and click <strong>Start Scan</strong>. RankSorcery will auto-discover your sitemap or crawl your site.</div>
   </div>
   <table class="c4-table" id="c4-table" style="display:none">
     <thead>
@@ -9847,70 +9850,213 @@ function rtToast(msg, color) {
 </script>
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// 404 BROKEN LINK CHECKER
-// Fetches sitemap via worker proxy → extracts URLs → checks each
-// one via HEAD request (with GET fallback) → shows live results
-// Export to Excel via SheetJS (CDN loaded on demand)
+// 404 BROKEN LINK CHECKER — Smart Auto-Discovery + Crawler Fallback
+//
+// Phase 1: Auto-discover sitemap by trying CMS-specific paths +
+//          robots.txt Sitemap directive
+// Phase 2: If no sitemap found → BFS crawl up to 200 pages
+// Phase 3: Check each URL via /api/check-url worker endpoint
+// Export: Excel via SheetJS (loaded on demand)
 // ═══════════════════════════════════════════════════════════════════
 
-const C4_WORKER   = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
-const C4_MAX_URLS = 500;
-const C4_CONCURRENCY = 4; // simultaneous checks
+const C4_WORKER      = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+const C4_MAX_URLS    = 500;
+const C4_MAX_CRAWL   = 200;
+const C4_CONCURRENCY = 5;
 
-let c4Results     = [];   // { index, url, status, code, time }
-let c4Scanning    = false;
-let c4ShouldStop  = false;
+let c4Results      = [];
+let c4Scanning     = false;
+let c4ShouldStop   = false;
 let c4ActiveFilter = 'all';
+let c4SitemapFound = null; // URL of sitemap found, or null if crawled
 
-// ── Fetch sitemap XML via worker /api/page-data proxy ────────────
-async function c4FetchXml(url) {
-  const res = await fetch(C4_WORKER + '/api/page-data', {
+// ── Normalize domain input ────────────────────────────────────────
+function c4NormalizeDomain(input) {
+  let url = input.trim();
+  if (!url.startsWith('http')) url = 'https://' + url;
+  try {
+    const u = new URL(url);
+    return u.origin; // e.g. https://ranksorcery.com
+  } catch(e) { return url; }
+}
+
+// ── Fetch raw HTML via worker /api/fetch-raw ──────────────────────
+async function c4FetchRaw(url) {
+  const res = await fetch(C4_WORKER + '/api/fetch-raw', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ url }),
     signal: AbortSignal.timeout(20000)
   });
-  if (!res.ok) throw new Error('Worker returned ' + res.status);
-  const data = await res.json();
-  // page-data returns { html } — the raw XML is in html field
-  return data.html || data.content || '';
+  if (!res.ok) throw new Error('Worker error ' + res.status);
+  return await res.json(); // { html, statusCode, finalUrl, contentType }
+}
+
+// ── Check single URL status via worker /api/check-url ────────────
+async function c4CheckUrlStatus(url) {
+  try {
+    const res = await fetch(C4_WORKER + '/api/check-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+      signal: AbortSignal.timeout(15000)
+    });
+    if (!res.ok) return { statusCode: 0, time: 0 };
+    return await res.json(); // { statusCode, finalUrl, time }
+  } catch(e) {
+    return { statusCode: 0, time: 0, error: e.message };
+  }
 }
 
 // ── Parse sitemap XML → extract <loc> URLs ────────────────────────
-function c4ParseSitemap(xml) {
+function c4ParseSitemapXml(xml) {
   const parser = new DOMParser();
   const doc    = parser.parseFromString(xml, 'application/xml');
-  const locs   = Array.from(doc.querySelectorAll('loc'));
-  return locs.map(l => l.textContent.trim()).filter(u => u.startsWith('http'));
+  return Array.from(doc.querySelectorAll('loc'))
+    .map(l => l.textContent.trim())
+    .filter(u => u.startsWith('http'));
 }
 
-// ── Check a single URL for its HTTP status ────────────────────────
-async function c4CheckUrl(url) {
-  const t0 = Date.now();
-  // Use worker page-data to HEAD-check the URL (avoids CORS)
+// ── Try fetching a URL and check if it is a valid sitemap ─────────
+async function c4TrySitemapUrl(url) {
   try {
-    const res = await fetch(C4_WORKER + '/api/page-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, headOnly: true }),
-      signal: AbortSignal.timeout(15000)
-    });
-    const time = Date.now() - t0;
-    if (!res.ok) return { code: res.status, time, status: c4StatusLabel(res.status) };
-    const data = await res.json();
-    const code = data.statusCode || data.status || (data.error ? 0 : 200);
-    return { code, time, status: c4StatusLabel(code) };
-  } catch(e) {
-    const time = Date.now() - t0;
-    // Fallback: try direct fetch with no-cors (we can at least detect if it fails)
-    try {
-      const r2 = await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(8000) });
-      // no-cors opaque response = likely 200 (can't read status)
-      return { code: 200, time: Date.now() - t0, status: 'ok' };
-    } catch(e2) {
-      return { code: 0, time, status: 'error' };
+    const data = await c4FetchRaw(url);
+    if (data.statusCode !== 200) return null;
+    const xml = data.html || '';
+    if (!/<urlset|<sitemapindex/i.test(xml)) return null;
+    return { url, xml };
+  } catch(e) { return null; }
+}
+
+// ── Phase 1: Auto-discover sitemap ───────────────────────────────
+async function c4DiscoverSitemap(origin) {
+  c4SetProgress('Checking robots.txt for sitemap directive…', 3, origin + '/robots.txt');
+
+  // Step 1: Check robots.txt for Sitemap: directive
+  try {
+    const robotsData = await c4FetchRaw(origin + '/robots.txt');
+    if (robotsData.statusCode === 200 && robotsData.html) {
+      const match = robotsData.html.match(/^Sitemap:\s*(.+)$/im);
+      if (match) {
+        const sitemapUrl = match[1].trim();
+        c4SetProgress('Found sitemap in robots.txt — verifying…', 8, sitemapUrl);
+        const result = await c4TrySitemapUrl(sitemapUrl);
+        if (result) { c4ShowDiscoveryBadge('📄 Found via robots.txt'); return result; }
+      }
+    }
+  } catch(e) {}
+
+  // Step 2: Try common sitemap paths ordered by CMS popularity
+  const paths = [
+    // Universal
+    '/sitemap.xml',
+    '/sitemap_index.xml',
+    '/sitemap-index.xml',
+    // WordPress / Yoast / Rank Math
+    '/wp-sitemap.xml',
+    '/news-sitemap.xml',
+    '/page-sitemap.xml',
+    '/post-sitemap.xml',
+    '/category-sitemap.xml',
+    '/product-sitemap.xml',
+    // Shopify
+    '/sitemap.xml', // already covered but Shopify uses this
+    // Wix
+    '/sitemap.xml',
+    // Squarespace
+    '/sitemap.xml',
+    // Webflow
+    '/sitemap.xml',
+    // Ghost
+    '/sitemap.xml',
+    // HubSpot
+    '/sitemap.xml',
+    // Joomla
+    '/index.php?option=com_xmap&view=xml',
+    // Drupal
+    '/sitemap.xml',
+    // Magento
+    '/pub/sitemap.xml',
+    '/sitemap/sitemap.xml',
+    // BigCommerce
+    '/xmlsitemap.php',
+    // General fallbacks
+    '/sitemap/index.xml',
+    '/sitemaps/sitemap.xml',
+    '/sitemap1.xml',
+    '/sitemap2.xml',
+  ];
+
+  // Deduplicate
+  const uniquePaths = [...new Set(paths)];
+  const total = uniquePaths.length;
+
+  for (let i = 0; i < total; i++) {
+    if (c4ShouldStop) return null;
+    const url = origin + uniquePaths[i];
+    c4SetProgress(`Searching for sitemap… (${i+1}/${total})`, 5 + (i/total)*20, url);
+    const result = await c4TrySitemapUrl(url);
+    if (result) {
+      c4ShowDiscoveryBadge('🗺 Sitemap found: ' + uniquePaths[i]);
+      return result;
     }
   }
+
+  return null; // No sitemap found
+}
+
+// ── Phase 2: BFS Crawler fallback ────────────────────────────────
+async function c4CrawlSite(origin) {
+  c4ShowDiscoveryBadge('🕷 No sitemap found — crawling site');
+  c4SetProgress('No sitemap found. Starting site crawl…', 28, origin);
+
+  const visited  = new Set();
+  const queue    = [origin + '/'];
+  const found    = [];
+
+  visited.add(origin + '/');
+
+  while (queue.length > 0 && found.length < C4_MAX_CRAWL && !c4ShouldStop) {
+    const batch = queue.splice(0, 3); // crawl 3 at a time
+    const pct   = 28 + (found.length / C4_MAX_CRAWL) * 30;
+    c4SetProgress(`Crawling… discovered ${found.length} pages`, pct, batch[0]);
+
+    const results = await Promise.allSettled(batch.map(url => c4FetchRaw(url)));
+
+    for (const r of results) {
+      if (r.status !== 'fulfilled') continue;
+      const { html, statusCode, finalUrl } = r.value;
+      const pageUrl = finalUrl || batch[0];
+
+      if (!found.includes(pageUrl)) found.push(pageUrl);
+
+      if (!html || statusCode !== 200) continue;
+
+      // Extract all internal links from the page
+      const linkRegex = /href=["']([^"'#?]+)["']/gi;
+      let match;
+      while ((match = linkRegex.exec(html)) !== null) {
+        let href = match[1].trim();
+        // Resolve relative URLs
+        try {
+          if (href.startsWith('/')) href = origin + href;
+          else if (!href.startsWith('http')) href = origin + '/' + href;
+          const u = new URL(href);
+          // Only follow internal links
+          if (u.origin !== origin) continue;
+          // Skip media files, scripts, styles
+          if (/\.(jpg|jpeg|png|gif|webp|svg|ico|pdf|zip|css|js|woff|woff2|ttf|mp4|mp3)(\?|$)/i.test(u.pathname)) continue;
+          const clean = u.origin + u.pathname.replace(/\/$/, '') || u.origin + '/';
+          if (!visited.has(clean) && found.length + queue.length < C4_MAX_CRAWL) {
+            visited.add(clean);
+            queue.push(clean);
+          }
+        } catch(e) {}
+      }
+    }
+  }
+
+  return found.length ? found : [origin + '/'];
 }
 
 // ── Status label helper ───────────────────────────────────────────
@@ -9923,24 +10069,12 @@ function c4StatusLabel(code) {
 }
 
 // ── Status badge HTML ─────────────────────────────────────────────
-function c4BadgeHtml(statusLabel, code) {
-  if (statusLabel === 'checking') return '<span class="c4-status c4-s-checking"><div class="c4-spin"></div> Checking</span>';
-  if (statusLabel === 'ok')       return '<span class="c4-status c4-s-ok">✅ OK</span>';
-  if (statusLabel === '404')      return '<span class="c4-status c4-s-404">❌ 404</span>';
-  if (statusLabel === '3xx')      return '<span class="c4-status c4-s-3xx">↪ Redirect</span>';
+function c4BadgeHtml(status) {
+  if (status === 'checking') return '<span class="c4-status c4-s-checking"><div class="c4-spin"></div> Checking</span>';
+  if (status === 'ok')       return '<span class="c4-status c4-s-ok">✅ OK</span>';
+  if (status === '404')      return '<span class="c4-status c4-s-404">❌ 404</span>';
+  if (status === '3xx')      return '<span class="c4-status c4-s-3xx">↪ Redirect</span>';
   return '<span class="c4-status c4-s-err">⚠ Error</span>';
-}
-
-// ── Update KPIs ───────────────────────────────────────────────────
-function c4UpdateKpis() {
-  const total = c4Results.length;
-  const ok    = c4Results.filter(r => r.status === 'ok').length;
-  const f404  = c4Results.filter(r => r.status === '404').length;
-  const other = c4Results.filter(r => r.status !== 'ok' && r.status !== '404' && r.status !== 'checking').length;
-  document.getElementById('c4-kpi-total').textContent = total || '—';
-  document.getElementById('c4-kpi-ok').textContent    = ok    || '0';
-  document.getElementById('c4-kpi-404').textContent   = f404  || '0';
-  document.getElementById('c4-kpi-other').textContent = other || '0';
 }
 
 // ── Render / update a single row ──────────────────────────────────
@@ -9948,47 +10082,57 @@ function c4RenderRow(result) {
   const { index, url, status, code, time } = result;
   const existing = document.getElementById('c4-row-' + index);
   const visible  = c4ActiveFilter === 'all' ||
-                   (c4ActiveFilter === '404'   && status === '404') ||
-                   (c4ActiveFilter === 'ok'    && status === 'ok') ||
-                   (c4ActiveFilter === 'other' && status !== 'ok' && status !== '404');
+    (c4ActiveFilter === '404'   && status === '404') ||
+    (c4ActiveFilter === 'ok'    && status === 'ok') ||
+    (c4ActiveFilter === 'other' && status !== 'ok' && status !== '404' && status !== 'checking');
 
-  const rowClass = status === '404' ? ' class="c4-row-404"' : '';
-  const timeStr  = time ? time + ' ms' : '—';
-  const codeStr  = code || '—';
-
-  const html = `<tr id="c4-row-${index}"${rowClass} style="${visible?'':'display:none'}">
+  const codeColor = code === 404 ? 'var(--c4-red)' : code >= 200 && code < 300 ? 'var(--c4-green)' : 'var(--c4-amber)';
+  const html = `<tr id="c4-row-${index}"${status==='404'?' class="c4-row-404"':''} style="${visible?'':'display:none'}">
     <td style="color:var(--c4-muted);font-size:11px">${index}</td>
     <td><a class="c4-url-link" href="${c4Esc(url)}" target="_blank" rel="noopener">${c4Esc(url)}</a></td>
-    <td>${c4BadgeHtml(status, code)}</td>
-    <td style="font-family:'Cinzel',serif;font-size:12px;color:${code===404?'var(--c4-red)':code>=200&&code<300?'var(--c4-green)':'var(--c4-amber)'}">${codeStr}</td>
-    <td style="font-size:11px;color:var(--c4-muted2)">${timeStr}</td>
+    <td>${c4BadgeHtml(status)}</td>
+    <td style="font-family:'Cinzel',serif;font-size:12px;color:${codeColor}">${code || '—'}</td>
+    <td style="font-size:11px;color:var(--c4-muted2)">${time ? time + ' ms' : '—'}</td>
   </tr>`;
 
-  if (existing) {
-    existing.outerHTML = html;
-  } else {
-    document.getElementById('c4-tbody').insertAdjacentHTML('beforeend', html);
-  }
+  if (existing) existing.outerHTML = html;
+  else document.getElementById('c4-tbody').insertAdjacentHTML('beforeend', html);
 }
 
-// ── Progress update ───────────────────────────────────────────────
-function c4SetProgress(label, pct, currentUrl) {
+// ── Update KPIs ───────────────────────────────────────────────────
+function c4UpdateKpis() {
+  const done  = c4Results.filter(r => r.status !== 'checking');
+  const ok    = done.filter(r => r.status === 'ok').length;
+  const f404  = done.filter(r => r.status === '404').length;
+  const other = done.filter(r => r.status !== 'ok' && r.status !== '404').length;
+  document.getElementById('c4-kpi-total').textContent = c4Results.length || '—';
+  document.getElementById('c4-kpi-ok').textContent    = ok;
+  document.getElementById('c4-kpi-404').textContent   = f404;
+  document.getElementById('c4-kpi-other').textContent = other;
+}
+
+// ── Progress helpers ──────────────────────────────────────────────
+function c4SetProgress(label, pct, url) {
   document.getElementById('c4-progress-label').textContent = label;
   document.getElementById('c4-progress-pct').textContent   = Math.round(pct) + '%';
-  document.getElementById('c4-progress-bar').style.width   = pct + '%';
-  if (currentUrl) document.getElementById('c4-progress-url').textContent = currentUrl;
+  document.getElementById('c4-progress-bar').style.width   = Math.min(100, pct) + '%';
+  if (url) document.getElementById('c4-progress-url').textContent = url;
+}
+
+function c4ShowDiscoveryBadge(msg) {
+  const b = document.getElementById('c4-discovery-badge');
+  b.textContent = msg; b.style.display = 'inline-flex';
 }
 
 // ── Main: start scan ──────────────────────────────────────────────
 async function c4Start() {
-  const sitemapUrl = (document.getElementById('c4-sitemap-input').value || '').trim();
-  if (!sitemapUrl) { c4Toast('Please enter a sitemap URL.'); return; }
-  if (!sitemapUrl.startsWith('http')) { c4Toast('Please enter a valid URL starting with http:// or https://'); return; }
+  const input = (document.getElementById('c4-sitemap-input').value || '').trim();
+  if (!input) { c4Toast('Please enter a website URL.'); return; }
 
-  c4Reset(true); // reset without clearing input
-  c4Scanning    = true;
-  c4ShouldStop  = false;
-  c4Results     = [];
+  c4Reset(true);
+  c4Scanning   = true;
+  c4ShouldStop = false;
+  c4Results    = [];
 
   document.getElementById('c4-start-btn').disabled = true;
   document.getElementById('c4-progress-wrap').classList.add('active');
@@ -9997,53 +10141,62 @@ async function c4Start() {
   document.getElementById('c4-empty-state').style.display = 'none';
   document.getElementById('c4-table').style.display = 'table';
 
-  // Step 1: fetch sitemap
-  c4SetProgress('Fetching sitemap…', 2, sitemapUrl);
-  let xml = '';
-  try {
-    xml = await c4FetchXml(sitemapUrl);
-  } catch(e) {
-    c4Toast('Could not fetch sitemap: ' + e.message);
-    c4ScanDone();
-    return;
+  const origin = c4NormalizeDomain(input);
+  c4SetProgress('Initializing scan…', 1, origin);
+
+  // ── Phase 1: Discover sitemap ─────────────────────────────────
+  let urls = [];
+  const sitemapResult = await c4DiscoverSitemap(origin);
+
+  if (sitemapResult && !c4ShouldStop) {
+    // Sitemap found — parse it
+    c4SitemapFound = sitemapResult.url;
+    c4SetProgress('Sitemap found — parsing URLs…', 30, sitemapResult.url);
+    urls = c4ParseSitemapXml(sitemapResult.xml);
+
+    // Handle sitemap index: fetch first child sitemap
+    if (!urls.length || (urls.length && urls[0].endsWith('.xml'))) {
+      const isIndex = /<sitemapindex/i.test(sitemapResult.xml);
+      if (isIndex && urls.length) {
+        c4SetProgress('Sitemap index found — loading child sitemap…', 32, urls[0]);
+        try {
+          const child = await c4TrySitemapUrl(urls[0]);
+          if (child) urls = c4ParseSitemapXml(child.xml);
+        } catch(e) {}
+      }
+    }
+
+    // Filter to only HTML pages (exclude .xml sub-sitemaps if index)
+    urls = urls.filter(u => !u.endsWith('.xml'));
+
+    if (!urls.length) {
+      c4Toast('Sitemap found but contained no page URLs. Falling back to crawl…', 'var(--c4-amber)');
+      urls = await c4CrawlSite(origin);
+    }
+  } else if (!c4ShouldStop) {
+    // ── Phase 2: No sitemap — crawl ──────────────────────────────
+    c4SitemapFound = null;
+    urls = await c4CrawlSite(origin);
   }
 
-  // Step 2: parse URLs
-  let urls = c4ParseSitemap(xml);
-
-  // Handle sitemap index (contains <sitemap><loc>…) — fetch first child sitemap
-  if (!urls.length) {
-    c4Toast('No <loc> URLs found in sitemap. Check the URL and try again.');
-    c4ScanDone();
-    return;
-  }
-
-  // If sitemap index: URLs would be other sitemaps — detect and expand first one
-  const isSitemapIndex = xml.includes('<sitemapindex') || xml.includes('<sitemap>');
-  if (isSitemapIndex && urls.length > 0 && urls[0].endsWith('.xml')) {
-    c4SetProgress('Sitemap index detected — fetching child sitemap…', 5, urls[0]);
-    try {
-      const childXml = await c4FetchXml(urls[0]);
-      const childUrls = c4ParseSitemap(childXml);
-      if (childUrls.length) urls = childUrls;
-    } catch(e) { /* fallback to index URLs */ }
-  }
+  if (c4ShouldStop) { c4ScanDone(); return; }
+  if (!urls.length) { c4Toast('No pages found to check.', 'var(--c4-amber)'); c4ScanDone(); return; }
 
   // Cap at max
   if (urls.length > C4_MAX_URLS) {
-    c4Toast('Sitemap has ' + urls.length + ' URLs — scanning first ' + C4_MAX_URLS + '.');
+    c4Toast(`Found ${urls.length} URLs — scanning first ${C4_MAX_URLS}.`, 'var(--c4-amber)');
     urls = urls.slice(0, C4_MAX_URLS);
   }
 
   document.getElementById('c4-kpi-total').textContent = urls.length;
 
-  // Pre-populate table rows as "checking"
+  // Pre-populate table with "checking" rows
   urls.forEach((url, i) => {
-    c4Results.push({ index: i + 1, url, status: 'checking', code: null, time: null });
+    c4Results.push({ index: i+1, url, status: 'checking', code: null, time: null });
     c4RenderRow(c4Results[i]);
   });
 
-  // Step 3: check URLs with concurrency pool
+  // ── Phase 3: Check each URL concurrently ─────────────────────
   let done = 0;
   const total = urls.length;
 
@@ -10052,17 +10205,11 @@ async function c4Start() {
     while (idx < total) {
       if (c4ShouldStop) break;
       const result = c4Results[idx];
-      c4SetProgress('Checking ' + (done+1) + ' of ' + total, 10 + (done/total)*88, result.url);
-      try {
-        const { code, time, status } = await c4CheckUrl(result.url);
-        result.code   = code;
-        result.time   = time;
-        result.status = status;
-      } catch(e) {
-        result.code   = 0;
-        result.status = 'error';
-        result.time   = 0;
-      }
+      c4SetProgress(`Checking ${done+1} of ${total} URLs…`, 58 + (done/total)*40, result.url);
+      const { statusCode, time } = await c4CheckUrlStatus(result.url);
+      result.code   = statusCode;
+      result.time   = time;
+      result.status = c4StatusLabel(statusCode);
       c4RenderRow(result);
       c4UpdateKpis();
       done++;
@@ -10070,7 +10217,6 @@ async function c4Start() {
     }
   }
 
-  // Launch concurrent workers
   const workers = [];
   for (let w = 0; w < C4_CONCURRENCY; w++) workers.push(runWorker(w));
   await Promise.all(workers);
@@ -10084,11 +10230,12 @@ function c4ScanDone() {
   document.getElementById('c4-start-btn').disabled = false;
   document.getElementById('c4-stop-btn').style.display = 'none';
   document.getElementById('c4-progress-wrap').classList.remove('active');
-  document.getElementById('c4-export-btn').disabled = false;
+  document.getElementById('c4-export-btn').disabled = c4Results.length === 0;
   const f404 = c4Results.filter(r => r.status === '404').length;
+  c4SetProgress('Scan complete.', 100, '');
   if (f404 > 0) {
-    c4Toast('Scan complete — found ' + f404 + ' broken page' + (f404 !== 1 ? 's' : '') + '. Export to Excel to review.', 'var(--c4-red)');
-  } else {
+    c4Toast(`Scan complete — found ${f404} broken page${f404!==1?'s':''}. Export to Excel to review.`, 'var(--c4-red)');
+  } else if (c4Results.length > 0) {
     c4Toast('Scan complete — no broken 404 pages found! 🎉', 'var(--c4-green)');
   }
   c4UpdateKpis();
@@ -10098,7 +10245,7 @@ function c4ScanDone() {
 function c4Stop() {
   c4ShouldStop = true;
   document.getElementById('c4-stop-btn').style.display = 'none';
-  c4Toast('Scan stopped. Partial results shown below.');
+  c4Toast('Scan stopped. Partial results are shown below.');
 }
 
 // ── Filter table rows ─────────────────────────────────────────────
@@ -10109,20 +10256,22 @@ function c4Filter(type, btn) {
   c4Results.forEach(r => {
     const row = document.getElementById('c4-row-' + r.index);
     if (!row) return;
-    let show = type === 'all' ||
-               (type === '404'   && r.status === '404') ||
-               (type === 'ok'    && r.status === 'ok') ||
-               (type === 'other' && r.status !== 'ok' && r.status !== '404' && r.status !== 'checking');
-    row.style.display = show ? '' : 'none';
+    row.style.display = (
+      type === 'all' ||
+      (type === '404'   && r.status === '404') ||
+      (type === 'ok'    && r.status === 'ok') ||
+      (type === 'other' && r.status !== 'ok' && r.status !== '404' && r.status !== 'checking')
+    ) ? '' : 'none';
   });
 }
 
 // ── Reset ─────────────────────────────────────────────────────────
 function c4Reset(keepInput) {
-  c4ShouldStop = true;
-  c4Scanning   = false;
-  c4Results    = [];
+  c4ShouldStop   = true;
+  c4Scanning     = false;
+  c4Results      = [];
   c4ActiveFilter = 'all';
+  c4SitemapFound = null;
   if (!keepInput) document.getElementById('c4-sitemap-input').value = '';
   document.getElementById('c4-tbody').innerHTML = '';
   document.getElementById('c4-table').style.display = 'none';
@@ -10131,18 +10280,17 @@ function c4Reset(keepInput) {
   document.getElementById('c4-progress-wrap').classList.remove('active');
   document.getElementById('c4-export-btn').disabled = true;
   document.getElementById('c4-start-btn').disabled = false;
+  document.getElementById('c4-discovery-badge').style.display = 'none';
   document.getElementById('c4-kpi-total').textContent = '—';
   document.getElementById('c4-kpi-ok').textContent    = '—';
   document.getElementById('c4-kpi-404').textContent   = '—';
   document.getElementById('c4-kpi-other').textContent = '—';
-  document.querySelectorAll('.c4-filter-tab').forEach((t,i) => { t.classList.toggle('active', i===0); });
+  document.querySelectorAll('.c4-filter-tab').forEach((t,i) => t.classList.toggle('active', i===0));
 }
 
-// ── Export to Excel via SheetJS ───────────────────────────────────
+// ── Export to Excel ───────────────────────────────────────────────
 async function c4ExportExcel() {
   if (!c4Results.length) return;
-
-  // Load SheetJS on demand
   if (!window.XLSX) {
     await new Promise((res, rej) => {
       const s = document.createElement('script');
@@ -10153,68 +10301,47 @@ async function c4ExportExcel() {
   }
 
   const rows = [['#', 'URL', 'Status', 'HTTP Code', 'Response Time (ms)', 'Broken?']];
-  c4Results.forEach(r => {
-    rows.push([
-      r.index,
-      r.url,
-      r.status === 'ok' ? 'OK' : r.status === '404' ? 'BROKEN 404' : r.status === '3xx' ? 'Redirect' : 'Error',
-      r.code || '',
-      r.time || '',
-      r.status === '404' ? 'YES' : 'NO'
-    ]);
-  });
+  c4Results.forEach(r => rows.push([
+    r.index, r.url,
+    r.status === 'ok' ? 'OK' : r.status === '404' ? 'BROKEN 404' : r.status === '3xx' ? 'Redirect' : 'Error',
+    r.code || '', r.time || '', r.status === '404' ? 'YES' : 'NO'
+  ]));
 
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(rows);
-
-  // Column widths
-  ws['!cols'] = [{ wch: 5 }, { wch: 70 }, { wch: 14 }, { wch: 10 }, { wch: 18 }, { wch: 10 }];
-
-  // Style header row (bold)
-  const headerRange = XLSX.utils.decode_range(ws['!ref']);
-  for (let c = headerRange.s.c; c <= headerRange.e.c; c++) {
-    const cellRef = XLSX.utils.encode_cell({ r: 0, c });
-    if (ws[cellRef]) ws[cellRef].s = { font: { bold: true } };
-  }
-
+  ws['!cols'] = [{wch:5},{wch:70},{wch:14},{wch:10},{wch:18},{wch:10}];
   XLSX.utils.book_append_sheet(wb, ws, '404 Check Results');
 
-  // Summary sheet
+  const domain = (() => { try { return new URL(document.getElementById('c4-sitemap-input').value).hostname.replace('www.',''); } catch(e) { return 'site'; }})();
   const f404 = c4Results.filter(r => r.status === '404').length;
-  const ok   = c4Results.filter(r => r.status === 'ok').length;
-  const other= c4Results.filter(r => r.status !== 'ok' && r.status !== '404').length;
   const summaryRows = [
-    ['RankSorcery 404 Checker — Scan Summary'],
-    [],
-    ['Sitemap URL', document.getElementById('c4-sitemap-input').value],
-    ['Scan Date',  new Date().toLocaleString()],
-    [],
+    ['RankSorcery 404 Checker — Scan Summary'], [],
+    ['Website', document.getElementById('c4-sitemap-input').value],
+    ['Sitemap Used', c4SitemapFound || 'None (site crawled)'],
+    ['Scan Date', new Date().toLocaleString()], [],
     ['Total URLs Scanned', c4Results.length],
-    ['✅ OK (200)', ok],
+    ['✅ OK (200)', c4Results.filter(r=>r.status==='ok').length],
     ['❌ Broken (404)', f404],
-    ['⚠️ Other', other],
+    ['⚠️ Other', c4Results.filter(r=>r.status!=='ok'&&r.status!=='404').length],
   ];
   const ws2 = XLSX.utils.aoa_to_sheet(summaryRows);
-  ws2['!cols'] = [{ wch: 24 }, { wch: 50 }];
+  ws2['!cols'] = [{wch:24},{wch:50}];
   XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
 
-  const domain = (() => { try { return new URL(document.getElementById('c4-sitemap-input').value).hostname.replace('www.',''); } catch(e) { return 'site'; } })();
   XLSX.writeFile(wb, '404-check-' + domain + '-' + new Date().toISOString().slice(0,10) + '.xlsx');
   c4Toast('✅ Excel file downloaded!', 'var(--c4-green)');
 }
 
-// ── Escape HTML ───────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────
 function c4Esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
-// ── Toast ─────────────────────────────────────────────────────────
 function c4Toast(msg, color) {
   const t = document.createElement('div');
   t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c1c1f;border:1px solid rgba(232,184,75,0.35);color:' + (color||'#E8B84B') + ';padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif;max-width:460px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.4)';
   t.textContent = msg;
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), 4000);
+  setTimeout(() => t.remove(), 4500);
 }
 </script>
 </body>
