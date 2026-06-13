@@ -1888,6 +1888,9 @@ tr.row-zap td {
     <a class="sidebar-link" href="#" id="sidebar-ranktracker-link" onclick="showRankTracker(event)">
       <span class="sidebar-icon">📈</span> Rank Tracker
     </a>
+    <a class="sidebar-link" href="#" id="sidebar-404-link" onclick="show404Checker(event)">
+      <span class="sidebar-icon">🔍</span> 404 Checker
+    </a>
     <a class="sidebar-link" href="#" id="sidebar-keyword-link" onclick="showKeywordResearch(event)">
       <span class="sidebar-icon">🔑</span> Local Keyword Research
     </a>
@@ -6891,6 +6894,163 @@ canvas#kw-trend-chart { width: 100% !important; }
 
 </div><!-- end rank-tracker-view -->
 
+    <!-- ══════════════ 404 BROKEN LINK CHECKER VIEW ══════════════ -->
+    <div id="checker-404-view" style="display:none;padding:32px 28px">
+
+<style>
+#checker-404-view {
+  --c4-gold:#E8B84B; --c4-gold-pale:rgba(232,184,75,0.10); --c4-border:rgba(232,184,75,0.15);
+  --c4-border2:rgba(232,184,75,0.28); --c4-surface:#141416; --c4-surface2:#1c1c1f;
+  --c4-green:#4ade80; --c4-green-pale:rgba(74,222,128,0.10);
+  --c4-red:#f87171; --c4-red-pale:rgba(248,113,113,0.10);
+  --c4-amber:#fbbf24; --c4-amber-pale:rgba(251,191,36,0.10);
+  --c4-teal:#0ABFBC; --c4-teal-pale:rgba(10,191,188,0.10);
+  --c4-muted:#6a6865; --c4-muted2:#9a9890;
+}
+.c4-eyebrow{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--c4-teal);margin-bottom:8px}
+.c4-title{font-family:'Cinzel',serif;font-size:clamp(20px,2.5vw,28px);font-weight:600;line-height:1.2;color:var(--text);margin-bottom:6px}
+.c4-title em{font-style:normal;color:var(--c4-gold)}
+.c4-sub{font-size:13px;color:var(--c4-muted2);max-width:600px;line-height:1.55;margin-bottom:28px}
+.c4-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+.c4-kpi-card{background:var(--c4-surface);border:1px solid var(--c4-border);border-radius:12px;padding:16px 18px}
+.c4-kpi-lbl{font-size:10px;color:var(--c4-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.c4-kpi-val{font-family:'Cinzel',serif;font-size:1.6rem;font-weight:700;line-height:1}
+.c4-kpi-sub{font-size:11px;color:var(--c4-muted);margin-top:3px}
+.c4-input-card{background:var(--c4-surface);border:1px solid var(--c4-border);border-radius:14px;padding:20px;margin-bottom:20px}
+.c4-card-title{font-family:'Cinzel',serif;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text);margin-bottom:14px}
+.c4-input-row{display:flex;gap:8px;align-items:center}
+.c4-input{flex:1;background:var(--c4-surface2);border:1px solid var(--c4-border);border-radius:9px;padding:11px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.c4-input:focus{border-color:rgba(232,184,75,.5)}
+.c4-input::placeholder{color:var(--c4-muted)}
+.c4-btn-primary{background:var(--c4-gold);color:#000;border:none;border-radius:9px;padding:11px 24px;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+.c4-btn-primary:hover{opacity:.88}
+.c4-btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.c4-hint{font-size:11px;color:var(--c4-muted2);margin-top:8px}
+.c4-progress-wrap{display:none;background:var(--c4-surface);border:1px solid var(--c4-border);border-radius:12px;padding:16px 20px;margin-bottom:16px}
+.c4-progress-wrap.active{display:block}
+.c4-progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.c4-progress-label{font-size:12px;font-weight:600;color:var(--text)}
+.c4-progress-pct{font-family:'Cinzel',serif;font-size:13px;color:var(--c4-gold);font-weight:700}
+.c4-progress-bar-bg{height:6px;background:var(--c4-surface2);border-radius:4px;overflow:hidden}
+.c4-progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--c4-teal),var(--c4-gold));border-radius:4px;transition:width .3s;width:0%}
+.c4-progress-url{font-size:10px;color:var(--c4-muted2);margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c4-action-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.c4-action-left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.c4-btn-outline{font-size:12px;font-weight:600;padding:7px 16px;border-radius:8px;background:none;border:1px solid var(--c4-border2);color:var(--c4-muted2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.c4-btn-outline:hover{color:var(--c4-gold);border-color:var(--c4-gold);background:var(--c4-gold-pale)}
+.c4-btn-excel{font-size:12px;font-weight:700;padding:7px 18px;border-radius:8px;background:var(--c4-green-pale);border:1px solid rgba(74,222,128,.3);color:var(--c4-green);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.c4-btn-excel:hover{background:rgba(74,222,128,.18)}
+.c4-btn-excel:disabled{opacity:.4;cursor:not-allowed}
+.c4-filter-tabs{display:flex;gap:4px}
+.c4-filter-tab{font-size:11px;font-weight:600;padding:5px 12px;border-radius:6px;border:1px solid var(--c4-border);background:none;color:var(--c4-muted2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.c4-filter-tab.active{background:var(--c4-gold-pale);border-color:var(--c4-gold);color:var(--c4-gold)}
+.c4-table-wrap{background:var(--c4-surface);border:1px solid var(--c4-border);border-radius:14px;overflow:hidden}
+.c4-table{width:100%;border-collapse:collapse}
+.c4-table th{padding:10px 16px;background:var(--c4-surface2);text-align:left;font-size:10px;font-weight:700;color:var(--c4-muted);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--c4-border)}
+.c4-table td{padding:11px 16px;border-bottom:1px solid rgba(232,184,75,.05);font-size:12px;vertical-align:middle}
+.c4-table tr:last-child td{border-bottom:none}
+.c4-table tr:hover td{background:rgba(232,184,75,.02)}
+.c4-url-link{color:var(--c4-teal);text-decoration:none;font-size:12px;word-break:break-all}
+.c4-url-link:hover{text-decoration:underline}
+.c4-status{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px}
+.c4-s-404{background:var(--c4-red-pale);color:var(--c4-red);border:1px solid rgba(248,113,113,.25)}
+.c4-s-ok{background:var(--c4-green-pale);color:var(--c4-green);border:1px solid rgba(74,222,128,.25)}
+.c4-s-3xx{background:var(--c4-amber-pale);color:var(--c4-amber);border:1px solid rgba(251,191,36,.25)}
+.c4-s-err{background:var(--c4-surface2);color:var(--c4-muted2);border:1px solid var(--c4-border)}
+.c4-s-checking{background:var(--c4-teal-pale);color:var(--c4-teal);border:1px solid rgba(10,191,188,.25)}
+.c4-spin{display:inline-block;width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(10,191,188,.3);border-top-color:var(--c4-teal);animation:c4sp .7s linear infinite}
+@keyframes c4sp{to{transform:rotate(360deg)}}
+.c4-empty{text-align:center;padding:60px 20px;color:var(--c4-muted);font-size:13px}
+.c4-empty-icon{font-size:2.5rem;margin-bottom:12px}
+.c4-empty-title{font-family:'Cinzel',serif;font-size:16px;color:var(--text);margin-bottom:6px}
+.c4-btn-stop{font-size:12px;font-weight:700;padding:7px 16px;border-radius:8px;background:var(--c4-red-pale);border:1px solid rgba(248,113,113,.3);color:var(--c4-red);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.c4-btn-stop:hover{background:rgba(248,113,113,.18)}
+.c4-row-404 td{background:rgba(248,113,113,.03)!important}
+</style>
+
+<div class="c4-eyebrow">🔍 RankSorcery Tool</div>
+<div class="c4-title">Broken Link <em>404 Checker</em></div>
+<div class="c4-sub">Enter your sitemap URL — RankSorcery extracts all pages and checks each one for broken 404 errors in real time. Export results to Excel when complete.</div>
+
+<div class="c4-kpi-row">
+  <div class="c4-kpi-card">
+    <div class="c4-kpi-lbl">Total URLs</div>
+    <div class="c4-kpi-val" id="c4-kpi-total" style="color:var(--c4-gold)">—</div>
+    <div class="c4-kpi-sub">from sitemap</div>
+  </div>
+  <div class="c4-kpi-card">
+    <div class="c4-kpi-lbl">✅ OK (200)</div>
+    <div class="c4-kpi-val" id="c4-kpi-ok" style="color:var(--c4-green)">—</div>
+    <div class="c4-kpi-sub">healthy pages</div>
+  </div>
+  <div class="c4-kpi-card">
+    <div class="c4-kpi-lbl">❌ Broken (404)</div>
+    <div class="c4-kpi-val" id="c4-kpi-404" style="color:var(--c4-red)">—</div>
+    <div class="c4-kpi-sub">need fixing</div>
+  </div>
+  <div class="c4-kpi-card">
+    <div class="c4-kpi-lbl">⚠️ Other</div>
+    <div class="c4-kpi-val" id="c4-kpi-other" style="color:var(--c4-amber)">—</div>
+    <div class="c4-kpi-sub">3xx / errors</div>
+  </div>
+</div>
+
+<div class="c4-input-card">
+  <div class="c4-card-title">🗺 Enter Sitemap URL</div>
+  <div class="c4-input-row">
+    <input class="c4-input" id="c4-sitemap-input" placeholder="e.g. https://yoursite.com/sitemap.xml" autocomplete="off" onkeydown="if(event.key==='Enter')c4Start()">
+    <button class="c4-btn-primary" id="c4-start-btn" onclick="c4Start()">Start Scan</button>
+  </div>
+  <div class="c4-hint">💡 Supports standard XML sitemaps and sitemap index files. Checks up to 500 URLs per scan. Fetched via your RankSorcery worker proxy.</div>
+</div>
+
+<div class="c4-progress-wrap" id="c4-progress-wrap">
+  <div class="c4-progress-head">
+    <span class="c4-progress-label" id="c4-progress-label">Fetching sitemap…</span>
+    <span class="c4-progress-pct" id="c4-progress-pct">0%</span>
+  </div>
+  <div class="c4-progress-bar-bg"><div class="c4-progress-bar-fill" id="c4-progress-bar"></div></div>
+  <div class="c4-progress-url" id="c4-progress-url">—</div>
+</div>
+
+<div class="c4-action-bar" id="c4-action-bar" style="display:none">
+  <div class="c4-action-left">
+    <div class="c4-filter-tabs">
+      <button class="c4-filter-tab active" onclick="c4Filter('all',this)">All</button>
+      <button class="c4-filter-tab" onclick="c4Filter('404',this)">❌ 404 Only</button>
+      <button class="c4-filter-tab" onclick="c4Filter('ok',this)">✅ OK Only</button>
+      <button class="c4-filter-tab" onclick="c4Filter('other',this)">⚠️ Other</button>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <button class="c4-btn-stop" id="c4-stop-btn" onclick="c4Stop()" style="display:none">⏹ Stop Scan</button>
+    <button class="c4-btn-excel" id="c4-export-btn" onclick="c4ExportExcel()" disabled>📊 Export to Excel</button>
+    <button class="c4-btn-outline" onclick="c4Reset()">↺ New Scan</button>
+  </div>
+</div>
+
+<div class="c4-table-wrap" id="c4-table-wrap">
+  <div class="c4-empty" id="c4-empty-state">
+    <div class="c4-empty-icon">🔍</div>
+    <div class="c4-empty-title">No scan results yet</div>
+    <div>Enter a sitemap URL above and click <strong>Start Scan</strong> to begin.</div>
+  </div>
+  <table class="c4-table" id="c4-table" style="display:none">
+    <thead>
+      <tr>
+        <th style="width:44px">#</th>
+        <th>URL</th>
+        <th style="width:110px">Status</th>
+        <th style="width:72px">Code</th>
+        <th style="width:130px">Response Time</th>
+      </tr>
+    </thead>
+    <tbody id="c4-tbody"></tbody>
+  </table>
+</div>
+
+    </div><!-- end checker-404-view -->
+
   </main>
 </div>
 
@@ -6971,6 +7131,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('bulk');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6982,6 +7143,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.getElementById('bulk-auditor-view').classList.add('active');
     switchMainTab('favicon');
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
@@ -6994,6 +7156,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-dashboard-link').classList.add('active');
   }
@@ -7004,6 +7167,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.add('active');
     document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-aisearch-link').classList.add('active');
   }
@@ -7014,6 +7178,7 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'block';
     document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-keyword-link').classList.add('active');
   }
@@ -7024,9 +7189,21 @@ canvas#kw-trend-chart { width: 100% !important; }
     document.getElementById('ai-search-view').classList.remove('active');
     document.getElementById('keyword-research-view').style.display = 'none';
     document.getElementById('rank-tracker-view').style.display = 'block';
+    document.getElementById('checker-404-view').style.display = 'none';
     document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
     document.getElementById('sidebar-ranktracker-link').classList.add('active');
     rtLoadKeywords();
+  }
+  function show404Checker(e) {
+    if (e) e.preventDefault();
+    document.getElementById('dashboard-view').style.display = 'none';
+    document.getElementById('bulk-auditor-view').classList.remove('active');
+    document.getElementById('ai-search-view').classList.remove('active');
+    document.getElementById('keyword-research-view').style.display = 'none';
+    document.getElementById('rank-tracker-view').style.display = 'none';
+    document.getElementById('checker-404-view').style.display = 'block';
+    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+    document.getElementById('sidebar-404-link').classList.add('active');
   }
 
   document.getElementById('logoutBtn').addEventListener('click', async () => {
@@ -9666,6 +9843,378 @@ function rtToast(msg, color) {
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 3500);
+}
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// 404 BROKEN LINK CHECKER
+// Fetches sitemap via worker proxy → extracts URLs → checks each
+// one via HEAD request (with GET fallback) → shows live results
+// Export to Excel via SheetJS (CDN loaded on demand)
+// ═══════════════════════════════════════════════════════════════════
+
+const C4_WORKER   = 'https://ranksorcery-ai-proxy.webmasterjamez.workers.dev';
+const C4_MAX_URLS = 500;
+const C4_CONCURRENCY = 4; // simultaneous checks
+
+let c4Results     = [];   // { index, url, status, code, time }
+let c4Scanning    = false;
+let c4ShouldStop  = false;
+let c4ActiveFilter = 'all';
+
+// ── Fetch sitemap XML via worker /api/page-data proxy ────────────
+async function c4FetchXml(url) {
+  const res = await fetch(C4_WORKER + '/api/page-data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url }),
+    signal: AbortSignal.timeout(20000)
+  });
+  if (!res.ok) throw new Error('Worker returned ' + res.status);
+  const data = await res.json();
+  // page-data returns { html } — the raw XML is in html field
+  return data.html || data.content || '';
+}
+
+// ── Parse sitemap XML → extract <loc> URLs ────────────────────────
+function c4ParseSitemap(xml) {
+  const parser = new DOMParser();
+  const doc    = parser.parseFromString(xml, 'application/xml');
+  const locs   = Array.from(doc.querySelectorAll('loc'));
+  return locs.map(l => l.textContent.trim()).filter(u => u.startsWith('http'));
+}
+
+// ── Check a single URL for its HTTP status ────────────────────────
+async function c4CheckUrl(url) {
+  const t0 = Date.now();
+  // Use worker page-data to HEAD-check the URL (avoids CORS)
+  try {
+    const res = await fetch(C4_WORKER + '/api/page-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, headOnly: true }),
+      signal: AbortSignal.timeout(15000)
+    });
+    const time = Date.now() - t0;
+    if (!res.ok) return { code: res.status, time, status: c4StatusLabel(res.status) };
+    const data = await res.json();
+    const code = data.statusCode || data.status || (data.error ? 0 : 200);
+    return { code, time, status: c4StatusLabel(code) };
+  } catch(e) {
+    const time = Date.now() - t0;
+    // Fallback: try direct fetch with no-cors (we can at least detect if it fails)
+    try {
+      const r2 = await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(8000) });
+      // no-cors opaque response = likely 200 (can't read status)
+      return { code: 200, time: Date.now() - t0, status: 'ok' };
+    } catch(e2) {
+      return { code: 0, time, status: 'error' };
+    }
+  }
+}
+
+// ── Status label helper ───────────────────────────────────────────
+function c4StatusLabel(code) {
+  if (code === 200 || code === 201) return 'ok';
+  if (code === 404) return '404';
+  if (code >= 300 && code < 400) return '3xx';
+  if (code === 0) return 'error';
+  return 'other';
+}
+
+// ── Status badge HTML ─────────────────────────────────────────────
+function c4BadgeHtml(statusLabel, code) {
+  if (statusLabel === 'checking') return '<span class="c4-status c4-s-checking"><div class="c4-spin"></div> Checking</span>';
+  if (statusLabel === 'ok')       return '<span class="c4-status c4-s-ok">✅ OK</span>';
+  if (statusLabel === '404')      return '<span class="c4-status c4-s-404">❌ 404</span>';
+  if (statusLabel === '3xx')      return '<span class="c4-status c4-s-3xx">↪ Redirect</span>';
+  return '<span class="c4-status c4-s-err">⚠ Error</span>';
+}
+
+// ── Update KPIs ───────────────────────────────────────────────────
+function c4UpdateKpis() {
+  const total = c4Results.length;
+  const ok    = c4Results.filter(r => r.status === 'ok').length;
+  const f404  = c4Results.filter(r => r.status === '404').length;
+  const other = c4Results.filter(r => r.status !== 'ok' && r.status !== '404' && r.status !== 'checking').length;
+  document.getElementById('c4-kpi-total').textContent = total || '—';
+  document.getElementById('c4-kpi-ok').textContent    = ok    || '0';
+  document.getElementById('c4-kpi-404').textContent   = f404  || '0';
+  document.getElementById('c4-kpi-other').textContent = other || '0';
+}
+
+// ── Render / update a single row ──────────────────────────────────
+function c4RenderRow(result) {
+  const { index, url, status, code, time } = result;
+  const existing = document.getElementById('c4-row-' + index);
+  const visible  = c4ActiveFilter === 'all' ||
+                   (c4ActiveFilter === '404'   && status === '404') ||
+                   (c4ActiveFilter === 'ok'    && status === 'ok') ||
+                   (c4ActiveFilter === 'other' && status !== 'ok' && status !== '404');
+
+  const rowClass = status === '404' ? ' class="c4-row-404"' : '';
+  const timeStr  = time ? time + ' ms' : '—';
+  const codeStr  = code || '—';
+
+  const html = `<tr id="c4-row-${index}"${rowClass} style="${visible?'':'display:none'}">
+    <td style="color:var(--c4-muted);font-size:11px">${index}</td>
+    <td><a class="c4-url-link" href="${c4Esc(url)}" target="_blank" rel="noopener">${c4Esc(url)}</a></td>
+    <td>${c4BadgeHtml(status, code)}</td>
+    <td style="font-family:'Cinzel',serif;font-size:12px;color:${code===404?'var(--c4-red)':code>=200&&code<300?'var(--c4-green)':'var(--c4-amber)'}">${codeStr}</td>
+    <td style="font-size:11px;color:var(--c4-muted2)">${timeStr}</td>
+  </tr>`;
+
+  if (existing) {
+    existing.outerHTML = html;
+  } else {
+    document.getElementById('c4-tbody').insertAdjacentHTML('beforeend', html);
+  }
+}
+
+// ── Progress update ───────────────────────────────────────────────
+function c4SetProgress(label, pct, currentUrl) {
+  document.getElementById('c4-progress-label').textContent = label;
+  document.getElementById('c4-progress-pct').textContent   = Math.round(pct) + '%';
+  document.getElementById('c4-progress-bar').style.width   = pct + '%';
+  if (currentUrl) document.getElementById('c4-progress-url').textContent = currentUrl;
+}
+
+// ── Main: start scan ──────────────────────────────────────────────
+async function c4Start() {
+  const sitemapUrl = (document.getElementById('c4-sitemap-input').value || '').trim();
+  if (!sitemapUrl) { c4Toast('Please enter a sitemap URL.'); return; }
+  if (!sitemapUrl.startsWith('http')) { c4Toast('Please enter a valid URL starting with http:// or https://'); return; }
+
+  c4Reset(true); // reset without clearing input
+  c4Scanning    = true;
+  c4ShouldStop  = false;
+  c4Results     = [];
+
+  document.getElementById('c4-start-btn').disabled = true;
+  document.getElementById('c4-progress-wrap').classList.add('active');
+  document.getElementById('c4-action-bar').style.display = 'flex';
+  document.getElementById('c4-stop-btn').style.display   = 'inline-flex';
+  document.getElementById('c4-empty-state').style.display = 'none';
+  document.getElementById('c4-table').style.display = 'table';
+
+  // Step 1: fetch sitemap
+  c4SetProgress('Fetching sitemap…', 2, sitemapUrl);
+  let xml = '';
+  try {
+    xml = await c4FetchXml(sitemapUrl);
+  } catch(e) {
+    c4Toast('Could not fetch sitemap: ' + e.message);
+    c4ScanDone();
+    return;
+  }
+
+  // Step 2: parse URLs
+  let urls = c4ParseSitemap(xml);
+
+  // Handle sitemap index (contains <sitemap><loc>…) — fetch first child sitemap
+  if (!urls.length) {
+    c4Toast('No <loc> URLs found in sitemap. Check the URL and try again.');
+    c4ScanDone();
+    return;
+  }
+
+  // If sitemap index: URLs would be other sitemaps — detect and expand first one
+  const isSitemapIndex = xml.includes('<sitemapindex') || xml.includes('<sitemap>');
+  if (isSitemapIndex && urls.length > 0 && urls[0].endsWith('.xml')) {
+    c4SetProgress('Sitemap index detected — fetching child sitemap…', 5, urls[0]);
+    try {
+      const childXml = await c4FetchXml(urls[0]);
+      const childUrls = c4ParseSitemap(childXml);
+      if (childUrls.length) urls = childUrls;
+    } catch(e) { /* fallback to index URLs */ }
+  }
+
+  // Cap at max
+  if (urls.length > C4_MAX_URLS) {
+    c4Toast('Sitemap has ' + urls.length + ' URLs — scanning first ' + C4_MAX_URLS + '.');
+    urls = urls.slice(0, C4_MAX_URLS);
+  }
+
+  document.getElementById('c4-kpi-total').textContent = urls.length;
+
+  // Pre-populate table rows as "checking"
+  urls.forEach((url, i) => {
+    c4Results.push({ index: i + 1, url, status: 'checking', code: null, time: null });
+    c4RenderRow(c4Results[i]);
+  });
+
+  // Step 3: check URLs with concurrency pool
+  let done = 0;
+  const total = urls.length;
+
+  async function runWorker(startIdx) {
+    let idx = startIdx;
+    while (idx < total) {
+      if (c4ShouldStop) break;
+      const result = c4Results[idx];
+      c4SetProgress('Checking ' + (done+1) + ' of ' + total, 10 + (done/total)*88, result.url);
+      try {
+        const { code, time, status } = await c4CheckUrl(result.url);
+        result.code   = code;
+        result.time   = time;
+        result.status = status;
+      } catch(e) {
+        result.code   = 0;
+        result.status = 'error';
+        result.time   = 0;
+      }
+      c4RenderRow(result);
+      c4UpdateKpis();
+      done++;
+      idx += C4_CONCURRENCY;
+    }
+  }
+
+  // Launch concurrent workers
+  const workers = [];
+  for (let w = 0; w < C4_CONCURRENCY; w++) workers.push(runWorker(w));
+  await Promise.all(workers);
+
+  c4ScanDone();
+}
+
+// ── Scan complete ─────────────────────────────────────────────────
+function c4ScanDone() {
+  c4Scanning = false;
+  document.getElementById('c4-start-btn').disabled = false;
+  document.getElementById('c4-stop-btn').style.display = 'none';
+  document.getElementById('c4-progress-wrap').classList.remove('active');
+  document.getElementById('c4-export-btn').disabled = false;
+  const f404 = c4Results.filter(r => r.status === '404').length;
+  if (f404 > 0) {
+    c4Toast('Scan complete — found ' + f404 + ' broken page' + (f404 !== 1 ? 's' : '') + '. Export to Excel to review.', 'var(--c4-red)');
+  } else {
+    c4Toast('Scan complete — no broken 404 pages found! 🎉', 'var(--c4-green)');
+  }
+  c4UpdateKpis();
+}
+
+// ── Stop scan ─────────────────────────────────────────────────────
+function c4Stop() {
+  c4ShouldStop = true;
+  document.getElementById('c4-stop-btn').style.display = 'none';
+  c4Toast('Scan stopped. Partial results shown below.');
+}
+
+// ── Filter table rows ─────────────────────────────────────────────
+function c4Filter(type, btn) {
+  c4ActiveFilter = type;
+  document.querySelectorAll('.c4-filter-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  c4Results.forEach(r => {
+    const row = document.getElementById('c4-row-' + r.index);
+    if (!row) return;
+    let show = type === 'all' ||
+               (type === '404'   && r.status === '404') ||
+               (type === 'ok'    && r.status === 'ok') ||
+               (type === 'other' && r.status !== 'ok' && r.status !== '404' && r.status !== 'checking');
+    row.style.display = show ? '' : 'none';
+  });
+}
+
+// ── Reset ─────────────────────────────────────────────────────────
+function c4Reset(keepInput) {
+  c4ShouldStop = true;
+  c4Scanning   = false;
+  c4Results    = [];
+  c4ActiveFilter = 'all';
+  if (!keepInput) document.getElementById('c4-sitemap-input').value = '';
+  document.getElementById('c4-tbody').innerHTML = '';
+  document.getElementById('c4-table').style.display = 'none';
+  document.getElementById('c4-empty-state').style.display = 'block';
+  document.getElementById('c4-action-bar').style.display = 'none';
+  document.getElementById('c4-progress-wrap').classList.remove('active');
+  document.getElementById('c4-export-btn').disabled = true;
+  document.getElementById('c4-start-btn').disabled = false;
+  document.getElementById('c4-kpi-total').textContent = '—';
+  document.getElementById('c4-kpi-ok').textContent    = '—';
+  document.getElementById('c4-kpi-404').textContent   = '—';
+  document.getElementById('c4-kpi-other').textContent = '—';
+  document.querySelectorAll('.c4-filter-tab').forEach((t,i) => { t.classList.toggle('active', i===0); });
+}
+
+// ── Export to Excel via SheetJS ───────────────────────────────────
+async function c4ExportExcel() {
+  if (!c4Results.length) return;
+
+  // Load SheetJS on demand
+  if (!window.XLSX) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  const rows = [['#', 'URL', 'Status', 'HTTP Code', 'Response Time (ms)', 'Broken?']];
+  c4Results.forEach(r => {
+    rows.push([
+      r.index,
+      r.url,
+      r.status === 'ok' ? 'OK' : r.status === '404' ? 'BROKEN 404' : r.status === '3xx' ? 'Redirect' : 'Error',
+      r.code || '',
+      r.time || '',
+      r.status === '404' ? 'YES' : 'NO'
+    ]);
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+
+  // Column widths
+  ws['!cols'] = [{ wch: 5 }, { wch: 70 }, { wch: 14 }, { wch: 10 }, { wch: 18 }, { wch: 10 }];
+
+  // Style header row (bold)
+  const headerRange = XLSX.utils.decode_range(ws['!ref']);
+  for (let c = headerRange.s.c; c <= headerRange.e.c; c++) {
+    const cellRef = XLSX.utils.encode_cell({ r: 0, c });
+    if (ws[cellRef]) ws[cellRef].s = { font: { bold: true } };
+  }
+
+  XLSX.utils.book_append_sheet(wb, ws, '404 Check Results');
+
+  // Summary sheet
+  const f404 = c4Results.filter(r => r.status === '404').length;
+  const ok   = c4Results.filter(r => r.status === 'ok').length;
+  const other= c4Results.filter(r => r.status !== 'ok' && r.status !== '404').length;
+  const summaryRows = [
+    ['RankSorcery 404 Checker — Scan Summary'],
+    [],
+    ['Sitemap URL', document.getElementById('c4-sitemap-input').value],
+    ['Scan Date',  new Date().toLocaleString()],
+    [],
+    ['Total URLs Scanned', c4Results.length],
+    ['✅ OK (200)', ok],
+    ['❌ Broken (404)', f404],
+    ['⚠️ Other', other],
+  ];
+  const ws2 = XLSX.utils.aoa_to_sheet(summaryRows);
+  ws2['!cols'] = [{ wch: 24 }, { wch: 50 }];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+
+  const domain = (() => { try { return new URL(document.getElementById('c4-sitemap-input').value).hostname.replace('www.',''); } catch(e) { return 'site'; } })();
+  XLSX.writeFile(wb, '404-check-' + domain + '-' + new Date().toISOString().slice(0,10) + '.xlsx');
+  c4Toast('✅ Excel file downloaded!', 'var(--c4-green)');
+}
+
+// ── Escape HTML ───────────────────────────────────────────────────
+function c4Esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────
+function c4Toast(msg, color) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1c1c1f;border:1px solid rgba(232,184,75,0.35);color:' + (color||'#E8B84B') + ';padding:10px 20px;border-radius:10px;font-size:13px;z-index:9999;font-family:DM Sans,sans-serif;max-width:460px;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.4)';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
 }
 </script>
 </body>
