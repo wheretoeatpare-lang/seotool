@@ -7006,15 +7006,19 @@ canvas#kw-trend-chart { width: 100% !important; }
     <input class="c4-input" id="c4-sitemap-input" placeholder="e.g. https://yoursite.com" autocomplete="off" onkeydown="if(event.key==='Enter')c4Start()">
     <button class="c4-btn-primary" id="c4-start-btn" onclick="c4Start()">Start Scan</button>
   </div>
-  <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap">
     <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:var(--c4-muted2)">
       <input type="checkbox" id="c4-check-links" checked style="accent-color:var(--c4-gold);width:14px;height:14px;cursor:pointer">
-      <span>🔗 Also scan all hyperlinks (&lt;a href&gt;) on each page for broken links</span>
+      <span>🔗 Scan all internal hyperlinks for broken links</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:12px;color:var(--c4-muted2)">
+      <input type="checkbox" id="c4-check-external" style="accent-color:var(--c4-gold);width:14px;height:14px;cursor:pointer">
+      <span>🌐 Also check external links <span style="font-size:10px;color:var(--c4-muted);background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);border-radius:4px;padding:1px 6px">may have false positives</span></span>
     </label>
     <span id="c4-discovery-badge" style="display:none;font-size:11px;padding:3px 10px;border-radius:5px;background:var(--c4-teal-pale);border:1px solid rgba(10,191,188,.25);color:var(--c4-teal);font-weight:600"></span>
   </div>
   <div style="margin-top:8px">
-    <span class="c4-hint" style="margin-top:0">💡 Just paste your domain — RankSorcery auto-discovers your sitemap across all CMS platforms. If no sitemap is found, it crawls your site instead.</span>
+    <span class="c4-hint" style="margin-top:0">💡 Just paste your domain — RankSorcery auto-discovers your sitemap across all CMS platforms. If no sitemap is found, it crawls your site instead. Known CDN/analytics domains (Google Fonts, GTM, etc.) are always skipped to prevent false positives.</span>
   </div>
 </div>
 
@@ -10257,24 +10261,88 @@ async function c4Start() {
 }
 
 // ── Phase 4: Extract & check all <a href> links on each page ─────
+// ── Domains that reliably block bots / return false 404s ─────────
+// These are perfectly valid URLs in a browser but reject server-side
+// HEAD/GET requests — flagging them as broken would be misleading.
+const C4_SKIP_DOMAINS = new Set([
+  // Google services
+  'www.google.com','google.com','accounts.google.com','support.google.com',
+  'maps.google.com','play.google.com','developers.google.com',
+  'fonts.googleapis.com','fonts.gstatic.com',
+  'www.googleapis.com','apis.google.com',
+  'www.googletagmanager.com','googletagmanager.com',
+  'www.google-analytics.com','google-analytics.com','analytics.google.com',
+  'www.googleadservices.com','googleadservices.com',
+  'pagead2.googlesyndication.com','googlesyndication.com',
+  'www.gstatic.com','gstatic.com','ssl.gstatic.com',
+  'www.youtube.com','youtube.com','youtu.be',
+  // Meta / Facebook
+  'www.facebook.com','facebook.com','fb.com','m.facebook.com',
+  'www.instagram.com','instagram.com',
+  'www.threads.net','threads.net',
+  // Microsoft
+  'www.microsoft.com','microsoft.com',
+  'login.microsoftonline.com','microsoftonline.com',
+  'www.linkedin.com','linkedin.com',
+  // Apple / iCloud
+  'www.apple.com','apple.com','appleid.apple.com',
+  // Twitter / X
+  'twitter.com','www.twitter.com','x.com','www.x.com',
+  // Amazon / AWS
+  'www.amazon.com','amazon.com','aws.amazon.com','aws.com',
+  's3.amazonaws.com',
+  // Cloudflare / CDNs
+  'cdnjs.cloudflare.com','www.cloudflare.com','cloudflare.com',
+  'cdn.jsdelivr.net','jsdelivr.net',
+  'unpkg.com','www.unpkg.com',
+  'ajax.googleapis.com',
+  // Common analytics & tag managers
+  'www.hotjar.com','hotjar.com',
+  'static.hotjar.com','script.hotjar.com',
+  'www.clarity.ms','clarity.ms',
+  'cdn.segment.com','segment.com',
+  'js.intercomcdn.com','intercom.io','widget.intercom.io',
+  'connect.facebook.net',
+  'snap.licdn.com','platform.linkedin.com',
+  // Supabase (your own infra — not a page link)
+  'supabase.co','www.supabase.com',
+  // Misc trusted
+  'www.w3.org','w3.org',
+  'schema.org','www.schema.org',
+  'www.iana.org','iana.org',
+]);
+
+function c4ShouldSkipHref(href) {
+  try {
+    const u = new URL(href);
+    const host = u.hostname.toLowerCase().replace(/^www\./, '');
+    // Skip if domain is in the bot-blocking list
+    if (C4_SKIP_DOMAINS.has(u.hostname.toLowerCase())) return true;
+    if (C4_SKIP_DOMAINS.has(host)) return true;
+    return false;
+  } catch(e) { return true; }
+}
+
 async function c4ScanHyperlinks(pageUrls, origin) {
-  // Only fetch HTML from pages that were OK (200) — no point crawling broken pages
+  const checkExternal = document.getElementById('c4-check-external') &&
+                        document.getElementById('c4-check-external').checked;
+
+  // Only scan OK pages
   const okPages = c4Results.filter(r => r.type === 'page' && r.status === 'ok').map(r => r.url);
-  const checkedLinks = new Set(); // avoid re-checking same href across pages
+  const checkedLinks = new Set();
   let linkCount = 0;
-  const maxLinks = 800; // cap total hyperlinks checked
+  const maxLinks = 800;
 
   for (let pi = 0; pi < okPages.length; pi++) {
     if (c4ShouldStop) break;
     const pageUrl = okPages[pi];
-    c4SetProgress(`Scanning links on page ${pi+1}/${okPages.length}…`, 88 + (pi/okPages.length)*10, pageUrl);
+    c4SetProgress(`Scanning hyperlinks on page ${pi+1}/${okPages.length}…`, 88 + (pi/okPages.length)*10, pageUrl);
 
     let html = '';
     try {
       const data = await c4FetchRaw(pageUrl);
       html = data.html || '';
     } catch(e) { continue; }
-
     if (!html) continue;
 
     // Extract all <a href="..."> values
@@ -10283,25 +10351,31 @@ async function c4ScanHyperlinks(pageUrls, origin) {
     let m;
     while ((m = hrefRegex.exec(html)) !== null) {
       let href = m[1].trim();
-      // Resolve relative URLs
       try {
+        if (/^(mailto:|tel:|javascript:|#)/i.test(href)) continue;
         if (href.startsWith('//')) href = 'https:' + href;
         else if (href.startsWith('/')) href = origin + href;
         else if (!href.startsWith('http')) href = origin + '/' + href;
         const u = new URL(href);
-        // Skip media, anchors, mailto, js, etc.
-        if (/^(mailto:|tel:|javascript:)/i.test(href)) continue;
-        if (/\.(jpg|jpeg|png|gif|webp|svg|ico|pdf|zip|css|js|woff|woff2|ttf|mp4|mp3)(\?|$)/i.test(u.pathname)) continue;
+        const isInternal = u.origin === origin;
+
+        // Skip media/resource files
+        if (/\.(jpg|jpeg|png|gif|webp|svg|ico|pdf|zip|css|js|woff|woff2|ttf|mp4|mp3|xml|json|txt)(\?|$)/i.test(u.pathname)) continue;
+
+        // Skip external if not in external mode
+        if (!isInternal && !checkExternal) continue;
+
+        // Skip known bot-blocking domains regardless of mode
+        if (c4ShouldSkipHref(href)) continue;
+
         const clean = u.origin + u.pathname.replace(/\/$/, '') || u.origin + '/';
         hrefs.add(clean);
       } catch(e) {}
     }
 
-    // Check each unique href (batch concurrently, skip already-checked)
     const newHrefs = [...hrefs].filter(h => !checkedLinks.has(h));
     if (!newHrefs.length) continue;
 
-    // Check in batches of C4_CONCURRENCY
     for (let bi = 0; bi < newHrefs.length; bi += C4_CONCURRENCY) {
       if (c4ShouldStop) break;
       if (linkCount >= maxLinks) { c4Toast(`Hyperlink scan capped at ${maxLinks} links.`, 'var(--c4-amber)'); break; }
@@ -10314,8 +10388,11 @@ async function c4ScanHyperlinks(pageUrls, origin) {
         const { statusCode, time } = checks[i];
         const status = c4StatusLabel(statusCode);
 
-        // Only add to results table if broken (404) or error — keeps table clean
-        if (status === '404' || status === 'error') {
+        // Only show broken links (404 only — skip 'error' for external to avoid false positives)
+        const isInternal = href.startsWith(origin);
+        const isBroken = status === '404' || (isInternal && status === 'error');
+
+        if (isBroken) {
           linkCount++;
           const idx = c4Results.length + 1;
           c4Results.push({ index: idx, url: href, status, code: statusCode, time, type: 'link', foundOn: pageUrl });
