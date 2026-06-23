@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Is Deindexing Pages Without Warning — Find Them and Fight Back — RankSorcery</title>
+<meta name="description" content="Pages are disappearing from Google's index with no warning in June 2026. Here's how to detect real deindexing, diagnose the cause, and get your pages back.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-deindexing-pages-june-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Is Deindexing Pages Without Warning — Find Them and Fight Back">
+<meta property="og:description" content="Pages are disappearing from Google's index with no warning in June 2026. Here's how to detect real deindexing, diagnose the cause, and get your pages back.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-deindexing-pages-june-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-amber">⚠️ Technical SEO</span>
+    <h1>Google Is Deindexing Pages Without Warning — Here's How to Find Them and Fight Back</h1>
+    <div class="article-meta">
+      <span>📅 June 22, 2026</span>
+      <span>⏱ 11 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">🗑️</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google is quietly removing pages from its index — some sites have lost 50–70% of their indexed URLs since the May 2026 Core Update finished rolling out.</li>
+      <li>Google Search Console often won't tell you about it — Gary Illyes confirmed GSC doesn't retain data for most deindexed pages.</li>
+      <li>Most deindexing isn't a manual penalty — it's Google's quality filters deciding your content isn't worth keeping.</li>
+      <li>The fix depends on the cause: thin content, canonicalization issues, crawl budget problems, and duplicate pages all require different approaches.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>Something's off. You log into Google Search Console and your indexed page count is down — way down. Rankings you've held for two years are gone. Traffic is sliding but there's no manual action, no penalty notification, nothing in your email. You just quietly disappeared from the index. Right now, in June 2026, this is happening to sites across virtually every niche, and the community is buzzing about it. One site owner on Threads reported dropping from 600,000 indexed pages to 180,000 with no explanation. Search Engine Journal ran a full breakdown. And Google's own stance? "We see nothing unusual."</p>
+
+    <p>So let's talk about what's actually going on, how to figure out if it's happening to you, and what you can realistically do about it.</p>
+
+    <h2>What's Triggering This Wave of Deindexing?</h2>
+
+    <p>The timing isn't random. Google's May 2026 Core Update wrapped up its rollout in early June, and it hit harder than many anticipated. The update specifically targeted <strong>sites with thin, repetitive, or AI-generated content at scale</strong> — and it didn't just drop rankings. For a significant chunk of affected sites, Google went further and removed pages from the index entirely.</p>
+
+    <p>This isn't a new behavior, but the scale is different. Google has always had quality thresholds for indexation — it never promised to index everything. What's changed is that the bar seems to have shifted upward, and it's now being applied more aggressively to content that:</p>
+
+    <ul>
+      <li>Offers minimal additional value over what already ranks</li>
+      <li>Was clearly generated at volume without genuine editorial input</li>
+      <li>Has weak engagement signals relative to its crawl footprint</li>
+      <li>Exists primarily for SEO rather than for actual readers</li>
+    </ul>
+
+    <p>The frustrating part is that "low quality" is doing a lot of heavy lifting in Google's decision-making, and their definition of it keeps shifting. Pages that were fine 18 months ago are now below the threshold.</p>
+
+    <h3>The GSC Data Gap Problem</h3>
+
+    <p>Here's the part that catches a lot of people off guard: <strong>Google Search Console won't show you most of your deindexed pages.</strong> Gary Illyes from Google's Search Relations team confirmed that GSC retains almost no data for URLs that have been removed from the index. They just vanish. There's no "deindexed" coverage state you can filter by — the page simply stops appearing in your index coverage report, and if you weren't tracking it before, you'd never know it existed.</p>
+
+    <p>This means you can't rely solely on GSC to understand the scope of the problem. You need external tooling.</p>
+
+    <h2>How to Actually Detect Deindexing (Step by Step)</h2>
+
+    <p>Before you can fix anything, you need to know what you're dealing with. Here's a practical workflow:</p>
+
+    <h3>Step 1: Get a baseline index count</h3>
+
+    <p>Use the <code>site:</code> operator in Google Search — type <code>site:yourdomain.com</code> and check the estimated number. It's not perfectly accurate, but it's a quick sanity check. If that number is dramatically lower than it was a few months ago, you have a problem. Compare it against your sitemap's URL count and against your GSC index coverage report to triangulate the scope.</p>
+
+    <h3>Step 2: Crawl your own site</h3>
+
+    <p>Run a full crawl with Screaming Frog, Ahrefs Site Audit, or Sitebulb. Export every URL your site serves. Then cross-reference that list against what's actually in Google's index — you can do this by using GSC's URL inspection tool on a sample, or by running a site: search filtered to specific URL patterns. Pages that exist on your server but aren't in the index are your candidates for investigation.</p>
+
+    <h3>Step 3: Segment by page type</h3>
+
+    <p>Don't treat all deindexed pages the same. Segment them: blog posts vs. product pages vs. category pages vs. landing pages. You'll almost certainly find the problem is concentrated in one segment. That tells you a lot about the root cause.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>If your deindexing is concentrated in long-tail blog content or programmatic pages, that's a quality signal problem. If it's happening on product or category pages, it's more likely a technical issue — canonicals, pagination, faceted navigation. Each requires a completely different fix strategy.</p>
+    </div>
+
+    <h2>The Most Common Causes Right Now</h2>
+
+    <p>Based on what the community is reporting post-May 2026 update, here are the most frequent culprits:</p>
+
+    <h3>1. Thin or duplicated content at scale</h3>
+
+    <p>If you've been running a programmatic SEO operation or publishing AI-generated articles without real editorial oversight, this is probably it. Google's quality classifiers have gotten genuinely better at identifying pages that are just rearrangements of the same information. A 600-word post that says basically the same thing as 50 other posts on your site is a deindexing target, full stop.</p>
+
+    <p>The fix here isn't just "make it longer." Length is not the issue — substance is. You need to either consolidate these pages into fewer, better ones, add genuine unique value (original data, firsthand experience, specific use cases), or <code>noindex</code> them if they don't deserve to rank anyway. Letting dead weight sit in your crawl budget is actively harmful.</p>
+
+    <h3>2. Canonicalization chaos</h3>
+
+    <p>This one shows up more often than people expect. If your canonical tags are inconsistent — pointing some versions of a URL to a canonical that's itself behind a redirect, or having www/non-www/trailing-slash variants all canonicalizing to each other in a loop — Google can get confused about which version to index. And sometimes it just doesn't index any of them.</p>
+
+    <p>Check your canonical implementation carefully, especially if you recently migrated CMS platforms or changed URL structures. A botched migration is one of the most common triggers for mass deindexing.</p>
+
+    <h3>3. Crawl budget exhaustion</h3>
+
+    <p>Larger sites — anything north of 10,000 pages — can run into crawl budget problems where Google's crawler simply doesn't get around to refreshing certain pages often enough. If a page hasn't been crawled in months, it can fall out of the index. This gets worse if your site has a lot of internal crawl traps: infinite scroll, session IDs in URLs, faceted navigation generating millions of URL variants.</p>
+
+    <p>Your <code>robots.txt</code> and sitemap quality matter here. Block what you don't need crawled. Submit a clean sitemap with only canonical, indexable URLs.</p>
+
+    <h3>4. No external signals</h3>
+
+    <p>Google uses external signals — links, brand mentions, engagement — to validate that a page is worth keeping in the index. Pages with zero external signals, no internal links pointing to them, and no organic traffic are vulnerable. They're essentially invisible to everything except Google's crawler. At some point, Google decides they're not worth the storage.</p>
+
+    <h2>What Google Actually Says (And What It Means)</h2>
+
+    <p>Google's public response to the community backlash has been consistent: they "see nothing unusual." John Mueller and Gary Illyes have both suggested that the deindexing reports are either misidentified ranking drops, data processing delays, or the result of legitimate quality filters working as intended.</p>
+
+    <p>Here's what I take from that: Google isn't going to come out and say "yeah, we're being more aggressive about removing low-quality content." But the pattern of what's getting removed is telling. It's overwhelmingly content that was published quickly, at volume, with minimal differentiation. That's not random. That's a signal.</p>
+
+    <blockquote>"If your content is only indexed because it's there, not because it's useful — that's a temporary situation."</blockquote>
+
+    <p>The honest truth is that Google has always had the right to not index your content. They never promised universal indexation. What's changed is that they're enforcing that right more visibly now, and the combination of the May 2026 update and better quality classifiers means the bar is higher than it used to be.</p>
+
+    <h2>What to Actually Do About It</h2>
+
+    <p>Let's get practical. If you're dealing with deindexing right now, here's the order of operations:</p>
+
+    <p><strong>First, triage.</strong> Identify which pages are deindexed and what they have in common. Is it all your 2024 AI content? Is it your tag pages? Your low-traffic blog posts? The answer shapes everything.</p>
+
+    <p><strong>Second, don't panic-delete.</strong> Removing deindexed URLs from your site entirely can create broken links, damage internal link equity, and signal to Google that your site is in flux. Instead, consolidate first — merge thin content into stronger parent pages via 301 redirects — before you delete anything.</p>
+
+    <p><strong>Third, noindex what you can't improve.</strong> If you have pages that serve a navigational purpose on your site but aren't worth ranking (tag archives, author pages, thin category pages), add <code>noindex</code> and tell Google to stop wasting crawl budget on them.</p>
+
+    <p><strong>Fourth, strengthen what remains.</strong> For pages that should be indexed but aren't — because they're actually good and deserve visibility — the process is: improve the content genuinely, build internal links pointing to them from your stronger pages, and use URL inspection in GSC to request indexing. That last step isn't guaranteed to work, but it does push Google to take a fresh look.</p>
+
+    <p><strong>Fifth, audit your technical setup.</strong> Fix any canonicalization issues, clean up your sitemap, and plug crawl traps in robots.txt. This is unsexy work but it matters, especially for larger sites where crawl budget is a real constraint.</p>
+
+    <h2>The Uncomfortable Reality for Content-Heavy Sites</h2>
+
+    <p>If you built an SEO strategy around volume — lots of articles on lots of topics — you're probably feeling this more than anyone. The model of "publish 50 posts a month and let the long tail add up" is under serious pressure right now. Google's quality bar isn't just about individual pages anymore; it seems to be evaluating your site's content density holistically. Too much thin content and your stronger pages can get dragged down too.</p>
+
+    <p>This doesn't mean content marketing is dead. It means the math has changed. Ten genuinely useful, well-researched, differentiated pieces are worth more than 100 serviceable ones. That's a real shift in strategy for a lot of teams, and it's worth having that conversation internally sooner rather than later.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>If your indexed page count is down in June 2026 — check your GSC carefully, crawl your site, segment the problem, and be honest about whether those missing pages actually deserved to rank. For most sites, the fastest path back to indexation isn't submitting reconsideration requests or complaining on SEO forums. It's improving the actual content quality, fixing technical issues, and cutting the dead weight. Google's quality bar moved. The sites that adapt quickly will come out ahead when rankings stabilize.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/content-pruning-seo-dead-weight-2026" class="related-card">
+        <div class="rc-tag">Content Strategy</div>
+        <h4>Content Pruning in 2026: How to Cut Dead Weight and Recover Rankings</h4>
+      </a>
+      <a href="/blog/google-third-party-seo-tools-guidance-june-2026" class="related-card">
+        <div class="rc-tag">Technical SEO</div>
+        <h4>Google's New Guidance on Third-Party SEO Tools: What It Means for Your Stack</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
