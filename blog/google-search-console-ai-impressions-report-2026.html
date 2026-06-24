@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Search Console's AI Impressions Report: What It Tells You (and What It Doesn't) — RankSorcery</title>
+<meta name="description" content="Google's new Generative AI report in Search Console shows AI impressions for the first time. Here's how to read the data, what the opt-out toggle actually means, and what to do next.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-search-console-ai-impressions-report-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Search Console's AI Impressions Report: What It Tells You (and What It Doesn't)">
+<meta property="og:description" content="Google's new Generative AI report in Search Console shows AI impressions for the first time. Here's how to read the data, what the opt-out toggle actually means, and what to do next.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-search-console-ai-impressions-report-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(10,191,188,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(232,184,75,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(10,191,188,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(10,191,188,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(10,191,188,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(10,191,188,0.07), rgba(232,184,75,0.05)); border: 1px solid rgba(10,191,188,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--teal); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.data-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.88rem; }
+.data-table th { background: var(--bg3); color: var(--accent); font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border2); }
+.data-table td { padding: 10px 14px; color: var(--muted); border-bottom: 1px solid var(--border); vertical-align: top; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table td strong { color: var(--text); }
+.yes { color: var(--green); font-weight: 600; }
+.no { color: var(--red); font-weight: 600; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-cyan">🤖 AI Search</span>
+    <h1>Google Search Console's AI Impressions Report: What It Tells You (and What It Doesn't)</h1>
+    <div class="article-meta">
+      <span>📅 June 24, 2026</span>
+      <span>⏱ 7 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">📊</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google launched a separate "Generative AI" report in Search Console on June 3, 2026 — the first time AI impressions are broken out from standard organic data.</li>
+      <li>The report shows impressions only. No clicks, no CTR, no queries yet. That's a real limitation you need to work around.</li>
+      <li>There's an opt-out toggle that lets you block your content from AI Overviews and AI Mode — without affecting your regular organic rankings.</li>
+      <li>The report is now rolling out globally (was UK-only first). If you don't see it yet, it's coming. Check Performance → Generative AI in Search Console.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>For the better part of two years, site owners have been flying blind. You could see your traffic dropping, suspect AI Overviews were eating your clicks, but had zero data from Google to confirm it. The Performance report in Search Console just lumped everything together — AI impressions, regular blue links, all of it mixed into one number. That ended on June 3, 2026, when Google launched a dedicated Generative AI performance report. It's not perfect, but it's the first time you can actually see what's happening on the AI side of search. Here's what you need to know right now.</p>
+
+    <h2>What's Actually In the Report</h2>
+
+    <p>The report lives under Performance → Generative AI in Search Console. It's split into two sections: <strong>Generative AI in Search</strong> (covering AI Overviews and AI Mode) and <strong>Generative AI in Discover</strong>. They're kept separate because they behave very differently — Discover drives real traffic on mobile, while AI Mode is a conversational interface where outbound clicks are increasingly rare.</p>
+
+    <p>What you can see:</p>
+    <ul>
+      <li><strong>Impressions</strong> — how many times your pages appeared in AI-generated responses</li>
+      <li><strong>Pages</strong> — which specific URLs are being used as sources</li>
+      <li><strong>Countries</strong> — where those impressions are coming from</li>
+      <li><strong>Devices</strong> — desktop vs mobile split (Search only)</li>
+      <li><strong>Dates</strong> — time-series data at hourly, daily, weekly, and monthly granularity</li>
+    </ul>
+
+    <p>What you <em>cannot</em> see yet:</p>
+    <ul>
+      <li>Clicks or CTR from AI surfaces</li>
+      <li>The actual search queries that triggered your content</li>
+      <li>Whether it was AI Overviews vs AI Mode specifically</li>
+      <li>Average position (which doesn't translate cleanly to AI anyway)</li>
+    </ul>
+
+    <p>One thing worth noting about the data: it starts from <strong>May 18, 2026</strong>, with no backfill. That happens to be right in the middle of the May Core Update window (which ran May 21 through June 2). So your first few weeks of data will have some noise baked in — fluctuations that could be algorithm changes rather than your content improving or declining.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>A large UK publisher reported roughly <strong>120,000 AI impressions per day</strong>, which worked out to about 10% of their total Search impressions. For niche content sites, that share can be significantly higher. Before you dismiss AI impressions as vanity metrics, check your actual numbers — they might surprise you.</p>
+    </div>
+
+    <h2>Why Google Finally Did This (It Wasn't Kindness)</h2>
+
+    <p>Let's be honest about why this report exists. Google didn't wake up one day and decide to be more transparent with publishers. The UK's Competition and Markets Authority (CMA) mandated it under the Digital Markets, Competition and Consumers Act 2024. The penalty for non-compliance? Up to 10% of global annual turnover. That's an enormous number for a company Google's size.</p>
+
+    <p>The CMA described this package as a "world first" — a search engine legally required to give publishers real control over how their content is used in AI responses. The report started rolling out to UK-based sites first, and as of June 23, 2026, it's expanding globally. If you're outside the UK and don't see it yet, it's in the queue.</p>
+
+    <p>There's also a competitive angle here. Bing Webmaster Tools launched AI Performance reports back in February 2026, nearly four months before Google. Microsoft got ahead on AI search transparency, and Google was under dual pressure — regulatory and competitive — to catch up. Worth keeping in mind when Google frames this as a "helpful new feature."</p>
+
+    <h2>The Opt-Out Toggle: A Real Strategic Decision</h2>
+
+    <p>Alongside the report, Google introduced a toggle in Settings → AI Controls that lets you block your content from appearing in AI Overviews, AI Mode, and generative-AI features in Discover. The key point Google has been clear about: <strong>opting out does not affect your standard organic rankings</strong>. Your blue link positions stay the same either way.</p>
+
+    <p>The opt-out took effect June 17, 2026. So the question is — should you use it?</p>
+
+    <p>Here's the honest answer: it depends entirely on what the data shows for your site. There are really two types of sites where opting out makes sense:</p>
+
+    <ul>
+      <li><strong>Ad-heavy publishers</strong> where every click has direct revenue attached. If AI is consuming your content and not sending traffic, you're effectively subsidizing Google's AI for free.</li>
+      <li><strong>Sites with near-zero AI impressions</strong>. If you're barely showing up in AI features anyway, you're giving up nothing by opting out, and at least you keep your content from being used without attribution.</li>
+    </ul>
+
+    <p>Where opting out gets costly:</p>
+    <ul>
+      <li><strong>Brand and thought leadership sites</strong> where AI impressions contribute to brand recall and awareness, even without direct clicks.</li>
+      <li><strong>Sites appearing frequently in AI Mode for high-intent queries</strong>. If someone's asking a question that leads to a purchase and your site is cited in the answer, that impression has real value — even if there's no click right now.</li>
+    </ul>
+
+    <blockquote>"Stay visible in AI features and collect impression data, or block your content from those surfaces entirely. That's the choice. Neither is obviously wrong — it depends on your business model."</blockquote>
+
+    <h2>The Four Quadrants: How to Actually Use This Data</h2>
+
+    <p>The report by itself doesn't tell you much. The signal comes when you cross-reference it with the classic Performance report for the same URLs. Once you do that, you'll see your pages fall into four buckets:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>AI Impressions</th>
+          <th>Organic Clicks</th>
+          <th>What It Means</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>The Sweet Spot</strong></td>
+          <td class="yes">High</td>
+          <td class="yes">High</td>
+          <td>Works in both channels. Protect and scale this content first.</td>
+        </tr>
+        <tr>
+          <td><strong>The Zero-Click Trap</strong></td>
+          <td class="yes">High</td>
+          <td class="no">Low</td>
+          <td>Google's using your content but users aren't clicking through. Problem for ad-monetized sites. Consider opt-out or restructuring content.</td>
+        </tr>
+        <tr>
+          <td><strong>Classic Organic</strong></td>
+          <td class="no">Low</td>
+          <td class="yes">High</td>
+          <td>Solid traditional SEO performance. Figure out why AI isn't picking it up — might be a content structure issue.</td>
+        </tr>
+        <tr>
+          <td><strong>Needs Work</strong></td>
+          <td class="no">Low</td>
+          <td class="no">Low</td>
+          <td>Weak on both dimensions. Consider revising or cutting entirely.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The Zero-Click Trap bucket is the one most publishers are worried about, and for good reason. If Google's AI is answering a question by paraphrasing your article and the user never visits your site, you've created value for Google's product at zero benefit to yourself. That's the core tension this report finally lets you measure.</p>
+
+    <h2>What This Means for GEO (Generative Engine Optimization)</h2>
+
+    <p>For the first time, you have a feedback signal for GEO work. If you've been structuring content for AI grounding — self-contained paragraphs, explicit entity naming, high factual density, FAQ blocks — you can now watch your AI impressions and see if those changes are moving the needle.</p>
+
+    <h3>Content Patterns That Tend to Get Picked Up</h3>
+
+    <p>Based on what we know about how language models handle grounding, the content characteristics most associated with high AI impressions look like this:</p>
+
+    <ul>
+      <li><strong>Self-contained paragraphs</strong>. Each paragraph should be readable in isolation. Avoid referencing earlier sections ("as mentioned above"). LLMs grab content in fragments, and fragments that need context don't ground well.</li>
+      <li><strong>Named entities everywhere</strong>. "John Mueller, Google Search Advocate, said…" is infinitely better than "he said…" for AI grounding purposes. Full names, roles, company names, specific dates.</li>
+      <li><strong>Verifiable facts and numbers</strong>. Specific stats, dated citations, named sources. "Some experts believe" tells an AI system nothing. "A June 2026 CMA report found..." tells it everything.</li>
+      <li><strong>Direct question-answer structure</strong>. FAQ sections, definition-then-explanation blocks, and structured data markup all help AI systems parse your content and pull clean answers.</li>
+    </ul>
+
+    <h3>The Attribution Problem</h3>
+
+    <p>There's a structural issue with AI attribution that this report doesn't solve. When AI Mode handles a query, it can run multiple internal queries in parallel (sometimes called "query fan-out") and pull from several pages simultaneously to construct a single answer. So your URL might show up as an AI impression even though your specific content was used only partially. That means AI impressions aren't a clean analogue to blue-link impressions — don't treat them as equivalent.</p>
+
+    <p>To actually track visits that come from AI surfaces, you need UTM parameters on your URLs where possible, and you need to watch GA4 for referral traffic from google.com with AI-specific paths. Search Console's AI impression count alone can't close that loop for you.</p>
+
+    <h2>What's Missing (and When Might We Get It)</h2>
+
+    <p>The most glaring gap is query data. Knowing which pages are being shown is useful. Knowing which queries are driving those impressions is far more useful. Without that, you can't do targeted content work — you're just watching impression counts move without knowing why.</p>
+
+    <p>Google has said "additional metrics" are coming, but gave no timeline. Bing Webmaster Tools currently has more detailed AI performance data, including content citation information. The gap is significant enough that for competitive research into AI search behavior, Bing's data is worth pulling even though the market share difference makes direct comparison meaningless.</p>
+
+    <p>The click data gap is also real. You can see that Google is showing your page inside an AI answer — you can't see if anyone tapped through. Until that data exists, you'll need to triangulate using GA4 referrals, UTM tagging, and your own traffic trends over time.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>Go check your Generative AI report right now if you have access. Sort by impressions and cross-reference your top AI impression pages with your organic click data in the classic Performance report. That comparison will tell you immediately whether you have a zero-click trap problem or whether your AI visibility is working in your favor.</p>
+
+    <p>On the opt-out toggle: don't touch it until you have at least two to three weeks of impression data. Make the decision with numbers, not anxiety. If you're a publisher living and dying by display ad revenue and your top pages are running at high AI impressions with low clicks, the case for opting out gets stronger fast.</p>
+
+    <p>One thing that won't change regardless of what you decide: writing well-structured, factually dense, entity-rich content is the best hedge either way. It ranks well in classic search, it gets picked up for AI grounding, and it's the kind of content readers actually trust. That's always been the play — this report just finally gives you a way to measure the AI half of it.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/google-ai-search-opt-out-publishers-dilemma-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>Google's AI Opt-Out Is Real — But Should You Actually Use It?</h4>
+      </a>
+      <a href="/blog/zero-click-seo-strategy-2026" class="related-card">
+        <div class="rc-tag">Content Strategy</div>
+        <h4>Zero-Click SEO in 2026: How to Win When Google Answers Everything</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
