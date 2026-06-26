@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reddit Is Eating Your Best Keywords — What the Data Shows and What to Do — RankSorcery</title>
+<meta name="description" content="After the May 2026 core update, Reddit holds 5x more top-3 positions than YouTube. Here's what it reveals about what Google actually wants from your site.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Reddit Is Eating Your Best Keywords — What the Data Shows and What to Do">
+<meta property="og:description" content="After the May 2026 core update, Reddit holds 5x more top-3 positions than YouTube. Here's what it reveals about what Google actually wants from your site.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-16">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Reddit Is Eating Your Best Keywords</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">SEO Strategy</span>
+          <span class="tag tag-purple">Algorithm Update</span>
+        </div>
+        <h1>Reddit Is <span>Eating Your Best Keywords</span> — What the Data Shows and What to Do</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 June 16, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,143 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A few weeks ago I was auditing a client's rankings and noticed something that stopped me cold. Their top-of-funnel keyword — a phrase they'd ranked #2 for since 2023 — had dropped to #7. I scrolled up to see what had bumped them. It was a Reddit thread from 2022. Not a new thread. Not a freshly updated one. A four-year-old discussion about the exact same topic, now sitting at position 2 on a keyword that brings in real commercial intent.</p>
+
+      <p>I've been watching this happen across dozens of sites since the May 2026 core update completed on June 2nd. And the data from tracking tools is now confirming what those of us in the trenches have been seeing anecdotally: <strong>Reddit is having an absolutely wild moment in Google's SERPs.</strong></p>
+
+      <p>According to SEranking's post-update analysis, Reddit now holds nearly <strong>5x more top-3 positions than YouTube</strong> across a broad sample of keywords. That's not a typo. Five times. And before you say "that's just for opinion-type queries" — I'm seeing Reddit threads ranking for comparisons, how-tos, product research queries, and even some navigational intent searches. It's everywhere.</p>
+
+      <p>So let's talk about what's actually happening, why it matters more than you might think, and — most importantly — what you can do about it right now.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">5x</span>
+          <div class="stat-label">Reddit's top-3 positions vs. YouTube after May 2026 update</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">~70%</span>
+          <div class="stat-label">Traffic lost by some pure-content sites hit by the update</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">June 2</span>
+          <div class="stat-label">When the May 2026 core update finished rolling out</div>
+        </div>
+      </div>
+
+      <h2 id="why-reddit-is-winning">Why Reddit Is Winning — And It's Not Just Because Google Likes Reddit</h2>
+
+      <p>The easy narrative is that Google has some special deal with Reddit (they announced a partnership for training data back in 2024) and is therefore artificially boosting Reddit content. That's probably a small part of it. But it's not the main story.</p>
+
+      <p>The more accurate explanation is that Reddit threads actually satisfy a type of search intent that most traditional SEO content completely fails to address: <strong>the desire to hear from real people who've actually done the thing.</strong></p>
+
+      <p>Think about the last time you searched for something like "is [tool X] worth it" or "best [category] for [use case]." You probably added "reddit" to your query because you knew the first page of results was going to be SEO-optimized listicles from sites that may have never actually used any of the products they're ranking for. Reddit threads, whatever their flaws, at least contain opinions from people who have skin in the game.</p>
+
+      <p>Google has figured this out. The May 2026 core update appears to have significantly strengthened what the SEO community is calling "experience signals" — the E at the beginning of E-E-A-T. Google is getting better at distinguishing between content that <em>describes</em> an experience and content written by someone who actually had one.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>The Core Lesson</strong>
+          Reddit is winning not because it's Reddit, but because it contains first-person experience at scale. Google is now much better at rewarding that, and punishing polished-but-hollow SEO content that lacks it.
+        </div>
+      </div>
+
+      <h2 id="what-content-is-most-at-risk">What Types of Content Are Most at Risk</h2>
+
+      <p>Not every site is bleeding. But the sites that got hit hardest share a few uncomfortable characteristics. I've been compiling notes from forums and direct conversations, and the pattern is pretty clear.</p>
+
+      <h3>The "Comprehensive Guide" that covers everything and says nothing</h3>
+
+      <p>You know the format. 4,000-word articles with "What is X," "Why X Matters," "How to Use X," "X Best Practices," "X FAQ" — all written at a safe, generic, hedge-everything level that never actually commits to a recommendation. These guides rank because they're thorough. They don't get clicked because they're not honest.</p>
+
+      <p>A Reddit thread where someone says "I tried three of the tools on that list and two of them are garbage — here's which one I kept using" is infinitely more useful. And now Google apparently agrees.</p>
+
+      <h3>Review and comparison content without actual testing</h3>
+
+      <p>Affiliate sites that run round-ups of "the 10 best [X] in 2026" while having clearly never touched the products are getting absolutely demolished. Google's systems have gotten much better at detecting when a site lacks the institutional experience to actually evaluate what it claims to evaluate.</p>
+
+      <h3>AI-generated content that was never edited to add perspective</h3>
+
+      <p>This one is painful to write because it's so common. An AI can produce a structurally correct, factually accurate, well-organized article in seconds. What it can't do (without significant human intervention) is tell you which of the five options actually worked for a real person in a specific situation. That gap is where Reddit lives — and where the May 2026 update is punishing thin AI content hardest.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Warning Sign</strong>
+          If you could swap your article into any competitor's site and it would fit perfectly — no brand voice, no specific experiences, no opinions — that's exactly the kind of content this update is targeting.
+        </div>
+      </div>
+
+      <h2 id="what-reddit-has-that-you-dont">What Reddit Threads Have That Your Articles Probably Don't</h2>
+
+      <p>Let me be specific here, because "add experience" is annoyingly vague advice. Here's what a high-ranking Reddit thread actually has:</p>
+
+      <ul class="checklist">
+        <li><strong>Specific failure stories.</strong> "I tried this and it didn't work because of [specific reason]" — not "this approach has some limitations."</li>
+        <li><strong>Disagreement.</strong> Multiple people with different experiences arguing about the same thing. This is inherently more trustworthy than one authoritative voice that agrees with itself.</li>
+        <li><strong>Numbers and specifics.</strong> "Went from 800 to 12,000 monthly visitors in 4 months" vs. "significant traffic growth."</li>
+        <li><strong>Recency signals.</strong> Comments with dates, recent edits, new people jumping in — Google sees this as fresh engagement around the topic.</li>
+        <li><strong>Real names and context.</strong> Even pseudonymous accounts often provide context like "I've been doing this for 6 years" or "I work in e-commerce." That context matters.</li>
+        <li><strong>Unprompted vulnerability.</strong> "Honestly I have no idea if this is the right approach but here's what worked for me" — this kind of hedging actually builds trust because it signals the person isn't trying to sell you something.</li>
+      </ul>
+
+      <p>Your SEO article has almost none of this, by design. You were taught to be authoritative and comprehensive. You were taught to avoid hedging. You were taught to remove personal anecdotes because they're "not scalable." And that — ironically — is why you're losing to a forum thread from 2022.</p>
+
+      <div class="pull-quote">
+        "The SEO industry spent a decade removing exactly the qualities that make content genuinely trustworthy. The May 2026 core update is Google's bill arriving for that."
+      </div>
+
+      <h2 id="this-doesnt-mean-create-reddit-posts">This Doesn't Mean You Should Just Create Reddit Posts</h2>
+
+      <p>I've seen this advice floating around and it drives me a little crazy. Yes, Reddit is winning. No, the answer is not to spam Reddit with your content or try to manufacture fake community discussion. Reddit's community is extremely good at detecting astroturfing, and getting caught doing it is actively bad for your brand.</p>
+
+      <p>The answer is to bring the qualities of good forum content — honesty, specificity, real experience, willingness to be wrong — into your own content strategy.</p>
+
+      <div class="inline-cta">
+        <h3>Is Your Site Sending the Right E-E-A-T Signals?</h3>
+        <p>Run a free SEO audit on RankSorcery to see what Google's crawlers actually see on your pages — including signals that affect how your experience and authority are evaluated.</p>
+        <a href="https://ranksorcery.com/" target="_blank" rel="noopener">Run Free SEO Audit →</a>
+      </div>
+
+      <h2 id="what-to-actually-do">What to Actually Do — A Practical Response to This Update</h2>
+
+      <p>Here's how I'd approach this if I were auditing a site that lost rankings in May or June 2026:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Identify Which Keywords Reddit Is Eating</h4>
+            <p>Go into Google Search Console and look at queries where your average position has dropped significantly since May 21. Then manually search those queries and see who's outranking you. If it's Reddit, Quora, or another forum — that's the pattern we're talking about. Prioritize these for a content rewrite before anything else.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Study the Winning Threads — Don't Just Note What They Say</h4>
+            <p>Actually read the Reddit threads that are outranking you. What real questions are people asking? What specific objections come up? What experiences are shared? These are the gaps your article doesn't address. Write those gaps down. They become your rewrite outline.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Add a "From the Trenches" Section to Your Article</h4>
+            <p>This sounds small but it genuinely helps. Add a dedicated section to your existing articles where you describe a specific real situation — a client case, your own test, a mistake you made — related to the topic. Give details. Use actual numbers. Don't sanitize it. This is the section that differentiates you from pure AI output.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Add or Strengthen Your Author Profile Page</h4>
+            <p>Google's quality raters pay attention to author credentials. If your articles have no byline, or the byline links to an empty bio page, that's a problem. Build out author pages with real credentials, a LinkedIn link, and ideally some external mentions or guest posts that establish the author as a real, credible person in the space.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Stop Optimizing for Comprehensiveness, Start Optimizing for Usefulness</h4>
+            <p>Ask this question for every section of every article: "Would this help someone who is actually trying to decide something right now?" If the answer is no — if it's just background padding that you included because "every guide on this topic covers this" — cut it or replace it with something direct.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="the-ai-content-nuance">The AI Content Nuance Nobody Wants to Hear</h2>
+
+      <p>I'm going to be blunt: AI-generated content is fine. Unedited AI-generated content is not fine, and it's getting worse as a strategy.</p>
+
+      <p>The problem isn't that AI writes the words. The problem is that AI, by its nature, synthesizes and regurgitates what already exists on the internet. It cannot have an opinion about whether your specific SEO tool actually improved your client's rankings last quarter, because that thing hasn't happened yet when the model was trained.</p>
+
+      <p>The sites that are surviving this update — and even gaining — are using AI to handle structure, grammar, and efficiency, but they're layering real human experience on top. The articles that look AI-written all the way through, with generic examples and no specific opinions, are the ones getting replaced by Reddit threads.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🛠️</div>
+        <div class="callout-body">
+          <strong>Practical Tip</strong>
+          Use AI to draft your article structure and handle the boilerplate sections. Then go through it and replace every generic example with a real one from your experience. Every "for example" should cite something specific. That's the editorial pass that matters.
+        </div>
+      </div>
+
+      <h2 id="the-bigger-picture">The Bigger Picture: What This Update Actually Signals</h2>
+
+      <p>I think the May 2026 core update is part of a longer arc that Google has been on for several years. They've been slowly shifting the quality calculus from "is this content technically correct and comprehensive" toward "is this content from a source that actually knows what they're talking about, and does it help the person searching?"</p>
+
+      <p>Reddit winning is not the goal. It's a symptom. Google would prefer to send traffic to well-structured, authoritative sites that combine the trustworthiness of Reddit with the readability and depth of good editorial content. The sites that figure out how to do both will win over the next 12 months.</p>
+
+      <p>The sites that keep churning out polished-but-hollow content will keep losing ground to forum threads, because at least the forum threads are honest about what they know and don't know.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🔭</div>
+        <div class="callout-body">
+          <strong>Where This Is Heading</strong>
+          Expect Google to get even better at this over the next few updates. The gap between "sites that have real expertise" and "sites that perform expertise" is only going to widen. If you're in the second category, the time to change is before the next core update, not after.
+        </div>
+      </div>
+
+      <h2 id="quick-audit-checklist">Quick Self-Audit: Is Your Content Reddit-Proof?</h2>
+
+      <p>Before you leave, run through this checklist for your top-5 articles by traffic. Be honest:</p>
+
+      <ul class="checklist">
+        <li>Does each article include at least one specific, real-world example with actual numbers or outcomes?</li>
+        <li>Does the article take a clear position on at least one contested point in the niche?</li>
+        <li>Is there a named author with a credible bio and external proof of expertise?</li>
+        <li>Does the article acknowledge at least one thing that doesn't work or that the author got wrong?</li>
+        <li>Would someone who already knows the basics learn something genuinely new from this article?</li>
+        <li>Could this article only have been written by someone who's actually worked in this space?</li>
+        <li>Does the article directly address the specific questions people are asking in forums about this topic?</li>
+      </ul>
+
+      <p>If you're saying no to more than two or three of those, you've found your content debt. Pay it down before the next update arrives. Because based on what I've seen from Google's trajectory this year, the next update isn't going to be more lenient about this — it's going to be harder.</p>
+
+      <p>The good news is that this is actually solvable. You don't need to abandon your content strategy. You need to inject humanity into it. That's a revision process, not a rebuild.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#why-reddit-is-winning">Why Reddit Is Winning</a></li>
+        <li><a href="#what-content-is-most-at-risk">Content Most at Risk</a></li>
+        <li><a href="#what-reddit-has-that-you-dont">What Reddit Has That You Don't</a></li>
+        <li><a href="#this-doesnt-mean-create-reddit-posts">Don't Just Post on Reddit</a></li>
+        <li><a href="#what-to-actually-do">What to Actually Do</a></li>
+        <li><a href="#the-ai-content-nuance">The AI Content Nuance</a></li>
+        <li><a href="#the-bigger-picture">The Bigger Picture</a></li>
+        <li><a href="#quick-audit-checklist">Quick Self-Audit Checklist</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Reddit%20Is%20Eating%20Your%20Best%20Keywords%20%E2%80%94%20What%20the%20Data%20Shows%20and%20What%20to%20Do&url=https://ranksorcery.com/blog/reddit-seo-dominance-what-to-do-june-2026" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/competitor-analysis-after-may-2026-core-update" class="related-post">
+        <div class="related-post-icon">⚔️</div>
+        <div class="related-post-body">Why Your Competitors Are Winning After May 2026<span>12 min · Jun 9</span></div>
+      </a>
+      <a href="/blog/ai-content-humanizing-may-2026-core-update" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">Why Unedited AI Content Is Getting Crushed<span>11 min · May 19</span></div>
+      </a>
+      <a href="/blog/content-pruning-seo-dead-weight-2026" class="related-post">
+        <div class="related-post-icon">✂️</div>
+        <div class="related-post-body">Content Pruning in 2026: Delete What's Killing You<span>10 min · May 29</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Audit My Site →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
