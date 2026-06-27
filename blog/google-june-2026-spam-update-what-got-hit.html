@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google June 2026 Spam Update: What SpamBrain Hit and What to Do Now — RankSorcery</title>
+<meta name="description" content="Google's June 2026 spam update dropped June 24. Here's what SpamBrain targeted, who got hurt, what it skipped, and how to audit your site without panicking.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-june-2026-spam-update-what-got-hit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google June 2026 Spam Update: What SpamBrain Hit and What to Do Now">
+<meta property="og:description" content="Google's June 2026 spam update dropped June 24. Here's what SpamBrain targeted, who got hurt, what it skipped, and how to audit your site without panicking.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-june-2026-spam-update-what-got-hit">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-green">🛡️ Algorithm Update</span>
+    <h1>Google's June 2026 Spam Update: What SpamBrain Actually Targeted (And What to Do Right Now)</h1>
+    <div class="article-meta">
+      <span>📅 June 27, 2026</span>
+      <span>⏱ 11 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">🛡️</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google's June 2026 spam update started rolling out June 24 — it's the second spam update of the year and it's still in progress.</li>
+      <li>SpamBrain is the main weapon here: it targets scaled content abuse, AI-generated garbage pages, and thin programmatic spam — not link spam this time.</li>
+      <li>If you're running legitimate sites, don't panic and don't make bulk changes mid-rollout — you'll just add noise and make it harder to diagnose anything real.</li>
+      <li>If you got hit, the path forward is auditing against Google's actual spam policies, not chasing rumors about what "SpamBrain hates."</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>So Google dropped another spam update. June 24, 2026, 9:03 AM PDT — if you watch tracking tools, you probably saw it the second it landed. Flux spiked, SEO Twitter lit up, and within hours people were already calling it "devastating" or "nothing burger" depending entirely on whether their own sites moved. Classic update cycle. Here's what's actually going on.</p>
+
+    <h2>What Is This Update and Why Now?</h2>
+
+    <p>This is Google's second spam update of 2026, following the March spam update that hit link schemes hard. The June update is a different flavor — it's not a core quality update (those evaluate overall content quality and E-E-A-T across entire sites). <strong>Spam updates are specifically about policy violations.</strong> Sites that get dinged here did something Google explicitly says you shouldn't do, not just something Google doesn't love.</p>
+
+    <p>Google's announcement was characteristically brief: "Released the June 2026 spam update, which applies globally and to all languages. The rollout may take a few days to complete." That's it. No list of targets, no checklist, no drama. That's intentional — Google doesn't telegraph what SpamBrain's sensors got sharper at, because then people would just find the new edge of the line.</p>
+
+    <p>SpamBrain, for anyone who missed the context: it's Google's AI-based spam-detection system. It's been running for years but they've been continuously training it. The idea is that it can recognize spam patterns at scale, even when those patterns are constantly evolving. Every spam update is essentially Google deploying a new version of SpamBrain that's gotten better at catching the stuff it was struggling with before.</p>
+
+    <h2>What SpamBrain Actually Targeted This Time</h2>
+
+    <p>Based on confirmed reporting from Search Engine Land, SEJ, and SEO practitioners watching real ranking data, the June 2026 update is primarily targeting three categories:</p>
+
+    <h3>Scaled Content Abuse</h3>
+    <p>This is the big one. Scaled content abuse is when you produce large volumes of pages whose primary purpose is to manipulate search rankings — not to genuinely help users. The pages might technically have words on them. They might even pass a surface-level quality check. But if the reason they exist is to capture keyword combinations and funnel traffic to affiliate links, lead gen forms, or ad revenue with minimal real value added, SpamBrain has been getting really good at flagging this pattern.</p>
+
+    <p>The uncomfortable truth is that "scaled content" isn't automatically spam — there are legitimate programmatic SEO plays. The line Google draws is intent and value. A database of every city's weather patterns? Fine. A database of 10,000 "best [product] in [city]" pages where every single one says roughly the same templated thing and links to the same affiliate? That's what this update is hammering.</p>
+
+    <h3>AI-Generated Spam</h3>
+    <p>No, this doesn't mean Google is penalizing AI content categorically. That's a misconception that comes up every single update cycle and it's still wrong. What Google targets is <strong>AI content used as a production mechanism for spam</strong> — using language models to churn out thousands of pages at velocity specifically to game rankings. The tell is usually the combination of scale + thin value + aggressive monetization with no real editorial oversight.</p>
+
+    <p>AI content that's actually useful, edited, fact-checked, and exists because someone wanted to answer a question? Google's own documentation says that's fine. But when AI becomes a spam factory — when the goal is "more pages = more traffic" rather than "better answers = more traffic" — that's what SpamBrain's newer models are catching more reliably.</p>
+
+    <h3>Thin Programmatic Pages</h3>
+    <p>Doorway pages, expired-domain flips with placeholder content, templated location pages that differ only by city name with zero meaningful local information — these have always been in Google's crosshairs. The June update appears to have tightened the detection across these patterns, particularly for sites that scaled these tactics aggressively over the last 12 months thinking the heat had died down after the March update.</p>
+
+    <h2>What This Update Does NOT Target</h2>
+
+    <p>This one's important, because panic is expensive. Google has confirmed — and practitioners analyzing traffic data are corroborating — that the June spam update does <strong>not</strong> specifically target:</p>
+
+    <ul>
+      <li><strong>Link spam</strong> — that was March's focus. If your backlink profile hasn't changed since then and you're seeing drops now, look elsewhere.</li>
+      <li><strong>Site reputation abuse (parasite SEO)</strong> — this is the practice of publishing third-party content on high-authority domains to hijack their ranking power. There's a separate policy for this, and Google handles it differently. Not this update.</li>
+      <li><strong>E-E-A-T issues</strong> — again, that's core update territory. If you're worried about expertise and authority signals, a spam update is the wrong thing to be analyzing.</li>
+    </ul>
+
+    <p>I've already seen people in forums attributing every rank drop from the past week to the spam update. Some of those drops are unrelated — SERP fluctuations happen constantly, and the timing is just coincidental. Cross-reference your drops in Search Console against the exact rollout window before you conclude you were a target.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>If you're in the middle of rollout (which is still ongoing as of June 27), <strong>don't make bulk site changes right now.</strong> You can't tell what's a spam signal penalty vs. normal rollout turbulence until the dust settles — usually 5–10 days after the start date. Make changes now and you won't know what helped or hurt.</p>
+    </div>
+
+    <h2>How to Tell If You Were Actually Hit</h2>
+
+    <p>The difference between a spam update hit and a core update hit matters because the remediation is completely different. Here's how to diagnose it:</p>
+
+    <h3>Check the Timing</h3>
+    <p>Open Google Search Console. Look at your Performance report with date comparison. Did the drop start on or after June 24? If you had a steady decline before that date, this update isn't your main problem. If it was a cliff on the 24th or 25th, that's a signal worth investigating.</p>
+
+    <h3>Look at Which Pages Dropped</h3>
+    <p>Spam updates tend to hit specific page types, not the whole site. Pull your top pages by impressions from 30 days before the update vs. 7 days after. If the losses are concentrated on your highest-volume programmatic pages, your AI-generated content clusters, or your thin location/product pages — that's SpamBrain doing its job. If it's your manually-written editorial content that dropped, you're probably dealing with something else.</p>
+
+    <h3>Check for Manual Actions</h3>
+    <p>Go to Search Console → Security & Manual Actions. Algorithmic spam penalties from SpamBrain don't show up here, but it's worth confirming you haven't been hit with a manual action on top of an algorithmic one. Both can happen simultaneously if a site is egregious enough to trigger both automated and human review.</p>
+
+    <h3>Look at Page-Level Crawl Data</h3>
+    <p>Tools like Screaming Frog or Sitebulb can help you identify what Google actually sees when it crawls your pages. Look for pages with duplicate content patterns, very low word counts, high ads-to-content ratios, or templated structures that differ only in a handful of variables. These are red flags for scaled content abuse.</p>
+
+    <h2>Recovery: What Works and What Doesn't</h2>
+
+    <p>If you've confirmed your site was hit, here's an honest take on the path forward:</p>
+
+    <h3>What Actually Helps</h3>
+    <p>Start with a spam policy audit. Go to Google's Search Essentials documentation and read their actual spam policies — not some third-party interpretation of them, the actual policies. Then walk through your site honestly. Not "does this technically not violate anything" but "if I were a Google quality rater, would I look at this page and think it exists primarily to manipulate search?" That mental exercise surfaces more problems than any automated tool.</p>
+
+    <p>For scaled content issues: either substantially improve the pages or consolidate/remove them. Improving means adding real unique value — local data, original research, expert input, user-generated specifics that can't be templated. Consolidating means combining several thin pages into one genuinely useful resource. Removing means canonicalizing or 404ing pages that have no path to providing real value and are hurting the overall site quality signal.</p>
+
+    <p>Recovery from spam updates has historically taken one of two paths: either Google re-crawls and reassesses your improved content organically over weeks to months, or you wait for the next spam update to un-penalize you if you've cleaned up. Neither is fast. I know that's not what anyone wants to hear, but it's realistic.</p>
+
+    <h3>What Doesn't Help</h3>
+    <p>Panicking and mass-deleting pages without understanding which ones are problematic. Spamming Google's reconsideration request for an algorithmic penalty (reconsideration is for manual actions). Completely rebuilding site architecture mid-investigation. Adding more content to try to "drown out" the bad stuff — that doesn't work and often makes the quality signal worse.</p>
+
+    <p>Also: don't believe anyone who tells you they have a "guaranteed" spam recovery playbook. Every site is different, every penalty has different root causes, and anyone selling certainty here is selling snake oil.</p>
+
+    <h2>The Bigger Picture: SpamBrain Is Getting Smarter Fast</h2>
+
+    <p>Two spam updates in five months is a pace we haven't seen before. The March update hit links. The June update hit content and AI spam. This isn't random — it's Google systematically closing loopholes that the SEO industry identified and scaled into. The message is pretty clear: they're running these more frequently now, and they're getting more precise with each one.</p>
+
+    <p>The trajectory is toward a model where anything that was built primarily to game rankings — rather than to genuinely serve users — has a diminishing shelf life. Tactics that worked fine 18 months ago are now getting caught. Tactics that work fine today are probably in SpamBrain's training data for the next update.</p>
+
+    <p>That's not meant to be doom-and-gloom. Sites built on real content, real value, and real user intent are largely untouched by these updates. The practitioners I know who are actually thriving right now are the ones who stopped trying to find the edge of what Google allows and started asking "would a real person find this genuinely useful?" That sounds annoyingly simple, but it's the filter that keeps holding up.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>The June 2026 spam update is still mid-rollout as of this writing. If your traffic dropped on June 24 or 25, don't make any sweeping changes yet — wait until rollout completes (give it through June 30 at minimum) so you're analyzing a stable picture. Then audit your content honestly against Google's spam policies, identify any scaled, thin, or AI-churn pages that exist primarily for ranking rather than value, and make a phased cleanup plan. Don't try to fix everything at once, and don't expect overnight recovery. The sites that handle these updates best are the ones that treat the diagnosis seriously and the remediation methodically — not the ones who scramble and guess.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/link-building-after-march-spam-update-2026" class="related-card">
+        <div class="rc-tag">Link Building</div>
+        <h4>The March 2026 Spam Update Killed Link Spam — Here's What Actually Moves Rankings Now</h4>
+      </a>
+      <a href="/blog/google-deindexing-pages-june-2026" class="related-card">
+        <div class="rc-tag">Technical SEO</div>
+        <h4>Google Is Deindexing Pages Without Warning — Here's How to Find Them and Fight Back</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
