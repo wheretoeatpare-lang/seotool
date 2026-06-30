@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Says Stop Converting Your Pages to Markdown for AI SEO — RankSorcery</title>
+<meta name="description" content="Google's John Mueller and Martin Splitt just pushed back hard on the Markdown-for-AI-SEO trend. Here's what they said, why it matters, and what to do instead.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-markdown-ai-seo-html-signals-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google Says Stop Converting Your Pages to Markdown for AI SEO">
+<meta property="og:description" content="Google's John Mueller and Martin Splitt just pushed back hard on the Markdown-for-AI-SEO trend. Here's what they said, why it matters, and what to do instead.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-markdown-ai-seo-html-signals-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-cyan">AI Search</span>
+    <h1>Google Says Stop Converting Your Pages to Markdown for AI SEO — Here's What to Do Instead</h1>
+    <div class="article-meta">
+      <span>📅 June 28, 2026</span>
+      <span>⏱ 10 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">📄</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google's John Mueller and Martin Splitt explicitly said Markdown-only pages strip away the signals that matter for ranking and AI citation.</li>
+      <li>Converting HTML to text is trivial for any competent crawler — Markdown doesn't make you "more crawlable" for AI bots.</li>
+      <li>Markdown breaks internal link discovery and removes structural context that tells Google how pages relate to each other.</li>
+      <li>Clean, well-structured HTML with proper schema and navigation is still the right answer — no tricks needed.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>Sometime in early 2026, a specific piece of advice started spreading through SEO Twitter and LinkedIn: convert your web pages to Markdown format to make them easier for AI crawlers to read. The pitch was compelling on the surface — LLMs don't need all that messy HTML, so just give them the clean text version and you'll get cited more. Some agencies even started selling "AI-ready" site audits that included Markdown conversion as a deliverable.</p>
+
+    <p>On the June 2026 episode of Google's <em>Search Off the Record</em> podcast, John Mueller and Martin Splitt addressed this directly. Their verdict: the Markdown-for-AI-SEO trend is solving a problem that doesn't exist, and in doing so it creates a few real ones.</p>
+
+    <h2>Where the Markdown Myth Came From</h2>
+
+    <p>The logic behind the trend wasn't crazy. If you've ever stared at raw HTML in a text editor, it's a mess — inline styles, nav elements, script tags, cookie consent banners, all buried in between the three paragraphs that actually matter. Markdown, on the other hand, is human-readable even without rendering. A link is just <code>[anchor text](URL)</code>. A heading is a <code>#</code>. The content itself is front and center.</p>
+
+    <p>The argument went: AI agents and LLMs need to understand your content. Markdown makes that easy. Therefore, serve Markdown. Some people even set up separate <code>/llms.txt</code> files or Markdown endpoints specifically for AI bots, treating it like a <code>robots.txt</code> but for large language models.</p>
+
+    <p>There's a related, legitimate practice in there — <a href="https://llmstxt.org/" target="_blank" rel="noopener">llms.txt</a> as a sitemap-style file for AI agents is a real thing that some platforms support. But the idea of <em>replacing</em> your HTML pages with stripped-down Markdown versions? That's where it goes sideways.</p>
+
+    <h2>What Mueller and Splitt Actually Said</h2>
+
+    <p>Martin Splitt acknowledged the appeal of Markdown — the minimalism makes sense if all you care about is raw content delivery. But he quickly walked through why it misses the point for search:</p>
+
+    <blockquote>"HTML with all the links and navigation and the headers and all that kind of stuff that kind of gets stripped out in the Markdown files... are important to understand the structure and how this connects to the rest of the site. So I guess that's also a bad thing. If we were to lose this, that's probably not so good for crawling and discovery."</blockquote>
+
+    <p>John Mueller's point was even more direct. The premise that HTML is hard for crawlers to parse? Not true. At all.</p>
+
+    <blockquote>"Converting HTML into text is trivial. There are lots of libraries out there that can do that for you. So if you think about what an average web crawler might look for or might need to find on a page to be able to understand it, then probably that's just HTML."</blockquote>
+
+    <p>In other words: Google's crawlers have been handling HTML for decades. They don't need you to pre-process it into Markdown. That step saves them nothing, and costs you quite a bit.</p>
+
+    <h3>The Three Signals You Lose When You Strip to Markdown</h3>
+
+    <p>Let's be specific about what actually goes missing when you serve stripped content instead of properly structured HTML:</p>
+
+    <ul>
+      <li><strong>Internal links and navigation structure.</strong> Markdown typically doesn't preserve your site's nav, breadcrumbs, or contextual internal links. Google uses link structure to understand how pages relate to each other and to determine which sections of your site are topically authoritative. Remove this, and you're handing Google a page with no context about where it sits.</li>
+      <li><strong>Semantic HTML signals.</strong> Things like <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;header&gt;</code>, and proper heading hierarchy. These tags tell crawlers — and AI systems — what's a main content block versus supplemental content. Markdown doesn't have equivalents for most of this.</li>
+      <li><strong>Schema markup.</strong> Any structured data you've implemented (FAQ, HowTo, Article, Product) lives in your HTML, either inline or in <code>&lt;script type="application/ld+json"&gt;</code> tags. A Markdown version has none of this. You're giving up rich results and AI citation eligibility at the same time.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>The whole appeal of Markdown was "less noise for AI to wade through." But Google's crawlers aren't wading through your HTML — they're efficiently parsing it with tools they've been refining since the late 90s. The "noise reduction" benefit doesn't exist. The signal loss does.</p>
+    </div>
+
+    <h2>Discovery Is the Bigger Problem</h2>
+
+    <p>The Mueller/Splitt conversation touched on something that doesn't get enough airtime in the Markdown debate: <strong>content discovery</strong>.</p>
+
+    <p>When Googlebot visits a page, it's not just reading content — it's also harvesting links to follow. Your nav links. Your contextual links within the article. Your footer links. These are what allow a crawler to systematically walk your entire site and understand the topical map of what you cover.</p>
+
+    <p>A stripped Markdown file with just article text and maybe a few inline links? Googlebot visits it, reads the content, and has very little signal about what's around it. It can't easily see that this article is part of a cluster on "AI SEO," or that there are three related guides linked from the main category page. The web of context that defines topical authority — just gone.</p>
+
+    <p>This matters even more as Google leans harder into AI Overviews and AI Mode. Those systems don't just pull from individual pages; they synthesize across a site's depth of coverage. If your pages look like orphans because you've stripped their structural context, you're actively undermining your chances of being cited as a comprehensive source.</p>
+
+    <h2>There's Also a Trust Problem</h2>
+
+    <p>Splitt hinted at something worth spelling out. Search engines don't blindly trust content you hand them in a "clean" format. They verify. When Google sees a Markdown endpoint, it's going to compare that against the actual HTML page anyway. You're not saving them work — you're adding a layer of complexity.</p>
+
+    <p>There's historical precedent here. The keyword meta tag existed specifically to help search engines understand page topics. The SEO community immediately started stuffing it with irrelevant terms to manipulate rankings. Search engines learned to distrust it, and eventually ignore it entirely. Any "alternative content format" that bypasses normal HTML parsing will face the same treatment: initial experimentation, then skepticism, then devaluation.</p>
+
+    <p>Google's implicit stance is: we render the actual page. If you're serving different content through alternative endpoints, that's a potential cloaking concern, not a helpfulness signal.</p>
+
+    <h2>What You Should Actually Do for AI Search Visibility</h2>
+
+    <p>The good news is that optimizing for AI Overviews and AI Mode citations doesn't require any new technical formats. Mueller and Splitt's guidance reduces to: build good HTML, structured properly, with strong internal linking and clear semantics.</p>
+
+    <h3>1. Audit your HTML structure</h3>
+    <p>Make sure your heading hierarchy is clean (one <code>&lt;h1&gt;</code> per page, logical <code>&lt;h2&gt;</code>/<code>&lt;h3&gt;</code> nesting), your main content is wrapped in semantic tags, and your nav and footer are clearly separated. This isn't new advice — it's been best practice forever, and it's what actually helps AI systems understand your page.</p>
+
+    <h3>2. Use schema markup aggressively</h3>
+    <p>Article, FAQ, HowTo, BreadcrumbList, Person, Organization — these are what feed Google's knowledge graph and what show up in AI citations. If you're not implementing Article schema with <code>author</code>, <code>datePublished</code>, and <code>headline</code> at minimum, you're leaving citation opportunities on the table.</p>
+
+    <h3>3. Internal linking that reflects your content structure</h3>
+    <p>If you have a cluster of articles on a topic, they should be explicitly linking to each other — not just through a related posts widget, but contextually, within the body text where it's genuinely useful. This is how Google (and AI systems built on Google's index) understands that your site has <em>depth</em> on a topic, not just surface coverage.</p>
+
+    <h3>4. Prioritize page speed and clean rendering</h3>
+    <p>AI crawlers have gotten more impatient, not less. If your page takes 8 seconds to paint meaningful content, or if your content is entirely JavaScript-rendered without proper SSR, you've got a real crawlability problem. But the fix is faster HTML rendering — not Markdown conversion.</p>
+
+    <h3>5. If you want to help AI agents, use llms.txt correctly</h3>
+    <p>A properly formatted <code>/llms.txt</code> file at your domain root can help AI agents understand what's available on your site — think of it like a sitemap but oriented toward LLM use cases. It's a supplement to your HTML, not a replacement. The spec is simple: a brief description of your site, followed by a list of key pages with short summaries. This is legitimate and worth doing for larger sites.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>The Markdown-for-AI-SEO trend was appealing because it felt like a shortcut — a way to speak AI's language directly. But Google's own engineers have made it clear that this is solving the wrong problem. They're not struggling to parse HTML. They're not confused by your nav elements. What they need is the full, structured, interconnected version of your content — because that's what tells them (and AI Mode) that you're an authoritative, trustworthy source on a topic.</p>
+
+    <p>Stop stripping your pages down. Put that energy into cleaning up your heading structure, adding schema, and building a real internal linking strategy. That's what moves rankings in 2026 — same as it ever was, just with higher stakes as AI systems start deciding who gets cited and who gets ignored.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/answer-engine-optimization-aeo-guide-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>Answer Engine Optimization in 2026: How to Show Up in Perplexity, ChatGPT &amp; Gemini</h4>
+      </a>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-card">
+        <div class="rc-tag">Technical SEO</div>
+        <h4>Schema Markup in 2026: Get Rich Results and AI Citations</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
