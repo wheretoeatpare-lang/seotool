@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google's June 2026 Spam Update Hit Fast — Here's Your Survival Checklist — RankSorcery</title>
+<meta name="description" content="Google's June 2026 spam update rolled out in under 48 hours. Here's exactly what got hit, why, and what to audit before the next refresh.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google's June 2026 Spam Update Hit Fast — Here's Your Survival Checklist">
+<meta property="og:description" content="Google's June 2026 spam update rolled out in under 48 hours. Here's exactly what got hit, why, and what to audit before the next refresh.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-20">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">June 2026 Spam Update</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">⚠️ Algorithm Update</span>
+          <span class="tag tag-cyan">🧪 SEO Audit</span>
+        </div>
+        <h1>Google's June 2026 Spam Update <span>Hit Fast</span> — Here's Your Survival Checklist</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 June 20, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,140 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client texted me Wednesday evening: "Traffic just fell off a cliff. What did we do?" I pulled up their Search Console before I even responded. The answer was obvious within about 90 seconds — and it had nothing to do with anything they did on their own site.</p>
+
+      <p>Google had just started rolling out the June 2026 spam update. By Thursday morning it was nearly done. That's unusually fast — most spam updates take a week or more to propagate fully. This one was finished in roughly 48 hours, and the collateral damage was real.</p>
+
+      <p>Here's what I know so far, what the data suggests got targeted, and the exact audit checklist I'm running on every site I manage right now.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">📅</div>
+        <div class="callout-body">
+          <strong>Timeline</strong>
+          Google's June 2026 spam update started rolling out on June 24 at approximately noon ET and completed within 48 hours — making it one of the faster spam updates in recent memory. It's the second spam update of 2026, following March's update which focused heavily on link spam.
+        </div>
+      </div>
+
+      <h2 id="what-this-update-targets">What This Update Actually Targets</h2>
+
+      <p>Google's official statement was the usual boilerplate: "a normal spam update… it will roll out for all languages and locations." Not helpful. But the pattern of who got hit tells a much clearer story.</p>
+
+      <p>Based on what the community is seeing and what Google's own spam policies describe, this update primarily went after three categories of abuse:</p>
+
+      <h3>1. Scaled Content Abuse</h3>
+      <p>This is the big one. Scaled content abuse is Google's term for what used to be called "content farms" — but in 2026 it mostly means sites that used AI to pump out hundreds or thousands of pages with no real editorial oversight. We're not talking about sites that use AI writing tools thoughtfully. We're talking about sites where someone clearly just set a script running and went to sleep.</p>
+
+      <p>The tell? The affected sites I've examined share a pattern: very high page counts relative to their domain age, extremely similar article structures across every post, no variation in reading level or tone, and almost no external links pointing to authoritative sources. Google's classifier apparently got a lot better at spotting this pattern in the June refresh.</p>
+
+      <h3>2. Expired Domain Abuse</h3>
+      <p>This one has been in Google's crosshairs since at least 2024, but the June update appears to have tightened the screws further. Expired domain abuse is when someone buys a domain that used to belong to a legitimate business — say, an old local newspaper or a defunct product review site — and then stuffs it with new content to inherit the original domain's authority.</p>
+
+      <p>The problem is the content has zero connection to the original site's history. A domain that spent 12 years covering local Oklahoma news doesn't magically become a credible source of financial advice just because you bought it and started writing about mortgage rates.</p>
+
+      <h3>3. Doorway Pages and Thin Affiliate Content</h3>
+      <p>Sites running large affiliate programs with thin, templated product pages also took hits. If your "review" pages are essentially just reformatted product specs with an Amazon affiliate link at the bottom, this update probably found you.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">48h</span>
+          <span class="stat-label">Rollout time — unusually fast for a spam update</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">2nd</span>
+          <span class="stat-label">Spam update of 2026 (March was the first)</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3–6mo</span>
+          <span class="stat-label">Google's stated typical recovery timeline after a spam penalty</span>
+        </div>
+      </div>
+
+      <h2 id="what-didnt-get-hit">What Apparently Didn't Get Hit</h2>
+
+      <p>This is important because I've seen a lot of panic in SEO communities from people whose traffic dropped but whose sites don't fall into any of the categories above. Worth noting: this update was <strong>not</strong> a link spam update. The March 2026 update handled that. If you lost traffic and you have a clean, original site with decent links, the cause is probably something else — a normal ranking shuffle, a local data center issue, or your competitors recovering from a previous update.</p>
+
+      <p>Site reputation abuse (parasite SEO) also wasn't specifically called out as a target here, though it's always in scope under general spam policies.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">🚨</div>
+        <div class="callout-body">
+          <strong>Don't confuse correlation with causation</strong>
+          Not every traffic drop around June 24–26 is from this update. Google runs ranking changes constantly. Before you go into recovery mode, confirm the drop shows up as a visibility loss in Search Console — not just your analytics — and verify the timing aligns with the update window precisely.
+        </div>
+      </div>
+
+      <h2 id="how-to-confirm-youre-affected">How to Confirm You're Actually Affected</h2>
+
+      <p>Open Google Search Console. Go to Performance → Search Results. Set the date range to compare the last 7 days against the prior 7 days. If you see a clean cliff-drop in impressions that lines up with June 24, that's a strong signal this update touched you.</p>
+
+      <p>Next, look at which specific pages lost impressions. If it's your highest-traffic pages broadly, that's more likely a ranking fluctuation. If it's a specific category of pages — especially ones you know were templated or thin — you've found your culprit.</p>
+
+      <p>Also check for a manual action. Go to Security & Manual Actions → Manual Actions. A spam update can trigger an algorithmic demotion OR a manual action. Manual actions require a reconsideration request after fixing issues. Algorithmic penalties resolve on their own once you fix the underlying problem and Google recrawls.</p>
+
+      <div class="inline-cta">
+        <h3>Run a Full Site Audit in 60 Seconds</h3>
+        <p>RankSorcery's free SEO Auditor checks 60+ technical and content signals, including duplicate content flags, crawl issues, and thin page detection — all the things this update targeted.</p>
+        <a href="https://ranksorcery.com/">Audit My Site Free →</a>
+      </div>
+
+      <h2 id="the-recovery-checklist">The Recovery Checklist</h2>
+
+      <p>If you've confirmed you were hit, here's the order of operations I'd recommend. Don't try to do everything at once — Google needs to recrawl your changes, and mass edits done poorly can make things worse.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Identify Your Thin Pages</h4>
+            <p>Pull a crawl of your entire site and sort pages by word count. Any page under 400 words that isn't a dedicated landing page or tool deserves scrutiny. Ask yourself: does this page answer a real question better than any other page on the internet? If the honest answer is no, it's a candidate for consolidation or deletion.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Audit for Duplication and Template Abuse</h4>
+            <p>Look for pages that share 70%+ of their body content with other pages on your site. This often happens with location pages ("Best plumber in [City]" × 200 cities) or product variant pages that differ only by color or size. Canonical tags help, but they're not a free pass — if the pages are truly duplicate and provide no unique value, consolidating them is better than just pointing canonicals at each other.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Check Your Domain's History</h4>
+            <p>If you bought or inherited a domain, use the Wayback Machine to check what the site used to be. If the original site's topic is entirely unrelated to what you're doing now, Google may be discounting the domain's historical authority signals. You might be better off building on a fresh domain than fighting the mismatch.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Rewrite or Remove Affiliate-Only Pages</h4>
+            <p>For affiliate content specifically: does your page include original testing, first-hand opinions, or comparisons that don't exist elsewhere? If it's just reformatted product specs, either invest in real editorial content or 301-redirect these pages to your main category page and stop letting them dilute your site's overall content quality signals.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Submit Updated URLs for Indexing</h4>
+            <p>After making significant improvements to pages, use the URL Inspection tool in Search Console to request recrawling of your highest-priority pages. Don't mass-submit everything at once — pick your best 10–20 pages and start there. Google will eventually recrawl everything, but manually requesting priority pages speeds up the feedback loop.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pull-quote">
+        "Spam updates don't penalize you for using AI — they penalize you for using AI without caring whether the output is any good."
+      </div>
+
+      <h2 id="the-ai-content-nuance">The AI Content Nuance Nobody Talks About</h2>
+
+      <p>I want to be direct about something because I see this misunderstood constantly. Google has never said AI-generated content is spam. What they say is that <em>low-quality content created at scale to manipulate rankings</em> is spam. Those two things are very different.</p>
+
+      <p>I know sites running on AI-written content that have been fine through every update this year. The difference is editorial investment: a human reviewing every draft, adding real examples, cutting the filler, and making sure the final piece actually teaches someone something. That's not just cosmetic — it genuinely changes the content quality in ways that Google's classifiers are getting better at detecting.</p>
+
+      <p>The sites that got hit this week weren't penalized for using AI. They were penalized for publishing 600-word articles that all follow the exact same structure, use the same phrases, and exist only because they contain a target keyword. The tell was the pattern across the whole site, not any individual article.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Quick Self-Test</strong>
+          Pick 10 random articles from your site. Read the first three paragraphs of each. Do they all start the same way? Do they all follow the same structure? If a stranger could read two of them and immediately notice they were written by the same template, Google's quality classifiers can too.
+        </div>
+      </div>
+
+      <h2 id="the-recovery-timeline-reality-check">The Recovery Timeline: A Reality Check</h2>
+
+      <p>Google says recovery from a spam update "can take many months." That's not them being vague — it's genuinely how it works. Spam updates don't get refreshed every week. They run, they assess, and then the next refresh might be months away. In the meantime, you're making changes that Google won't fully evaluate until the next assessment cycle.</p>
+
+      <p>This is the part that drives people to desperate measures — buying links, spinning up redirects, or doing wholesale domain changes that usually make things worse. The realistic path is:</p>
+
+      <ul class="checklist">
+        <li>Fix the underlying issues that match the spam policy Google's targeting</li>
+        <li>Document every change you make and when (for your own recollection, not for Google)</li>
+        <li>Submit a reconsideration request if you have a manual action — don't if you don't</li>
+        <li>Keep publishing high-quality content while you wait (this matters more than people think)</li>
+        <li>Monitor Search Console weekly, not daily — daily obsessing makes you do dumb things</li>
+        <li>Accept that if recovery takes 3–6 months, that's normal and not a sign your fixes didn't work</li>
+      </ul>
+
+      <h2 id="if-you-werent-hit">If You Weren't Hit: Don't Relax Completely</h2>
+
+      <p>The thing about spam updates is they're cumulative. Google said this week that they'll do "periodic refreshes" to this update. That means the classifier is going to keep running, and sites that are borderline right now might get caught in the next pass.</p>
+
+      <p>If your site is clean but you have some thin pages, some templated sections, or some affiliate content you know is weak — now is a much better time to address it than after you're already in recovery mode. Prevention is orders of magnitude easier than recovery.</p>
+
+      <p>Run a technical audit on your site today. Check for duplicate content issues, thin pages, and any content that exists primarily to target keywords rather than to actually help someone. The <a href="https://ranksorcery.com/">RankSorcery SEO Auditor</a> catches a lot of these signals in about 60 seconds — not a replacement for a deep manual review, but a fast way to spot the obvious problems.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🔭</div>
+        <div class="callout-body">
+          <strong>What to Watch Next</strong>
+          Based on Google's pattern this year — March core update, May core update, June spam update — there's a reasonable chance we see another core update in August or September. The sites that are going to do well in that one are the ones using this summer to fix content quality issues, not the ones still publishing at scale with no editorial review.
+        </div>
+      </div>
+
+      <h2 id="bottom-line">The Bottom Line</h2>
+
+      <p>The June 2026 spam update moved fast and hit hard in specific categories. If you were affected, the recovery path is real but slow — fix the underlying problems, be patient, and don't panic into decisions that make things worse.</p>
+
+      <p>If you weren't affected, take this as a signal to run a content audit and shore up anything that looks borderline. The next spam update refresh isn't far away, and Google's classifiers are clearly improving with each pass.</p>
+
+      <p>The fundamental question Google is asking about your site hasn't changed: <em>does this content exist to help someone, or does it exist to rank?</em> The answer has to be the former, or eventually you're in the crosshairs.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-this-update-targets">What This Update Targets</a></li>
+        <li><a href="#what-didnt-get-hit">What Didn't Get Hit</a></li>
+        <li><a href="#how-to-confirm-youre-affected">How to Confirm You're Affected</a></li>
+        <li><a href="#the-recovery-checklist">The Recovery Checklist</a></li>
+        <li><a href="#the-ai-content-nuance">The AI Content Nuance</a></li>
+        <li><a href="#the-recovery-timeline-reality-check">Recovery Timeline Reality Check</a></li>
+        <li><a href="#if-you-werent-hit">If You Weren't Hit</a></li>
+        <li><a href="#bottom-line">The Bottom Line</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Google%27s%20June%202026%20Spam%20Update%20Hit%20Fast%20%E2%80%94%20Here%27s%20Your%20Survival%20Checklist&url=https://ranksorcery.com/blog/google-june-2026-spam-update-recovery-guide" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/link-building-after-march-spam-update-2026" class="related-post">
+        <div class="related-post-icon">🔗</div>
+        <div class="related-post-body">The March 2026 Spam Update Killed Link Spam — What Moves Rankings Now<span>12 min · Jun 10</span></div>
+      </a>
+      <a href="/blog/google-may-2026-core-update-survival-guide" class="related-post">
+        <div class="related-post-icon">🔄</div>
+        <div class="related-post-body">Google May 2026 Core Update: What to Do<span>14 min · May 24</span></div>
+      </a>
+      <a href="/blog/content-pruning-seo-dead-weight-2026" class="related-post">
+        <div class="related-post-icon">✂️</div>
+        <div class="related-post-body">Content Pruning in 2026: How to Find and Delete the Pages Killing Your Rankings<span>10 min · Jun 5</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Audit My Site →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
