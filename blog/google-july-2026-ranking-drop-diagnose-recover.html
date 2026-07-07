@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google's Unconfirmed July 2026 Ranking Update: Diagnose and Recover — RankSorcery</title>
+<meta name="description" content="Rankings dropped this week? Google's unconfirmed July 2026 update is shaking SERPs. Here's exactly how to diagnose what got hit and what to fix first.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google's Unconfirmed July 2026 Ranking Update: Diagnose and Recover">
+<meta property="og:description" content="Rankings dropped this week? Google's unconfirmed July 2026 update is shaking SERPs. Here's exactly how to diagnose what got hit and what to fix first.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-07-06">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(248,113,113,0.12) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(232,184,75,0.10) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-red { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--red), var(--amber)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--red), var(--amber));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--red), var(--amber));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--amber); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(248,113,113,0.04));
+  border: 1px solid rgba(232,184,75,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Algorithm Updates</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-red">⚠️ Breaking</span>
+          <span class="tag tag-amber">🔥 Trending July 2026</span>
+          <span class="tag tag-amber">⚡ Algorithm Update</span>
+        </div>
+        <h1>Google's Unconfirmed July 2026 Update: <span>What Got Hit and How to Diagnose Your Site</span></h1>
+        <div class="article-hero-meta">
+          <div class="author" style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 July 6, 2026</span>
+          <span>·</span>
+          <span>⏱ 12 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What's Actually Happening Right Now</a></li>
+        <li><a href="#section2">The 5 Warning Signs You Got Hit</a></li>
+        <li><a href="#section3">What the July Update Is Actually Targeting</a></li>
+        <li><a href="#section4">Your 30-Minute Site Diagnosis</a></li>
+        <li><a href="#section5">What to Fix First (and What Can Wait)</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>Something is moving in Google's index this week. Check any SEO community right now — WebmasterWorld, Reddit's r/SEO, Search Engine Roundtable — and you'll see the same pattern: sites that were holding steady for months are suddenly seeing ranking drops that started around July 5th. No official announcement from Google. No confirmation. Just a lot of confused webmasters watching their traffic numbers fall.</p>
+
+      <p>Here's the thing: Google doesn't always tell you when it pushes an update. The June 2026 spam update was confirmed — that one rolled out in under two days and specifically went after scaled content, expired domain schemes, and site reputation abuse. But this July volatility feels different. It's broader. It's hitting niches that weren't touched by the spam update. And the pattern we're seeing looks less like a spam crackdown and more like a quality signal reassessment — the kind of thing Google does quietly when it thinks nobody's watching.</p>
+
+      <p>I've been digging into what's getting hit, what's staying stable, and what the data actually tells us. In this piece, I'll walk you through exactly how to tell if this update affected your site, what specific patterns are showing up as losers, and — most importantly — what you should actually <em>do</em> about it right now versus what you can safely put on a backlog.</p>
+
+      <!-- STAT ROW -->
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">45%</span><div class="stat-label">Less low-quality, unoriginal content in Google's index since 2024 — Google's own reported figure</div></div>
+        <div class="stat-card"><span class="stat-val">80%</span><div class="stat-label">Of top-3 results changed during the March 2026 core update, per Search Engine Land analysis</div></div>
+        <div class="stat-card"><span class="stat-val">61%</span><div class="stat-label">Year-over-year organic CTR drop on queries where AI Overviews appear (Seer Interactive)</div></div>
+      </div>
+
+      <h2 id="section1">What's Actually Happening Right Now</h2>
+
+      <p>Let me be upfront: as of this writing, Google has not confirmed any update rolled out this week. That's actually pretty normal. Google confirms big core updates after the fact, but there are dozens of smaller, targeted updates that go unannounced every month. SEO tools like Semrush Sensor and Mozcast have been showing elevated volatility since around July 4th, and the conversation on WebmasterWorld has been building steadily since the 5th.</p>
+
+      <p>What we do know is that the volatility patterns are consistent with a quality-focused update, not a manual action wave or a spam filter. Here's why: spam updates usually hit specific footprints — you can trace them to link networks, keyword stuffing, or site reputation abuse. What we're seeing this week is subtler. Sites losing rankings tend to share a few common characteristics: they're content-heavy, they haven't updated their key pages in a while, and their traffic has been holding mainly on informational keywords — exactly the keyword category where AI Overviews now eat up to 74% of clicks without sending them anywhere, according to Semrush.</p>
+
+      <p>There's also a broader shift at play that's been building for months. At Google I/O 2026, Liz Reid described a new search experience that can "guess intent" and accept text, images, files, and video. Google's Head of Search publicly said they want "great content to shine" — which sounds nice until you realize that statement usually precedes a round of quiet demotions of content that Google doesn't consider great. The June spam update cleared out the obviously bad stuff. This July signal looks like it's now applying pressure to the mediocre middle — content that's technically fine but not genuinely the best answer to any query.</p>
+
+      <p>Nobody at Google has tied the two events together publicly. But the pattern is consistent with what SEOs saw after previous two-stage cleanup cycles: the confirmed spam update removes the obvious offenders, and then a quieter quality signal reassessment follows within a few weeks to push on whatever's left. We've seen this same pattern after the March 2026 core update, when ranking volatility continued in waves for almost three weeks after the official rollout ended.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Important Caveat</strong>
+          This is an unconfirmed update. Google may be testing signals, may be rolling back, or may extend this for weeks. Avoid making drastic changes to your site until you have at least 7–10 days of post-drop data to confirm the loss is real and not a Search Console reporting delay or a weekend traffic pattern.
+        </div>
+      </div>
+
+      <h2 id="section2">The 5 Warning Signs You Got Hit</h2>
+
+      <p>Before you panic and start rewriting everything, you need to actually confirm whether your site was affected. A lot of SEOs I've seen this week are catastrophizing about normal weekend traffic dips. Here's how to tell the difference between a real algorithmic hit and just noise.</p>
+
+      <h3>How to Confirm You Were Affected (Not Just Having a Bad Week)</h3>
+
+      <p>Open Google Search Console and go to the Performance report. Set your date range to the last 28 days and compare it to the previous 28-day period. Look at the <strong>clicks and impressions graph together</strong>. If you see impressions drop at the same time as clicks, that's a ranking signal — pages actually fell out of results. If impressions hold but clicks drop, that's more likely an AI Overview issue, not this update specifically.</p>
+
+      <p>Now filter by page. Sort by the biggest absolute click drops, not percentage — a 100% drop on a page that got 3 clicks means nothing. You want pages that previously drove real volume and are now flatlining. Export this to a spreadsheet. You're looking for a clear before/after cliff, not gradual decay that's been happening for months.</p>
+
+      <p>Five warning signs your site was specifically caught by this update — not just the usual SERP turbulence:</p>
+
+      <ul class="checklist">
+        <li>Your informational content took the biggest hits while product pages or transactional content held relatively stable</li>
+        <li>Pages that haven't been significantly updated in 12+ months are disproportionately represented in the losses</li>
+        <li>You're seeing drops across multiple topic clusters at once, not just one narrow category</li>
+        <li>Competitors now ranking above you have noticeably more detailed, expert-driven content — not just longer, but with specific examples, real data, and first-hand context</li>
+        <li>Your E-E-A-T signals are thin: author bios missing or generic, no clear editorial process visible, pages don't demonstrate first-hand experience with the topics they cover</li>
+      </ul>
+
+      <p>One more check: go to Core Web Vitals in Search Console. If you see a spike in URLs flagged as "Poor" right before the traffic drop, the issue might be partially triggered by a performance regression — a page speed failure that got worse after a plugin update, or a layout shift that's now failing the INP threshold. That's a different problem with a much faster fix than a full content overhaul.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Pro Tip</strong>
+          Don't just stare at your own data. Use the <a href="/competitor-analyzer">RankSorcery Competitor Analyzer</a> to check which competing sites gained visibility in the same week you lost it. What do those pages look like? That's the clearest real-world signal about what Google is currently rewarding — more useful than reading any documentation.
+        </div>
+      </div>
+
+      <h2 id="section3">What the July Update Is Actually Targeting</h2>
+
+      <p>Based on what's surfacing in the SEO community and patterns across accounts, there are four specific content characteristics that appear to be getting demoted in this update. None of these should come as a surprise — Google has been signaling all of them for over a year — but sometimes it takes an actual traffic drop to motivate action.</p>
+
+      <h3>Template-Driven Content at Scale</h3>
+
+      <p>This pattern has been on Google's radar since the March 2026 core update. Search Engine Land reported that 80% of top-3 results changed during March, and much of the movement was destination content beating out templated overview pages. If you have categories of pages that follow the same structural template with only the primary keyword swapped out — city landing pages, product category descriptions, FAQ aggregators — those pages are showing up repeatedly in loser lists this week.</p>
+
+      <p>The issue isn't that templates are inherently bad. The issue is that Google can now detect when a page's content could have been written about any similar topic without any actual knowledge of the specific subject. A "best restaurants in [city]" page that reads identically to "best restaurants in [other city]" except for the city name is a template play, and it's getting hammered. The same principle applies to software review pages, how-to guides written by generalists, and affiliate round-ups that don't demonstrate any actual testing.</p>
+
+      <h3>Pages With Impressions But No Real User Engagement</h3>
+
+      <p>Nobody officially confirms this, but the pattern is consistent enough to flag it directly: pages that get impressions but don't generate engagement signals — time on page, scroll depth, return visits, internal link clicks — appear to be getting further deprioritized. Google has access to Chrome data. They know when someone clicks your result, reads the first paragraph, and immediately hits back. That behavior at scale tells Google your page isn't satisfying the query intent.</p>
+
+      <p>This matters because a lot of sites have "technically correct" pages that rank for informational queries but don't actually help anyone in a meaningful way. If your answer to a keyword is three generic paragraphs with no specifics, you're in the danger zone even if it's technically accurate. Google's direction under Liz Reid is explicitly about pages that are "genuinely helpful" — meaning the user gets what they needed and doesn't feel compelled to immediately go back and try again.</p>
+
+      <h3>Thin Topical Coverage Without Supporting Depth</h3>
+
+      <p>Google has been moving toward site-wide topical authority signals for years, and those signals are stronger now. A standalone page on a topic you've never covered before — dropped as a one-off to chase a trending keyword — is increasingly getting outranked by sites that have covered the surrounding topic landscape in depth. One piece on "AI content detection" won't beat a site that covers AI writing quality, human-versus-AI writing patterns, the impact of AI on editorial standards, and how content reviewers evaluate AI text across dozens of interconnected pieces.</p>
+
+      <p>This is why topical clusters matter beyond internal linking strategy. It's about demonstrating to Google that your site is actually a trusted source on a subject area — not a page farm that lands on topics opportunistically and then never develops real depth in that space.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-body">
+          <strong>Diagnosis Tool</strong>
+          Use the <a href="/seo-auditor">RankSorcery SEO Auditor</a> to run a full audit on your site right now. Look specifically at thin content flags, pages with low word count relative to intent, and any duplicate content signals — these are exactly what this update appears to be targeting.
+        </div>
+      </div>
+
+      <p>Here's a comparison of which content types are holding versus losing ground in the current volatility:</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Content Type</th>
+            <th>July 2026 Status</th>
+            <th>E-E-A-T Signal</th>
+            <th>AI Overview Risk</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>In-depth expert guides with original research or data</td><td class="good">✓ Holding / Gaining</td><td class="good">✓ Strong</td><td class="mid">~ Moderate</td></tr>
+          <tr><td>Product and service pages with real specs and use cases</td><td class="good">✓ Largely stable</td><td class="mid">~ Depends on brand</td><td class="good">✓ Lower risk</td></tr>
+          <tr><td>Informational "what is" overview pages (generic)</td><td class="bad">✗ Getting hit</td><td class="bad">✗ Weak</td><td class="bad">✗ High risk</td></tr>
+          <tr><td>Templated location or keyword pages at scale</td><td class="bad">✗ Dropping fast</td><td class="bad">✗ Very weak</td><td class="mid">~ Variable</td></tr>
+          <tr><td>First-hand experience content: reviews, case studies, tutorials</td><td class="good">✓ Gaining ground</td><td class="good">✓ Very strong</td><td class="good">✓ Lower risk</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="section4">Your 30-Minute Site Diagnosis</h2>
+
+      <p>You've confirmed traffic dropped, you've identified which pages got hit, and you have a working hypothesis about why. Now what? Here's the actual diagnostic process I'd run on any site affected by this update. This isn't a six-week content audit — it's a fast triage to tell you where to focus energy first.</p>
+
+      <div class="pull-quote">"Don't fix everything at once. Fix the three pages bleeding the most traffic and prove the approach works before you try to scale it across your whole site."</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Pull Your Top 20 Traffic Losers from Search Console</h4>
+            <p>Export the Performance report filtered to this month versus last month. Sort by absolute click decline. You want the 20 pages that lost the most actual clicks — these are your triage targets. Ignore pages that went from 2 clicks to 0; focus on pages that went from 300+ clicks to 50 or less. Those are the ones worth your time.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Check What's Now Ranking Above You</h4>
+            <p>For each losing page, manually search the primary keyword and look at what moved up. Are the new top results more detailed? Do they have clearer author credentials? Are they from sites with stronger topical depth on this subject? Answering these questions tells you whether you're dealing with a content quality gap, an authority gap, or a technical issue — three very different problems.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Run a Full Technical Audit Before Touching Copy</h4>
+            <p>Before assuming this is a content problem, rule out technical causes. Use <a href="/seo-auditor">RankSorcery's SEO Auditor</a> to check for crawl errors, thin content flags, duplicate metadata, broken internal links, and Core Web Vitals failures. Sometimes what looks like a content quality demotion is actually a canonical tag that broke, or a page speed regression that pushed Core Web Vitals scores into the red zone after a recent site update.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Separate the AI Overview Problem from the Ranking Problem</h4>
+            <p>In Search Console, filter your keyword data to see which queries now trigger AI Overviews. If you see impression stability but click declines on specific informational keywords, that's the ongoing AI Overview click-bleed — not the July update. Seer Interactive found a 61% year-over-year CTR drop on queries where AI Overviews appear. That requires a different fix: schema markup, structured answers, and content that positions you as a source Google wants to cite — not a rewrite strategy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>Not Sure What's Wrong With Your Site?</h3>
+        <p>Run a free SEO audit on RankSorcery to surface technical issues, thin content signals, and page-level problems that could be amplifying your ranking drops in this update.</p>
+        <a href="/seo-auditor">Run Free Audit Now →</a>
+      </div>
+
+      <h2 id="section5">What to Fix First (and What Can Wait)</h2>
+
+      <p>Here's where people make the worst decisions after an algorithm update: they either do nothing and wait for a recovery that may not come on its own, or they blow everything up and rewrite their entire site based on what a competitor is doing. Both approaches are wrong. Let me give you a practical priority order based on what actually moves the needle in the first 30 days after a quality-focused update.</p>
+
+      <h3>Fix This Week</h3>
+
+      <p><strong>Technical issues come first, always.</strong> If your audit surfaces broken pages, redirect chains, slow-loading templates, or duplicate content — fix those before touching a word of copy. A site with unresolved technical problems can't benefit from content improvements because Google can't properly crawl and evaluate what you're trying to do. This is unglamorous work that most SEOs skip because it doesn't feel as satisfying as rewriting articles, but it consistently delivers faster results when the technical issues are the actual cause of the drop.</p>
+
+      <p><strong>Update your three highest-traffic pages that dropped.</strong> Don't try to fix all 20 losing pages at once — you'll spread effort thin and won't have clear signal on what's working. Take your top three losers and actually improve them substantively: add first-hand examples and specific data points (not generic stats — real context and original perspective), strengthen the author signal with a real bio that demonstrates relevant expertise, update any outdated information, and improve the structure so the page clearly answers the query intent within the first 200 words without making the reader scroll through filler to get there.</p>
+
+      <h3>Fix This Month</h3>
+
+      <p><strong>Identify and prune genuinely thin pages.</strong> If you have pages that get fewer than 10 clicks per month, were created more than 18 months ago, and cover topics your site doesn't have depth on, you have a choice: improve them substantially or consolidate them into a better page via redirect. Keeping thin pages around is a drag on your site's overall quality perception. Google has already removed 45% of low-quality, unoriginal content from its results since 2024 — don't give it ongoing reasons to continue trimming from your domain.</p>
+
+      <p><strong>Check for keyword cannibalization using your Keyword Volume data.</strong> One underappreciated cause of ranking drops is having two or three of your own pages competing for the same keyword cluster. Google picks one — often not the one you'd choose — and the others get suppressed. A targeted <a href="/keyword-volume">keyword volume check</a> combined with a URL filter in Search Console shows you exactly where this is happening. Consolidate those pages and you'll often see a measurable recovery within 4–6 weeks without touching a word of copy on the surviving page.</p>
+
+      <h3>The Bigger Picture</h3>
+
+      <p>I'll be straight with you: if this update hit you hard, the underlying issue probably didn't start in July 2026. The July signal is Google catching up to patterns that have been building for 12 to 18 months. Sites that are winning right now have been consistently building topical depth, updating content on a real editorial cadence — not just touching modification dates to game freshness signals — and demonstrating genuine expertise in their content rather than summarizing what everyone else has already said in a cleaner format.</p>
+
+      <p>That's a six-month project, not a six-day fix. But the encouraging reality is that Google's direction under Liz Reid is explicitly favoring quality and specificity over scale and coverage. Small publishers that bring something unique and authoritative are positioned to win in this environment. The question is whether you're building toward that or still relying on approaches that the last two years of algorithmic updates have been systematically making less effective.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          The July 2026 ranking volatility is real and appears to be targeting templated content, weak E-E-A-T signals, and thin informational pages. Diagnose before you act: pull your Search Console data, audit your technical health with <a href="/seo-auditor">RankSorcery's SEO Auditor</a>, and focus your first efforts on the three pages bleeding the most traffic — not a full-site overhaul that will take months to evaluate.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO & Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/competitor-analyzer" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">🏆</div>
+        <div><div class="tool-card-sm-name">Competitor Analyzer</div><div class="tool-card-sm-desc">See who gained your rankings</div></div>
+      </a>
+      <a href="/ai-search" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🤖</div>
+        <div><div class="tool-card-sm-name">AI Search Ranking</div><div class="tool-card-sm-desc">Check your AI search visibility</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/google-june-2026-spam-update-recovery-guide" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google's June 2026 Spam Update Hit Fast — Here's Your Survival Checklist →
+        </a>
+        <a href="/blog/eeat-trust-signals-google-scoring-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          E-E-A-T in 2026: The Trust Signals Google Is Actually Scoring →
+        </a>
+        <a href="/blog/content-pruning-seo-dead-weight-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Content Pruning in 2026: How to Cut Dead Weight and Boost Rankings →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
