@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google's Review Bug Is Wiping Out Stars — What Happened and How to Protect Your GBP — RankSorcery</title>
+<meta name="description" content="Google confirmed it's investigating a bug that wiped hundreds of reviews from Business Profiles in July 2026. Here's what happened, who's affected, and what to do now.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-business-profile-reviews-missing-july-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google's Review Bug Is Wiping Out Stars — What Happened and How to Protect Your GBP">
+<meta property="og:description" content="Google confirmed it's investigating a bug that wiped hundreds of reviews from Business Profiles in July 2026. Here's what happened, who's affected, and what to do now.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-business-profile-reviews-missing-july-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-green">🗺️ Local SEO</span>
+    <h1>Google's Review Bug Is Wiping Out Stars — What Happened and How to Protect Your GBP</h1>
+    <div class="article-meta">
+      <span>📅 July 10, 2026</span>
+      <span>⏱ 8 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">⭐</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Starting around July 1, Google's spam detection started aggressively removing reviews and blocking new ones from thousands of Business Profiles.</li>
+      <li>Google confirmed on July 3, 2026 it's investigating the bug — they say it was a false-positive spam detection sweep, not intentional removal.</li>
+      <li>Some businesses went from 4.9-star profiles to 0.0 overnight. New reviews are blocked on affected listings too.</li>
+      <li>You can't force Google to restore them quickly — but you can document everything, file the right support ticket, and shore up your profile while you wait.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>One of my clients messaged me Tuesday morning: "My Google reviews are gone. All 312 of them. We're showing 0.0 stars." I thought it was a glitch. I checked their Google Business Profile — completely wiped. No reviews. No star rating. New reviews paused. And they had done absolutely nothing wrong. Turns out they weren't alone. Starting late June and accelerating into the first week of July 2026, Google's review spam filters went haywire — hitting legitimate businesses like a shotgun where it should've been a scalpel. If you haven't checked your GBP yet today, go do it right now. I'll wait.</p>
+
+    <h2>What Actually Happened</h2>
+
+    <p>Google's anti-spam systems for reviews have been increasingly aggressive over the past year. The intention is fine — fake reviews are a real problem that erodes trust in local search. But something broke in the detection logic around late June.</p>
+
+    <p>According to Search Engine Land's reporting on July 3, Google confirmed it's actively investigating after the Google Business Profile community forums filled up with dozens of threads from business owners seeing the same thing: reviews vanishing without explanation, star ratings dropping to zero, and new review submissions blocked entirely.</p>
+
+    <p>Google's official statement was characteristically vague:</p>
+
+    <blockquote>"When our systems detect suspicious reviews, we take a range of actions including removing reviews and temporarily pausing reviews on the profile to prevent further abuse. We are investigating the issue and will restore any reviews that were incorrectly removed."</blockquote>
+
+    <p>Translation: their algorithms got trigger-happy, flagged legitimate reviews as suspicious, and bulk-removed them before anyone could catch the error. Google Product Expert Amy Toman noted that some of the affected businesses had actually done the right thing — reporting fake or spam reviews — and then got penalized with a review block as a result. That's a particularly cruel irony.</p>
+
+    <h3>The Scale of the Damage</h3>
+
+    <p>One business posted in the GBP forum that they lost all 289 reviews and dropped from 4.9 stars to 0.0 with no notification. Others reported that their profiles simply show no reviews section at all. The most frustrating part? <strong>Google gave no warning, no email, no alert in the dashboard.</strong> Business owners only found out when a customer said "hey, where are your reviews?"</p>
+
+    <p>The businesses that seem most affected are those that either recently reported spam reviews (which apparently triggered an overzealous lockdown), had a sudden burst of legitimate reviews (which the system misread as manipulation), or operate in review-intensive niches like healthcare, legal, and hospitality where spam has historically been a problem.</p>
+
+    <h2>Why This Matters More Than You Think</h2>
+
+    <p>Reviews aren't just a trust signal for customers. They're a core local ranking factor. A business showing 0 stars with no reviews doesn't just look bad — it potentially drops in the local pack because Google's own systems treat review count, rating, and recency as quality signals for local ranking.</p>
+
+    <p>Here's what this can hit simultaneously:</p>
+
+    <ul>
+      <li><strong>Local pack rankings</strong> — Google's local algorithm weights review signals heavily. Fewer reviews can mean lower placement in the 3-pack.</li>
+      <li><strong>Click-through rates</strong> — Studies consistently show that star ratings in local results have a massive effect on CTR. A 4.8-star listing gets clicked dramatically more than one showing nothing.</li>
+      <li><strong>Conversion rates</strong> — Customers who reach your GBP and see no reviews are much less likely to call or book. Social proof is doing real heavy lifting in local intent.</li>
+      <li><strong>Google AI Mode</strong> — As AI Mode increasingly synthesizes local recommendations, a stripped GBP with no review data could result in being skipped entirely in AI-generated local answers.</li>
+    </ul>
+
+    <p>For service businesses that rely primarily on local search, this bug isn't a minor annoyance. It's a live revenue event.</p>
+
+    <h2>How to Check If You're Affected Right Now</h2>
+
+    <p>Don't assume you're fine just because no one's called to complain. Here's a quick 5-minute check:</p>
+
+    <ol>
+      <li>Go to <strong>Google Maps</strong> and search your business name directly. Look at your star rating and review count in the listing.</li>
+      <li>Log into <strong>Google Business Profile</strong> at business.google.com. Check the Reviews tab — are they showing? Is there any notice about "reviews temporarily paused"?</li>
+      <li>Search your business name on <strong>Google Search</strong> and check the knowledge panel on the right side. Does it show reviews?</li>
+      <li>Try posting a test review from a separate Google account (or ask a trusted person to try). Does the review submit successfully or does it hang?</li>
+    </ol>
+
+    <p>If you find your reviews are gone or posting is blocked, screenshot everything immediately. You'll need documentation when you contact support.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>Set a Google Alert for your business name + "reviews" so you catch future issues faster. Also consider monitoring your GBP star rating weekly using a simple tracker — most SEO platforms now pull this data via API. Don't wait for customers to tell you something's broken on your profile.</p>
+    </div>
+
+    <h2>What to Do If Your Reviews Are Gone</h2>
+
+    <p>This is where most guides get vague. Here's the actual process that has the best chance of working:</p>
+
+    <h3>Step 1: File a support request through the right channel</h3>
+    <p>Go to the <a href="https://support.google.com/business/" target="_blank" rel="noopener">Google Business Profile Help Center</a> and look for "Contact Us." You want to submit a ticket specifically about "missing reviews" or "reviews removed incorrectly." Be specific — include the approximate date you noticed the issue, approximately how many reviews you lost, and your GBP listing URL. Avoid generic phrases. "My 289 reviews disappeared on July 1, 2026, and my star rating now shows 0.0" is far more actionable than "I think some reviews are missing."</p>
+
+    <h3>Step 2: Post in the GBP Community Forum</h3>
+    <p>The Google Business Profile community forum at support.google.com/business/community is actively monitored by Google Product Experts like Amy Toman who have escalation paths to internal teams. Posting there, especially if you can link to similar threads, increases visibility. Google's own investigation was partly triggered by the volume of forum posts — your voice matters here.</p>
+
+    <h3>Step 3: Document your original reviews if you can</h3>
+    <p>If you have any screenshots, third-party review aggregator exports, or CRM records showing customer feedback, gather them now. Some reputation management tools archive review content — check if yours does. While Google won't let you re-import reviews, documentation strengthens your case and might be useful if any formal complaint process opens up.</p>
+
+    <h3>Step 4: Don't ask customers to re-post reviews yet</h3>
+    <p>I know the instinct is to immediately email your customer list and ask everyone to leave a new review. <strong>Don't do this.</strong> If Google's systems flagged your profile as suspicious, a sudden flood of new reviews will likely trigger the same filters again and could make things worse. Wait until Google confirms the investigation is resolved and normal review flow has resumed before soliciting new reviews.</p>
+
+    <h2>How to Protect Your GBP Going Forward</h2>
+
+    <p>This incident is a reminder that your GBP is infrastructure you don't control — it can be disrupted without warning and without cause. Here's how to build some resilience into your local SEO strategy:</p>
+
+    <h3>Diversify your review sources</h3>
+    <p>Google reviews matter most, but they're not the only ones. Yelp, Trustpilot, Facebook, and industry-specific platforms (Zocdoc, Houzz, Avvo, etc.) all feed reputation and some of them feed into third-party data sources that Google itself pulls when building local entity profiles. A business with 200 Google reviews and nothing else is more exposed than one with 150 Google reviews plus strong presence on two other platforms.</p>
+
+    <h3>Build your email list from customers</h3>
+    <p>The businesses most panicked right now are the ones who had no direct way to reach their past customers. If you have an email list of people who've bought from you, you have a recovery path. If your only customer touchpoint is through Google, a bug like this is catastrophic with no backup plan.</p>
+
+    <h3>Monitor your GBP weekly, not quarterly</h3>
+    <p>Most local businesses treat their GBP as a set-it-and-forget-it asset. This week proved that's a mistake. Review count, star rating, posting status, and even your business information can change without you knowing. A weekly 2-minute check saves you from discovering a 3-week-old problem.</p>
+
+    <h3>Respond to every review — including the bad ones</h3>
+    <p>Profiles that actively respond to reviews have a stronger signal footprint. There's some evidence that engagement activity (owner responses, Q&amp;A updates, post activity) contributes to the overall health score Google assigns to a profile. An active, engaged GBP is less likely to get caught in a broad spam sweep than a dormant one.</p>
+
+    <h2>Google's Timeline and What Comes Next</h2>
+
+    <p>As of July 10, 2026, Google has confirmed it's "working to resolve" the issue but has given no timeline. In previous GBP review bugs (there have been a few over the years), resolution took anywhere from a few days to a few weeks. Some reviews came back automatically; others required manual escalation.</p>
+
+    <p>The honest answer is: if your reviews were removed as part of this bug, they'll probably come back eventually. But "probably" and "eventually" aren't great answers when you're running a local business. The safest assumption is that some reviews may be permanently lost due to the difficulty of forensically untangling what was legitimate versus what was actually spam in a bulk removal event.</p>
+
+    <p>Watch the Google Business Profile community forum and the Search Engine Roundtable (seroundtable.com) for updates — those are the fastest places to see when Google starts restoring profiles at scale.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>Google's July 2026 review bug is a live incident right now. Check your GBP today. If you're hit, file a ticket, post in the forum, document everything, and do not ask customers to flood you with replacement reviews yet. If you're not hit, use this as a wake-up call to diversify your review presence and monitor your profile regularly. Google controls the platform. You don't. That asymmetry is never more obvious than on a week like this one. The businesses that recover fastest will be the ones who already had backup channels, customer contact lists, and were paying attention — not the ones who found out a month later when rankings quietly dropped.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/local-seo-ai-mode-map-pack-2026" class="related-card">
+        <div class="rc-tag">Local SEO</div>
+        <h4>Google's AI Mode Is Killing the Local Map Pack — What Every Small Business Needs to Do Right Now</h4>
+      </a>
+      <a href="/blog/google-june-2026-spam-update-recovery-guide" class="related-card">
+        <div class="rc-tag">Algorithm Update</div>
+        <h4>Google's June 2026 Spam Update Hit Fast — Here's Your Survival Checklist</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
