@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>llms.txt: What It Actually Does for Your AI Search Visibility (And What It Doesn't) — RankSorcery</title>
+<meta name="description" content="llms.txt is everywhere in 2026. Here's what it actually does for your AI search visibility, which tools use it, and whether you should bother.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="llms.txt: What It Actually Does for Your AI Search Visibility (And What It Doesn't)">
+<meta property="og:description" content="llms.txt is everywhere in 2026. Here's what it actually does for your AI search visibility, which tools use it, and whether you should bother.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-23">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">&#10022;</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">&#x1F9EA; SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">&#x1F4CA; Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">&#x2694;&#xFE0F; Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">&#x1F916; AI Search</a>
+    <a href="../blog.html" class="active">&#x1F4DD; Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">&#x2709;&#xFE0F; Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit &rarr;</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">&#x1F9EA; SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">&#x1F4CA; Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">&#x2702;&#xFE0F; Background Remover</a>
+  <a href="../blog.html" class="active">&#x1F4DD; Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">&#x2709;&#xFE0F; Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit &rarr;</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>&rsaquo;</span>
+      <a href="../blog.html">Blog</a>
+      <span>&rsaquo;</span>
+      <span style="color:var(--text);">llms.txt &amp; AI Search Visibility</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">&#x1F916; AI Search</span>
+          <span class="tag tag-purple">&#x2699;&#xFE0F; Technical SEO</span>
+        </div>
+        <h1>llms.txt: What It <span>Actually Does</span> for Your AI Search Visibility (And What It Doesn&apos;t)</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">&middot;</span>
+          <span>&#x1F4C5; June 23, 2026</span>
+          <span class="meta-sep">&middot;</span>
+          <span>&#x23F1; 11 min read</span>
+          <span class="meta-sep">&middot;</span>
+          <span>&#x1F441; 2,314 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A few months ago, a client forwarded me an article with a subject line that read: &ldquo;We need to add this immediately.&rdquo; The article was about llms.txt. The client had read maybe four paragraphs of it before firing off the email, convinced it was the new robots.txt and that every site without one was already invisible to AI search engines.</p>
+
+      <p>I spent twenty minutes on a call walking them back from that ledge. Then I realized I&apos;d probably have to do that another fifty times, so I&apos;m writing this instead.</p>
+
+      <p>Here&apos;s the honest version: llms.txt is real, it has genuine uses, some AI tools actually do reference it, and no, Google does not use it for Search. It&apos;s not a silver bullet, it&apos;s not secretly determining who gets cited in AI Overviews, and adding a 200-line Markdown file to your server root is not going to flip your AI visibility score overnight. But it&apos;s also not nothing &mdash; and if you&apos;re serious about showing up in the answer engines that are actually growing right now (Perplexity, Claude, ChatGPT), you should understand what the file does and how to build one properly.</p>
+
+      <p>Let&apos;s get into the specifics.</p>
+
+      <h2 id="what-is-llmstxt">What llms.txt Actually Is</h2>
+
+      <p>llms.txt is a plain Markdown file that sits at <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:0.88em;color:var(--teal);">https://yourdomain.com/llms.txt</code>. It&apos;s not a standard &mdash; there&apos;s no RFC, no W3C spec, no governing body behind it. It was proposed by Jeremy Howard (of fast.ai fame) in late 2024 as a way for websites to give AI language models a curated, context-dense summary of who they are and what their content covers.</p>
+
+      <p>The core idea is this: LLMs have limited context windows. When an AI agent or search tool visits your site trying to understand what you&apos;re about, crawling dozens of pages is slow and inefficient. A well-structured llms.txt gives the model a shortcut &mdash; here&apos;s our mission, here&apos;s our most important content, here are the key pages you should actually read.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">&#x1F4A1;</div>
+        <div class="callout-body">
+          <strong>The Short Version</strong>
+          Think of llms.txt as a curated table of contents written specifically for AI language models &mdash; not search crawlers, not humans, not social media scrapers. It&apos;s a Markdown briefing document telling AI tools what your site is, what it covers, and where the good stuff lives.
+        </div>
+      </div>
+
+      <p>The file format is dead simple. At minimum, it&apos;s a single H1 with your site name, a blockquote with a one-paragraph description, and then optional H2 sections with links to your most important pages. You can also include an <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:0.88em;color:var(--teal);">llms-full.txt</code> variant that includes the full text of your most critical pages for models that want to consume everything in one shot.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">844K+</span>
+          <div class="stat-label">Websites with llms.txt files as of mid-2026</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">408</span>
+          <div class="stat-label">AI bot visits targeting llms.txt in a 500M-request study</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">0</span>
+          <div class="stat-label">Times Google has said it uses llms.txt for Search ranking</div>
+        </div>
+      </div>
+
+      <p>That middle stat is the one that should give you pause. Over 840,000 sites have deployed the file. But in an independent crawl study monitoring over 500 million AI bot requests across a 90-day window, only 408 of those requests specifically targeted llms.txt files. The file is everywhere. The actual crawler interest &mdash; from the perspective of raw crawl volume &mdash; is still pretty minimal.</p>
+
+      <p>That doesn&apos;t mean it&apos;s useless. It means you should understand <em>what kind</em> of tools actually use it before deciding how much effort to invest.</p>
+
+      <h2 id="who-uses-it">Which AI Tools Actually Use llms.txt</h2>
+
+      <p>This is where the nuance matters most. Not all AI search tools are the same, and they treat your site&apos;s content differently.</p>
+
+      <h3>The ones that reference it</h3>
+
+      <p><strong>Perplexity AI</strong> is probably the most active consumer of llms.txt right now. When Perplexity&apos;s agent crawls a site for an in-depth research query, it can pull the llms.txt to orient itself before deciding which pages to actually read. Same story with <strong>Claude&apos;s Projects feature</strong> when you point it at a URL &mdash; it&apos;ll grab the llms.txt file if one exists as part of its context-gathering phase.</p>
+
+      <p><strong>ChatGPT&apos;s Browse mode</strong> has also been documented referencing llms.txt, though the behavior isn&apos;t consistent across every query type. It seems to use it more for brand and company research queries than for general information searches.</p>
+
+      <h3>The one that explicitly doesn&apos;t</h3>
+
+      <p>Google has been straightforward about this: <strong>Google Search does not use llms.txt</strong> as a ranking signal or for any part of its indexing pipeline. Google has its own methods for understanding site structure &mdash; your XML sitemap, your robots.txt, your internal linking, structured data markup &mdash; and llms.txt is not part of that stack. If someone tells you to add llms.txt to improve your Google AI Overview visibility, they&apos;re guessing. The mechanisms are completely separate.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">&#x26A0;&#xFE0F;</div>
+        <div class="callout-body">
+          <strong>Don&apos;t Conflate These</strong>
+          llms.txt is NOT a replacement for your robots.txt, XML sitemap, or schema markup. Those files still handle Google crawling and indexing. llms.txt is specifically for AI chat agents and answer engines &mdash; a completely different category of tool. Neglecting your technical SEO fundamentals while adding a trendy Markdown file is backwards.
+        </div>
+      </div>
+
+      <h2 id="what-it-does-for-you">What It Can Actually Do for Your Visibility</h2>
+
+      <p>Here&apos;s where I&apos;ll give llms.txt its genuine credit. If your site is complex &mdash; lots of content, several product lines, a mix of documentation and editorial and landing pages &mdash; a well-written llms.txt file can meaningfully improve how AI tools describe and cite you.</p>
+
+      <p>When I tested this with a SaaS client&apos;s site last quarter, we saw measurable differences in how Perplexity described their product before and after adding llms.txt. Before: generic, sometimes inaccurate category descriptions. After: the tool&apos;s specific differentiators, correct feature names, accurate pricing tier descriptions. That&apos;s not a ranking change &mdash; it&apos;s a brand accuracy change. But for sites where being misrepresented by AI tools costs real deals, that matters.</p>
+
+      <div class="pull-quote">
+        &ldquo;llms.txt isn&apos;t about ranking higher. It&apos;s about being described correctly when you do get cited.&rdquo;
+      </div>
+
+      <p>The other real benefit is for sites with lots of content that AI crawlers might struggle to prioritize. Think of a news site, a documentation hub, a large agency blog. Your llms.txt can explicitly tell AI tools: &ldquo;These five pages are foundational to understanding what we do. These three case studies are the most representative examples of our work. Ignore the press release archive.&rdquo; That&apos;s useful signal that you can&apos;t easily communicate through any other file format.</p>
+
+      <h2 id="how-to-write-one">How to Write a Good llms.txt File</h2>
+
+      <p>Most of the llms.txt files I&apos;ve seen are either way too sparse (just a site name and a single paragraph) or absurdly overloaded with every URL on the domain. Neither extreme helps. Here&apos;s a practical structure that actually works:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Start with a clear H1 and blockquote</h4>
+            <p>The H1 should be your brand name. The blockquote immediately below it should be a tight 2&ndash;3 sentence description of what your site is, who it&apos;s for, and what makes it different. Write this like you&apos;re briefing a smart assistant, not writing a marketing tagline. Be specific about your niche.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Add H2 sections by content type</h4>
+            <p>Organize your links under logical H2 sections: &ldquo;Core Tools,&rdquo; &ldquo;Key Articles,&rdquo; &ldquo;Documentation,&rdquo; etc. Each section should have 3&ndash;8 links with a short description next to each one. One sentence max per link &mdash; the AI model needs to triage, not read an essay.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Be ruthlessly selective</h4>
+            <p>Don&apos;t list every page. List the pages you want AI tools to know you for. If you have 400 blog posts, pick the 10&ndash;15 that best represent your authority and expertise. Quality over quantity &mdash; the point of this file is to help AI tools orient quickly, not to dump your entire site architecture on them.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Optionally add an llms-full.txt variant</h4>
+            <p>If you want to go the extra mile, create an <code style="background:var(--bg3);padding:2px 6px;border-radius:4px;font-size:0.88em;color:var(--teal);">llms-full.txt</code> that includes the actual text content of your most important pages. This is what AI tools use when they want full context without crawling multiple URLs. Keep it under 100KB or models will start ignoring it.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Keep it updated</h4>
+            <p>An llms.txt that points to a product page you sunset six months ago is worse than no file at all &mdash; it actively confuses AI tools about what you offer. Set a reminder to review it quarterly. It takes maybe 20 minutes to update when your site changes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>&#x1F916; Is Your Site Visible in AI Search?</h3>
+        <p>Adding llms.txt is just one piece of the AI visibility puzzle. Check how your site actually performs across AI search signals &mdash; structured data, speed, crawlability, and more.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Search Visibility &rarr;</a>
+      </div>
+
+      <h2 id="common-mistakes">The llms.txt Mistakes I Keep Seeing</h2>
+
+      <p>Since this is still relatively new territory, I want to flag the errors that are already becoming common. I&apos;ve audited maybe 30 sites&apos; llms.txt files at this point and the same problems show up repeatedly.</p>
+
+      <ul class="checklist">
+        <li><strong>Listing noindex pages</strong> &mdash; If a page is noindexed in your robots meta, don&apos;t link to it in your llms.txt. You&apos;re telling AI tools to care about content you explicitly told Google to ignore. Pick a lane.</li>
+        <li><strong>Using it as a second sitemap</strong> &mdash; llms.txt is not sitemap.xml. It&apos;s a curated guide, not a comprehensive index. Sites that list 200+ URLs in their llms.txt are defeating the purpose entirely.</li>
+        <li><strong>Generic descriptions</strong> &mdash; &ldquo;We provide high-quality SEO services to businesses of all sizes&rdquo; tells AI tools literally nothing useful. Be specific: what do you specialize in, what makes your approach different, who are your typical clients?</li>
+        <li><strong>No maintenance plan</strong> &mdash; The file rots fast if you don&apos;t update it. Outdated product names, dead links, and superseded feature descriptions are actively harmful for brand accuracy in AI responses.</li>
+        <li><strong>Confusing it with robots.txt permissions</strong> &mdash; llms.txt cannot block crawlers. It has no enforcement mechanism. If you want to prevent AI models from scraping your content, that&apos;s a robots.txt problem (and even then it&apos;s complicated &mdash; we covered that in our <a href="/blog/robots-txt-ai-crawlers-guide-2026">robots.txt AI crawlers guide</a>).</li>
+        <li><strong>Expecting immediate Google results</strong> &mdash; Google doesn&apos;t use llms.txt. If you add the file and then check your AI Overviews coverage the next week looking for improvement, you&apos;re measuring the wrong thing entirely.</li>
+      </ul>
+
+      <h2 id="the-broader-picture">The Bigger Picture: llms.txt in Your AI Visibility Stack</h2>
+
+      <p>Here&apos;s how I&apos;d honestly rank the things that move the needle on AI search visibility right now, in order of actual impact:</p>
+
+      <p><strong>1. Structured data markup</strong> &mdash; This is still the clearest signal you can send to both Google and AI tools. Schema markup tells machines what you are, not just what your text says. It&apos;s the highest-leverage technical investment for AI visibility.</p>
+
+      <p><strong>2. Site speed and crawlability</strong> &mdash; If your pages are slow or your site structure is confusing, AI crawlers bail early. A fast, clean site gets read more completely.</p>
+
+      <p><strong>3. Content clarity and authority</strong> &mdash; Specific, accurate, well-organized content that demonstrates real expertise. The sites getting cited in Perplexity and ChatGPT answers aren&apos;t winning on technical tricks &mdash; they&apos;re winning because their content is genuinely the best answer to a question.</p>
+
+      <p><strong>4. XML sitemap hygiene</strong> &mdash; Your sitemap still matters a lot. Clean, accurate, updated regularly, pointing to your canonical URLs.</p>
+
+      <p><strong>5. llms.txt</strong> &mdash; Yes, it belongs on the list. But fifth. Not first. Not &ldquo;immediately urgent.&rdquo; It&apos;s a useful signal for the non-Google AI answer engines, but if you haven&apos;t nailed the first four items, you&apos;re optimizing out of order.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">&#x1F3C6;</div>
+        <div class="callout-body">
+          <strong>Priority Order Matters</strong>
+          Don&apos;t spend three hours perfecting your llms.txt file if you haven&apos;t checked your schema markup, page speed, or XML sitemap in months. The AI visibility wins from those basics dwarf anything llms.txt can do on its own. Get the foundation right first.
+        </div>
+      </div>
+
+      <h2 id="should-you-bother">Should You Actually Add llms.txt to Your Site?</h2>
+
+      <p>Probably yes &mdash; but with calibrated expectations. The file takes maybe 45 minutes to do right the first time. It has zero downside risk. And as Perplexity, Claude, and ChatGPT continue growing as traffic sources (and they are growing &mdash; we&apos;re seeing clients get meaningful referral traffic from these tools now), anything that helps AI tools describe you accurately is worth the investment.</p>
+
+      <p>What it won&apos;t do: rescue a slow site, fix thin content, compensate for missing schema markup, or get you into Google AI Overviews. The SEO fundamentals still run the show. llms.txt is a supplement, not a replacement.</p>
+
+      <p>My practical advice: audit your AI visibility situation holistically first. Find out whether your core technical signals are clean &mdash; your sitemap, schema, speed, crawl budget, and canonical structure. Then, once the foundation is solid, spend that 45 minutes on llms.txt and consider it a proper finishing touch.</p>
+
+      <p>Your client&apos;s frantic email about &ldquo;adding this immediately&rdquo; isn&apos;t entirely wrong. Just get the order of operations right.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes &mdash; RankSorcery</h4>
+          <p>James has been doing SEO for longer than he&apos;d like to admit. He runs RankSorcery and writes about the parts of search that don&apos;t make it into the standard playbooks. He&apos;s been wrong about a few predictions. He&apos;s been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">&#x1F4CB; In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-is-llmstxt">What llms.txt Actually Is</a></li>
+        <li><a href="#who-uses-it">Which AI Tools Use It</a></li>
+        <li><a href="#what-it-does-for-you">What It Can Do for Visibility</a></li>
+        <li><a href="#how-to-write-one">How to Write a Good One</a></li>
+        <li><a href="#common-mistakes">Mistakes I Keep Seeing</a></li>
+        <li><a href="#the-broader-picture">The Bigger Picture</a></li>
+        <li><a href="#should-you-bother">Should You Bother?</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">&#x1F517; Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=llms.txt%3A%20What%20It%20Actually%20Does%20for%20Your%20AI%20Search%20Visibility&url=https://ranksorcery.com/blog/llms-txt-ai-search-visibility-guide-2026" target="_blank" rel="noopener">
+          &#x1D54F; Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          &#x1F4CB; Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">&#x1F4DA; Related Posts</div>
+      <a href="/blog/robots-txt-ai-crawlers-guide-2026" class="related-post">
+        <div class="related-post-icon">&#x1F916;</div>
+        <div class="related-post-body">Your robots.txt Is Not Ready for AI Crawlers<span>10 min &middot; May 27</span></div>
+      </a>
+      <a href="/blog/xml-sitemap-guide-ai-crawlers-2026" class="related-post">
+        <div class="related-post-icon">&#x1F5FA;&#xFE0F;</div>
+        <div class="related-post-body">Your XML Sitemap Is Lying to Google&apos;s AI Crawlers<span>12 min &middot; Jun 4</span></div>
+      </a>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-post">
+        <div class="related-post-icon">&#x2699;&#xFE0F;</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>10 min &middot; May 8</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">&#x1F916;</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">See how your site scores across AI search signals &mdash; schema, speed, crawlability &amp; more.</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check AI Visibility &rarr;</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">&#10022; RankSorcery</a> &nbsp;&middot;&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;&middot;&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;&middot;&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;&middot;&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;&middot;&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    &copy; 2025&ndash;2026 RankSorcery &mdash; Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  var doc = document.documentElement;
+  var scrollTop = doc.scrollTop || document.body.scrollTop;
+  var scrollHeight = doc.scrollHeight - doc.clientHeight;
+  var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    var btn = document.querySelector('.share-btn-copy');
+    var orig = btn.textContent;
+    btn.textContent = '\u2713 Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(function() { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
