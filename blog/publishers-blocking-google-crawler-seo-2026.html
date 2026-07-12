@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Publishers Are Blocking Google's Crawler — And It Could Break Search As We Know It — RankSorcery</title>
+<meta name="description" content="USA Today is considering delisting from Google. Cloudflare is blocking Google's bot by default in September. Here's what this power shift means for your SEO.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/publishers-blocking-google-crawler-seo-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Publishers Are Blocking Google's Crawler — And It Could Break Search As We Know It">
+<meta property="og:description" content="USA Today is considering delisting from Google. Cloudflare is blocking Google's bot by default in September. Here's what this power shift means for your SEO.">
+<meta property="og:url" content="https://ranksorcery.com/blog/publishers-blocking-google-crawler-seo-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-amber">⚡ SEO News</span>
+    <h1>Publishers Are Blocking Google's Crawler — And It Could Break Search As We Know It</h1>
+    <div class="article-meta">
+      <span>📅 July 11, 2026</span>
+      <span>⏱ 8 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">⛔</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Cloudflare will block Google's crawler by default on ad-supported sites starting September 15, 2026 — affecting roughly 20% of the web.</li>
+      <li>USA Today Inc. is actively planning to delist from Google entirely within 6–12 months, citing zero licensing deals with Google.</li>
+      <li>Google's single-crawler problem: it uses the same bot for both indexing and AI training, forcing an all-or-nothing choice on publishers.</li>
+      <li>For SEOs and site owners, this is a signal — not a panic moment. Here's how to read it and what to actually do.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>For as long as most of us have worked in search, the deal was simple: let Google crawl your site, and Google sends you traffic. It wasn't always a great deal — especially as organic click-through rates have cratered with AI Overviews eating up the SERPs — but it was the deal. Publishers played ball. SEOs optimized for it. And Google mostly kept its end of the bargain.</p>
+
+    <p>That deal is now visibly fraying. Not in a "the algorithm changed again" kind of way. In a "one of the largest CDNs on the planet is about to block Google's bot by default" kind of way. And USA Today — not some scrappy startup — is reportedly ready to walk away from Google Search entirely.</p>
+
+    <p>This is worth paying close attention to, not because most of us are major publishers, but because whatever happens between big media and Google tends to preview what's coming for the rest of the web.</p>
+
+    <h2>The Cloudflare Move That Changes Everything</h2>
+
+    <p>On July 9, 2026, Adweek reported that Cloudflare — which powers routing and security for roughly one-fifth of all websites — has issued what amounts to a technical ultimatum to Google. <strong>Starting September 15, 2026</strong>, new Cloudflare signups and all free-tier users will have their bot management settings default to blocking "multi-purpose crawlers" on any page that runs ads.</p>
+
+    <p>Multi-purpose crawlers is the polite term. The specific, unnamed target here is Googlebot.</p>
+
+    <p>Here's the problem Cloudflare is trying to fix: Google uses a single crawler for both search indexing <em>and</em> AI training. That means publishers who want their content in Google Search have no choice but to also let Google vacuum up that content to train Gemini, power AI Overviews, and fuel whatever AI product comes next — all without compensation.</p>
+
+    <p>"We've been clear about what we want," said Cloudflare's chief strategy officer Stephanie Cohen. "We want a technical solution that allows you to be discoverable without having to give your content away for free."</p>
+
+    <p>That's a sentence that would have been unthinkable five years ago. Now it's Cloudflare's product roadmap.</p>
+
+    <h3>What Google Extended Actually Offers (And Why Publishers Don't Trust It)</h3>
+
+    <p>Google does have a program called <strong>Google Extended</strong> that nominally lets publishers opt out of AI training without disappearing from Search. On paper, it sounds like a solution. In practice, publishers aren't buying it.</p>
+
+    <p>According to executives at two media companies quoted in the Adweek piece, there's genuine fear that using Google Extended will quietly hurt search rankings. Google has every incentive to deprioritize content it can't use for AI training, and publishers have no way to audit whether that's happening. The program relies on trusting Google's discretion — which, to be fair, publishers have been burned on before.</p>
+
+    <p>The U.K. has also introduced new controls giving publishers more agency over how scraped content gets used. Same problem: it's Google grading its own homework.</p>
+
+    <h2>USA Today Is Ready to Pull the Plug</h2>
+
+    <p>Here's the part that really matters: USA Today Inc., which runs not just USA Today but a nationwide network of local news sites hitting around a billion pageviews per month, is seriously preparing to delist from Google.</p>
+
+    <p>CEO Mike Reed put it bluntly — the company has struck licensing deals with Meta, Microsoft, and Amazon for its content. Google hasn't offered one. The calculus is simple: if Google wants to scrape their content to power AI experiences that show up instead of sending clicks to USA Today's site, they can pay for it like everyone else. And if they won't, then USA Today blocks the crawler. Reed estimated the timeline at six to twelve months.</p>
+
+    <p>Beehiiv, the newsletter platform with a massive creator network, has also partnered with Cloudflare to give its creators the ability to block Googlebot.</p>
+
+    <p>These aren't small players making noise. These are real, traffic-generating entities doing the math and concluding that the value of staying in Google Search may soon be outweighed by the cost of continuing to fund Google's AI for free.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>Publishers who blocked AI crawlers saw about a 23% drop in total traffic, according to data cited by Digiday. That's the current "price" of opting out. But as AI Overviews consume more SERPs and organic CTR keeps falling, that penalty shrinks every quarter. The math is changing.</p>
+    </div>
+
+    <h2>What This Means If You're Not a Major Publisher</h2>
+
+    <p>You might be reading this thinking: okay, but I'm not USA Today. Does any of this affect my site?</p>
+
+    <p>More than you'd think. Here's why:</p>
+
+    <h3>Search Quality Is About to Get Weird</h3>
+
+    <p>Google Search's quality depends entirely on the content of the web it indexes. If premium publishers start pulling their content — real journalism, expert analysis, original reporting — what fills the gap? More SEO-optimized content farms. More AI-generated filler. More Reddit and YouTube results, which Google is already over-indexing on.</p>
+
+    <p>If you've noticed Google results feeling flimsier lately, this trend will accelerate. And paradoxically, that might be an opportunity. Sites with genuine depth, original data, and real expertise will stand out more in a search index that's getting hollowed out from the top.</p>
+
+    <h3>The robots.txt Situation Is Getting Complicated</h3>
+
+    <p>If you haven't audited your <code>robots.txt</code> recently, now's the time. There are now a <em>lot</em> of crawlers out there — Google, Bing, Apple, GPTBot, ClaudeBot, PerplexityBot, and a dozen more. Each one scrapes your content for different purposes, and your default settings may be letting in crawlers you'd rather block (or blocking ones you want).</p>
+
+    <p>Google has two relevant user agent strings: <code>Googlebot</code> (indexing) and <code>Google-Extended</code> (AI training opt-out). If you want to stay in Google Search but attempt to limit AI training use, you can add <code>User-agent: Google-Extended</code> followed by <code>Disallow: /</code> to your robots.txt — just know the disclaimers about whether Google actually honors this without any ranking penalty.</p>
+
+    <h3>Zero-Click Is the Real Story Behind This Story</h3>
+
+    <p>None of this happens without the zero-click crisis as the backdrop. Right now, <strong>58.5% of Google searches end without a single click to any website</strong>. Google AI Overviews now trigger on somewhere between 13% and 48% of all searches depending on which study you read (the range is that wide because it varies hugely by query type). Every one of those no-click experiences is Google using publisher content to answer a question and keeping the user on Google.</p>
+
+    <p>Publishers didn't agree to that deal. They agreed to "let us crawl your site and we'll send you traffic." When the traffic stopped flowing, the deal broke down. This is the logical endpoint of that breakdown.</p>
+
+    <h2>The Impossible Choice Google Has Created</h2>
+
+    <p>SEO consultant Lily Ray said it plainly in the Adweek piece: "It's a really hard tradeoff. Some publishers have already blocked OpenAI until it strikes partnerships, but with Google it's hard. Google is a different conversation because it has so many more users than other AI firms."</p>
+
+    <p>That's the core of it. OpenAI's GPTBot can be blocked without much consequence because Perplexity and ChatGPT don't drive that much traffic yet — though that's changing fast. Google is still the dominant source of referral traffic for most publishers. Blocking it is still commercial suicide for many. But "most" and "still" are doing a lot of work in those sentences, and both are trending in the wrong direction.</p>
+
+    <p>The anonymous media executive quoted in the piece probably said it best: "Our content is showing up and powering generative experiences on Google at least hundreds of millions of times a day. If we weren't in it, every one of those experiences would be worse." That's leverage. Publishers are starting to recognize they have it.</p>
+
+    <h2>What You Should Actually Do Right Now</h2>
+
+    <p>For most site owners and SEOs, this story isn't a reason to panic and block Googlebot. But it is a reason to do a few specific things:</p>
+
+    <ul>
+      <li><strong>Audit your robots.txt.</strong> Know exactly which bots can access your site and what they can do. Don't leave it on the defaults you set five years ago.</li>
+      <li><strong>Diversify your traffic sources now, not later.</strong> Email lists, direct traffic, social, communities — the sites weathering the AI search transition best are the ones that aren't 70% dependent on Google organic. USA Today maintained a billion pageviews a month by building those alternate channels proactively.</li>
+      <li><strong>Create content that actually can't be synthesized.</strong> Original data, first-person experience, proprietary research, genuine expert takes — this is content that AI Overviews struggle to fully replace and that builds the kind of brand recognition that gets you cited in AI results rather than substituted by them.</li>
+      <li><strong>Watch what happens September 15.</strong> That's when Cloudflare's default setting change kicks in. We'll get real data on how much this affects crawl rates, indexing, and eventually rankings. It's a natural experiment worth following closely.</li>
+      <li><strong>Consider Google Extended if you have premium content.</strong> Even with the uncertainty, signaling that your content is premium enough to have terms attached to it isn't the worst positioning move. Just go in eyes open about the risks.</li>
+    </ul>
+
+    <h2>Bottom Line</h2>
+
+    <p>The relationship between Google and the publishers whose content makes Search worth using has been quietly breaking down for years. What's new in July 2026 is that it's becoming public, organized, and structural. Cloudflare isn't a scrappy startup making a statement — it's infrastructure. USA Today isn't a niche blog threatening to leave — it's a top-10 news property that does real math before making real decisions.</p>
+
+    <p>For SEOs, the practical takeaway is simple: stop treating Google organic as a stable foundation and start treating it as one channel among several. The publishers who survive this transition — USA Today included — are the ones who saw this coming and built accordingly. You still have time to do the same. Not a lot of it, but some.</p>
+
+    <p>And if nothing else, check your robots.txt. Seriously.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/robots-txt-ai-crawlers-guide-2026" class="related-card">
+        <div class="rc-tag">AI Crawlers</div>
+        <h4>robots.txt for AI Crawlers in 2026: Who to Block, Who to Allow, and Why It Matters</h4>
+      </a>
+      <a href="/blog/zero-click-seo-strategy-2026" class="related-card">
+        <div class="rc-tag">Content Strategy</div>
+        <h4>Zero-Click SEO in 2026: How to Win When Google Answers Everything</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
