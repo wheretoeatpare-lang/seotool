@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloudflare's September 15 Deadline: How to Stop It From Blocking Googlebot — RankSorcery</title>
+<meta name="description" content="Cloudflare's new AI crawler rules could accidentally block Googlebot on your site starting September 15, 2026. Here's exactly what changed and how to fix it.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/cloudflare-ai-crawler-september-15-googlebot-fix-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cloudflare's September 15 Deadline: How to Stop It From Blocking Googlebot">
+<meta property="og:description" content="Cloudflare's new AI crawler rules could accidentally block Googlebot on your site starting September 15, 2026. Here's exactly what changed and how to fix it.">
+<meta property="og:url" content="https://ranksorcery.com/blog/cloudflare-ai-crawler-september-15-googlebot-fix-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-amber">🔍 Technical SEO</span>
+    <h1>Cloudflare's September 15 Deadline Is Coming — And It Could Accidentally Block Googlebot on Your Site</h1>
+    <div class="article-meta">
+      <span>📅 July 12, 2026</span>
+      <span>⏱ 9 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">☁️</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Cloudflare replaced its single "Block AI Bots" toggle with three separate categories: Search, Agent, and Training — and new defaults kick in September 15, 2026.</li>
+      <li>Googlebot crawls for both search indexing AND AI training — making it a "multi-purpose" bot that gets caught in Training blocks under the new rules.</li>
+      <li>If you're on Cloudflare's free plan and haven't touched your settings, your ad pages could stop being indexed by Google after September 15.</li>
+      <li>The fix is free and takes 15 minutes: keep Search bots allowed, block Agent + Training on ad pages, and add <code>Google-Extended</code> to your robots.txt.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>Here's a scenario nobody should want to live through: you wake up after September 15, check Search Console, and your ad-supported pages are getting zero impressions. Not a rankings drop — a full crawl block. No indexing at all. And the culprit? A Cloudflare setting you enabled 18 months ago and never thought about again.</p>
+
+    <p>That's not a hypothetical. It's exactly what could happen to sites running on Cloudflare that turned on the old "Block AI Bots" toggle — and haven't reviewed it since. On July 1, 2026, Cloudflare announced a significant overhaul of how it handles AI crawler traffic. The new system is genuinely better and more nuanced than what came before. But it has one sharp edge that can cut you if you're not paying attention: <strong>Googlebot is now classified as a mixed-use crawler, and mixed-use crawlers get hit with the strictest applicable rule.</strong></p>
+
+    <p>Let's walk through exactly what changed, why Googlebot is in the crossfire, and what you need to do before the September 15 deadline.</p>
+
+    <h2>Why Cloudflare Changed the System in the First Place</h2>
+
+    <p>The original "Block AI Bots" toggle made sense in 2024 when there were maybe a dozen AI crawlers and they all basically did the same thing: scrape your content to train models. The world has gotten considerably more complicated since then.</p>
+
+    <p>Cloudflare CEO Matthew Prince recently confirmed something that caught a lot of people off guard: <strong>bot traffic has now surpassed human traffic on the internet.</strong> He didn't expect that milestone until late 2027. It happened ahead of schedule, driven almost entirely by AI. AI training crawlers went from roughly 20% of Cloudflare's network traffic in spring 2025 to becoming the majority today. Daily AI agent requests grew by over 1,700% in a single year.</p>
+
+    <p>The old toggle couldn't handle that complexity. You'd block GPTBot (which trains models and returns zero traffic to you) and also accidentally block OAI-SearchBot (which powers ChatGPT search and actually sends referral traffic). Same company, completely different behavior, one switch for both. That's why Cloudflare broke it into three distinct categories.</p>
+
+    <h3>The Three Bot Categories You Need to Know</h3>
+
+    <p><strong>Search bots</strong> crawl and index your content so AI-powered search experiences can answer questions with it later. When someone gets a citation in Perplexity or a source link in ChatGPT search, a Search bot is what put you there. These bots return referral traffic. Cloudflare keeps them allowed by default and won't change that on September 15.</p>
+
+    <p><strong>Agent bots</strong> act in real-time on behalf of a specific person. When someone uses ChatGPT to "check this website for me," that's an Agent bot visiting your site. No index being built, no future referral traffic — just one person getting your content without ever visiting. On ad-supported pages, that's pure revenue loss with no upside.</p>
+
+    <p><strong>Training bots</strong> scrape your content to train or fine-tune AI models. Your writing goes into the model's weights permanently. No attribution, no traffic, no compensation (unless you've worked out a licensing deal). This is the category publishers have been fighting about for two years.</p>
+
+    <p>Starting September 15, Agent and Training bots will be blocked by default on ad-supported pages for new Cloudflare domains and existing free-tier customers who haven't adjusted their settings. That part is fine. The problem is what happens to crawlers that do multiple things.</p>
+
+    <h2>The Googlebot Problem Nobody Is Talking About Clearly</h2>
+
+    <p>Googlebot isn't just a search crawler. Google uses the same bot — the one indexing your pages for traditional search — to also collect content for Gemini, AI Overviews, and AI Mode. One bot, two jobs: Search indexing and AI Training.</p>
+
+    <p>Cloudflare's new rule for multi-purpose crawlers: <strong>apply whichever restriction is strictest.</strong> So if you have Training bots blocked on ad pages, and Googlebot does Training, then Googlebot is blocked on your ad pages. Full stop. Your ad-monetized content won't be crawled. Those pages drop out of the index.</p>
+
+    <p>Cloudflare explicitly named Googlebot, Applebot, and Bingbot as examples of crawlers affected by this rule. And here's the thing that makes it sneaky: <strong>a Cloudflare-level block is harder to work around than a robots.txt directive.</strong> Google's crawler has been known to crawl pages that robots.txt tells it to skip. A network-level block through Cloudflare? That's a wall, not a suggestion.</p>
+
+    <blockquote>If you turned on "Block AI Bots" at any point in the past and haven't revisited that setting, check it now. You may already be configured to block Googlebot on your ad pages after September 15 rolls out the new multi-purpose crawler rules.</blockquote>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>The distinction that matters: Cloudflare's network-level block prevents Googlebot from reaching your server entirely. A robots.txt disallow is a polite request that Google may or may not honor. They're not equivalent — network blocks are far more aggressive, which is exactly why this configuration mistake can tank your indexing.</p>
+    </div>
+
+    <h2>How to Fix It: Your 5-Step Cloudflare Configuration</h2>
+
+    <p>Good news: the controls are free on every Cloudflare plan, including the free tier. This takes about 15 minutes if you know where to look.</p>
+
+    <h3>Step 1 — Find the AI Crawl Control panel</h3>
+    <p>Log into your Cloudflare dashboard. Select your domain. Navigate to <strong>Security → Bots → AI Crawl Control</strong>. You'll see two tabs: Robots.txt and Crawlers. Start with Crawlers.</p>
+
+    <h3>Step 2 — Check your legacy settings</h3>
+    <p>If you ever enabled the old "Block AI Bots" toggle, look for it here. If it's still on, you're in the group that gets automatically migrated to the new strictest-rule logic on September 15. You need to explicitly set your preferences before that date or opt out of the automatic migration.</p>
+
+    <h3>Step 3 — Set your three category controls</h3>
+    <p>For most ad-supported content sites, the right configuration is:</p>
+    <ul>
+      <li><strong>Search bots:</strong> Do not block — these drive referral traffic and AI search visibility.</li>
+      <li><strong>Agent bots:</strong> Block on pages that display ads — they return no value on monetized pages.</li>
+      <li><strong>Training bots:</strong> Block on pages that display ads — protects revenue without killing your full-site indexing.</li>
+    </ul>
+    <p>If you're a SaaS site, newsletter, or subscription product where every page matters and ad impressions aren't the revenue driver, consider blocking Training bots on all pages — not just ad pages.</p>
+
+    <h3>Step 4 — Handle Google separately via robots.txt</h3>
+    <p>This is the clean way to deal with Googlebot's dual-purpose nature. Google provides a separate crawler called <strong>Google-Extended</strong> specifically for AI training opt-outs. By adding <code>Disallow: /</code> for <code>Google-Extended</code> in your robots.txt, you tell Google not to use your content to train its AI models — without blocking Googlebot from indexing you for search.</p>
+    <p>One important caveat worth knowing: disallowing Google-Extended doesn't remove you from AI Overviews. Those pull from Google's regular Search index, not a separate training crawl. There's currently no way to appear in AI Overviews while fully opting out of Google's AI training use. That's a gap Google hasn't addressed yet. Disallowing Google-Extended is still worth doing — it's just not a complete solution to the AI training question.</p>
+
+    <h3>Step 5 — Check for WAF rule conflicts</h3>
+    <p>Cloudflare's Web Application Firewall rules run before robots.txt is even read. If you have any WAF custom rules that challenge or block user agents matching AI crawlers, they can override your AI Crawl Control settings. Go to <strong>Security → WAF → Custom Rules</strong> and check for anything that might be catching legitimate Search bots like OAI-SearchBot or PerplexityBot. If you find them, create explicit skip rules for their verified user agents.</p>
+
+    <h2>What About the "Block All AI Bots" Crowd?</h2>
+
+    <p>If you're in the camp of "I don't want any AI touching my content, period," I get it. But blocking all AI bots including Search bots has a cost that's worth being clear-eyed about: <strong>you're removing your content from the AI search ecosystem entirely.</strong></p>
+
+    <p>Perplexity, ChatGPT search, and AI-enhanced Google results all depend on Search bots finding your content. If you block them, you won't show up in those results. For some sites — especially those with content that competes directly with what AI systems generate — that trade-off might be worth it. But for most publishers and marketers, cutting off all AI search visibility to block Training bots is overkill.</p>
+
+    <p>The smarter play is the nuanced one: block Training and Agent bots on ad pages (protecting your revenue), keep Search bots allowed (keeping your AI search visibility), and use Google-Extended in robots.txt to signal your AI training preferences to Google directly. You're not giving up the whole game — you're just protecting the part that actually funds your site.</p>
+
+    <h2>Cloudflare's Pay Per Use: Worth Signing Up For?</h2>
+
+    <p>There's a new piece to this story that's been buried under the September 15 deadline news. Cloudflare launched what they're calling the <strong>Monetization Gateway</strong> — an evolution of their earlier Pay Per Crawl experiment. The new model is called Pay Per Use, and it charges AI companies based on when your content actually appears in a chatbot answer, not just when it was crawled.</p>
+
+    <p>In theory: if GPT-4o uses your article to answer someone's question, you get paid for that usage. Payments settle in stablecoins via Cloudflare's x402 protocol. Early partnerships include a handful of smaller AI platforms — the big names (OpenAI, Google, Anthropic) aren't on board yet.</p>
+
+    <p>Should you sign up for the waitlist? Yes, with realistic expectations. The infrastructure is being built, but it's not a meaningful revenue stream in 2026 for most sites. The bigger deal right now is using the bot controls to protect your ad revenue. Treat Pay Per Use as a long-term upside — sign up for the waitlist and forget about it until the landscape matures.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>You've got about two months before September 15 makes this urgent — but honestly, there's no reason to wait. Log into your Cloudflare dashboard today and spend 15 minutes reviewing your AI Crawl Control settings. The check is free, the fix is free, and the downside of ignoring it is real: pages that stop getting indexed, rankings that quietly evaporate, all from a setting you turned on once and forgot about.</p>
+
+    <p>The configuration for most sites is straightforward: Search bots allowed everywhere, Agent and Training bots blocked on ad pages, Google-Extended disallowed in robots.txt. That's it. You're protecting your ad revenue, keeping Googlebot happy, and maintaining your presence in AI search — all at once.</p>
+
+    <p>Do it now, not because September 15 is a hard cliff, but because it takes 15 minutes and the alternative is finding out what happened after it's already cost you traffic.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/publishers-blocking-google-crawler-seo-2026" class="related-card">
+        <div class="rc-tag">SEO News</div>
+        <h4>Publishers Are Blocking Google's Crawler — And It Could Break Search As We Know It</h4>
+      </a>
+      <a href="/blog/robots-txt-ai-crawlers-guide-2026" class="related-card">
+        <div class="rc-tag">Technical SEO</div>
+        <h4>robots.txt for AI Crawlers in 2026: The Complete Configuration Guide</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
