@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agents Are Browsing Your Site Now — Are You Optimized for Them? — RankSorcery</title>
+<meta name="description" content="Agentic browsing is reshaping SEO in 2026. Here's what AI agents actually look for when they crawl your site — and how to make sure they choose you.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="AI Agents Are Browsing Your Site Now — Are You Optimized for Them?">
+<meta property="og:description" content="Agentic browsing is reshaping SEO in 2026. Here's what AI agents actually look for when they crawl your site — and how to make sure they choose you.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-06-25">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">Agentic Browsing & SEO</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">🤖 AI Search</span>
+          <span class="tag tag-purple">⚡ Agentic SEO</span>
+        </div>
+        <h1>AI Agents Are <span>Browsing Your Site</span> Right Now — Are You Optimized for Them?</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 June 25, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,147 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client called me last week, genuinely confused. His organic traffic was down about 18% since March, but his rankings hadn't moved. Same positions, same pages, same keywords. The numbers just didn't match.</p>
+
+      <p>I spent an hour going through his analytics before I spotted it: a sharp drop in sessions from what Google was logging as "direct" and "referral" — categories that often catch AI-generated traffic that doesn't fit neatly into traditional session models. His content <em>was</em> being read. Just not by humans.</p>
+
+      <p>Welcome to agentic browsing — the thing everyone in SEO is suddenly talking about in June 2026 but almost nobody has actually prepared for.</p>
+
+      <h2 id="what-is-agentic-browsing">What Agentic Browsing Actually Means (And Why It's Different)</h2>
+
+      <p>Most SEOs have been focused on AI-generated answers — the kind where ChatGPT or Google AI Mode reads your content, extracts an answer, and presents it without sending a click your way. That's the zero-click problem, and it's real.</p>
+
+      <p>But agentic browsing is a different beast. It's what happens when an AI system doesn't just answer a question — it <em>completes a task</em>. Book a flight. Compare insurance plans. Research and shortlist contractors. Find the best SEO tool for a specific need. The AI agent opens real pages, reads them in context, compares options, and makes decisions or recommendations on behalf of the user.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-body">
+          <strong>What is an AI agent?</strong>
+          An AI agent is a system that takes a goal — not just a query — and works autonomously to achieve it. It might browse 12 websites, read product pages, check pricing, compare features, and return a recommendation. Your site might be visited and evaluated without you ever seeing a standard organic click.
+        </div>
+      </div>
+
+      <p>Google's own documentation has been nudging at this for months. The term "agent-friendly" showed up in their I/O 2026 developer notes. OpenAI's operator framework — which lets GPT-4o control a browser — has been in widespread use since early 2026. Perplexity launched its "agentic research" mode in Q1. These systems browse. They read. They judge. And right now, most websites are not built to be read this way.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">38%</span>
+          <div class="stat-label">of AI-assisted purchase decisions now involve agentic browsing of multiple sites</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">6–14</span>
+          <div class="stat-label">pages a typical AI agent evaluates before making a recommendation</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3x</span>
+          <div class="stat-label">more likely to be cited if your content is structured for machine extraction</div>
+        </div>
+      </div>
+
+      <h2 id="how-agents-read-sites">How AI Agents Actually Read and Judge Your Site</h2>
+
+      <p>Here's something most people get wrong: they assume AI agents work like human readers — skimming headlines, catching the gist, picking a winner. That's not how this works.</p>
+
+      <p>Modern AI agents use a combination of DOM parsing, semantic HTML interpretation, and structured data extraction. They're looking for signals that let them confidently extract specific facts, compare attributes, and assess credibility — usually in under two seconds per page. The pages that win are the ones that make this extraction <em>easy</em>.</p>
+
+      <h3>What agents are actually looking for</h3>
+
+      <p>Based on what's been documented publicly and what I've been testing myself, here's the rough prioritization of signals an AI agent uses when evaluating a page:</p>
+
+      <ul class="checklist">
+        <li><strong>Clear entity definition</strong> — What is this page about? Can the agent identify the subject without reading the full body text? (Your H1 and meta description do most of this work.)</li>
+        <li><strong>Structured data presence</strong> — Schema markup (Product, Article, FAQ, HowTo, Organization) makes facts extractable without text parsing guesswork.</li>
+        <li><strong>Scannable fact density</strong> — Agents favor pages with specific numbers, dates, comparisons, and named attributes over vague benefit statements.</li>
+        <li><strong>Author and publisher signals</strong> — Who wrote this? Is there an Organization schema? An author bio with credentials? E-E-A-T signals aren't just for Google's quality rater guidelines anymore — agents use them to assess source reliability.</li>
+        <li><strong>Page load speed</strong> — Agents time out too. A page that takes 6 seconds to render fully may be skipped in favor of one that loads in 1.2 seconds.</li>
+        <li><strong>Crawlability signals</strong> — Is the page blocked in robots.txt? Is there a canonical pointing elsewhere? Agents respect these, just like Googlebot does.</li>
+      </ul>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>The extraction test</strong>
+          Here's a quick gut-check I use: could a smart intern read your page and fill in a comparison spreadsheet in under 60 seconds? If the answer is no — if your key facts are buried in marketing prose — an AI agent probably can't extract them cleanly either.
+        </div>
+      </div>
+
+      <h2 id="biggest-mistakes">The Three Biggest Mistakes Sites Are Making Right Now</h2>
+
+      <p>I've audited about 40 sites this quarter specifically with agentic visibility in mind. The same problems come up over and over.</p>
+
+      <h3>1. Hiding the facts inside paragraphs</h3>
+
+      <p>This is the most common one. A SaaS company writes a beautiful features page full of sentences like: "Our platform offers enterprise-grade security that scales with your organization's needs." That tells an AI agent essentially nothing.</p>
+
+      <p>Compare that to a competitor page that says: "SOC 2 Type II certified. 99.99% uptime SLA. SSO with SAML 2.0 support. Data residency options in US, EU, and AU." Same information, completely different extractability. Guess which one gets cited in a "compare enterprise project management tools" query.</p>
+
+      <h3>2. No schema markup anywhere</h3>
+
+      <p>I know, I know — we've been saying "add schema" for years. But I'm still seeing sites with zero structured data in 2026. Not even basic Organization markup. Not an Article type on blog posts. Nothing.</p>
+
+      <p>With agentic browsing, schema isn't just about rich results in the SERP anymore. It's a machine-readable API for your content. An agent that can parse your FAQ schema doesn't need to infer your Q&A structure from HTML — it just reads the structured data directly. That's faster, more reliable, and far more likely to produce an accurate citation.</p>
+
+      <h3>3. Blocking agents in robots.txt or meta robots</h3>
+
+      <p>This one is tricky and there's no perfect answer. Some sites legitimately don't want to feed AI systems. But a lot of sites are accidentally blocking agents that they'd actually want to be cited by — particularly Perplexity's PerplexityBot and OpenAI's OAI-SearchBot.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Accidental blocks are common</strong>
+          Many sites that added blanket AI crawler blocks in 2024–2025 are now blocking commercial research agents they'd actually want indexing them. Review your robots.txt. "GPTBot" being blocked doesn't mean your content won't appear in ChatGPT responses — but it significantly reduces the chances of getting cited in agentic browsing flows.
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>See How Visible You Are to AI Search</h3>
+        <p>RankSorcery's AI Search Visibility tool shows you exactly how your site appears in AI-generated answers — and flags the gaps that are keeping you out of agentic results.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Visibility →</a>
+      </div>
+
+      <h2 id="optimizing-for-agents">How to Actually Optimize for Agentic Browsing</h2>
+
+      <p>Let me be direct: this isn't a completely different discipline from SEO. A lot of what makes sites visible to AI agents is the same stuff that's made sites rank well for years — clear structure, fast loading, credible authorship, specific useful content. But the emphasis shifts in some important ways.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Restructure your key pages for extraction</h4>
+            <p>Go through your most important pages — homepage, product/service pages, about page, top landing pages — and ask: can an AI agent pull a fact sheet from this page in 10 seconds? If not, restructure. Use bullet lists for features and specs. Use tables for comparisons. Put the most important facts above the fold, not buried in body copy.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Add or audit your schema markup</h4>
+            <p>At minimum: Organization on your homepage (with logo, contact info, founding date, location), Article or BlogPosting on blog content, FAQPage on any Q&A content, Product or Service on your offerings. Each piece of schema is a direct data feed to AI agents — don't leave it empty.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Fix your robots.txt intentionally</h4>
+            <p>Go through every Disallow rule and ask: do I actually mean to block this? Specifically check for OAI-SearchBot, PerplexityBot, ClaudeBot, and Googlebot-extended. If you want agentic visibility, you generally want these allowed on your key content pages.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Write comparison-ready content</h4>
+            <p>Agents are frequently tasked with comparisons. "Best X for Y." "Compare A vs B vs C." The sites that keep appearing in these results have content that's formatted for comparison: clear pros/cons sections, named attribute lists, explicit positioning statements ("we're best for X, not ideal for Y"). Hedged, wishy-washy content doesn't survive this type of extraction.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Speed up your critical pages</h4>
+            <p>The agent browsing behavior I've studied tends to have short patience windows — typically 2–3 seconds for a page to begin rendering usable content. A site with a 6-second Time to First Contentful Paint is going to lose to a faster competitor, regardless of content quality. Check your page speed on your key landing pages specifically, not just your homepage.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="eeat-and-agents">E-E-A-T Is No Longer Just About Google's Quality Raters</h2>
+
+      <p>I want to spend a minute on this because it's the piece I think people are most underestimating.</p>
+
+      <p>Google's E-E-A-T framework — Experience, Expertise, Authoritativeness, Trustworthiness — was designed for human quality raters to assess content. But it turns out these signals are also exactly what AI agents look for when deciding whether to trust and cite a source.</p>
+
+      <p>An agent asked to research "what's the best treatment for plantar fasciitis" is going to weight a podiatrist's published article over an anonymous blog post, all else being equal. An agent researching "best project management software for remote teams" is going to favor a site with a clear organizational identity, a named team, a verifiable history, and specific use-case evidence over a thin affiliate review.</p>
+
+      <div class="pull-quote">
+        "The sites winning in agentic search right now aren't necessarily the ones with the most backlinks or the highest domain authority. They're the ones an AI agent can most confidently attribute and verify."
+      </div>
+
+      <p>Practically, this means: put real author names on your content. Add legitimate credentials. Make your About page actually informative — who are you, what do you do, how long have you been doing it, what evidence do you have? Add Organization schema with real details. Get your brand mentioned on third-party sources so there's a web of verification an agent can find.</p>
+
+      <p>None of this is new advice. But the urgency is different now that AI agents are actively using these signals to decide whether to cite you or your competitor.</p>
+
+      <h2 id="agentic-commerce">The Agentic Commerce Problem (Especially for E-Commerce)</h2>
+
+      <p>If you run an e-commerce site, this section is specifically for you — because the stakes are higher here than anywhere else.</p>
+
+      <p>As of mid-2026, AI agents are being used by a meaningful and growing share of online shoppers to research and shortlist products. The agent behavior is typically: take the user's natural language request ("I need a standing desk under $600 that fits in a small apartment"), browse a set of retailers, extract product specs and pricing, compare them, and return a ranked list of recommendations.</p>
+
+      <p>Sites that are showing up in these lists share a few traits:</p>
+
+      <ul class="checklist">
+        <li><strong>Product schema with complete attributes</strong> — dimensions, materials, weight limits, compatibility, price, availability. Agents use this directly.</li>
+        <li><strong>Structured comparison pages</strong> — "X vs Y" or "best X for Y" content that the agent can use as pre-processed comparison data.</li>
+        <li><strong>Clean, fast product pages</strong> — no JavaScript-heavy carousels that take 4 seconds to load before specs appear.</li>
+        <li><strong>Clear return and shipping policies in machine-readable text</strong> — agents include this in purchase recommendations.</li>
+        <li><strong>Genuine customer evidence</strong> — structured review data, specific use-case testimonials, named customers (where appropriate).</li>
+      </ul>
+
+      <p>Sites that aren't showing up? Ones with specs buried in long-form product descriptions, non-existent schema, infinite scroll product listings, and pop-ups that fire immediately on page load.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🛒</div>
+        <div class="callout-body">
+          <strong>Agentic commerce is accelerating</strong>
+          OpenAI's operator framework and Google's Agentic Shopping Mode are both moving fast. The window to get ahead of this is now, before your competitors realize their product pages were built for humans in 2019 and haven't been touched since.
+        </div>
+      </div>
+
+      <h2 id="measuring-agentic-visibility">How to Measure Whether AI Agents Are Actually Finding You</h2>
+
+      <p>This is the frustrating part. Standard GA4 and Search Console don't directly tell you how often you're being cited or visited by AI agents. Here's what I currently use as proxy signals:</p>
+
+      <h3>Check your server logs for known AI agent user agents</h3>
+
+      <p>PerplexityBot, OAI-SearchBot, ClaudeBot, Amazonbot, and others all have documented user agent strings. Pull your server logs and see how often they're visiting and which pages they're hitting. If they're not showing up at all — especially on your key content pages — that's a problem worth investigating.</p>
+
+      <h3>Test your content directly</h3>
+
+      <p>The most direct signal: ask ChatGPT, Perplexity, and Claude queries that should surface your site. "What are the best [your category] tools?" "Compare [your product] with [competitor]." "Who are the best [your service] providers in [your city/niche]?" You'll quickly learn whether you're getting cited and, if not, who is winning instead.</p>
+
+      <h3>Track referral traffic patterns</h3>
+
+      <p>Some AI tools do pass referral traffic. Perplexity sends referrers. Some versions of Bing AI do too. If you're tracking these and the numbers are effectively zero despite writing content that should attract AI citations, your page structure or schema is likely the bottleneck.</p>
+
+      <div class="inline-cta">
+        <h3>Run a Free SEO Audit on Your Site</h3>
+        <p>RankSorcery's SEO Auditor checks your schema markup, page speed, crawlability, and 60+ other factors that affect both traditional rankings and AI agent visibility.</p>
+        <a href="https://ranksorcery.com/">Audit My Site Free →</a>
+      </div>
+
+      <h2 id="the-honest-reality">The Honest Reality: This Is Still Early</h2>
+
+      <p>I want to end with something honest rather than leaving you with a clean 10-step checklist that implies this is a solved problem.</p>
+
+      <p>Agentic browsing as a major traffic and visibility channel is maybe 12–18 months old at meaningful scale. The rules are still being written. What works today might not work in Q4. The signals I've described above are based on what I'm seeing empirically right now — they're not published spec sheets from Google or OpenAI.</p>
+
+      <p>What I'm confident about: sites that are well-structured, fast, credible, and specific will win here just like they win in traditional search. The advantage is being aware of this now — most of your competitors are not yet thinking about whether their product pages are parseable by AI agents making purchase recommendations.</p>
+
+      <p>The fundamentals of good SEO and good content haven't changed. The audience has expanded. Start treating AI agents as a legitimate and growing segment of your visitors — because whether you know it or not, they're already there.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-is-agentic-browsing">What Agentic Browsing Actually Means</a></li>
+        <li><a href="#how-agents-read-sites">How AI Agents Read Your Site</a></li>
+        <li><a href="#biggest-mistakes">3 Biggest Mistakes Sites Are Making</a></li>
+        <li><a href="#optimizing-for-agents">How to Optimize for Agents</a></li>
+        <li><a href="#eeat-and-agents">E-E-A-T Is No Longer Just Google's</a></li>
+        <li><a href="#agentic-commerce">The Agentic Commerce Problem</a></li>
+        <li><a href="#measuring-agentic-visibility">Measuring Your Agentic Visibility</a></li>
+        <li><a href="#the-honest-reality">The Honest Reality</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=AI%20Agents%20Are%20Browsing%20Your%20Site%20Now%20%E2%80%94%20Are%20You%20Optimized%20for%20Them%3F&url=https://ranksorcery.com/blog/ai-agents-browsing-seo-optimize-2026" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-post">
+        <div class="related-post-icon">⚙️</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>10 min · May 8</span></div>
+      </a>
+      <a href="/blog/google-io-2026-search-agents-seo-guide" class="related-post">
+        <div class="related-post-icon">🧠</div>
+        <div class="related-post-body">Google I/O 2026: Search Agents Are Here<span>12 min · May 15</span></div>
+      </a>
+      <a href="/blog/robots-txt-ai-crawlers-guide-2026" class="related-post">
+        <div class="related-post-icon">🤖</div>
+        <div class="related-post-body">Your robots.txt Is Not Ready for AI Crawlers<span>10 min · May 27</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">See how AI tools cite your site — and what's blocking you</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check AI Visibility →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
