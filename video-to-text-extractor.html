@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Text Reel — extract text from video</title>
+<meta name="description" content="Scan any video, frame by frame, and pull out every line of on-screen text. Runs entirely in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:        #14171A;
+    --panel:     #1B1F24;
+    --panel-2:   #21262C;
+    --line:      #30363D;
+    --amber:     #E8A33D;
+    --amber-dim: #7A5A28;
+    --teal:      #4A9B8E;
+    --paper:     #ECE7DA;
+    --paper-dim: #A9A497;
+    --muted:     #6B7280;
+    --red:       #C4574A;
+    --radius:    3px;
+    --font-display: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--paper);
+    font-family:var(--font-body);
+    min-height:100vh;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px);
+  }
+
+  a{color:var(--amber);}
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:32px 24px 80px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:24px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:20px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand-mark{
+    width:40px;height:40px;
+    border:1px solid var(--amber-dim);
+    border-radius:var(--radius);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    flex-shrink:0;
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 46%, var(--amber) 46%, var(--amber) 54%, transparent 54%);
+  }
+  .brand-mark span{
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--amber);
+    background:var(--bg);
+    padding:0 3px;
+    letter-spacing:0.5px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-weight:600;
+    font-size:26px;
+    letter-spacing:0.3px;
+    margin:0;
+    text-transform:uppercase;
+  }
+  .tagline{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+  .meta{
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    text-align:right;
+    line-height:1.6;
+  }
+  .meta .dot{color:var(--teal);}
+
+  /* ---------- layout ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1.15fr 1fr;
+    gap:22px;
+  }
+  @media (max-width:700px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel-2);
+  }
+  .panel-head h2{
+    font-family:var(--font-display);
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin:0;
+    color:var(--paper-dim);
+  }
+  .panel-body{padding:16px;}
+
+  /* ---------- dropzone ---------- */
+  .dropzone{
+    border:1.5px dashed var(--line);
+    border-radius:var(--radius);
+    padding:36px 16px;
+    text-align:center;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+    font-family:var(--font-mono);
+  }
+  .dropzone:hover, .dropzone.drag{
+    border-color:var(--amber);
+    background:rgba(232,163,61,0.05);
+  }
+  .dropzone .big{
+    font-family:var(--font-display);
+    font-size:16px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    color:var(--paper);
+    margin-bottom:6px;
+  }
+  .dropzone .small{
+    color:var(--muted);
+    font-size:12px;
+  }
+
+  /* ---------- scanner stage (video + beam) ---------- */
+  .stage{
+    position:relative;
+    background:#0B0D10;
+    border-radius:var(--radius);
+    overflow:hidden;
+    display:none;
+  }
+  .stage.active{display:block;}
+  .stage video{
+    display:block;
+    width:100%;
+    max-height:360px;
+    background:#000;
+  }
+  .beam{
+    position:absolute;
+    left:0;right:0;
+    height:2px;
+    top:0;
+    background:linear-gradient(90deg, transparent 0%, var(--amber) 15%, #FFD98A 50%, var(--amber) 85%, transparent 100%);
+    box-shadow:0 0 12px 2px rgba(232,163,61,0.7);
+    opacity:0;
+    pointer-events:none;
+  }
+  .beam.sweeping{
+    opacity:1;
+    animation:sweep 1.6s linear infinite;
+  }
+  @keyframes sweep{
+    0%{ top:0%; }
+    100%{ top:100%; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .beam.sweeping{
+      animation:none;
+      opacity:0.9;
+      top:50%;
+    }
+  }
+
+  .stage-foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px 12px;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+  }
+  .stage-foot .status-live{color:var(--amber);}
+  .stage-foot .status-done{color:var(--teal);}
+
+  /* ---------- controls ---------- */
+  .controls{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+    align-items:flex-end;
+    margin-top:14px;
+  }
+  .field{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .field label{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
+  select, input[type=number]{
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--paper);
+    padding:8px 10px;
+    border-radius:var(--radius);
+    font-family:var(--font-mono);
+    font-size:12.5px;
+  }
+  input[type=range]{
+    accent-color:var(--amber);
+    width:120px;
+  }
+  .btn{
+    font-family:var(--font-display);
+    font-size:13px;
+    letter-spacing:0.8px;
+    text-transform:uppercase;
+    padding:10px 20px;
+    border-radius:var(--radius);
+    border:1px solid var(--amber);
+    background:var(--amber);
+    color:#1A1300;
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .08s ease, box-shadow .15s ease;
+  }
+  .btn:hover:not(:disabled){box-shadow:0 0 0 3px rgba(232,163,61,0.18);}
+  .btn:active:not(:disabled){transform:translateY(1px);}
+  .btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .btn.ghost{
+    background:transparent;
+    color:var(--paper-dim);
+    border-color:var(--line);
+  }
+  .btn.ghost:hover:not(:disabled){border-color:var(--paper-dim);}
+  .btn.small{padding:6px 12px;font-size:11px;}
+
+  /* Desktop export remains directly below the scanner. */
+  .desktop-export{display:flex;justify-content:flex-start;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+  .desktop-export .btn{min-width:178px;}
+  @media (max-width:700px){.desktop-export{display:none;}}
+
+  /* ---------- progress ---------- */
+  .progress-row{
+    margin-top:14px;
+    display:none;
+  }
+  .progress-row.active{display:block;}
+  .progress-label{
+    display:flex;justify-content:space-between;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  .bar-track{
+    height:6px;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    width:0%;
+    background:repeating-linear-gradient(45deg, var(--amber), var(--amber) 8px, #FFD98A 8px, #FFD98A 16px);
+    transition:width .25s ease;
+  }
+
+  /* ---------- filmstrip ---------- */
+  .filmstrip{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:12px 0 4px;
+    margin-top:4px;
+  }
+  .filmstrip::-webkit-scrollbar{height:6px;}
+  .filmstrip::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+  .frame-thumb{
+    flex:0 0 auto;
+    width:88px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    cursor:pointer;
+    background:#000;
+    position:relative;
+  }
+  .frame-thumb img{display:block;width:100%;height:50px;object-fit:cover;opacity:0.85;}
+  .frame-thumb .t{
+    font-family:var(--font-mono);
+    font-size:9px;
+    color:var(--muted);
+    text-align:center;
+    padding:2px 0;
+    background:var(--panel-2);
+  }
+  .frame-thumb.hit{border-color:var(--teal);}
+  .frame-thumb.hit .t{color:var(--teal);}
+
+  /* ---------- output / ticker ---------- */
+  .ticker{
+    font-family:var(--font-mono);
+    font-size:13px;
+    line-height:1.7;
+    max-height:520px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+  .ticker::-webkit-scrollbar{width:6px;}
+  .ticker::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
+  .tick-line{
+    display:grid;
+    grid-template-columns:64px 1fr;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px dashed var(--line);
+    animation:print .25s ease;
+  }
+  @keyframes print{
+    from{opacity:0; transform:translateY(-3px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .tick-line{animation:none;}
+  }
+  .tick-line .ts{
+    color:var(--amber);
+    font-size:11.5px;
+    white-space:nowrap;
+  }
+  .tick-line .txt{
+    color:var(--paper);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .empty-state{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--muted);
+    text-align:center;
+    padding:40px 12px;
+  }
+
+  .output-actions{
+    display:flex;
+    gap:8px;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    background:var(--panel-2);
+    position:sticky;
+    top:0;
+    z-index:5;
+  }
+  .output-actions .btn:not(.ghost){
+    box-shadow:0 0 0 1px rgba(232,163,61,0.35);
+  }
+
+  .count-pill{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    color:var(--teal);
+    border:1px solid var(--teal);
+    border-radius:20px;
+    padding:2px 9px;
+  }
+
+  footer{
+    margin-top:36px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+
+  .sr-only{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;
+  }
+
+  input[type=file]{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark"><span>OCR</span></div>
+      <div>
+        <h1>Text Reel</h1>
+        <div class="tagline">// frame-by-frame video text scanner</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div><span class="dot">●</span> runs 100% in your browser</div>
+      <div>no upload, no server, nothing leaves your machine</div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- LEFT: input + scan stage -->
+    <div>
+      <div class="panel">
+        <div class="panel-head"><h2>01 — Load reel</h2></div>
+        <div class="panel-body">
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose a video file to scan">
+            <div class="big">Drop a video here, or click to choose</div>
+            <div class="small">MP4, WebM, MOV — processed locally, never uploaded</div>
+            <input type="file" id="fileInput" accept="video/*">
+          </div>
+
+          <div class="stage" id="stage">
+            <video id="video" playsinline muted></video>
+            <div class="beam" id="beam"></div>
+          </div>
+          <div class="stage-foot" id="stageFoot" style="display:none;">
+            <span id="stageStatus">Reel loaded</span>
+            <span id="stageDuration"></span>
+          </div>
+
+          <div class="controls">
+            <div class="field">
+              <label for="interval">Sample every</label>
+              <select id="interval">
+                <option value="0.5">0.5 sec</option>
+                <option value="1" selected>1 sec</option>
+                <option value="2">2 sec</option>
+                <option value="3">3 sec</option>
+                <option value="5">5 sec</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="lang">Language</label>
+              <select id="lang">
+                <option value="eng" selected>English</option>
+                <option value="fil">Filipino (Tagalog)</option>
+                <option value="fil+eng">Filipino + English (Taglish)</option>
+                <option value="spa">Spanish</option>
+                <option value="fra">French</option>
+                <option value="deu">German</option>
+                <option value="por">Portuguese</option>
+                <option value="chi_sim">Chinese (simplified)</option>
+                <option value="jpn">Japanese</option>
+                <option value="kor">Korean</option>
+              </select>
+            </div>
+            <button class="btn" id="scanBtn" disabled>Start scan</button>
+            <button class="btn ghost" id="cancelBtn" style="display:none;">Cancel</button>
+          </div>
+
+          <div class="progress-row" id="progressRow">
+            <div class="progress-label">
+              <span id="progressText">Reading frame 0 / 0</span>
+              <span id="progressPct">0%</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+          </div>
+
+          <div class="filmstrip" id="filmstrip"></div>
+
+          <div class="desktop-export" aria-label="Export extracted text">
+            <button class="btn" id="desktopDownloadBtn" disabled>⬇ Download text</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: extracted text output -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2>02 — Extracted text</h2>
+        <span class="count-pill" id="countPill">0 lines</span>
+      </div>
+      <div class="output-actions">
+        <button class="btn small" id="downloadBtn" disabled>⬇ Download .txt</button>
+        <button class="btn small ghost" id="copyBtn" disabled>Copy all</button>
+        <button class="btn small ghost" id="clearBtn" disabled>Clear</button>
+      </div>
+      <div class="panel-body" style="padding:0;">
+        <div class="ticker" id="ticker">
+          <div class="empty-state">Nothing scanned yet.<br>Load a video and press <strong style="color:var(--paper-dim)">Start scan</strong> to begin printing text here.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>Text Reel — open source, MIT licensed</span>
+    <span>OCR by <a href="https://github.com/naptha/tesseract.js" target="_blank" rel="noopener">Tesseract.js</a></span>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script>
+(function(){
+  const dropzone   = document.getElementById('dropzone');
+  const fileInput  = document.getElementById('fileInput');
+  const stage      = document.getElementById('stage');
+  const video      = document.getElementById('video');
+  const beam       = document.getElementById('beam');
+  const stageFoot  = document.getElementById('stageFoot');
+  const stageStatus= document.getElementById('stageStatus');
+  const stageDuration = document.getElementById('stageDuration');
+  const intervalSel= document.getElementById('interval');
+  const langSel    = document.getElementById('lang');
+  const scanBtn    = document.getElementById('scanBtn');
+  const cancelBtn  = document.getElementById('cancelBtn');
+  const progressRow= document.getElementById('progressRow');
+  const progressText = document.getElementById('progressText');
+  const progressPct  = document.getElementById('progressPct');
+  const barFill    = document.getElementById('barFill');
+  const filmstrip  = document.getElementById('filmstrip');
+  const ticker     = document.getElementById('ticker');
+  const countPill  = document.getElementById('countPill');
+  const copyBtn    = document.getElementById('copyBtn');
+  const downloadBtn= document.getElementById('downloadBtn');
+  const desktopDownloadBtn = document.getElementById('desktopDownloadBtn');
+  const clearBtn   = document.getElementById('clearBtn');
+
+  let canvas = document.createElement('canvas');
+  let ctx = canvas.getContext('2d', { willReadFrequently: true });
+  // OCR sees small video subtitles poorly. Make a clean, enlarged copy first.
+  const OCR_SCALE = 2;
+  // Captions end before this strip; it commonly holds UI/background artifacts.
+  // Raise to 0.12 only if a particular reel still makes right-edge ghost words.
+  const OCR_RIGHT_EDGE_CROP = 0.08;
+  let results = [];       // {time, text}
+  let cancelled = false;
+  let currentVideoName = 'video';
+
+  // ---------- file loading ----------
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+  });
+  ['dragenter','dragover'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.add('drag'); })
+  );
+  ['dragleave','drop'].forEach(evt =>
+    dropzone.addEventListener(evt, e => { e.preventDefault(); dropzone.classList.remove('drag'); })
+  );
+  dropzone.addEventListener('drop', e => {
+    const f = e.dataTransfer.files[0];
+    if (f) loadFile(f);
+  });
+  fileInput.addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (f) loadFile(f);
+  });
+
+  function loadFile(file){
+    if (!file.type.startsWith('video/')) {
+      alert('Please choose a video file.');
+      return;
+    }
+    currentVideoName = file.name.replace(/\.[^.]+$/, '') || 'video';
+    const url = URL.createObjectURL(file);
+    video.src = url;
+    stage.classList.add('active');
+    resetOutput();
+    video.onloadedmetadata = () => {
+      stageFoot.style.display = 'flex';
+      stageStatus.textContent = 'Reel loaded — ready to scan';
+      stageDuration.textContent = formatTime(video.duration) + ' total';
+      scanBtn.disabled = false;
+    };
+  }
+
+  function formatTime(s){
+    s = Math.max(0, Math.floor(s));
+    const m = Math.floor(s/60).toString().padStart(2,'0');
+    const sec = Math.floor(s%60).toString().padStart(2,'0');
+    return `${m}:${sec}`;
+  }
+
+  function seekTo(t){
+    return new Promise(resolve => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        video.removeEventListener('seeked', onSeeked);
+        resolve();
+      };
+      const onSeeked = () => finish();
+      video.addEventListener('seeked', onSeeked);
+      video.currentTime = t;
+      // safety net: some browsers won't fire 'seeked' if the target time
+      // rounds to the frame already shown — don't let that freeze the scan
+      setTimeout(finish, 1200);
+    });
+  }
+
+  // ---------- output rendering ----------
+  function resetOutput(){
+    results = [];
+    lastRow = null;
+    filmstrip.innerHTML = '';
+    ticker.innerHTML = '<div class="empty-state">Nothing scanned yet.<br>Load a video and press <strong style="color:var(--paper-dim)">Start scan</strong> to begin printing text here.</div>';
+    countPill.textContent = '0 lines';
+    copyBtn.disabled = downloadBtn.disabled = desktopDownloadBtn.disabled = clearBtn.disabled = true;
+  }
+
+  let lastRow = null;
+
+  function addResultLine(time, text){
+    if (ticker.querySelector('.empty-state')) ticker.innerHTML = '';
+    const row = document.createElement('div');
+    row.className = 'tick-line';
+    row.innerHTML = `<span class="ts">${formatTime(time)}</span><span class="txt"></span>`;
+    row.querySelector('.txt').textContent = text;
+    ticker.appendChild(row);
+    ticker.scrollTop = ticker.scrollHeight;
+    results.push({ time, text });
+    lastRow = row;
+    countPill.textContent = `${results.length} line${results.length===1?'':'s'}`;
+    copyBtn.disabled = downloadBtn.disabled = desktopDownloadBtn.disabled = clearBtn.disabled = false;
+  }
+
+  // updates the most recently printed line in place instead of adding a duplicate
+  function updateLastResultLine(text){
+    if (!lastRow || results.length === 0) return;
+    lastRow.querySelector('.txt').textContent = text;
+    results[results.length - 1].text = text;
+  }
+
+  function addThumb(time, dataUrl, isHit){
+    const div = document.createElement('div');
+    div.className = 'frame-thumb' + (isHit ? ' hit' : '');
+    div.innerHTML = `<img src="${dataUrl}" alt="Frame at ${formatTime(time)}"><div class="t">${formatTime(time)}</div>`;
+    div.addEventListener('click', () => { video.currentTime = time; });
+    filmstrip.appendChild(div);
+    filmstrip.scrollLeft = filmstrip.scrollWidth;
+  }
+
+  // Tesseract returns each detected text region on its own line — a caption box
+  // and a random background icon usually land on *different* lines. So we score
+  // each line on its own, drop the junky ones, and only keep the real caption(s).
+  function alphaRatio(s){
+    if (!s.length) return 0;
+    const alpha = (s.match(/[\p{L}\p{N}]/gu) || []).length;
+    return alpha / s.length;
+  }
+
+  function cleanLine(l){
+    l = l.replace(/[|\\~`^_={}<>•●♦]+/g, ' ');           // stray symbol junk
+    l = l.replace(/[\u2010-\u2015\u2500-\u257F]+/g, ' '); // unicode dashes / box-drawing chars
+    l = l.replace(/-{2,}/g, ' ');
+    l = l.replace(/\.{4,}/g, ' ');
+    l = l.replace(/\s+/g, ' ').trim();
+    return l;
+  }
+
+  function looksLikeNoise(word){
+    // Reject OCR fragments such as aaa, III, or random punctuation.
+    const letters = (word.match(/\p{L}/gu) || []).join('');
+    if (!letters) return true;
+    if (letters.length >= 3 && /^(.)\1+$/iu.test(letters)) return true;
+    return false;
+  }
+
+  // Read Tesseract's per-word certainty, not just its combined sentence.
+  // Low-confidence words are usually pixels from the speaker or background.
+  function cleanOcrTsv(tsv){
+    if (!tsv) return '';
+    const grouped = new Map();
+    const rows = tsv.trim().split(/\r?\n/).slice(1);
+    for (const row of rows){
+      const col = row.split('\t');
+      if (col.length < 12) continue;
+      const wordNo = Number(col[5]);
+      const confidence = Number(col[10]);
+      const word = cleanLine(col.slice(11).join('\t'));
+      if (!wordNo || !word || looksLikeNoise(word)) continue;
+
+      // Keep normal words at 62%. Tiny words (ng, na, at) need stronger proof.
+      const letters = (word.match(/\p{L}/gu) || []).length;
+      const minimum = letters <= 2 ? 78 : 62;
+      if (confidence < minimum) continue;
+
+      const key = col.slice(1, 5).join(':'); // page, block, paragraph, line
+      if (!grouped.has(key)) grouped.set(key, []);
+      grouped.get(key).push(word);
+    }
+    return [...grouped.values()]
+      .map(words => words.join(' '))
+      .map(cleanLine)
+      .filter(line => line.length >= 3 && alphaRatio(line) > 0.60 && /\p{L}{2,}/u.test(line))
+      .join(' ');
+  }
+
+  function cleanOcrText(raw){
+    const lines = raw.split(/\r?\n/).map(cleanLine).filter(Boolean);
+    return lines.map(line => line.split(/\s+/).filter(word => !looksLikeNoise(word)).join(' '))
+      .filter(l => l.length >= 3 && alphaRatio(l) > 0.60 && /\p{L}{2,}/u.test(l))
+      .join(' ');
+  }
+
+  function prepareFrameForOcr(){
+    // Do not offer the rightmost edge to OCR. It is where this reel has
+    // decorative pixels that become false words such as "NA" or "i AN".
+    const sourceW = Math.floor(video.videoWidth * (1 - OCR_RIGHT_EDGE_CROP));
+    const sourceH = video.videoHeight;
+    const w = sourceW * OCR_SCALE;
+    const h = sourceH * OCR_SCALE;
+    canvas.width = w;
+    canvas.height = h;
+    ctx.imageSmoothingEnabled = false;
+    ctx.filter = 'grayscale(1) contrast(2.2) brightness(1.12)';
+    ctx.drawImage(video, 0, 0, sourceW, sourceH, 0, 0, w, h);
+    ctx.filter = 'none';
+    return canvas.toDataURL('image/png');
+  }
+
+  // simple similarity check so we don't print the same on-screen text every second
+  function tooSimilar(a, b){
+    if (!a || !b) return false;
+    if (a === b) return true;
+    const shorter = a.length < b.length ? a : b;
+    const longer  = a.length < b.length ? b : a;
+    if (longer.length === 0) return true;
+    return longer.includes(shorter) && shorter.length / longer.length > 0.55;
+  }
+
+  // ---------- scan ----------
+  scanBtn.addEventListener('click', runScan);
+  cancelBtn.addEventListener('click', () => { cancelled = true; });
+
+  async function runScan(){
+    if (!video.duration || !isFinite(video.duration)) {
+      alert('This video has no readable duration.');
+      return;
+    }
+    cancelled = false;
+    resetOutput();
+    filmstrip.innerHTML = '';
+    scanBtn.disabled = true;
+    cancelBtn.style.display = 'inline-block';
+    intervalSel.disabled = langSel.disabled = true;
+    progressRow.classList.add('active');
+    beam.classList.add('sweeping');
+    stageStatus.innerHTML = '<span class="status-live">● Scanning…</span>';
+
+    const step = parseFloat(intervalSel.value);
+    const duration = video.duration;
+    const totalFrames = Math.max(1, Math.floor(duration / step) + 1);
+
+    let worker;
+    try {
+      worker = await Tesseract.createWorker(langSel.value);
+      // 6 is best for caption-like text in a small number of lines.
+      await worker.setParameters({
+        tessedit_pageseg_mode: '6',
+        user_defined_dpi: '300',
+        preserve_interword_spaces: '1'
+      });
+    } catch (err) {
+      alert('Could not start the OCR engine: ' + err.message);
+      finishScan(false);
+      return;
+    }
+
+    let lastText = '';
+    let frameIndex = 0;
+
+    for (let t = 0; t < duration; t += step) {
+      if (cancelled) break;
+      frameIndex++;
+      progressText.textContent = `Reading frame ${frameIndex} / ${totalFrames}`;
+      const pct = Math.round((frameIndex/totalFrames)*100);
+      progressPct.textContent = pct + '%';
+      barFill.style.width = pct + '%';
+
+      try {
+        await seekTo(t);
+
+        const dataUrl = prepareFrameForOcr();
+
+        let text = '';
+        try {
+          const { data } = await worker.recognize(dataUrl, {}, { text: true, tsv: true });
+          // TSV gives every word a confidence score. Use raw text only if a browser
+          // serves an older OCR engine without TSV support.
+          text = cleanOcrTsv(data.tsv || '') || cleanOcrText(data.text || '');
+        } catch (err) {
+          // skip unreadable frame
+        }
+
+        const isHit = text.length > 2;
+        addThumb(t, dataUrl, isHit);
+
+        if (isHit) {
+          if (!tooSimilar(text, lastText)) {
+            // genuinely new caption on screen
+            addResultLine(t, text);
+            lastText = text;
+          } else if (text.length > lastText.length) {
+            // same caption, but this frame caught more of it (reveal animation) — update in place
+            updateLastResultLine(text);
+            lastText = text;
+          }
+        }
+      } catch (frameErr) {
+        // don't let one broken frame kill the whole scan
+      }
+    }
+
+    await worker.terminate();
+    finishScan(!cancelled);
+  }
+
+  function finishScan(completed){
+    beam.classList.remove('sweeping');
+    scanBtn.disabled = false;
+    cancelBtn.style.display = 'none';
+    intervalSel.disabled = langSel.disabled = false;
+    progressRow.classList.remove('active');
+    stageStatus.innerHTML = completed
+      ? '<span class="status-done">✓ Scan complete</span>'
+      : 'Scan cancelled';
+    if (results.length === 0) {
+      ticker.innerHTML = '<div class="empty-state">No text detected in this reel.<br>Try a shorter sampling interval, or a different language.</div>';
+    }
+  }
+
+  // ---------- export ----------
+  copyBtn.addEventListener('click', () => {
+    const out = results.map(r => `[${formatTime(r.time)}] ${r.text}`).join('\n');
+    navigator.clipboard.writeText(out).then(() => {
+      copyBtn.textContent = 'Copied ✓';
+      setTimeout(() => copyBtn.textContent = 'Copy all', 1400);
+    });
+  });
+
+  function downloadResults(){
+    // Download captions only. Time numbers stay visible in the app, not in the file.
+    const out = results.map(r => r.text).filter(Boolean).join('\n');
+    const blob = new Blob([out], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${currentVideoName}-text-reel.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  }
+  downloadBtn.addEventListener('click', downloadResults);
+  desktopDownloadBtn.addEventListener('click', downloadResults);
+
+  clearBtn.addEventListener('click', resetOutput);
+})();
+</script>
+</body>
+</html>
