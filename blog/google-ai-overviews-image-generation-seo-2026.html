@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google AI Overviews Now Generates Images — What It Means for Your SEO Traffic — RankSorcery</title>
+<meta name="description" content="Google added AI image generation to AI Overviews using its Nano Banana model. Here's what it means for image traffic, publishers, and your content strategy.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-ai-overviews-image-generation-seo-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google AI Overviews Now Generates Images — What It Means for Your SEO Traffic">
+<meta property="og:description" content="Google added AI image generation to AI Overviews using its Nano Banana model. Here's what it means for image traffic, publishers, and your content strategy.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-ai-overviews-image-generation-seo-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-cyan">🤖 AI Search</span>
+    <h1>Google AI Overviews Now Generates Images — What It Actually Means for Your Traffic</h1>
+    <div class="article-meta">
+      <span>📅 July 15, 2026</span>
+      <span>⏱ 9 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">🖼️</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google announced AI image generation inside AI Overviews on July 14, 2026 — powered by its "Nano Banana" model.</li>
+      <li>Users can now type a text prompt and get a custom AI-generated image without ever visiting an image website.</li>
+      <li>Google also redesigned the Google Images homepage with a personalized, Pinterest-style gallery feed.</li>
+      <li>Image traffic to publishers is about to get squeezed harder — here's how to adapt before it hits you.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>If you run a site that gets meaningful traffic from Google Image Search — stock photos, design inspiration, recipes, products, real estate, e-commerce — yesterday was a bad day. Google quietly announced something that could drain a chunk of that traffic over the next few months, and it didn't get nearly the coverage it deserves. On July 14, 2026, Google confirmed it's adding <strong>AI image generation directly into AI Overviews</strong>, powered by something it calls the "Nano Banana" model. You type a prompt, Google builds the image on the spot. No click required.</p>
+
+    <p>On top of that, they redesigned the Google Images homepage to mark its 25th anniversary — turning it into a personalized, continuously updating gallery. Think Pinterest, but Google. Both of these changes together represent a pretty significant shift in how people will interact with image search going forward.</p>
+
+    <h2>What Actually Happened: The Announcement</h2>
+
+    <p>Brad Kellet, Google's Senior Engineering Director for Search, dropped the news in a company blog post on July 14. The key detail: image generation inside AI Overviews turns a text prompt into a custom, from-scratch image using the Nano Banana model — the same model Google's been rolling out across Search and Chrome this year.</p>
+
+    <p>So if someone searches for "visualize a coastal bedroom with rattan furniture," Google won't show them photos from interior design blogs anymore. It'll just... make one. The example they showed had follow-up refinement questions built right in, so users can keep tweaking the output without leaving the SERP.</p>
+
+    <h3>The Nano Banana Model: What We Know</h3>
+
+    <p>Google's Nano Banana is a multimodal image generation model that's been quietly expanding across their products since earlier this year. It's already live in Chrome and AI Mode. Now it's coming to AI Overviews, which is the part of Search that most people actually see. The model apparently handles both creation (<em>make me an image of X</em>) and comparison (<em>show me X vs. Y side by side</em>), which is the more interesting capability from an informational search standpoint.</p>
+
+    <p>The rollout is staged — it's starting in English, in regions that already support image creation in AI Mode. No firm date, but "coming weeks" is the language they used.</p>
+
+    <h2>The New Google Images Homepage</h2>
+
+    <p>The second piece of this announcement is less dramatic but probably more impactful for publishers long-term. Google rebuilt the Google Images homepage into a browseable, personalized feed. When you're signed in, it shows a gallery of images from across the web tailored to your interests, updated in real time. You can save ideas to collections — essentially Google's version of boards.</p>
+
+    <p>The old Google Images homepage was basically just a search box. Now it's a destination. And when Google turns a feature into a destination with personalization and collections, people spend more time there — which means they're less likely to click through to the sites those images came from.</p>
+
+    <h3>The Discovery Surface Problem</h3>
+
+    <p>One thing that jumps out: <strong>when a signed-in user saves images to collections, that behavior trains Google on their preferences</strong>. That feeds back into more personalized recommendations, which keeps them in the Google ecosystem longer. This is the same loop Pinterest has been running for years, except Google has the search intent data and the ad machine to back it up. It's a smart move for Google. It's not great for blogs and photo-heavy sites that rely on image search for traffic.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>If your site gets 20%+ of its traffic from Google Image Search, run your analytics right now and baseline your image referral numbers. You want to know your starting point before the rollout hits. Monthly check-ins from here on out.</p>
+    </div>
+
+    <h2>Why Image Traffic Was Already Fragile</h2>
+
+    <p>Let's be honest — image search traffic has been declining for a while. Google moved to lazy-loading images with a "visit page" button back in 2018 after the Getty lawsuit, and that helped publishers briefly. But then AI Overviews started appearing above image carousels, pushing organic results further down. Then AI Mode started generating visual responses. Each step has made the path from a Google image search to an actual click-through harder to complete.</p>
+
+    <p>The data backs this up. According to SparkToro and various publisher reports, Google Image Search referral traffic has been down 15–25% year-over-year for most content sites since mid-2025. The new image generation feature doesn't change the trend — it accelerates it.</p>
+
+    <p>The sites most at risk:</p>
+    <ul>
+      <li><strong>Recipe and food blogs</strong> — users search for how something looks, and now Google can just show them a generated example</li>
+      <li><strong>Interior design and home decor</strong> — extremely visual, highly inspirational, exactly what the generated image comparison feature is built for</li>
+      <li><strong>Stock photo and photography sites</strong> — if the image doesn't need to be real, why click?</li>
+      <li><strong>E-commerce product pages</strong> — competitive for generic product searches, less so for branded ones</li>
+      <li><strong>Travel and destination content</strong> — "what does X place look like" queries are highly susceptible</li>
+    </ul>
+
+    <h2>What's NOT Going Away (And Why)</h2>
+
+    <p>Before you panic, there are real limits to what AI image generation can do in this context. And those limits matter for how you think about your strategy.</p>
+
+    <h3>Real Photos Still Win for YMYL and E-Commerce</h3>
+
+    <p>If someone's buying a product, they want to see the actual product — not an AI fantasy version of it. Same goes for travel: people want real photos of the specific hotel room or beach, not an AI composite. Google's generated images are good for inspiration and generic concepts, but they can't replace specificity. A search for "Bali rice terraces sunrise photo" still needs a real photo with real context.</p>
+
+    <h3>Authenticity Is an Asset Now</h3>
+
+    <p>Here's the flip side nobody's talking about: AI-generated images look like AI-generated images. There's a sameness to them that users are increasingly aware of. A real photo of a real person using a real product, shot by a real photographer, carries weight that a Nano Banana composite simply doesn't. If your images are original — not stock, not generic — you have something the AI can't replicate.</p>
+
+    <h3>Google's Systems Don't Know What's Real</h3>
+
+    <p>Google confirmed last year that its AI search features don't explicitly distinguish between real photos and AI-generated images in some contexts. That's a problem they'll eventually have to address (probably with metadata and C2PA standards), but right now it means real originality is your differentiator, not just aesthetic preference.</p>
+
+    <h2>Five Ways to Adapt Your Image SEO Right Now</h2>
+
+    <p>If any of this is making you uncomfortable, good — that's the right reaction. Here's what I'd actually do, in order of priority:</p>
+
+    <ol>
+      <li><strong>Audit your current image traffic baseline.</strong> GSC → Performance → Search type: Image. Export the last 6 months of data. Know your numbers now so you can measure the impact when the rollout hits.</li>
+      <li><strong>Prioritize original photography over stock.</strong> This should've happened already, but if you're still using Getty or Unsplash images for key pages, replace them. Unique images with unique metadata are much harder for Google to synthesize around.</li>
+      <li><strong>Add rich image context with structured data.</strong> ImageObject schema with creator, license, and contentUrl fields. Google explicitly uses this to understand provenance. It won't save every click, but it signals authenticity in a way generic images can't.</li>
+      <li><strong>Optimize your image filenames and alt text — properly.</strong> Not "IMG_4839.jpg" and not keyword-stuffed nonsense. Descriptive, specific, factual. "artisan-sourdough-bread-open-crumb-closeup.jpg" beats every generic alternative.</li>
+      <li><strong>Embed images in useful, citation-worthy content.</strong> The new Google Images homepage pulls images from across the web. If your image appears in a piece of content that Google trusts and cites in AI Overviews or AI Mode, the image gets visibility even when users don't click. That attribution still brings brand impressions, and sometimes clicks.</li>
+    </ol>
+
+    <h2>The Bigger Picture: Google Is Building Its Own Visual Layer</h2>
+
+    <p>Step back and look at what Google's actually doing here. They're building a visual layer on top of the web — one they control. The new Images homepage is a feed. Feeds keep people scrolling. Feeds serve ads. Feeds are Google's business, and a personalized image gallery is a natural extension of what they've been building with Discover for years.</p>
+
+    <p>The image generation feature is the more dramatic announcement, but the homepage redesign is probably the more consequential one for publishers. A destination people actually visit daily — with personalized content and save functionality — is a major behavior change. That's where your image traffic goes. Not to a competitor site. To Google's own collection product.</p>
+
+    <blockquote>"When Google turns a feature into a destination, traffic to the sites that fed that feature tends to decline. We've seen it with featured snippets, with Knowledge Graph, with AI Overviews. Images are next."</blockquote>
+
+    <p>The pattern is consistent. Google enriches its own surface with content from the web, and then gradually reduces the need to leave that surface. Image search is just the latest chapter.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>If you get significant traffic from Google Images, start adapting now — not when you see the drop in your analytics. The rollout is "coming weeks," which in Google's language means it could be fully live by August. The moves that help are the same moves that've always helped original images, good metadata, and content so useful that Google cites you even when it generates its own visuals. The sites that'll get hurt the most are the ones relying on generic, easily-synthesized images with no unique context around them.</p>
+
+    <p>Check your image search traffic baseline today, swap out stock images on your most valuable pages, and make sure your ImageObject schema is in order. That's the practical list. Everything else is watching to see how bad the impact actually is — and adjusting from there.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/google-ai-overviews-traffic-recovery-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>Google AI Overviews Are Stealing Your Clicks — Here's How to Fight Back</h4>
+      </a>
+      <a href="/blog/image-seo-optimization-rankings-2026" class="related-card">
+        <div class="rc-tag">On-Page SEO</div>
+        <h4>Image SEO in 2026: The Optimization Checklist That Actually Moves Rankings</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
