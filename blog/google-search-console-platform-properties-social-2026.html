@@ -3,617 +3,307 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Google Search Console Platform Properties: Track TikTok, Instagram & YouTube in Search — RankSorcery</title>
-<meta name="description" content="Google just added platform properties to Search Console — track how your TikTok, Instagram, X, and YouTube content ranks in Google Search. Here's the full setup guide.">
+<title>Google Search Console Now Tracks Your Social Content — What Platform Properties Actually Tells You — RankSorcery</title>
+<meta name="description" content="Google Search Console's new Platform Properties lets you track Instagram, TikTok, YouTube & X performance in Google Search. Here's what the data actually means.">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#E8B84B">
-<meta property="og:title" content="Google Search Console Platform Properties: Track TikTok, Instagram & YouTube in Search">
-<meta property="og:description" content="Google just added platform properties to Search Console — track how your TikTok, Instagram, X, and YouTube content ranks in Google Search. Here's the full setup guide.">
+<link rel="canonical" href="https://ranksorcery.com/blog/google-search-console-platform-properties-social-2026">
 <meta property="og:type" content="article">
-<meta property="article:published_time" content="2026-07-08">
-<meta property="article:author" content="RankSorcery Team">
+<meta property="og:title" content="Google Search Console Now Tracks Your Social Content — What Platform Properties Actually Tells You">
+<meta property="og:description" content="Google Search Console's new Platform Properties lets you track Instagram, TikTok, YouTube & X performance in Google Search. Here's what the data actually means.">
+<meta property="og:url" content="https://ranksorcery.com/blog/google-search-console-platform-properties-social-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg:    #0D1117;
-  --bg2:   #141B2D;
-  --bg3:   #1E2740;
-  --bg4:   #243050;
-  --border:  rgba(232,184,75,0.13);
-  --border2: rgba(232,184,75,0.22);
-  --border3: rgba(232,184,75,0.35);
-  --text:  #E8EAF0;
-  --muted: #8A93A8;
-  --muted2:#6A748A;
-  --accent:  #E8B84B;
-  --accent2: #F5D98A;
-  --accent3: #C9902A;
-  --glow:    rgba(232,184,75,0.15);
-  --teal:    #0ABFBC;
-  --teal2:   rgba(10,191,188,0.12);
-  --green:  #34d399;
-  --green2: rgba(52,211,153,0.12);
-  --red:    #f87171;
-  --amber:  #fbbf24;
-  --blue:   #60a5fa;
-  --purple: #a78bfa;
-  --purple2: rgba(167,139,250,0.12);
-  --cyan:   #0ABFBC;
-  --radius: 14px;
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
 }
 html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
-  min-height: 100vh;
-  overflow-x: hidden;
-  padding-top: 64px;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 0; opacity: .45;
-}
-nav.main-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 2rem; height: 64px;
-  background: rgba(13,17,23,0.88);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--border);
-  gap: 1rem;
-}
-.logo {
-  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
-  color: var(--accent); text-decoration: none; flex-shrink: 0;
-  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
-}
-.logo-icon {
-  width: 30px; height: 30px;
-  background: linear-gradient(135deg, var(--accent), var(--teal));
-  border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; flex-shrink: 0;
-}
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
 .nav-links { display: flex; gap: 0.1rem; align-items: center; }
-.nav-links a {
-  color: var(--muted); text-decoration: none; font-size: 0.82rem;
-  font-weight: 500; transition: color 0.2s, background 0.2s;
-  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
-}
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
 .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
 .nav-links a.active { color: var(--accent); }
-.nav-cta {
-  background: var(--accent) !important; color: var(--bg) !important;
-  font-family: 'Syne', sans-serif; font-weight: 700 !important;
-  padding: 0.45rem 1.1rem !important; border-radius: 8px;
-  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
-}
-.nav-hamburger {
-  display: none; flex-direction: column; justify-content: center; gap: 5px;
-  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
-}
-.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
-.nav-mobile-menu {
-  display: none; position: fixed; top: 64px; left: 0; right: 0;
-  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
-  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
-  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
-}
-.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
-.nav-mobile-menu a {
-  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
-  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
-}
-.article-wrap {
-  max-width: 1100px; margin: 0 auto;
-  padding: 48px 24px 80px;
-  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
-  align-items: start; position: relative; z-index: 1;
-}
-.article-main { min-width: 0; }
-.article-hero {
-  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
-  border: 1px solid var(--border); border-radius: 18px;
-  overflow: hidden; margin-bottom: 40px; position: relative;
-}
-.article-hero-graphic {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
-    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
-}
-.article-hero-grid {
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
-.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
-.tag {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
-  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-}
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 .tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
-.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
-.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
-.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
-.article-hero h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
-  font-weight: 800; line-height: 1.15;
-  letter-spacing: -0.03em; color: var(--text);
-  margin-bottom: 16px;
-}
-.article-hero h1 span {
-  background: linear-gradient(120deg, var(--green), var(--teal));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.article-hero-meta {
-  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
-  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
-}
-.author-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--green), var(--teal));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
-}
-.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
-.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
-.breadcrumb {
-  display: flex; align-items: center; gap: 0.5rem;
-  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
-}
-.breadcrumb a { color: var(--muted); text-decoration: none; }
-.breadcrumb a:hover { color: var(--accent); }
-.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
-.article-body p { margin-bottom: 1.5rem; }
-.article-body h2 {
-  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
-  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
-  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
-}
-.article-body h3 {
-  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
-  color: var(--text); margin: 2rem 0 0.75rem;
-}
-.article-body h4 {
-  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
-  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
-}
-.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
 .article-body strong { color: var(--text); font-weight: 600; }
-.callout {
-  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
-  display: flex; gap: 1rem; align-items: flex-start;
-}
-.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
-.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
-.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
-.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
-.callout-gold .callout-body strong { color: var(--accent); }
-.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
-.callout-teal .callout-body strong { color: var(--teal); }
-.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
-.callout-green .callout-body strong { color: var(--green); }
-.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
-.callout-red .callout-body strong { color: var(--red); }
-.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
-.stat-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
-}
-.stat-val {
-  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
-  background: linear-gradient(120deg, var(--green), var(--teal));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  display: block; line-height: 1; margin-bottom: 6px;
-}
-.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
-.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
-.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
-.checklist li::before {
-  content: '&#10003;'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
-  background: var(--green2); color: var(--green);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
-}
-.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
-.step {
-  display: flex; gap: 1.25rem; align-items: flex-start;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.25rem 1.5rem;
-}
-.step-num {
-  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, var(--green), var(--teal));
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
-}
-.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
-.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
-.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
-.compare-table th {
-  background: var(--bg3); padding: 10px 14px; text-align: left;
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
-  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
-.compare-table .good { color: var(--green); font-weight: 600; }
-.compare-table .mid  { color: var(--amber); font-weight: 600; }
-.compare-table .bad  { color: var(--red); font-weight: 600; }
-.pull-quote {
-  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
-  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
-  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
-}
-.inline-cta {
-  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
-  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
-  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
-}
-.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
-.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
-.inline-cta a {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--accent); color: var(--bg);
-  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
-  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
-}
-.toc {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
-}
-.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
-.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
-.toc li { font-size: 0.88rem; }
-.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
-.toc a:hover { color: var(--accent); }
-.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
-.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
-.tool-card-sm {
-  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
-  background: var(--bg3); border-radius: 10px; text-decoration: none;
-  border: 1px solid var(--border); transition: border-color 0.2s;
-  margin-bottom: 0.6rem;
-}
-.tool-card-sm:hover { border-color: var(--border2); }
-.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
-.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
-.author-box {
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
-  display: flex; gap: 1.25rem; align-items: flex-start;
-}
-.author-box-avatar {
-  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
-  background: linear-gradient(135deg, var(--green), var(--teal));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; font-weight: 800; color: var(--bg);
-  font-family: 'Syne', sans-serif;
-}
-.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
-.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
-.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
-footer.site-footer {
-  border-top: 1px solid var(--border); padding: 40px 24px;
-  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
-}
-footer.site-footer a { color: var(--muted); text-decoration: none; }
-@media (max-width: 860px) {
-  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
-  .sidebar { position: static; }
-  .stat-row { grid-template-columns: 1fr; }
-  .article-hero-inner { padding: 32px 24px 28px; }
-  .nav-links, .nav-cta { display: none; }
-  .nav-hamburger { display: flex; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
 }
 </style>
 </head>
 <body>
 
 <nav class="main-nav">
-  <a href="/" class="logo">
-    <div class="logo-icon">&#10022;</div>
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
     RankSorcery
   </a>
   <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/blog" class="active">Blog</a>
-    <a href="/seo-auditor">SEO Auditor</a>
-    <a href="/keyword-volume">Keywords</a>
-    <a href="/image-compressor">Image Tools</a>
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
   </div>
-  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit &#8594;</a>
-  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
-    <span></span><span></span><span></span>
-  </button>
 </nav>
 
-<div class="nav-mobile-menu">
-  <a href="/">Home</a>
-  <a href="/blog">Blog</a>
-  <a href="/seo-auditor">SEO Auditor</a>
-  <a href="/keyword-volume">Keywords</a>
-  <a href="/image-compressor">Image Tools</a>
-</div>
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
 
-<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+  <header class="article-header">
+    <span class="tag tag-amber">🔍 Technical SEO</span>
+    <h1>Google Search Console Now Tracks Your Social Content — What Platform Properties Actually Tells You</h1>
+    <div class="article-meta">
+      <span>📅 July 17, 2026</span>
+      <span>⏱ 9 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
 
-<main class="article-wrap">
-  <article class="article-main">
+  <div class="article-hero">
+    <span class="hero-icon">📱</span>
+  </div>
 
-    <nav class="breadcrumb">
-      <a href="/">Home</a>
-      <span>&#8250;</span>
-      <a href="/blog">Blog</a>
-      <span>&#8250;</span>
-      <span>Search Console Update</span>
-    </nav>
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>Google Search Console just launched "Platform Properties" — a new feature letting you connect Instagram, TikTok, YouTube, and X to track their Google Search performance.</li>
+      <li>You get three reports: Performance (clicks, impressions, queries per post), Insights (traffic trends, top posts), and Achievements (milestones over 28 days).</li>
+      <li>This only shows how your social content performs <em>in Google Search and Discover</em> — not in-platform metrics like watch time or reach.</li>
+      <li>The rollout is gradual — if you don't see it yet in your GSC account, check back in a few days. UK has it, US is rolling out now.</li>
+    </ul>
+  </div>
 
-    <div class="article-hero">
-      <div class="article-hero-graphic"></div>
-      <div class="article-hero-grid"></div>
-      <div class="article-hero-inner">
-        <div class="article-tags">
-          <span class="tag tag-cyan">&#128205; Search Console</span>
-          <span class="tag tag-green">&#128293; Trending July 2026</span>
-          <span class="tag tag-amber">&#9889; New Feature</span>
-        </div>
-        <h1>Google Search Console Now Tracks Your <span>TikTok, Instagram &amp; YouTube</span> &#8212; Here&#8217;s What It Actually Means</h1>
-        <div class="article-hero-meta">
-          <div class="author" style="display:flex;align-items:center;gap:8px;">
-            <div class="author-avatar">R</div>
-            <div><strong>RankSorcery Team</strong></div>
-          </div>
-          <span>&#183;</span>
-          <span>&#128197; July 8, 2026</span>
-          <span>&#183;</span>
-          <span>&#9201; 11 min read</span>
-          <span>&#183;</span>
-          <span>&#128293; Trending</span>
-        </div>
-      </div>
+  <article class="article-body">
+
+    <p>Your TikTok videos and Instagram Reels have been showing up in Google Search for years. Google's been indexing them, surfacing them in results, getting clicks from them. And until now, you had absolutely zero visibility into any of it. You couldn't see which posts Google was surfacing, which search queries triggered them, or whether any of that traffic was actually clicking through. You were basically flying blind on a whole channel of Google visibility that you didn't even know you had.</p>
+
+    <p>That just changed. Google announced <strong>Platform Properties</strong> in early July 2026 — a new property type in Google Search Console that lets you connect your social accounts directly and see exactly how they perform in Google Search. It's one of the more genuinely useful updates to GSC in recent memory, and if you haven't set it up yet, you probably should today.</p>
+
+    <h2>What Platform Properties Actually Are</h2>
+
+    <p>If you've used Google Search Console before, you know there are two main property types: Domain Properties (which cover your whole site) and URL Prefix Properties (which track a specific URL pattern). Platform Properties are a third type, and they're completely different — instead of pointing at a website, you connect a social account.</p>
+
+    <p>Once connected and verified, GSC treats your Instagram profile (or TikTok, YouTube channel, or X account) as its own property with its own dashboard. Separate from your website. Separate reports. Separate data. The idea is that Google increasingly indexes and surfaces social content in Search and Discover alongside traditional web pages, so it only makes sense to give you the same kind of performance visibility for that content.</p>
+
+    <p>At launch, Google supports four platforms:</p>
+    <ul>
+      <li><strong>Instagram</strong> — Reels, posts, and profile pages showing up in Google Search</li>
+      <li><strong>TikTok</strong> — Short-form videos indexed and surfaced by Google</li>
+      <li><strong>YouTube</strong> — Your channel's video content in Search and Discover</li>
+      <li><strong>X (formerly Twitter)</strong> — Posts and profile content appearing in Google results</li>
+    </ul>
+
+    <p>Google has said they may add more platforms over time. Pinterest, LinkedIn, Facebook — any of them are plausible future additions given how much of that content already shows up in search.</p>
+
+    <h2>The Three Reports (And Which One Actually Matters)</h2>
+
+    <p>Once your Platform Property is set up, you get three reporting sections. They're worth understanding because they're not all equally useful.</p>
+
+    <h3>Performance Report</h3>
+
+    <p>This is the one you'll spend most of your time in. It shows the standard GSC metrics — clicks, impressions, CTR, average position — but broken down <em>by individual social post</em> and <em>by search query</em>. So you can see that a specific TikTok video got 340 impressions from people searching "how to fix kitchen drain" and 22 of them clicked through. That's genuinely new information that didn't exist before July 2026.</p>
+
+    <p>You can filter by post, by date range, and export the data. If you're a data person, this is the one to bookmark.</p>
+
+    <h3>Insights Report</h3>
+
+    <p>Think of this as the executive summary version. It shows recent traffic trends, which posts are your top performers, and a high-level view of how people are discovering your content through Google. It's useful for a quick "what's working" check without needing to dig into the weeds. Good for clients, good for weekly reporting, good for when you just need a fast answer.</p>
+
+    <h3>Achievements</h3>
+
+    <p>This is the lightest of the three. It tracks milestones — things like reaching a new threshold for clicks from Google Search over the past 28 days. It reads a bit like a gamification feature and honestly it's the least useful for actual analysis. That said, it's a nice way to visualize growth trends at a glance without pulling a report.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>The Performance report is where the real value is. Filter by "Top Queries" to find which search terms are already surfacing your social content — those are goldmines for future content creation. If Google's already matching your posts to those queries, there's a clear demand signal you can build on.</p>
     </div>
 
-    <div class="toc">
-      <div class="toc-title">&#128203; Table of Contents</div>
-      <ol>
-        <li><a href="#section1">What Are Platform Properties and Why Did Google Build This?</a></li>
-        <li><a href="#section2">How to Set Up Platform Properties in Search Console (Step by Step)</a></li>
-        <li><a href="#section3">Reading the Data: What the Three Reports Are Actually Showing You</a></li>
-        <li><a href="#section4">How to Optimize Social Content for Google Search (The Practical Guide)</a></li>
-        <li><a href="#section5">What This Changes for Your SEO Strategy Going Forward</a></li>
-      </ol>
+    <h2>How to Actually Set It Up</h2>
+
+    <p>The setup is straightforward, but the feature is rolling out gradually, so you might not see the option yet. Here's what to do when it's available in your account:</p>
+
+    <ol>
+      <li>Go to <strong>search.google.com/search-console</strong> and log in.</li>
+      <li>Open the property selector dropdown in the left sidebar and click <strong>Add property</strong>. Alternatively, use the Search Console welcome screen.</li>
+      <li>You'll see the four supported platforms listed. Click <strong>Add</strong> next to the one you want to connect first.</li>
+      <li>Log into that social account when prompted and authorize Google to verify ownership.</li>
+      <li>Once confirmed, click <strong>Go to property</strong> to finish setup.</li>
+      <li>Wait a few days. Performance data doesn't appear instantly — it takes Google a bit to populate the reports.</li>
+    </ol>
+
+    <p>If you don't see the platform options in your GSC, don't panic. Google is rolling this out in phases. UK users reportedly got access earlier in July; US accounts are still getting it in waves. Keep checking back every couple of days.</p>
+
+    <h2>What This Doesn't Tell You (Important Caveat)</h2>
+
+    <p>Before you get too excited, there's a key limitation worth being clear about: <strong>Platform Properties only show you how your content performs in Google Search and Google Discover</strong>. That's it.</p>
+
+    <p>You won't see:</p>
+    <ul>
+      <li>Instagram reach, saves, or engagement rates</li>
+      <li>TikTok watch time, completion rates, or For You Page performance</li>
+      <li>YouTube subscriber growth or in-platform impressions</li>
+      <li>X engagement, retweet counts, or profile visits from within the app</li>
+    </ul>
+
+    <p>For those metrics you still need each platform's native analytics. What GSC gives you is a completely separate data layer: the <em>Google Search</em> performance of your social content. Think of it as a new slice of visibility that was previously invisible, not a replacement for what you're already tracking.</p>
+
+    <p>That's actually fine, by the way. This is first-party data directly from Google about how Google sees and surfaces your social content. That's something native platform analytics can't give you regardless of how detailed they get.</p>
+
+    <h2>Why This Actually Changes How You Should Think About Social Content</h2>
+
+    <p>Here's the strategic shift worth thinking through: if you can now measure which of your social posts get Google Search impressions and clicks, you have a new optimization loop that didn't exist before.</p>
+
+    <p>Previously, social content strategy was driven by in-platform signals — what gets views, what gets shares, what the algorithm promotes on TikTok or Instagram. Now you've got a second dimension: what does Google want to surface from your social accounts, and what queries is it matching your content to?</p>
+
+    <p>Those two signals often point in different directions. A TikTok video might do mediocre in-app numbers but consistently pull Google Search traffic for a high-intent query. Without Platform Properties, you'd never know that video was earning you anything. With it, you can double down — create more content on that topic, optimize the caption for the search query that's converting, build website content that supports the same keyword.</p>
+
+    <h3>Concrete things you can do with this data right now:</h3>
+
+    <ul>
+      <li><strong>Identify your "SEO Reels" or "SEO TikToks"</strong> — posts that pull disproportionate Google Search traffic vs. in-platform performance. These deserve follow-up content.</li>
+      <li><strong>Optimize captions and descriptions</strong> for the queries that are actually triggering impressions. If Google's matching your post to "best budget espresso machine" already, your caption should say that more explicitly.</li>
+      <li><strong>Find content gaps on your website.</strong> If a TikTok video is ranking for a keyword you don't have a blog post about, that's a gap worth closing. The social content validated the demand — now build the supporting article.</li>
+      <li><strong>Prioritize evergreen content creation.</strong> "How-to" videos, tutorials, and FAQ-style posts tend to get long-tail Google Search impressions. Platform Properties data will confirm which of your topics have that evergreen search pull.</li>
+    </ul>
+
+    <h2>The Bigger Picture: SEO Is Not Just About Your Website Anymore</h2>
+
+    <p>We've been saying for a while that brand visibility in 2026 isn't just about ranking your website. Google's own search results have become a mosaic — blue links mixed with AI Overviews, YouTube videos, TikTok clips, Reddit threads, Instagram posts, and Google Maps listings. Your brand's search presence spans all of those surfaces simultaneously.</p>
+
+    <p>Until Platform Properties launched, you had zero first-party data from Google on the social piece of that equation. You were essentially optimizing a website in a vacuum while an entire parallel track of Google visibility went unmeasured.</p>
+
+    <p>What's interesting about this move is what it signals about where Google sees social content going in Search. They wouldn't build a dedicated tool for this if social content wasn't already a meaningful and growing part of what they surface. By giving you the measurement layer, they're implicitly acknowledging that your Instagram and TikTok presence is now part of your SEO footprint, whether you're thinking about it that way or not.</p>
+
+    <blockquote>"We want to make it easier for site owners and creators — even those without their own website — to get a consolidated view of how all of their content is getting discovered on Search." — Google Search Central, July 2026</blockquote>
+
+    <p>That last part is worth noting: "even those without their own website." Google is explicitly building tools for creators who live entirely on social platforms. That's a significant acknowledgment of how search behavior and content consumption have shifted.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>Go set up your Platform Properties today. All four if you're active on all four platforms, or just start with whichever one you post to most consistently. The setup takes ten minutes and the data is free.</p>
+
+    <p>Once you have a few weeks of data, do two things: first, pull your top queries from the Performance report and see if there's anything surprising. Second, look for posts with high impressions but low CTR — those are posts that Google's already promoting but that aren't converting, which means the title, thumbnail, or caption isn't doing its job for search intent.</p>
+
+    <p>That combination — Google-validated demand signal plus a clear optimization gap — is exactly the kind of low-effort, high-leverage improvement that moves the needle. This feature hands it to you on a plate. Don't ignore it just because it says "social media" on the label.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
     </div>
-
-    <div class="article-body">
-
-      <p>Here&#8217;s something that should stop you mid-scroll: as of July 7, 2026, Google Search Console can now show you exactly how your TikTok videos, Instagram posts, YouTube Shorts, and X (Twitter) content perform in Google Search. Not in a vague, &#8220;social signals matter&#8221; kind of way &#8212; actual clicks, impressions, and CTR data, broken down by individual post and search query. This just dropped yesterday, and it changes how you should think about social media content entirely.</p>
-
-      <p>I&#8217;ll be honest with you &#8212; most SEOs have been treating social media as a completely separate channel from search. You&#8217;d post something on Instagram, measure likes and reach in Meta&#8217;s native analytics, maybe check YouTube Studio for views, and never think about any of it as &#8220;SEO data.&#8221; That mental separation just became a problem. Google has been indexing and ranking social content in its search results for years, but you had absolutely zero visibility into how that was performing. Now you do.</p>
-
-      <p>This new feature &#8212; called <strong>platform properties</strong> &#8212; is officially live and rolling out gradually. In this article I&#8217;m going to walk you through what it is, how to set it up, what the data means, and &#8212; most importantly &#8212; what you should actually do differently now that you have this information. There&#8217;s a real opportunity here for people who move fast.</p>
-
-      <div class="stat-row">
-        <div class="stat-card"><span class="stat-val">68%</span><div class="stat-label">of Google searches ended without a click in the first four months of 2026 (SparkToro)</div></div>
-        <div class="stat-card"><span class="stat-val">4</span><div class="stat-label">social platforms now trackable in Search Console: Instagram, TikTok, X, YouTube</div></div>
-        <div class="stat-card"><span class="stat-val">5.66B</span><div class="stat-label">global social media users whose content can now appear and be measured in Google Search</div></div>
-      </div>
-
-      <h2 id="section1">What Are Platform Properties and Why Did Google Build This?</h2>
-
-      <p>Platform properties are a new Search Console property type that Google officially announced on July 7, 2026. The announcement came from Moshe Samet, Product Manager Lead for Search Console, and the feature is rolling out gradually over the coming weeks. Once it&#8217;s available to you, you can verify your Instagram, TikTok, X, and YouTube accounts as properties inside Search Console &#8212; just like you&#8217;d verify a website domain.</p>
-
-      <p>The reason Google built this is worth thinking about carefully, because it tells you something important about where search is heading. For the past few years, Google has been pulling more and more social and video content into its search results. Instagram Reels, TikTok videos, YouTube Shorts &#8212; these show up in Google all the time now. The problem was that creators and businesses had no way to track this traffic through Google&#8217;s own data. You might have had thousands of impressions on your Instagram posts in Google Search and had absolutely no idea, because Meta Analytics doesn&#8217;t show that.</p>
-
-      <p>Google&#8217;s stated reason is to give creators &#8220;a consolidated view of how all of their content is getting discovered on Search&#8221; &#8212; even those without their own website. That last part is key. This is designed for TikTok creators who don&#8217;t run websites too, not just SEOs. But for people who do SEO, this opens up an entirely new dimension of data that wasn&#8217;t visible before.</p>
-
-      <p>There&#8217;s also a strategic angle here that nobody&#8217;s really talking about yet: Google is essentially acknowledging that social content competes with traditional web content for search rankings. By giving you performance data for your social posts, they&#8217;re implicitly telling you that optimizing those posts for search queries is a legitimate strategy &#8212; and one they&#8217;re willing to give you tools for. That&#8217;s a big deal.</p>
-
-      <p>Nobody talks about this, but the timing here is also interesting. Google&#8217;s relationship with social platforms has been complicated. For years, Facebook links were basically invisible in Google Search because Meta blocked crawling. Now Google is not just indexing TikTok and Instagram &#8212; it&#8217;s building dedicated reporting infrastructure around that content. That&#8217;s a signal that social content isn&#8217;t a second-class citizen in search results anymore.</p>
-
-      <div class="callout callout-gold">
-        <div class="callout-icon">&#128161;</div>
-        <div class="callout-body">
-          <strong>Pro Tip</strong>
-          The feature is rolling out gradually. If you don&#8217;t see the option to add a platform property yet, check back in a few days. Some accounts are seeing it immediately, others are getting it over the next few weeks. Barry Schwartz at Search Engine Roundtable noted that his X profile even appeared automatically without him having to manually verify it &#8212; so check your account now, you might already have data available.
-        </div>
-      </div>
-
-      <h2 id="section2">How to Set Up Platform Properties in Search Console (Step by Step)</h2>
-
-      <p>Setting this up is actually pretty simple &#8212; it&#8217;s similar to verifying a domain property, except you&#8217;re connecting a social account instead. Here&#8217;s how to do it, and what to expect.</p>
-
-      <p>First, a heads up: you&#8217;ll need to actually authorize the connection between Google and your social account. This isn&#8217;t just a URL verification &#8212; Google needs you to log in to the platform and grant access so it can pull your content&#8217;s performance data. This is the part that&#8217;s making some people nervous, and honestly, the concerns are valid. You are giving Google visibility into your social content metadata. If that bothers you, weigh the data benefit against the privacy consideration. For most businesses, the data is worth it &#8212; you&#8217;re not giving Google anything it doesn&#8217;t already see when it crawls those platforms.</p>
-
-      <div class="steps">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Open Google Search Console</h4><p>Go to search.google.com/search-console and sign in with the Google account associated with your business. If you&#8217;re already in Search Console, click the property selector dropdown at the top left of the screen.</p></div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Click &#8220;Add Property&#8221;</h4><p>In the property selector dropdown, you&#8217;ll see an &#8220;Add property&#8221; option at the bottom. Click it. You&#8217;ll be taken to the Search Console verification page. Look for the new platform property option &#8212; it now appears alongside the traditional URL prefix and Domain property types.</p></div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Select Your Platform</h4><p>Choose from the four available platforms: Instagram, TikTok, X, or YouTube. You&#8217;ll need to verify each one separately if you want data from multiple platforms. Start with whichever platform you&#8217;re most active on &#8212; that&#8217;s where you&#8217;ll see the most meaningful data first and get the fastest learning curve.</p></div></div>
-        <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Authorize the Connection</h4><p>Follow the on-screen verification steps. You&#8217;ll be redirected to the chosen platform to grant Google read access to your account. This is a standard OAuth authorization &#8212; the same flow you see when connecting any third-party tool to your social accounts. Google only needs read permissions; it cannot post on your behalf.</p></div></div>
-      </div>
-
-      <p>Once verified, your platform property will appear in your Search Console account alongside your website properties. Data takes a few days to start populating, and you&#8217;ll only see data going forward &#8212; there&#8217;s no guarantee of extensive historical retroactive data. Treat this as a starting point and plan to evaluate trends over the next 30&#8211;60 days.</p>
-
-      <h3>Which Platform Should You Prioritize First?</h3>
-
-      <p>If you&#8217;re not sure where to start, here&#8217;s my take. YouTube first, always &#8212; if you have a channel with any real content on it. YouTube has been indexed by Google for longer than any other platform, it appears in video carousels constantly, and the potential impression volume is enormous. After YouTube, it depends on your business: B2C brands with visual products should go Instagram next; content creators and brands targeting younger audiences should prioritize TikTok; X is most useful for news-driven brands, finance, or tech where real-time commentary regularly surfaces in Google results.</p>
-
-      <p>The worst outcome is connecting all four platforms at once, seeing a flood of data from every direction, and then not acting on any of it. Pick your main platform, understand what the data is telling you, optimize your content strategy based on that, and then layer in the others. Focus beats breadth in the first 90 days.</p>
-
-      <h2 id="section3">Reading the Data: What the Three Reports Are Actually Showing You</h2>
-
-      <p>Once your platform property is verified and data starts coming in, you&#8217;ll have access to three reports: Performance, Insights, and Achievements. Let me break down what each one actually tells you and what you should do with that information.</p>
-
-      <p>The <strong>Performance report</strong> is the one you&#8217;ll live in. It shows total clicks, impressions, CTR, and average position for your social content &#8212; the same metrics you&#8217;re used to seeing for your website in Search Console. But here it&#8217;s applied to individual posts. You can filter by specific posts to see which ones are driving search traffic, and &#8212; this is the part that matters &#8212; you can see which search queries are leading people to your content. That query data is gold. If you&#8217;re seeing impressions from queries you never consciously targeted, that tells you you&#8217;re inadvertently filling a search demand &#8212; and you could fill it much better with intentional content.</p>
-
-      <p>The <strong>Insights report</strong> gives you a higher-level overview: traffic trends over time, your top-performing posts, and how people are discovering your account on Google. Think of it as the executive summary version of your performance data. It&#8217;s useful for identifying which content formats and topics are getting the most traction in Google without having to dig into post-by-post numbers every day.</p>
-
-      <p>The <strong>Achievements</strong> section tracks milestones &#8212; like reaching a new threshold for total clicks from Google Search in the last 28 days. It&#8217;s a bit gamified, but the underlying data it highlights can help you set concrete growth benchmarks and notice when your strategy is actually working.</p>
-
-      <div class="callout callout-teal">
-        <div class="callout-icon">&#128269;</div>
-        <div class="callout-body">
-          <strong>Watch This</strong>
-          The most valuable thing in the Performance report is the search query data for your top posts. These are the actual searches people typed into Google before clicking through to your TikTok, Instagram, or YouTube content. If you&#8217;re seeing a lot of impressions from one specific query, that&#8217;s a signal to create more content explicitly targeting that query &#8212; and to check whether your website has a page covering that topic too. Cross-reference these queries against your website&#8217;s Search Console data to find gaps you can fill on both channels.
-        </div>
-      </div>
-
-      <h3>The Cross-Channel Comparison You Need to Make</h3>
-
-      <p>Here&#8217;s what almost nobody is going to think to do, but you should: compare your platform property data with your website&#8217;s Search Console data side by side. Are the same keywords driving traffic to both? Are there queries where your social content gets impressions but your website has nothing? That&#8217;s a content gap &#8212; and an opportunity. Are there queries where your website ranks but your social content doesn&#8217;t show up? That tells you your social posts aren&#8217;t optimized for search yet, even though the demand clearly exists. Use the <a href="/seo-auditor">RankSorcery SEO Auditor</a> to get a full picture of your website&#8217;s keyword coverage and find exactly where these gaps are.</p>
-
-      <table class="compare-table">
-        <thead>
-          <tr>
-            <th>Platform</th>
-            <th>Search Indexing Speed</th>
-            <th>Query Data Visibility</th>
-            <th>Optimization Potential</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>YouTube Videos</td><td class="good">&#10003; Fast (days)</td><td class="good">&#10003; Full query data</td><td class="good">&#10003; High &#8212; title, description, tags</td></tr>
-          <tr><td>Instagram Posts / Reels</td><td class="mid">&#126; Medium (1&#8211;2 weeks)</td><td class="good">&#10003; Full query data</td><td class="mid">&#126; Moderate &#8212; captions are key</td></tr>
-          <tr><td>TikTok Videos</td><td class="mid">&#126; Medium (varies)</td><td class="good">&#10003; Full query data</td><td class="mid">&#126; Moderate &#8212; captions + on-screen text</td></tr>
-          <tr><td>X (Twitter) Posts</td><td class="good">&#10003; Fast (hours)</td><td class="mid">&#126; Limited data</td><td class="bad">&#10007; Low &#8212; character limits constrain optimization</td></tr>
-        </tbody>
-      </table>
-
-      <h2 id="section4">How to Optimize Social Content for Google Search (The Practical Guide)</h2>
-
-      <p>Most articles about this feature are going to stop at &#8220;use keywords in your captions&#8221; and call it a day. That&#8217;s not wrong, but it&#8217;s incomplete. Here&#8217;s what actually moves the needle, based on what we know about how Google reads social content.</p>
-
-      <p>The core idea is simple: Google reads your captions, video titles, and descriptions when it indexes your social content. So those need to be written with search intent in mind &#8212; not just engagement hooks for your social followers. A caption written purely for social engagement might read &#8220;this changed everything &#128293;&#8221; (which tells Google nothing). A caption optimized for search might start with &#8220;How to compress images for faster website load time&#8221; &#8212; which is more straightforward but will actually show up when someone searches that phrase.</p>
-
-      <p>The trick is learning to do both. Lead with keyword-rich information first, then add personality and engagement. Your first sentence in any caption or description is the most important for search &#8212; treat it like a meta description. Write it like you&#8217;re answering a question someone actually typed into Google, then make the rest of the caption compelling enough for your social audience.</p>
-
-      <div class="inline-cta">
-        <h3>Are Your Social Media Images Optimized for Search Visibility?</h3>
-        <p>Thumbnails and cover images are the first thing people see when your social content shows up in Google Search. Heavy, unoptimized images load slowly and look unprofessional in search previews &#8212; compress them without losing quality and stand out from every other result on the page.</p>
-        <a href="/image-compressor">Compress Images Free &#8594;</a>
-      </div>
-
-      <p>Beyond captions, <strong>visual content matters more than most people realize for social SEO</strong>. When Google displays your TikTok or Instagram content in search results, it shows a thumbnail. That thumbnail competes with every other result on the page for clicks. I&#8217;ve seen accounts with genuinely great content get poor CTR because their thumbnails look amateur at small sizes &#8212; low contrast, cluttered backgrounds, no clear subject. A clean, high-contrast thumbnail with a clear focal point makes a real measurable difference in click-through rate. If your product photos still have messy backgrounds from random shooting locations, that&#8217;s the first thing to fix before worrying about captions. Use the <a href="/background-remover">RankSorcery Background Remover</a> to clean up product shots and create professional-looking thumbnails that don&#8217;t embarrass your brand when they show up in Google.</p>
-
-      <p>Here&#8217;s the checklist I&#8217;d work through for any social content you want showing up in Google:</p>
-
-      <ul class="checklist">
-        <li><strong>Start every caption with a keyword phrase</strong> &#8212; write your first sentence like it&#8217;s a meta description. Ask yourself: &#8220;what would someone type into Google to find this content?&#8221; Lead with the answer to that question.</li>
-        <li><strong>Use your video title or post headline as an explicit, clear statement</strong> &#8212; not a teaser. &#8220;How I fixed my site&#8217;s Core Web Vitals score in one afternoon&#8221; works; &#8220;You won&#8217;t believe what happened to my rankings&#8221; does not.</li>
-        <li><strong>Include 3&#8211;5 relevant hashtags that match actual search queries</strong>, not just trending tags. Think &#8220;#imagecompressionSEO&#8221; rather than &#8220;#viral.&#8221; Hashtags are still indexed as part of your content&#8217;s metadata.</li>
-        <li><strong>Compress and optimize thumbnails and cover images</strong> &#8212; heavy images affect how your content loads in search previews and can make you look unprofessional at thumbnail size.</li>
-        <li><strong>Add closed captions or on-screen text overlays to videos</strong> &#8212; Google can read on-screen text and uses it to understand what your video is about, improving how it categorizes your content in search results.</li>
-        <li><strong>Create content around specific queries, not just broad topics</strong> &#8212; &#8220;social media SEO tips 2026&#8221; is a query. &#8220;Social media&#8221; is a topic. There&#8217;s a fundamental difference in how Google matches and ranks these.</li>
-      </ul>
-
-      <p>I want to be direct about timing expectations: you&#8217;re not going to see these changes work overnight. Social content indexing in Google has a lag &#8212; anywhere from a few days for YouTube to a couple of weeks for Instagram and TikTok. Make the changes to your next batch of content, wait 30 days, and then look at your platform property data to see if impressions and clicks moved. The 60&#8211;90 day trend is what actually matters, not week-over-week noise.</p>
-
-      <h2 id="section5">What This Changes for Your Overall SEO Strategy Going Forward</h2>
-
-      <p>Let me be direct about the bigger picture here. The introduction of platform properties is not just a convenient new reporting feature &#8212; it&#8217;s Google officially treating social media as a first-class SEO channel. When you can see impressions and clicks for your Instagram posts in the same tool where you track your website&#8217;s organic rankings, the mental separation between &#8220;social media marketing&#8221; and &#8220;SEO&#8221; starts to dissolve. That&#8217;s intentional on Google&#8217;s part.</p>
-
-      <p>Think about what this means for content planning. Up until now, you&#8217;d create content, publish it on your website for SEO, and repurpose snippets for social media. The website was the SEO play; social was the distribution play. What Google is signaling with this move is that your social content can itself be the SEO play &#8212; especially for shorter, how-to, or visual content where a TikTok or Instagram Reel might actually rank better than a blog post because it&#8217;s the format the searcher wants.</p>
-
-      <div class="pull-quote">&#8220;Your social content has been ranking in Google for years. Now you finally get to see the data &#8212; and optimize for it like you would any other page on your site.&#8221;</div>
-
-      <p>The 68% zero-click search rate is the context that makes this really urgent. More than two-thirds of Google searches end without anyone clicking through to a website at all &#8212; people get the answer from AI Overviews, featured snippets, or rich results directly on the SERP. In that world, appearing in Google in any format matters more than just traditional website rankings. Your YouTube video in a search result, your TikTok in a video carousel, your Instagram Reel in a Google Discover feed &#8212; these are brand touchpoints that existed before, but now you can measure, optimize, and systematically improve them.</p>
-
-      <p>The competitive angle is worth taking seriously. Right now, the vast majority of your competitors are not tracking their social content&#8217;s Google Search performance, because this feature literally launched yesterday. The SEOs who move first to optimize their captions, thumbnails, and social content strategy around search intent are going to establish a visibility edge that compounds over time. I&#8217;ve watched this pattern repeat with every major Search Console feature &#8212; early adopters consistently get a 6&#8211;12 month head start before the approach becomes standard practice.</p>
-
-      <p>Here&#8217;s what I&#8217;d do in the next seven days. First: set up your platform properties today, or the moment the feature rolls out to your account. Second: don&#8217;t change anything for the first week &#8212; just look at the data. See which of your existing posts are already getting search impressions and figure out why those specifically. Third: identify the top 3 queries that are already sending traffic to your social content and create new posts specifically targeting those queries. Measure what happens over the next 30 days. Small, measurable experiments beat wholesale strategy overhauls every time.</p>
-
-      <p>The last thing I&#8217;ll say: use this data to inform your website content strategy too. If your Instagram posts are getting thousands of impressions from a query that your website doesn&#8217;t cover at all, that&#8217;s a blog post waiting to be written. Social search data and website SEO data are now telling the same story &#8212; it&#8217;s time to start reading them together.</p>
-
-      <div class="callout callout-teal">
-        <div class="callout-icon">&#128640;</div>
-        <div class="callout-body">
-          <strong>Bottom Line</strong>
-          Google Search Console platform properties just made your TikTok, Instagram, YouTube, and X content measurable as SEO real estate. Set it up now, learn which queries your posts already rank for, write your next captions like meta descriptions, and clean up your thumbnails. The brands that move on this first will have a compounding advantage that&#8217;s hard to close once established.
-        </div>
-      </div>
-
-    </div><!-- /.article-body -->
-
-    <div class="author-box">
-      <div class="author-box-avatar">R</div>
-      <div>
-        <div class="author-box-name">RankSorcery Team</div>
-        <div class="author-box-role">SEO &amp; Digital Marketing</div>
-        <div class="author-box-bio">We build free SEO tools and write about what actually works in search &#8212; no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
-      </div>
-    </div>
-
   </article>
 
-  <aside class="sidebar">
-    <div class="sidebar-card">
-      <div class="sidebar-card-title">&#128295; Free Tools</div>
-      <a href="/seo-auditor" class="tool-card-sm">
-        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">&#128269;</div>
-        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/google-search-console-ai-impressions-report-2026" class="related-card">
+        <div class="rc-tag">Technical SEO</div>
+        <h4>Google Search Console's AI Impressions Report: What It Tells You (and What It Doesn't)</h4>
       </a>
-      <a href="/keyword-volume" class="tool-card-sm">
-        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">&#128202;</div>
-        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
-      </a>
-      <a href="/image-compressor" class="tool-card-sm">
-        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">&#128444;</div>
-        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
-      </a>
-      <a href="/background-remover" class="tool-card-sm">
-        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">&#9986;&#65039;</div>
-        <div><div class="tool-card-sm-name">Background Remover</div><div class="tool-card-sm-desc">Remove bg in one click</div></div>
+      <a href="/blog/google-ai-mode-query-length-content-strategy-2026" class="related-card">
+        <div class="rc-tag">Content Strategy</div>
+        <h4>Google's AI Mode Has 1 Billion Users — And Their Queries Are 3x Longer Than Yours</h4>
       </a>
     </div>
+  </div>
+</div>
 
-    <div class="sidebar-card">
-      <div class="sidebar-card-title">&#128218; Related Posts</div>
-      <div style="display:flex;flex-direction:column;gap:0.75rem">
-        <a href="/blog/how-to-rank-in-ai-search-results-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
-          How to Rank in AI Search Results: The Complete 2026 Guide &#8594;
-        </a>
-        <a href="/blog/social-search-seo-tiktok-instagram-youtube-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
-          Social Search SEO: Ranking on TikTok, Instagram &amp; YouTube in 2026 &#8594;
-        </a>
-        <a href="/blog/ai-search-visibility-tracking-brand-mentions-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
-          AI Search Visibility Tracking: Is Your Brand Getting Mentioned? &#8594;
-        </a>
-      </div>
-    </div>
-  </aside>
-</main>
-
-<footer class="site-footer">
-  <p>&#169; 2026 RankSorcery &#183; <a href="/blog">Blog</a> &#183; <a href="/seo-auditor">Tools</a> &#183; Built for SEOs who want results, not theory.</p>
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
 </footer>
 
-<script>
-window.addEventListener('scroll', () => {
-  const el = document.getElementById('rp');
-  if (!el) return;
-  const d = document.documentElement;
-  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
-  el.style.width = pct + '%';
-});
-</script>
 </body>
 </html>
