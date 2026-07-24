@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bing Just Gave You a Free GEO Dashboard — And Almost Nobody Noticed — RankSorcery</title>
+<meta name="description" content="Bing's new AI Citation Share in Webmaster Tools is the first free native GEO measurement tool from a major AI search platform. Here's how to use it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Bing Just Gave You a Free GEO Dashboard — And Almost Nobody Noticed">
+<meta property="og:description" content="Bing's new AI Citation Share in Webmaster Tools is the first free native GEO measurement tool from a major AI search platform. Here's how to use it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-07-01">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(10,191,188,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(232,184,75,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(10,191,188,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(10,191,188,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--teal), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--accent)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--accent)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--teal), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--accent)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(10,191,188,0.08), rgba(232,184,75,0.05)); border: 1px solid rgba(10,191,188,0.2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--teal); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: #0dd4d1; }
+.pull-quote { border-left: 3px solid var(--teal); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--teal); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--teal), var(--accent)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">AI Search</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">🤖 AI Search</span>
+          <span class="tag tag-amber">📊 GEO</span>
+        </div>
+        <h1>Bing Just Gave You a Free <span>GEO Dashboard</span> — And Almost Nobody Noticed</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 July 1, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 9 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 1,247 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>I almost missed it. It came out on June 16th, buried under a wall of Google spam update coverage, and I only caught it because someone posted a screenshot in a Slack I'm in. The caption said something like "wait, Bing actually did something useful?" and yeah — they really did.</p>
+
+      <p>Microsoft quietly added four new capabilities to Bing Webmaster Tools under the AI Performance section: <strong>Intents, Topics, Citation Share, and Compare</strong>. Free. In preview globally. No enterprise contract, no third-party data broker, no scraping prompts at 2am. Just go to Bing Webmaster Tools and it's there waiting for you.</p>
+
+      <p>The one that matters most is Citation Share. And I want to explain exactly why, because if you're doing any kind of generative engine optimization work in 2026, this is the measurement gap that has been making everyone's life miserable.</p>
+
+      <h2 id="the-measurement-problem">The Measurement Problem That's Been Killing GEO Work</h2>
+
+      <p>Here's the frustrating reality of working in AI search visibility: until now, you were mostly flying blind. You could check if your site showed up in a Perplexity answer. You could run prompts manually and screenshot results. Some agencies were literally paying people to submit hundreds of prompts and tally citations in spreadsheets.</p>
+
+      <p>The problem is that AI systems don't show you a "you were cited 847 times this week" dashboard. They just answer questions. Whether your content is in the mix or not is usually invisible unless someone happens to ask the right thing and your page floats to the top.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>The Hard Truth</strong>
+          Most grounding events in AI search — where your content is used to inform an answer — don't produce a visible citation at all. The model uses the information and never surfaces your URL to the user. So even the citation counts you can measure are probably undercounting your actual AI visibility by a lot.
+        </div>
+      </div>
+
+      <p>This is what made the announcement from Krishna Madhavan at Microsoft interesting. Citation Share isn't just "how many times were you cited" — it's "what percentage of the citation space did you capture for a specific grounding query." That's a different, more useful signal. If you're getting cited 40 times but there are 200 total citations across all sites for that query, you have a 20% Citation Share. That tells you something actionable: you're in the conversation, but you're not dominating it.</p>
+
+      <h2 id="what-the-four-new-features-do">What the Four New Features Actually Do</h2>
+
+      <p>Let me go through each one because they work together.</p>
+
+      <h3>Intents</h3>
+      <p>This classifies your grounding queries by intent type — informational, comparison, transactional, etc. Why does this matter? Because if 80% of your AI citations are coming from comparison-intent queries but you thought you were winning on informational queries, you need to know that. Your content strategy and your actual AI visibility are probably misaligned.</p>
+
+      <h3>Topics</h3>
+      <p>Instead of looking at individual queries one at a time, Topics groups your citation activity into broader thematic areas — the same structure that AI systems use to organize information internally. This is significant because modern language models don't think in keywords; they think in topics and entities. If Microsoft is showing you data organized that way, you're getting insight closer to how the system actually evaluates your content.</p>
+
+      <h3>Citation Share</h3>
+      <p>The headliner. For any grounding query where your content appears, Citation Share tells you what fraction of the total citation pool your site captured. It's designed to be an observational metric, not a ranking score — Microsoft is careful to say it's not a competitive scoreboard. But directionally, watching Citation Share trend upward after you publish new content tells you something real about whether your GEO work is working.</p>
+
+      <h3>Compare</h3>
+      <p>Date range comparison for citation activity. Simple but necessary. You can now look at how citations changed after a piece of content went live, or after a major AI update, or after a competitor entered the space. Before this, you were guessing.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">4</span>
+          <div class="stat-label">New AI visibility signals now in Bing Webmaster Tools</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">Free</span>
+          <div class="stat-label">No paid plan required — available globally in preview</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">0</span>
+          <div class="stat-label">Equivalent free tools from Google as of July 2026</div>
+        </div>
+      </div>
+
+      <h2 id="why-this-beats-what-google-offers">Why This Beats What Google Currently Offers</h2>
+
+      <p>This is the part that's genuinely surprising. Google has the AI Performance Report in Search Console — rolled out to the UK first, then progressively. It shows you impressions from AI Overviews and AI Mode. But impressions is a blunt instrument. It tells you how often your content was surfaced, not how you stack up against other sources surfaced for the same query.</p>
+
+      <p>Bing's Citation Share is more nuanced. It gives you a relative view. And as of right now, Google has nothing equivalent. There's no "here's your share of the AI citation space for [query]" report anywhere in Search Console. Not yet.</p>
+
+      <div class="pull-quote">
+        "As of mid-June 2026, Google has not provided equivalent direct citation-level reporting to publishers. Microsoft's tool is the first free, native GEO measurement window from a major AI search platform."
+      </div>
+
+      <p>Now, I know what you're thinking: who cares about Bing? Fair question. Bing's market share in traditional search is what it's always been — the browser you use to download Chrome. But Microsoft Copilot is embedded in Windows, in Edge, in Teams, in Word, in Excel. The number of people getting AI-generated answers in a Microsoft product without ever opening a browser is not nothing. And the infrastructure Microsoft is building here — the citation tracking, the intent classification — is a preview of what the industry's measurement standards are going to look like when Google eventually builds the same thing.</p>
+
+      <p>In other words: starting your GEO measurement practice in Bing right now means your team knows how to interpret citation data by the time Google ships equivalent tools. That's worth something.</p>
+
+      <div class="inline-cta">
+        <h3>🤖 Check Your AI Search Visibility Right Now</h3>
+        <p>See how your site performs across AI search engines — not just traditional rankings. RankSorcery's AI Search Visibility tool checks whether your content is positioned to get cited in ChatGPT, Perplexity, Bing Copilot, and Gemini.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Visibility →</a>
+      </div>
+
+      <h2 id="how-to-actually-use-this">How to Actually Use Citation Share (Step by Step)</h2>
+
+      <p>Alright, enough context. Here's what to actually do with this data if you want to move the needle.</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Set Your Baseline Now</h4>
+            <p>Go to Bing Webmaster Tools and pull the AI Performance report for the last 30 days. Screenshot it. Export it. The Compare feature is only useful if you have historical data to compare against, and that data only starts accumulating from when you first check. Don't wait another week — you're burning baseline data every day you delay.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Find Your Strongest Grounding Queries</h4>
+            <p>Sort by total citations first. These are the queries where AI systems are already pulling from your content. Now look at Citation Share for those same queries. If you have high citation volume but low Citation Share, there's a content coverage issue — other sources are getting pulled alongside you more often. That's your first optimization target.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Review Your Topics Distribution</h4>
+            <p>Look at which Topics are driving your citation activity. Compare that to what you <em>think</em> your site is authoritative about. If they don't match, you have a topic coverage gap or a content structure problem. AI systems are telling you how they categorize your expertise, and that's not always what you intended.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Check Intent Mix Against Your Goals</h4>
+            <p>If you're an e-commerce site and most of your citations are informational rather than comparison or shopping-intent queries, that's a signal your product pages aren't getting surfaced in the buying-decision moments. That has direct revenue implications and tells you what types of content to build next.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Track Before and After Content Updates</h4>
+            <p>Pick two or three pages you want to improve for AI visibility. Update them with clearer entity definitions, better structured data, more direct factual statements, and improved coverage of related concepts. Then use the Compare feature to see if Citation Share moves for the grounding queries those pages are associated with. This is how you build an actual feedback loop instead of just guessing.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 id="what-good-content-looks-like-to-ai-systems">What Content That Gets High Citation Share Actually Looks Like</h2>
+
+      <p>I want to get into the specific structural things that seem to drive higher AI citation rates, because "make good content" is not useful advice.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">📋</div>
+        <div class="callout-body">
+          <strong>Citation-Friendly Content Patterns</strong>
+          These aren't absolute rules, but they're consistent patterns across sites with strong AI citation visibility. They're also the things Bing's Intents and Topics data will help you validate for your specific domain.
+        </div>
+      </div>
+
+      <ul class="checklist">
+        <li><strong>Direct declarative statements near the top.</strong> AI models tend to pull content that has a clear, quotable answer early in the page — not buried in paragraph six after three hedging sentences.</li>
+        <li><strong>Specific numbers over vague claims.</strong> "Conversion rates dropped 18% in Q2" gets cited over "conversion rates fell significantly." Specificity signals primary research.</li>
+        <li><strong>Clear entity relationships.</strong> Define your subject, its relationship to adjacent concepts, and who it affects. Structured definitions get pulled more reliably than narrative prose.</li>
+        <li><strong>Updated timestamps with substantive changes.</strong> AI systems pay attention to freshness signals. Updating a last-modified date without changing content is a bad move — they can tell.</li>
+        <li><strong>FAQ sections with tight Q&amp;A pairs.</strong> Not the old-style SEO FAQ with keyword-stuffed questions, but actual natural-language questions answered in one or two sentences. These are grounding-friendly by structure.</li>
+        <li><strong>Authoritative attribution.</strong> Content that cites its own sources — studies, official data, named experts — appears more credible to grounding systems than unsourced assertions.</li>
+        <li><strong>Minimal navigation clutter around the main content.</strong> AI scrapers have gotten better, but pages where the main content is clearly delineated from chrome still process more cleanly.</li>
+      </ul>
+
+      <h2 id="the-limits-you-need-to-know">The Limits You Should Know Before Over-Interpreting This Data</h2>
+
+      <p>Microsoft is clear that this is in preview, and there are real gaps. Citation Share only covers Bing and Copilot — it tells you nothing about ChatGPT, Perplexity, Google AI Mode, or Claude. So if Bing isn't a significant source of AI traffic for your audience, the absolute numbers will be small.</p>
+
+      <p>More importantly: Citation Share is observational. It doesn't tell you whether being cited translated to a user clicking through to your site. AI answers frequently use content as grounding without ever surfacing the URL to the user. High Citation Share might mean high influence over AI answers in your niche, or it might mean your content is being consumed without generating any visits. You need to correlate with your own analytics to tell the difference.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Don't Optimize for Bing Alone</strong>
+          Using Citation Share data to improve your content structure will likely help across AI platforms — the underlying signals (clear structure, direct statements, entity clarity) are consistent. But don't mistake improving your Bing Citation Share for a complete GEO strategy. It's one measurement window, not the whole picture.
+        </div>
+      </div>
+
+      <p>The Compare feature also only works if you have enough historical data. If you've never looked at your AI Performance report before, you have no baseline. Whatever Citation Share you set up this week is day one. So start now — but understand that your first month of data is context-building, not analysis.</p>
+
+      <h2 id="where-this-is-heading">Where This Is All Heading</h2>
+
+      <p>I think what Bing did here is signal something important about where GEO measurement is going. The era of "we'll figure out AI visibility when Google gets around to giving us data" is ending. Publishers who wait for Google to build the full citation-level reporting they need are going to be months behind the people who built their measurement practice in Bing first.</p>
+
+      <p>The deeper point is this: AI search visibility is increasingly its own discipline, separate from traditional rankings. Your position-3 ranking tells you almost nothing about how often your content gets pulled as a grounding source. Those are different systems, different signals, different optimization patterns. And the measurement tools for AI visibility are just beginning to become available.</p>
+
+      <p>Bing jumped first. Pay attention to what they built, because Google's version is coming — and when it does, you'll either be ready to use it, or you'll be reading someone else's recap about why you should have started earlier.</p>
+
+      <p>Open Bing Webmaster Tools. Find AI Performance. Pull the last 30 days. That's all you need to do today.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#the-measurement-problem">The Measurement Problem</a></li>
+        <li><a href="#what-the-four-new-features-do">The Four New Features</a></li>
+        <li><a href="#why-this-beats-what-google-offers">Why It Beats Google's Data</a></li>
+        <li><a href="#how-to-actually-use-this">How to Use It (Step by Step)</a></li>
+        <li><a href="#what-good-content-looks-like-to-ai-systems">High-Citation Content Patterns</a></li>
+        <li><a href="#the-limits-you-need-to-know">Limits to Know</a></li>
+        <li><a href="#where-this-is-heading">Where This Is Heading</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Bing%20Just%20Gave%20You%20a%20Free%20GEO%20Dashboard%20%E2%80%94%20And%20Almost%20Nobody%20Noticed&url=https://ranksorcery.com/blog/bing-ai-citation-share-geo-2026" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/perplexity-chatgpt-citation-seo-guide-2026" class="related-post">
+        <div class="related-post-icon">🔎</div>
+        <div class="related-post-body">Your Site Isn't Getting Cited in Perplexity or ChatGPT<span>11 min · Jun 10</span></div>
+      </a>
+      <a href="/blog/llms-txt-ai-search-visibility-guide-2026" class="related-post">
+        <div class="related-post-icon">📄</div>
+        <div class="related-post-body">llms.txt: What It Actually Does for AI Search Visibility<span>9 min · Jun 15</span></div>
+      </a>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-post">
+        <div class="related-post-icon">⚙️</div>
+        <div class="related-post-body">Schema Markup: The Fastest Path to AI Search Citations<span>10 min · May 8</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(10,191,188,0.07),rgba(232,184,75,0.04));border-color:rgba(10,191,188,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">Check if your site is positioned to get cited in AI search · Free tool</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--teal);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check AI Visibility →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
