@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Cites Your Deep Pages But Sends Visitors to Your Homepage — Your Site Is Built Backward — RankSorcery</title>
+<meta name="description" content="New data shows AI cites deep pages but sends 58.8% of traffic to your homepage. Here's what it means for your site architecture and how to fix it.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/ai-cites-deep-pages-sends-traffic-homepage-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI Cites Your Deep Pages But Sends Visitors to Your Homepage — Your Site Is Built Backward">
+<meta property="og:description" content="New data shows AI cites deep pages but sends 58.8% of traffic to your homepage. Here's what it means for your site architecture and how to fix it.">
+<meta property="og:url" content="https://ranksorcery.com/blog/ai-cites-deep-pages-sends-traffic-homepage-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-cyan">AI Search</span>
+    <h1>AI Cites Your Deep Pages But Sends Visitors to Your Homepage — Your Site Is Built Backward</h1>
+    <div class="article-meta">
+      <span>📅 Jul 28, 2026</span>
+      <span>⏱ 11 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">🏗️</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>65% of ChatGPT-cited URLs sit 2–3 folder levels deep — deep docs, benchmarks, and comparison pages</li>
+      <li>58.8% of AI referral traffic lands on your homepage — nearly double what traditional search ever sent there</li>
+      <li>28.8% of ChatGPT referrals hit your internal site search page, a surface most teams have neglected for years</li>
+      <li>Your site now needs to do two completely different jobs: get cited deep, convert at the door — and most sites aren't built for either</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>Pull up your AI referral traffic in GA4. Look at the landing pages. If you're like most sites right now, you'll see something that makes no sense at first glance: your homepage is suddenly getting more AI referral traffic than any specific article or product page. Meanwhile, a Similarweb analysis of over a billion data points confirms that the pages AI systems actually <em>cite</em> are buried 2–3 folders deep — documentation pages, comparison roundups, benchmark posts, specific how-to guides. The pages your SEO team spent years optimizing for informational keywords.</p>
+
+    <p>The same AI that quotes your <code>/blog/detailed-comparison-page</code> sends the visitor to <code>yoursite.com</code>. Not the page it cited. Your front door. And in July 2026, new research confirmed this isn't a quirk — it's structural. Three independent datasets all show the same split. Your site is being used in two completely different ways by two completely different audiences, and if you haven't redesigned around that, you're losing both.</p>
+
+    <h2>Why AI Creates a Two-Audience Problem</h2>
+
+    <p>Traditional search had one job: match a query to a page, send a person there. The user arrived with a question and the page answered it. That's why decades of SEO advice focused on matching page content to search intent. It still largely works in that world.</p>
+
+    <p>AI search works differently. When someone asks ChatGPT, Perplexity, or Google AI Mode something, the model does the reading for them. It pulls from your deep pages — the ones with specific claims, clear data, named comparisons — synthesizes an answer, and then, in some cases, sends the person to your site. But it doesn't send them to the page it cited. It sends them to a brand-level entry point, typically your homepage or a main category page.</p>
+
+    <p>Similarweb's 2026 Generative AI Landscape report put specific numbers on this: <strong>65% of ChatGPT-cited URLs sit two or three folder levels deep</strong> in a site's architecture. Your deep editorial content, your product documentation, your benchmark pages — that's what AI uses as evidence. But when referral traffic comes in, <strong>58.8% of it lands on the homepage</strong>. That share nearly doubled after ChatGPT's May 2026 search update, up from roughly 25% before.</p>
+
+    <h3>The visitor who arrives already knows you</h3>
+
+    <p>This is the part that changes your conversion strategy. Traditional search visitors arrived mid-research. They needed convincing. AI referral visitors arrive post-research. The model already explained your product, compared it to alternatives, and cited your content as authoritative. By the time they click through to your site, they've already been sold on you to some degree — they're arriving to act, not to learn.</p>
+
+    <p>Similarweb's data shows that AI-recommended brands receive two to four times as many subsequent site visits as brands that weren't recommended. These aren't browsing visitors. They're pre-qualified leads landing at your front door. And most homepages are still built to explain what the company does, not to serve someone who already knows.</p>
+
+    <h2>What "Citable" Actually Means in Practice</h2>
+
+    <p>If deep pages are what get you cited, you need to understand what makes a deep page citable in the first place. It's not just "have good content." The Ahrefs analysis found something specific: pages with natural-language URL slugs get cited at 89.78%, compared to 81.11% for pages without them. That's nearly a 9-point advantage just from the URL.</p>
+
+    <h3>The four things AI citation engines look for</h3>
+
+    <p>From the data and from watching which pages actually get cited across multiple AI platforms, the pattern is pretty consistent:</p>
+
+    <ul>
+      <li><strong>Specific, verifiable claims.</strong> Numbers, dates, percentages. "Loading time under 2 seconds" rather than "fast loading." AI models reference concrete evidence because they need to synthesize answers, and vague language doesn't synthesize well.</li>
+      <li><strong>Clear descriptive headings.</strong> The model needs to understand what each section covers without reading the whole page. H2s and H3s that name the topic directly — not clever or punny — make a page far more parseable.</li>
+      <li><strong>Natural-language URL slugs.</strong> As above. <code>/blog/how-to-audit-seo-site-2026</code> over <code>/blog/p?id=4427</code>. This signals topical relevance before the model even reads the content.</li>
+      <li><strong>Depth on a narrow topic.</strong> Comprehensive coverage of a specific subtopic beats surface-level coverage of a broad one. A page about exactly one thing — the right data structure for a specific use case, how a specific Google feature works — is more citable than a page that covers ten things shallowly.</li>
+    </ul>
+
+    <p>Most teams already have content that fits this description. The gap is usually in URL structure and heading clarity. If you've got good deep content buried under messy URLs and vague H2s, that's a quick win — you're already most of the way there.</p>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>Run a citation audit before you build new content. Pull your AI referral data, then cross-reference it against your most-cited pages using a tool like Semrush AI Visibility or Ahrefs' AI mentions tracker. You'll likely find 80% of your citations come from 20% of your pages — and those pages have something in common you can replicate.</p>
+    </div>
+
+    <h2>Rebuilding Your Homepage for Pre-Informed Visitors</h2>
+
+    <p>Your homepage has a new primary audience: people who already know you exist and roughly what you do. Traditional search brought explorers. AI search brings people who have just been told you're a strong option. The job of your homepage has shifted from "explain what we do" to "show me the fastest path to what I need."</p>
+
+    <p>That's a significant redesign brief. Most marketing homepages open with a hero section, a tagline, three value props, a testimonials block, and a "learn more" CTA. That structure is designed to orient someone who's never heard of you. A visitor arriving from an AI referral doesn't need orientation — they need navigation.</p>
+
+    <h3>What to actually change</h3>
+
+    <p>A few concrete changes that hold up across site types:</p>
+
+    <ul>
+      <li><strong>Lead with product/tool access, not a pitch.</strong> If someone lands on your homepage already knowing you're a project management tool, the first thing they should see is "Start free trial" or "Log in" — not your tagline about streamlining workflows. The sell already happened in the AI chat.</li>
+      <li><strong>Add a clear navigation bar to your top use cases.</strong> AI referral visitors are landing with a specific problem in mind (the one the chatbot was answering). Get them to the relevant feature or solution in one click. Tabbed navigation or a "What are you trying to do?" prompt works well here.</li>
+      <li><strong>Surface proof without needing to scroll.</strong> Review count, customer logos, a specific stat — above the fold, not five sections down. These visitors are pre-sold but not signed. Friction kills the conversion. Social proof at the top removes friction.</li>
+      <li><strong>Make the pricing link obvious.</strong> A significant portion of AI-referred visitors are in decision mode. Hiding pricing behind a demo request is optimized for a visitor who needs to be nurtured, not for one who's ready to buy.</li>
+    </ul>
+
+    <p>You don't have to rebuild the whole page. Adding a secondary navigation strip below your main hero — "Looking for: [Features] [Pricing] [Integrations] [Case Studies]" — can do a lot of the job without a redesign.</p>
+
+    <h2>The Third Destination Nobody Is Talking About</h2>
+
+    <p>Here's the one that surprised even the researchers. A Previsible analysis of 6.77 million AI-referred sessions found that <strong>28.8% of ChatGPT referrals land on internal site search pages</strong>. Not the homepage. Not a product page. Your internal search.</p>
+
+    <p>Think about what that means. Nearly a third of your AI-referred visitors arrive at your site and immediately type something into your search bar. They're looking for something specific that the AI mentioned but didn't link to directly. And for most sites, internal search is a graveyard — a janky results page with poor relevance, no filtering, and no conversion path.</p>
+
+    <h3>Internal search as an acquisition surface</h3>
+
+    <p>This is probably the highest-leverage, lowest-competition optimization available right now. Most teams haven't touched internal search in years because traditional search was doing that navigation work for them. Visitors who found what they needed on a specific page didn't need to search the site — they were already there.</p>
+
+    <p>That's changed. Start with:</p>
+
+    <ul>
+      <li><strong>Check your top internal search queries in GA4.</strong> These are signals about what AI-referred visitors are looking for that your navigation isn't surfacing. If a lot of people are searching for "pricing" or "integrations with Salesforce," that's a homepage navigation problem.</li>
+      <li><strong>Make the search bar visible above the fold.</strong> Not tucked in the corner of the nav. If 29% of AI-referred visitors are going to use it, treat it like a primary UI element.</li>
+      <li><strong>Return useful results.</strong> If your internal search returns five irrelevant results and a 404, you're losing the conversion at the last moment. Run it for your top 20 queries right now and see what comes back.</li>
+      <li><strong>Add a CTA layer to the results page.</strong> Someone searching "enterprise pricing" is a high-intent visitor. The results page should surface your pricing page prominently and include a "Talk to sales" option alongside the results.</li>
+    </ul>
+
+    <h2>How to Audit Your Current Split</h2>
+
+    <p>Before you rebuild anything, you need to know which version of this problem you have. Pull your data first.</p>
+
+    <h3>The three-part audit</h3>
+
+    <p><strong>1. Map your citation footprint.</strong> What pages is AI citing? Use Semrush's AI Visibility tool or Ahrefs' AI mentions tracker to pull which of your pages are showing up as citations in AI answers. Cross-reference that with your URL structure — are the cited pages deep? Do they have clean natural-language slugs? Are the headings specific?</p>
+
+    <p><strong>2. Pull your AI referral landing pages.</strong> In GA4, create a segment for traffic from chatgpt.com, perplexity.ai, gemini.google.com, and other AI referral sources. Look at the landing pages. What percentage is hitting your homepage? What's hitting internal search? What percentage is actually landing on the cited page?</p>
+
+    <p><strong>3. Check the internal search queries from AI-referred sessions.</strong> GA4 lets you filter site search queries by traffic source. Run it for AI referrals specifically and you'll see exactly what these visitors are looking for that your site isn't making easy to find.</p>
+
+    <p>If you've done this and the data confirms you're in the same position as most sites — citations on deep pages, traffic at the front door, internal search being used heavily — you now have a three-part project: optimize deep pages for citability, rebuild the homepage for pre-informed visitors, and fix internal search as an acquisition surface.</p>
+
+    <p>That's actually a pretty manageable list. None of it requires net-new content. It's all structural.</p>
+
+    <h2>The Organic Visibility Feedback Loop You Need to Understand</h2>
+
+    <p>There's one more dynamic worth flagging. Lily Ray, VP of SEO and AI Search at Amsive, put it clearly in Similarweb's 2026 report: <strong>if your organic visibility dips, your AI search visibility follows</strong>, because the models are less likely to find your content. They're pulling from the same search indexes.</p>
+
+    <p>This creates a feedback loop that cuts in both directions. If you lose organic rankings — through a core update hit, a site migration gone wrong, technical issues — you start losing AI citations too. Your deep pages stop showing up in search, AI models stop citing them, and your homepage AI referrals drop. The whole chain breaks.</p>
+
+    <p>It also means the "SEO is dead, focus on GEO" takes are mostly wrong. GEO (generative engine optimization) and traditional SEO are not competing disciplines — they're feeding the same pipeline. A page that ranks well in search is a page that AI models are more likely to retrieve and cite. Do both. Or more accurately: do SEO well and get GEO almost for free.</p>
+
+    <p>What's genuinely new isn't the content strategy. It's the site architecture. Your deep pages doing one job (being citable), your homepage doing another (converting pre-sold visitors), and your internal search filling the gap between the two — that's the structure that works now.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>The data is pretty unambiguous at this point: AI search has split your site into two completely different entry points serving two completely different audiences. Your deep editorial and documentation pages are getting read by machines and cited in AI answers. Your homepage and internal search are getting hit by humans who arrive already pre-sold.</p>
+
+    <p>Most sites aren't built for either. Their deep pages have weak URLs and vague headings. Their homepage is still pitching to explorers who need convincing. Their internal search is broken.</p>
+
+    <p>Run the audit this week. Pull your GA4 AI referral landing pages, your internal search queries from AI-referred sessions, and whatever citation tracking tool you have access to. The picture that comes back will tell you exactly which of the three problems to fix first. It's probably internal search — it's the most neglected, the fastest to improve, and the one where you're currently losing the most already-converted visitors.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/answer-engine-optimization-guide-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>Answer Engine Optimization: What AEO Actually Is (And Why Most SEO Guides Get It Wrong)</h4>
+      </a>
+      <a href="/blog/agentic-search-optimization-aso-guide-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>Agentic Search Optimization (ASO): How to Get Chosen By AI Agents, Not Just Found</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO & Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
