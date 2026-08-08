@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commodity Content Is Killing Your AI Search Visibility — Here's the Fix — RankSorcery</title>
+<meta name="description" content="A new study shows AI engines actively skip content they can already generate from training data. Here's what commodity content is, how to spot it, and how to fix it.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://ranksorcery.com/blog/commodity-content-ai-search-visibility-fix-2026">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Commodity Content Is Killing Your AI Search Visibility — Here's the Fix">
+<meta property="og:description" content="A new study shows AI engines actively skip content they can already generate from training data. Here's what commodity content is, how to spot it, and how to fix it.">
+<meta property="og:url" content="https://ranksorcery.com/blog/commodity-content-ai-search-visibility-fix-2026">
+<meta property="og:site_name" content="RankSorcery">
+<meta name="theme-color" content="#E8B84B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="/fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/fav/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/fav/favicon-16x16.png">
+<link rel="manifest" href="/fav/site.webmanifest">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0D1117; --bg2: #141B2D; --bg3: #1E2740; --bg4: #243050;
+  --border: rgba(232,184,75,0.13); --border2: rgba(232,184,75,0.22); --border3: rgba(232,184,75,0.35);
+  --text: #E8EAF0; --muted: #8A93A8; --muted2: #6A748A;
+  --accent: #E8B84B; --accent2: #F5D98A; --accent3: #C9902A;
+  --glow: rgba(232,184,75,0.15); --teal: #0ABFBC; --teal2: rgba(10,191,188,0.12);
+  --green: #34d399; --green2: rgba(52,211,153,0.12);
+  --red: #f87171; --amber: #fbbf24; --blue: #60a5fa; --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12); --cyan: #0ABFBC; --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.7; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; }
+
+.article-wrap { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 56px 24px 80px; }
+.back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.82rem; text-decoration: none; margin-bottom: 32px; transition: color .2s; }
+.back-link:hover { color: var(--accent); }
+
+.article-header { margin-bottom: 40px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber  { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green  { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.tag-blue   { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.25); }
+.tag-orange { background: rgba(251,146,60,0.1); color: #fb923c; border: 1px solid rgba(251,146,60,0.25); }
+.tag-teal   { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+
+.article-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; color: var(--text); margin: 16px 0 20px; }
+.article-meta { display: flex; align-items: center; gap: 16px; font-size: 0.8rem; color: var(--muted2); flex-wrap: wrap; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.article-meta span { display: flex; align-items: center; gap: 5px; }
+
+.article-hero { width: 100%; height: 280px; background: linear-gradient(135deg, #0d1420 0%, #141B2D 50%, #0a1018 100%); border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 5rem; margin-bottom: 40px; position: relative; overflow: hidden; }
+.article-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 40%, rgba(232,184,75,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 70%, rgba(10,191,188,0.15) 0%, transparent 45%); }
+.article-hero::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.hero-icon { position: relative; z-index: 1; filter: drop-shadow(0 0 30px rgba(232,184,75,0.5)); }
+
+.article-body { font-size: 1rem; line-height: 1.75; color: var(--text); }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text); margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin: 28px 0 12px; }
+.article-body p { margin-bottom: 18px; color: var(--muted); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body a:hover { color: var(--accent2); }
+.article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--muted); }
+.article-body li { margin-bottom: 8px; }
+.article-body blockquote { border-left: 3px solid var(--accent); padding: 12px 20px; background: rgba(232,184,75,0.05); border-radius: 0 8px 8px 0; margin: 24px 0; font-style: italic; color: var(--muted); }
+
+.callout { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 24px; margin: 28px 0; }
+.callout-title { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.callout p { margin: 0; font-size: 0.9rem; }
+
+.tldr-box { background: linear-gradient(135deg, rgba(232,184,75,0.07), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.2); border-radius: var(--radius); padding: 24px; margin-bottom: 36px; }
+.tldr-box h3 { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.tldr-box ul { margin: 0 0 0 20px; }
+.tldr-box li { font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+
+.cta-box { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid rgba(232,184,75,0.22); border-radius: var(--radius); padding: 32px; text-align: center; margin-top: 48px; }
+.cta-box h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.cta-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 20px; }
+.cta-btn { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700; padding: 12px 28px; border-radius: 10px; text-decoration: none; transition: background .2s, transform .15s; }
+.cta-btn:hover { background: var(--accent2); transform: translateY(-2px); }
+
+.related-posts { margin-top: 56px; }
+.related-posts h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted2); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.related-posts h3::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.related-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; display: block; }
+.related-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.related-card .rc-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--accent); letter-spacing: 0.06em; margin-bottom: 8px; }
+.related-card h4 { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; line-height: 1.35; color: var(--text); }
+
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 600px) {
+  .related-grid { grid-template-columns: 1fr; }
+  .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">SEO Audit</a>
+    <a href="/keyword-volume.html">Keywords</a>
+    <a href="/competitor.html">Competitor</a>
+    <a href="/blog.html" class="active">Blog</a>
+    <a href="/" class="nav-cta">Free Audit →</a>
+  </div>
+</nav>
+
+<div class="article-wrap" style="animation: fadeUp .5s ease both;">
+  <a href="/blog.html" class="back-link">← Back to Blog</a>
+
+  <header class="article-header">
+    <span class="tag tag-amber">📝 Content Strategy</span>
+    <h1>Commodity Content Is Killing Your AI Search Visibility — Here's the Fix</h1>
+    <div class="article-meta">
+      <span>📅 August 2, 2026</span>
+      <span>⏱ 10 min read</span>
+      <span>✍️ RankSorcery Team</span>
+    </div>
+  </header>
+
+  <div class="article-hero">
+    <span class="hero-icon">📊</span>
+  </div>
+
+  <div class="tldr-box">
+    <h3>⚡ TL;DR</h3>
+    <ul>
+      <li>A July 2026 study found AI engines actively <strong>avoid citing content they can already generate from their own training data</strong> — aka "commodity content."</li>
+      <li>The highest AI-cited pages had significantly <strong>lower commodity content scores</strong> than the top-ranked traditional SEO pages for the same queries.</li>
+      <li>Generic "listicle" posts, definition articles, and "best practices" content are nearly invisible to AI — even if they rank #1 on Google.</li>
+      <li>The fix: original research, first-hand experience, contrarian takes, and proprietary data are what AI actually cites.</li>
+    </ul>
+  </div>
+
+  <article class="article-body">
+
+    <p>Here's something that should bother you: your best-performing blog post — the one sitting at position #2 on Google, pulling in a few thousand organic visits a month — might be completely invisible in ChatGPT, Perplexity, and Google AI Mode. Not because it's bad. Because AI already knows everything in it.</p>
+
+    <p>A study released in July 2026 by Flying V Group and GEO Genius looked at what actually separates content that gets cited in AI answers from content that gets ignored. They analyzed pages across four large online publishers, compared AI-cited pages against top-10 Google ranked pages for the same queries, and measured something they called a "commodity content score" — a metric for how saturated, replicated, and well-trodden a piece of content is.</p>
+
+    <p>The finding was pretty stark: <strong>pages that earned the most AI visibility consistently had lower commodity content scores than the pages dominating traditional search.</strong> In other words, what helps you rank on Google and what gets you cited in AI are increasingly two different things.</p>
+
+    <h2>What the Study Actually Found</h2>
+
+    <p>The core insight from the Flying V Group / GEO Genius research comes down to how LLMs decide when to cite a source. When an AI is answering a question, it draws on two sources: its training data, and live retrieval (when it's available). The training data is vast — it's seen billions of pages, including probably every "how to do keyword research" listicle ever written.</p>
+
+    <p>So when you ask an AI "what is keyword research?", it doesn't need to cite anyone. It already knows. It'll just answer. But if you ask it something more specific — like "what keyword research strategies actually worked after the May 2026 core update for e-commerce sites" — it has less baked-in knowledge, and it needs to find and cite sources that fill the gap.</p>
+
+    <p>That's the mechanism the commodity content score is capturing. <strong>High commodity content score = the AI can generate this itself. Low commodity content score = the AI needs to borrow from your content.</strong></p>
+
+    <p>Across all four publishers studied, the pattern held. The pages getting cited most in AI answers were the ones with original data, specific case studies, proprietary research, or clear points of view that weren't just recombinations of common knowledge. The #1 ranked Google pages for the same queries often had high commodity scores — lots of well-organized, technically correct information that any LLM could produce on its own.</p>
+
+    <h2>What "Commodity Content" Actually Looks Like</h2>
+
+    <p>This is where I think a lot of SEOs are going to feel uncomfortable, because commodity content isn't bad content. It's often quite good. It's well-structured, covers the topic thoroughly, answers the search intent. But it's all information the AI already has.</p>
+
+    <h3>The telltale signs</h3>
+
+    <p>If you look at most content calendars — including ones at decent-sized companies — you'll see a lot of stuff that fits this pattern:</p>
+
+    <ul>
+      <li><strong>"What is [term]?" definition posts</strong> — The AI knows what technical SEO is. Citing your article adds nothing.</li>
+      <li><strong>"X tips for Y" listicles</strong> — If tips 1-10 are things everyone's been writing about for three years, the AI can just write them itself.</li>
+      <li><strong>Topic overviews without data</strong> — "Here's everything you need to know about link building" — if it's 2,000 words of well-organized general advice, the AI skips it.</li>
+      <li><strong>Rephrased research from other sources</strong> — Summarizing a Semrush study without adding any interpretation or original framing. The AI can go to the original.</li>
+      <li><strong>Best practices guides</strong> — Widely agreed-upon practices that everyone in the industry already knows.</li>
+    </ul>
+
+    <p>None of these are inherently wrong for traditional SEO. They can still rank. They can still drive traffic. But they're low-value as far as AI citation is concerned, because the AI doesn't need them.</p>
+
+    <h3>What makes content non-commodity</h3>
+
+    <p>The opposite of commodity content is anything that gives the AI something it genuinely couldn't produce without you. That's a shorter list:</p>
+
+    <ul>
+      <li><strong>Original research and proprietary data</strong> — If you ran a survey, analyzed your client portfolio, or tracked something over time that nobody else has access to, that's yours.</li>
+      <li><strong>First-hand experience and case studies</strong> — "We tried X on a client site in this exact industry, here's what happened." That's not in the training data.</li>
+      <li><strong>Contrarian or non-consensus takes</strong> — If your position is something most people disagree with (and you can back it up), that's a differentiated signal.</li>
+      <li><strong>Highly specific, time-sensitive analysis</strong> — Analysis of a recent event that happened after the model's training cutoff is, by definition, not in the training data.</li>
+      <li><strong>Named expert quotes and interviews</strong> — Real quotes from real people the AI can attribute. Attributed expertise is a citation magnet.</li>
+    </ul>
+
+    <div class="callout">
+      <div class="callout-title">💡 Quick Take</div>
+      <p>A quick gut check: can you imagine ChatGPT writing this post without needing your source? If the answer is yes, your commodity content score is probably high. If the answer is "no, it'd need to cite us," you're in good shape.</p>
+    </div>
+
+    <h2>Why This Matters More Than You Think Right Now</h2>
+
+    <p>I know the instinct is to say "well, traditional Google rankings still matter, so commodity content is fine." And that's true — for now. But the trend lines here are pretty uncomfortable.</p>
+
+    <p>AI Overviews now trigger on roughly 48% of tracked queries, up significantly from a year ago. Google AI Mode crossed 1 billion monthly users in 2026. ChatGPT referral traffic jumped 150% in a single quarter after OpenAI made links more prominent in answers. Perplexity is doing hundreds of millions of queries a month. <strong>AI is where an increasing share of your potential audience is getting their answers</strong> — and if your content isn't getting cited, you're not in that conversation at all.</p>
+
+    <p>There's also a compounding effect: AI citation tends to build brand recognition in a way that traditional rankings don't. When AI answers a query and cites your site by name, users remember the brand. That translates to direct traffic, branded searches, and over time, more direct audience relationships. Commodity content doesn't capture any of that even when it ranks.</p>
+
+    <p>The sites that are going to be in trouble are the ones that scaled heavily on keyword-driven, AI-assisted content over the past two years — lots of pages, good search intent coverage, technically competent, but all basically what an LLM could generate itself. That content may continue to rank for a while. But it's not building AI visibility, and Google's continued push toward AI answers means those rankings are increasingly fragile anyway.</p>
+
+    <h2>How to Audit Your Own Site's Commodity Content Score</h2>
+
+    <p>GEO Genius has a tool for measuring commodity content scores directly, and they're expanding access via a waitlist. But you don't need a fancy tool to start identifying the problem in your own content. Here's a practical audit you can do yourself:</p>
+
+    <h3>The ChatGPT test</h3>
+
+    <p>Take the title and core premise of each major piece of content on your site. Ask ChatGPT (or Claude, or Gemini) the same question your article answers. Then compare the AI's answer to your article.</p>
+
+    <p>If the AI gives you 80% of what's in your article without citing anyone, your content is commodity. If the AI says "I don't have specific data on this" or gives a much more generic answer, your content has genuine differentiation.</p>
+
+    <h3>The "why would AI cite this?" filter</h3>
+
+    <p>For each piece of content, answer this honestly: <strong>What does this article have that ChatGPT couldn't write itself?</strong></p>
+
+    <ul>
+      <li>Original data or research? ✓</li>
+      <li>A specific case study with results? ✓</li>
+      <li>Expert quotes or attributed opinions? ✓</li>
+      <li>Analysis of something that happened recently? ✓</li>
+      <li>A clearly stated and defended contrarian position? ✓</li>
+    </ul>
+
+    <p>If you can't check off at least one of those, the piece probably won't get cited. That doesn't mean delete it — there may still be traditional SEO value. But it means you know which pieces to prioritize for upgrading.</p>
+
+    <h3>Check your AI impressions in Search Console</h3>
+
+    <p>Google's new Generative AI report in Search Console (rolling out now to larger sites first) shows impressions from AI Overviews and AI Mode separately from traditional search. Pull that report and see which pages are actually getting AI visibility. You'll probably notice quickly that the pattern matches what this study found — original, specific content punching way above its traditional-ranking weight, and broad topic pages getting zero AI impressions despite ranking well.</p>
+
+    <h2>How to Fix It: Upgrading Commodity Content</h2>
+
+    <p>The good news is you don't have to throw out everything you've built. Most commodity content can be upgraded rather than replaced. Here's what actually moves the needle:</p>
+
+    <h3>Add original data to existing posts</h3>
+
+    <p>Even a small survey of your own audience or a quick analysis of your own client data transforms a commodity post into something citable. A post titled "Email Open Rates Are Down — Here's What Our Data From 47 Clients Shows" is genuinely different from "Email Open Rate Benchmarks for 2026" even if they cover the same general topic.</p>
+
+    <h3>Add first-person case studies and results</h3>
+
+    <p>Stop writing about what "brands should do" and start writing about what you or your clients actually did. Results, timelines, and specific numbers are the fastest way to differentiate. "We added structured FAQ schema to 12 product pages. AI Overviews impressions went from 0 to ~340/month in six weeks" is not commodity. It's a result no AI could have invented.</p>
+
+    <h3>Take clearer positions</h3>
+
+    <p>One of the reasons so much content has high commodity scores is that it's deliberately non-committal. It covers "both sides." It hedges everything. Commodity content is often the written equivalent of a shrug. Taking a specific, defensible position — and arguing for it clearly — is inherently differentiated, because not everyone agrees. That's the point.</p>
+
+    <h3>Interview real humans with names</h3>
+
+    <p>Attributed expert quotes are surprisingly powerful AI citation signals. If your article includes "Sarah Chen, Head of SEO at [Company], told us: '...'", that's information AI can't replicate and will often cite. Add named expert quotes to your highest-traffic pages, especially your most important topic cluster posts.</p>
+
+    <h2>Bottom Line</h2>
+
+    <p>The commodity content study isn't telling us anything we didn't already suspect — it's just quantifying it clearly enough that you can't ignore it. AI engines cite sources that give them something they don't already have. If your content is well-organized, covers the topic thoroughly, and reads like a solid summary of everything written about the topic in the last few years, congratulations — the AI already wrote that. It doesn't need you.</p>
+
+    <p>The fix isn't complicated, but it does require actually having something original to say. Run the audit. Figure out which of your pages have a genuine "why would AI cite this?" answer. Start there. Upgrade with original data, real case studies, clear positions, and named experts. This isn't about gaming AI — it's just about actually writing things that are worth reading, which turns out is exactly what AI citation rewards.</p>
+
+    <div class="cta-box">
+      <h3>🧪 Check Your Site's SEO Health</h3>
+      <p>Run a free 60-factor audit on your site. No login, no credit card. Just results.</p>
+      <a href="https://ranksorcery.com/" class="cta-btn">Run Free SEO Audit →</a>
+    </div>
+  </article>
+
+  <div class="related-posts">
+    <h3>✦ Related Posts</h3>
+    <div class="related-grid">
+      <a href="/blog/geo-generative-engine-optimization-strategy-2026" class="related-card">
+        <div class="rc-tag">AI Search</div>
+        <h4>GEO Is Not the New SEO — It's Harder: What the 17% Overlap Data Means for Your Strategy</h4>
+      </a>
+      <a href="/blog/ai-referral-traffic-chatgpt-gemini-perplexity-guide-2026" class="related-card">
+        <div class="rc-tag">AI Search Traffic</div>
+        <h4>AI Referral Traffic in 2026: How to Get Your Site Cited by ChatGPT, Gemini &amp; Perplexity</h4>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div style="max-width:900px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="/blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+</body>
+</html>
