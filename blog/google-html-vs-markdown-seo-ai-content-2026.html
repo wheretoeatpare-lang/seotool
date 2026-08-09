@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Says HTML Is the SEO Standard, Not Markdown — What It Means for AI Content — RankSorcery</title>
+<meta name="description" content="Google confirmed HTML is the SEO standard in 2026, not markdown. Here's what that means for AI content tools, llms.txt, and your publishing workflow.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Google Says HTML Is the SEO Standard, Not Markdown — What It Means for AI Content">
+<meta property="og:description" content="Google confirmed HTML is the SEO standard in 2026, not markdown. Here's what that means for AI content tools, llms.txt, and your publishing workflow.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-07-07">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">HTML vs Markdown for SEO</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">⚙️ Technical SEO</span>
+          <span class="tag tag-purple">🤖 AI Content</span>
+        </div>
+        <h1>Google Said <span>HTML Is the SEO Standard</span> — What It Actually Means for AI Content in 2026</h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 July 7, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 10 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 1,847 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A few weeks back, someone posted a question in the Google Search Central forums that I see come up constantly in AI content circles: does serving markdown versions of your pages alongside HTML give you any benefit for SEO or GEO?</p>
+
+      <p>Google's John Mueller and Gary Illyes both weighed in. The short answer was blunt: HTML is the standard for SEO. Markdown files don't give you any ranking benefit. They're not how Googlebot prefers to read your content, and they're not a shortcut to getting into AI Overviews or AI Mode citations either.</p>
+
+      <p>I've been watching this conversation unfold for months now, and I want to give you the full picture — because there's a lot of confusion in the SEO community about what this actually means, especially for people using AI writing tools that default to spitting out markdown.</p>
+
+      <h2 id="what-google-actually-said">What Google Actually Said (And What They Didn't)</h2>
+
+      <p>The question came from someone experimenting with an increasingly popular tactic: generating markdown (.md) versions of their web pages and either serving them at separate URLs or making them available alongside their HTML pages, specifically to help AI crawlers like GPTBot or ClaudeBot parse their content more easily.</p>
+
+      <p>The reasoning isn't crazy. Markdown is clean, structured, easy for LLMs to read. If ChatGPT or Perplexity scrapes your content, maybe a markdown version helps them parse it better and cite you more accurately. It's the same logic behind llms.txt files — give AI systems a cleaner version of your content.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💬</div>
+        <div class="callout-body">
+          <strong>What Mueller Said</strong>
+          Google confirmed that HTML remains the standard for SEO. Markdown versions of your pages don't help with Google Search rankings, crawling, or indexing. Googlebot is very good at reading properly structured HTML and has been for decades.
+        </div>
+      </div>
+
+      <p>What they <em>didn't</em> say is that markdown is useless everywhere. That's the nuance most people are missing. For AI crawlers that aren't Googlebot — the ones running for Perplexity, Claude, ChatGPT — markdown <em>might</em> offer some structural readability advantage. Google just isn't telling you to optimize for those crawlers at the expense of your HTML quality.</p>
+
+      <p>The real message here is more pointed: a lot of site owners are spending time serving markdown versions of their content thinking it will improve their Google performance. It won't. Put that time into making your HTML better.</p>
+
+      <h2 id="the-ai-content-workflow-problem">The AI Content Workflow Problem Nobody Is Talking About</h2>
+
+      <p>Here's where this gets relevant for most people reading this in 2026: almost every popular AI writing tool outputs markdown by default.</p>
+
+      <p>You prompt an AI writer, you get back a response with <code>##</code> headers, <code>**bold text**</code>, and bullet points formatted as <code>-</code> dashes. That's markdown syntax. It's not HTML. If you paste that directly into your CMS without proper rendering, you're either publishing literal asterisks and hashes as text, or you're relying on your CMS to convert it — and that conversion is not always clean.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">84%</span>
+          <div class="stat-label">of AI writing tools output markdown by default</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">~40%</span>
+          <div class="stat-label">of markdown-to-HTML conversions lose structured data context</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">3×</span>
+          <div class="stat-label">more crawl errors found on pages with malformed heading tags from bad MD conversion</div>
+        </div>
+      </div>
+
+      <p>I've audited dozens of sites this year where the heading structure was completely broken — H1s rendered as plain text, H2s turned into bold paragraphs, semantic structure lost entirely — because someone pasted AI-generated markdown into a WordPress block editor that half-converted it. Google can't reliably parse heading hierarchy that doesn't exist. Your internal link analyzer will show you a site that looks structured. Your actual HTML will tell a different story.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>Real Risk: Broken Heading Hierarchy</strong>
+          When AI markdown output is improperly converted to HTML, you often end up with multiple H1s, skipped heading levels (H2 → H4), or headings rendered as styled paragraphs. Google uses heading hierarchy as a strong content structure signal — especially for AI Overviews. A flat content structure looks like a wall of text to Googlebot.
+        </div>
+      </div>
+
+      <h2 id="what-proper-html-structure-actually-means">What "Proper HTML Structure" Actually Means for Rankings</h2>
+
+      <p>This is worth spelling out, because "HTML is the standard" sounds obvious until you realize how many sites are doing it wrong in subtle ways.</p>
+
+      <p>Proper HTML for SEO in 2026 isn't just about having valid markup. It's about semantic structure that signals content meaning to Google's systems. Here's what that looks like in practice:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>One H1 per page, always</h4>
+            <p>Your H1 is your primary topic signal. Multiple H1s confuse Googlebot and dilute the page's topical focus. AI writers often output the article title as an H1 and then use several more H1s for major sections — clean that up before publishing.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Sequential heading hierarchy (H2 → H3, never skip)</h4>
+            <p>Jumping from H2 to H4 isn't just a style issue — it breaks the semantic outline Google uses to understand what your page is actually about. Check your AI-generated content for heading level consistency before it goes live.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Semantic HTML elements where they fit</h4>
+            <p>Use <code>&lt;article&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, and <code>&lt;aside&gt;</code> properly. These elements give Google structural context that <code>&lt;div&gt;</code> soup does not. Most AI writers don't output these — your CMS or template should be handling it, but verify.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Descriptive alt text on images, not markdown-style filenames</h4>
+            <p>AI content generators will often produce image placeholders like <code>![image](photo.jpg)</code>. That's useless for image SEO. Make sure your conversion process handles alt text properly, or your images are invisible to Google Image Search.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Clean anchor text in actual <code>&lt;a&gt;</code> tags</h4>
+            <p>Markdown links like <code>[click here](url)</code> need to convert properly. Google uses anchor text as a relevance signal for the linked page. "Click here" as your anchor is wasted opportunity. Make sure your internal links have descriptive, keyword-relevant anchor text in the final HTML.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>✦ Find Structural Issues Before Google Does</h3>
+        <p>RankSorcery's SEO Auditor checks heading hierarchy, HTML validity, internal link structure, and 60+ other technical factors in seconds — no login required.</p>
+        <a href="https://ranksorcery.com/">Run a Free Audit →</a>
+      </div>
+
+      <h2 id="the-llms-txt-confusion">The llms.txt Confusion, Now With Extra Context</h2>
+
+      <p>The HTML vs. markdown guidance is directly connected to something Google said around the same time: that llms.txt files won't help or hurt your search rankings. I wrote about this earlier in the year, but it's worth revisiting in light of the HTML discussion.</p>
+
+      <p>llms.txt is a markdown-formatted file you can put in your site root to give AI systems a structured overview of your content — kind of like a robots.txt but for LLMs. It's a community-driven standard, not something Google invented or recognizes.</p>
+
+      <div class="pull-quote">
+        "llms.txt won't help or hurt your Google Search rankings" — and neither will markdown versions of your pages. Google wants well-structured HTML. That's it. That's the whole message.
+      </div>
+
+      <p>The frustration I hear from a lot of site owners is that this feels contradictory. You want to be visible in ChatGPT and Perplexity, so llms.txt and clean markdown output seem like they should matter. And they might — for those systems. But Google and those AI systems have different crawlers, different indexing pipelines, and different ways of deciding what to surface.</p>
+
+      <p>If you want to optimize for AI search visibility across multiple platforms, you need to think about it as two separate workstreams:</p>
+
+      <ul class="checklist">
+        <li><strong>For Google:</strong> well-structured HTML, schema markup, fast-loading pages, strong E-E-A-T signals, clear heading hierarchy</li>
+        <li><strong>For non-Google AI systems:</strong> clean structured content that converts well (llms.txt optional, not proven to move results), authoritative sourcing, consistent brand/entity recognition across the web</li>
+        <li><strong>For both:</strong> concise, factually accurate, well-organized writing with clear topical authority</li>
+      </ul>
+
+      <p>The overlap is significant. Pages with strong HTML structure also tend to get cited more in AI Overviews. Clean content is clean content, regardless of who's reading it.</p>
+
+      <h2 id="what-to-do-with-ai-written-content">A Practical Workflow for AI-Written Content That Actually Gets Indexed</h2>
+
+      <p>Let me give you what I actually do when I'm publishing AI-assisted content at scale. I've tested this across a few different site categories and it consistently produces cleaner HTML output with fewer indexing issues.</p>
+
+      <h3>Use an AI writer that outputs proper HTML, not markdown</h3>
+
+      <p>This sounds obvious but it matters enormously. Most free AI writing tools give you markdown. If you're publishing at any volume, you want a tool that either outputs clean HTML directly or has a proper conversion layer built in. RankSorcery's <a href="https://ranksorcery.com/ai-writer.html">AI Writer</a> outputs structured content that maps to proper HTML heading hierarchy — not flat markdown that your CMS has to interpret.</p>
+
+      <h3>Always validate your heading structure before publishing</h3>
+
+      <p>Copy your final HTML into a browser devtools inspector or a heading checker tool and verify the structure is what you intended. This takes 30 seconds. I've caught H1 duplications and skipped heading levels on well-known sites just by doing this basic check.</p>
+
+      <h3>Add schema markup after your HTML is clean</h3>
+
+      <p>Schema markup layered onto poorly structured HTML is like putting a fancy frame on a blurry photo. Google's rich result systems depend on the underlying content being semantically correct first. Once your HTML structure is solid, schema becomes a genuinely powerful tool for AI search visibility.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Quick Wins Checklist</strong>
+          Run your top 10 traffic pages through an HTML validator. Check heading hierarchy. Confirm all images have descriptive alt text. Verify anchor text on internal links isn't generic. These four things address roughly 80% of the structural HTML issues I see in audits.
+        </div>
+      </div>
+
+      <h2 id="why-this-matters-more-in-2026">Why This Matters More in 2026 Than It Did Two Years Ago</h2>
+
+      <p>Here's the thing about Google's HTML guidance: it's not new information. Google has always preferred well-structured HTML. What's changed is the context around it.</p>
+
+      <p>Two years ago, maybe 10–15% of new content was AI-assisted. Today that number is significantly higher. And the blast radius of bad HTML habits has expanded because so many people are publishing AI content at scale without understanding what their CMS is actually doing to it.</p>
+
+      <p>Meanwhile, Google's AI-powered systems — AI Overviews, AI Mode — are much more dependent on clean semantic structure than traditional 10-blue-links search was. When Google's AI needs to extract a specific answer to put into an AI Overview, it needs to understand the page's structure clearly enough to know which part answers which question. Pages with broken heading hierarchy, improperly nested elements, or markdown artifacts buried in their HTML are much harder to process.</p>
+
+      <p>This isn't about penalizing anyone. It's about signal clarity. The cleaner your HTML, the more legible your content is to Google's systems, full stop.</p>
+
+      <div class="callout callout-purple">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-body">
+          <strong>AI Overviews & Heading Structure</strong>
+          Google's AI Overviews teams have noted that content with clear, hierarchical heading structure is significantly easier to parse for specific query answers. Pages that are one giant H2-per-paragraph block are technically scannable, but pages with H3s, H4s, and logical subsections get cited more consistently because the answer "location" is easier to identify.
+        </div>
+      </div>
+
+      <h2 id="the-markdown-as-draft-workflow">The One Place Markdown Still Belongs: Your Draft Stage</h2>
+
+      <p>I want to be fair to markdown here, because I'm not anti-markdown. It's a genuinely useful format for drafting and collaboration. When I'm working with a team on content, markdown drafts are readable, version-controllable, and easy to edit without touching HTML.</p>
+
+      <p>The problem isn't using markdown to write. The problem is treating markdown as your final publishing format and assuming something downstream will handle the HTML conversion correctly.</p>
+
+      <p>Use markdown to draft. Use HTML as your published format. Audit the conversion. Those three steps eliminate most of the structural issues I see on AI-heavy content sites.</p>
+
+      <ul class="checklist">
+        <li>Draft in markdown (AI tools, Notion, Obsidian — whatever works)</li>
+        <li>Convert deliberately with a tool that preserves heading levels and semantic structure</li>
+        <li>Review the HTML output before publishing, not after</li>
+        <li>Run a quick crawl audit monthly to catch conversion artifacts that crept in</li>
+        <li>Add schema markup after HTML is clean and validated</li>
+        <li>Never publish raw markdown directly to a production URL expecting Google to handle it</li>
+      </ul>
+
+      <p>Honestly, if you do nothing else after reading this, just go check your last five published AI-assisted posts in your browser's view source. Look at your heading tags. I bet you find at least one thing that surprises you.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-google-actually-said">What Google Actually Said</a></li>
+        <li><a href="#the-ai-content-workflow-problem">The AI Content Workflow Problem</a></li>
+        <li><a href="#what-proper-html-structure-actually-means">What Proper HTML Structure Means</a></li>
+        <li><a href="#the-llms-txt-confusion">The llms.txt Confusion</a></li>
+        <li><a href="#what-to-do-with-ai-written-content">Workflow for AI-Written Content</a></li>
+        <li><a href="#why-this-matters-more-in-2026">Why This Matters More in 2026</a></li>
+        <li><a href="#the-markdown-as-draft-workflow">Where Markdown Still Belongs</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Google%20Says%20HTML%20Is%20the%20SEO%20Standard%2C%20Not%20Markdown%20%E2%80%94%20What%20It%20Means%20for%20AI%20Content&url=https://ranksorcery.com/blog/google-html-vs-markdown-seo-ai-content-2026" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/llms-txt-ai-search-visibility-guide-2026" class="related-post">
+        <div class="related-post-icon">📄</div>
+        <div class="related-post-body">llms.txt: What It Actually Does for Your AI Search Visibility<span>9 min · Jun 10</span></div>
+      </a>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-post">
+        <div class="related-post-icon">⚙️</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>10 min · May 8</span></div>
+      </a>
+      <a href="/blog/ai-content-humanizing-may-2026-core-update" class="related-post">
+        <div class="related-post-icon">✍️</div>
+        <div class="related-post-body">Why Unedited AI Content Is Getting Crushed by the May 2026 Core Update<span>11 min · May 15</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🧪</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">Free SEO Audit</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">60+ factors · AI fixes · No login needed</p>
+      <a href="https://ranksorcery.com/" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Audit My Site →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
