@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost Citations: When AI Search Uses Your Content But Forgets Your Name — RankSorcery</title>
+<meta name="description" content="40% of AI citations don't name the brand. Your content is feeding Google AI Mode and Perplexity — but your brand isn't getting the credit. Here's how to fix it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="Ghost Citations: When AI Search Uses Your Content But Forgets Your Name">
+<meta property="og:description" content="40% of AI citations don't name the brand. Your content is feeding Google AI Mode and Perplexity — but your brand isn't getting the credit. Here's how to fix it.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-07-08">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 16px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; padding-top: 64px; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: .45; }
+nav.main-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; background: rgba(13,17,23,0.88); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); gap: 1rem; }
+.logo { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800; color: var(--accent); text-decoration: none; flex-shrink: 0; letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap; }
+.logo-icon { width: 30px; height: 30px; background: linear-gradient(135deg, var(--accent), var(--teal)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; }
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a { color: var(--muted); text-decoration: none; font-size: 0.82rem; font-weight: 500; transition: color 0.2s, background 0.2s; padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap; }
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta { background: var(--accent) !important; color: var(--bg) !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; padding: 0.45rem 1.1rem !important; border-radius: 8px; font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0; transition: background 0.2s, transform 0.15s !important; }
+.nav-cta:hover { background: var(--accent2) !important; transform: translateY(-1px) !important; }
+.nav-hamburger { display: none; flex-direction: column; justify-content: center; gap: 5px; background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; }
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-mobile-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: rgba(13,17,23,0.98); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem; z-index: 190; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s; max-height: calc(100vh - 64px); overflow-y: auto; }
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a { color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s; }
+.nav-mobile-menu a:hover { color: var(--text); }
+.nav-mobile-menu a.active { color: var(--accent); }
+.nav-mobile-cta { margin-top: 0.75rem !important; background: var(--accent) !important; color: var(--bg) !important; text-align: center; padding: 0.85rem !important; border-radius: 10px !important; border-bottom: none !important; font-family: 'Syne', sans-serif; font-weight: 700 !important; }
+.article-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 1fr 300px; gap: 56px; align-items: start; position: relative; z-index: 1; }
+.article-main { min-width: 0; }
+.article-hero { background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; margin-bottom: 40px; position: relative; }
+.article-hero-graphic { position: absolute; inset: 0; background: radial-gradient(circle at 20% 50%, rgba(232,184,75,0.18) 0%, transparent 55%), radial-gradient(circle at 80% 30%, rgba(10,191,188,0.12) 0%, transparent 45%); }
+.article-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px); background-size: 40px 40px; }
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.75rem, 3.5vw, 2.6rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text); margin-bottom: 16px; }
+.article-hero h1 span { background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.article-hero-meta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; font-size: 0.8rem; color: var(--muted); margin-top: 20px; }
+.article-hero-meta .author { display: flex; align-items: center; gap: 8px; }
+.author-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0; }
+.meta-sep { color: var(--border2); }
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb span { color: var(--muted2); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 { font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin: 2.75rem 0 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+.article-body h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.015em; color: var(--text); margin: 2rem 0 0.75rem; }
+.article-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+.article-body a:hover { color: var(--accent2); }
+.article-body strong { color: var(--text); font-weight: 600; }
+.article-body em { color: var(--muted); font-style: italic; }
+.callout { border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0; display: flex; gap: 1rem; align-items: flex-start; }
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-purple { background: var(--purple2); border: 1px solid rgba(167,139,250,0.2); }
+.callout-purple .callout-body strong { color: var(--purple); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1rem; text-align: center; }
+.stat-val { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; background: linear-gradient(120deg, var(--accent), var(--teal)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; }
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+ul.checklist { list-style: none; padding: 0; margin: 1.5rem 0; }
+ul.checklist li { padding: 0.5rem 0 0.5rem 2rem; position: relative; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+ul.checklist li:last-child { border-bottom: none; }
+ul.checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0; }
+.step { display: flex; gap: 1.25rem; align-items: flex-start; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.9rem; color: var(--bg); flex-shrink: 0; }
+.step-body { flex: 1; }
+.step-body h4 { margin-top: 4px; }
+.inline-cta { background: linear-gradient(135deg, rgba(232,184,75,0.08), rgba(10,191,188,0.05)); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; margin: 2.5rem 0; text-align: center; }
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.25rem; }
+.inline-cta a { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; padding: 10px 22px; border-radius: 8px; text-decoration: none; transition: background 0.2s; }
+.inline-cta a:hover { background: var(--accent2); }
+.pull-quote { border-left: 3px solid var(--accent); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15rem; font-style: italic; color: var(--accent2); line-height: 1.6; }
+.author-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.75rem 2rem; margin-top: 3rem; display: flex; gap: 1.25rem; align-items: flex-start; }
+.author-box-avatar { width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--accent), var(--teal)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--bg); }
+.author-box-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+.author-box-body p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+.article-sidebar { position: sticky; top: 84px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-widget { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; }
+.widget-title { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 12px; }
+.toc-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.toc-list a { display: block; padding: 5px 8px; border-radius: 7px; font-size: 0.82rem; color: var(--muted); text-decoration: none; transition: color 0.2s, background 0.2s; }
+.toc-list a:hover, .toc-list a.active { color: var(--accent); background: rgba(232,184,75,0.06); }
+.toc-list li.sub a { padding-left: 20px; font-size: 0.79rem; }
+.share-btns { display: flex; gap: 8px; flex-direction: column; }
+.share-btn { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 9px; font-size: 0.8rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: background 0.2s, color 0.2s; }
+.share-btn-twitter { background: rgba(255,255,255,0.04); color: var(--text); border: 1px solid var(--border); }
+.share-btn-twitter:hover { background: rgba(255,255,255,0.08); }
+.share-btn-copy { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px solid var(--border); }
+.share-btn-copy:hover { color: var(--accent); border-color: var(--border2); }
+.related-post { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); text-decoration: none; align-items: center; }
+.related-post:last-child { border-bottom: none; padding-bottom: 0; }
+.related-post-icon { width: 36px; height: 36px; border-radius: 9px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.related-post-body { font-size: 0.8rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+.related-post-body span { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
+.related-post:hover .related-post-body { color: var(--accent); }
+footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 32px 24px; text-align: center; font-size: 0.78rem; color: var(--muted2); }
+footer a { color: var(--muted2); text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--accent); }
+@media (max-width: 900px) { .article-wrap { grid-template-columns: 1fr; gap: 40px; padding: 32px 20px 60px; } .article-sidebar { position: static; } .stat-row { grid-template-columns: 1fr 1fr; } .nav-links, .nav-cta { display: none; } .nav-hamburger { display: flex; } .nav-mobile-menu { display: flex; } .article-hero-inner { padding: 32px 24px 28px; } }
+@media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } .step { flex-direction: column; gap: 0.75rem; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="main-nav" aria-label="Main navigation">
+  <a href="https://ranksorcery.com/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+    <a href="https://ranksorcery.com/keyword-volume.html">📊 Keywords</a>
+    <a href="https://ranksorcery.com/competitor.html">⚔️ Competitor</a>
+    <a href="https://ranksorcery.com/ai-search.html">🤖 AI Search</a>
+    <a href="../blog.html" class="active">📝 Blog</a>
+    <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+    <a href="https://ranksorcery.com/" class="nav-cta">Free SEO Audit →</a>
+  </div>
+  <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <a href="https://ranksorcery.com/">🧪 SEO Auditor</a>
+  <a href="https://ranksorcery.com/keyword-volume.html">📊 Keyword Research</a>
+  <a href="https://ranksorcery.com/background-remover.html">✂️ Background Remover</a>
+  <a href="../blog.html" class="active">📝 Blog</a>
+  <a href="mailto:webmasterjamez@gmail.com">✉️ Contact</a>
+  <a href="https://ranksorcery.com/" class="nav-mobile-cta">Run Free SEO Audit →</a>
+</div>
+
+<!-- READING PROGRESS -->
+<div class="reading-bar"><div class="reading-progress" id="reading-progress"></div></div>
+
+<!-- MAIN -->
+<div class="article-wrap">
+  <main class="article-main">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <a href="https://ranksorcery.com/">Home</a>
+      <span>›</span>
+      <a href="../blog.html">Blog</a>
+      <span>›</span>
+      <span style="color:var(--text);">AI Search Visibility</span>
+    </div>
+
+    <!-- Hero -->
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-cyan">🤖 AI Search</span>
+          <span class="tag tag-purple">👻 Brand Visibility</span>
+        </div>
+        <h1>Ghost Citations: When AI Search <span>Uses Your Content But Forgets Your Name</span></h1>
+        <div class="article-hero-meta">
+          <div class="author">
+            <div class="author-avatar">RS</div>
+            <div>
+              <div style="font-weight:600;color:var(--text);">James Reyes</div>
+              <div style="font-size:0.72rem;">RankSorcery Team</div>
+            </div>
+          </div>
+          <span class="meta-sep">·</span>
+          <span>📅 July 8, 2026</span>
+          <span class="meta-sep">·</span>
+          <span>⏱ 11 min read</span>
+          <span class="meta-sep">·</span>
+          <span>👁 2,147 views</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Body -->
+    <article class="article-body">
+
+      <p>A client called me last week, genuinely confused. He'd been tracking his AI search visibility for a few months, and his team kept finding his articles quoted almost word-for-word inside Google AI Mode responses. Great, right? Except when they looked at the citation, it didn't say his company name. Sometimes it linked to his site. Sometimes it didn't. And when it did link, it just showed the URL — not the brand.</p>
+
+      <p>He asked me: "Is this actually helping us?" Honestly? Less than it should be.</p>
+
+      <p>This isn't an isolated case. A study published in late June 2026 analyzed AI search citations across multiple LLMs and found that <strong>roughly 40% of AI citations leave the source brand completely unnamed</strong>. The content gets used. The insight gets surfaced. The brand gets nothing. Researchers are calling these "ghost citations" — and they're one of the more insidious problems in AI search right now.</p>
+
+      <div class="callout callout-red">
+        <div class="callout-icon">👻</div>
+        <div class="callout-body">
+          <strong>The Ghost Citation Problem</strong>
+          Around 40% of AI-generated responses that cite external sources do so without naming the brand behind that content. Your expertise feeds the answer. Your domain gets the URL. Your brand gets forgotten.
+        </div>
+      </div>
+
+      <h2 id="what-ghost-citations-are">What a Ghost Citation Actually Looks Like</h2>
+
+      <p>When Google AI Mode or Perplexity pulls from your content, the citation behavior isn't consistent. Sometimes you get a clean inline mention: "According to [Your Brand], the best way to..."  — that's a real citation. Your brand name is there. People see it. It sticks.</p>
+
+      <p>A ghost citation looks different. The AI summarizes your content accurately, might even include a footnote link to your page, but the text just says "according to a recent study" or "as one marketing publication noted" or — and this is the one that stings — nothing at all. Your URL appears as a source reference at the bottom. Technically you're cited. Practically, you're invisible.</p>
+
+      <p>I've been watching this pattern for months. Ghost citations tend to cluster around a few specific scenarios:</p>
+
+      <ul class="checklist">
+        <li>Your content is authoritative on the topic but your brand is low-recognition (common for small publishers and niche blogs)</li>
+        <li>Your page title doesn't reinforce your brand name — it's descriptive, not branded</li>
+        <li>Your content lacks clear entity markup that ties the information back to your organization</li>
+        <li>The AI model is unfamiliar with your brand as a distinct entity in its training data</li>
+        <li>You're citing a stat or claim originally sourced from someone else — the AI cites the original, not you</li>
+      </ul>
+
+      <p>That last one is brutal, by the way. If you're writing "according to Google's 2025 study, X is true" and the AI knows about that study, it will cite Google — not you. You become just a pass-through. Worth keeping in mind when you structure your original research sections.</p>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-val">40%</span>
+          <div class="stat-label">AI citations that leave the source brand unnamed</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">63%</span>
+          <div class="stat-label">Brand-specific AI searches featuring one of five familiar brands</div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">~50%</span>
+          <div class="stat-label">Google searches now showing AI Overviews — and climbing</div>
+        </div>
+      </div>
+
+      <h2 id="why-brand-familiarity-matters">Why AI Models Favor Brands They Already Know</h2>
+
+      <p>Here's the uncomfortable truth: AI search isn't neutral. The LLMs powering Google AI Mode, Perplexity, ChatGPT Search, and others have built-in familiarity biases. A separate study released this month found that 63% of brand-specific AI search responses featured one of just five well-known brands in each industry category.</p>
+
+      <p>Think about what that means for the other 95+ companies competing in those same categories. They might be producing better content. They might have newer data. But the AI has seen the big brands in thousands of training documents, news articles, forum posts, and product reviews. Brand recognition in training data creates a gravitational pull that's hard to overcome with content quality alone.</p>
+
+      <div class="pull-quote">
+        "The AI doesn't just reward expertise. It rewards brands it's been taught to trust — which is a very different thing."
+      </div>
+
+      <p>This is why SEOs who've focused purely on getting citations are now waking up to a second problem: getting cited as a brand, not just as a URL. Getting your content in the answer is step one. Making sure the AI says your name is step two — and most people haven't started working on step two yet.</p>
+
+      <h2 id="how-to-become-a-named-citation">How to Turn Ghost Citations Into Named Ones</h2>
+
+      <p>I've been testing various approaches over the past few months with a handful of sites. Here's what actually seems to work:</p>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Brand Your Content at the Entity Level</h4>
+            <p>Add Organization schema markup to every page that clearly links your content to a named entity. Include your <code>name</code>, <code>url</code>, <code>logo</code>, and <code>sameAs</code> properties pointing to your Wikipedia page, Wikidata entry, Crunchbase, and any other authoritative entity sources. The AI models index this — and when they do, they associate your content with a named organization, not just a URL.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Put Your Brand Name in the Data, Not Just the Header</h4>
+            <p>When you publish original research, make your brand name part of the finding itself. Instead of "Our research shows that X% of marketers..." write "[YourBrand] research found that X% of marketers..." Sounds pedantic. But the AI treats this differently — it has the brand name attached to the claim, which makes it much harder to strip out when summarizing.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Build Brand Mentions Across the Web</h4>
+            <p>This is the digital PR angle. Every time your brand name appears on an external site — in a news article, a forum post, a podcast summary, a Reddit thread — that's training data. The more contexts in which an AI model has seen "[YourBrand] + [topic]" together, the more likely it is to use your brand name when citing you on that topic. Guest posts, media mentions, and even thoughtful community participation all contribute to this.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Use Author Entity Markup</h4>
+            <p>The AI models are increasingly attributing content to specific human authors as entities, not just organizations. If your authors have a consistent web presence — a personal site, LinkedIn, speaking credits, published work elsewhere — add Person schema to your articles linking back to them. Author entity strength is one of the signals Google has said matters for E-E-A-T, and it also seems to influence whether AI models cite by name.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Stop Republishing Other People's Stats</h4>
+            <p>Every time you repeat a statistic from a report you didn't write, you're giving the AI a reason to cite the original source instead of you. The fix isn't to stop citing research — it's to make sure you have your own original data points. Even small surveys (50–100 respondents), your own A/B test results, or aggregated client data counts. Own the number and the AI cites you.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="inline-cta">
+        <h3>Are You Getting Ghost Citations Right Now?</h3>
+        <p>RankSorcery's AI Search Visibility tool shows you exactly which AI responses mention your brand, which ones use your content without naming you, and where you're missing from answers entirely.</p>
+        <a href="https://ranksorcery.com/ai-search.html">Check My AI Visibility →</a>
+      </div>
+
+      <h2 id="the-llms-txt-angle">Does llms.txt Actually Help Here?</h2>
+
+      <p>Short answer: maybe, but probably not in the way you're hoping. The <code>llms.txt</code> file is designed to help AI crawlers understand your site structure and what content is most important. It can reduce ghost citations in one specific way — by helping the AI model build a more complete picture of your brand's content inventory, which makes it more likely to recognize you as an established entity on a given topic.</p>
+
+      <p>But it doesn't solve the underlying brand recognition problem. If an AI model has barely encountered your brand in its training data, pointing it at your best articles via <code>llms.txt</code> helps at the crawl level, not at the entity familiarity level. The two things work together, but neither is a magic fix on its own.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>What Actually Moves the Needle</strong>
+          Entity markup + original data + external brand mentions + author credibility. These four things working together is what gets you named citations instead of ghost ones. Any one of them alone is too weak to overcome a brand familiarity gap.
+        </div>
+      </div>
+
+      <h2 id="measuring-ghost-citations">How to Actually Track This</h2>
+
+      <p>Tracking ghost citations is annoying because most standard SEO tools don't surface them. You can't log into Google Search Console and see "ghost citation rate." You have to do a bit of detective work.</p>
+
+      <p>Here's the manual approach I use: run your core money queries through Google AI Mode, Perplexity, and ChatGPT. When a response includes a source that looks like yours (URL, paraphrased content you recognize, or data from your site), note whether your brand name appears in the response text — not just the citation footnote. Track these in a simple spreadsheet: query, AI platform, your content used (yes/no), brand named in response (yes/no).</p>
+
+      <p>If you're doing this at scale, RankSorcery's AI Search Visibility tool automates a lot of this — it tracks which queries your brand appears in across the major AI search platforms, and whether you're being cited by name or just by URL.</p>
+
+      <p>The ratio you're trying to improve is: <strong>(named citations) ÷ (total citations including ghost)</strong>. Most sites I look at are sitting between 45–65% on this metric. The sites doing brand entity work seriously are pushing 75–80%. That gap is worth chasing.</p>
+
+      <h2 id="the-bigger-picture">The Bigger Picture: Awareness vs. Attribution</h2>
+
+      <p>Here's why I think ghost citations matter even beyond the obvious brand-awareness issue. When AI models cite your content without naming you, they're effectively redistributing the credibility you built to the AI platform itself. The user gets the answer, attributes the knowledge to the AI, and your brand gets nothing. You paid for the research, wrote the article, earned the links — and Google AI Mode gets the trust.</p>
+
+      <p>Named citations flip this. When AI Mode says "according to RankSorcery" before giving a piece of advice, a meaningful percentage of users will remember that. Some will search for you directly. Some will click through. Brand search volume is one of the metrics that actually seems correlated with AI search visibility — the brands people recognize and actively search for are the ones the AI keeps naming. It's a compounding effect, for better or worse.</p>
+
+      <p>So the work you do now to become a recognized entity — to have your brand associated with specific topics in as many external contexts as possible — isn't just about vanity metrics. It's about whether AI search helps you build an audience or just strips your expertise and hands it to users with no trail back to you.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">🎯</div>
+        <div class="callout-body">
+          <strong>Your Ghost Citation Audit Checklist</strong>
+          Before the end of this week: (1) Check your top 10 money queries in AI Mode and Perplexity. (2) Note how often your content appears vs. how often your brand name is in the response. (3) Audit your Organization schema — is it present and linked to external entity sources? (4) Count the number of pieces of original data you've published in the last 90 days. Start there.
+        </div>
+      </div>
+
+      <h2 id="what-to-do-this-week">The One Thing Worth Doing This Week</h2>
+
+      <p>If you only do one thing after reading this, make it entity markup. It's the fastest path from invisible-URL-citation to named-brand-citation. Get your Organization schema right — not just the basic name and URL, but the full set: logo, founding date, social profiles, and especially the <code>sameAs</code> links to third-party entity databases like Wikidata and Crunchbase.</p>
+
+      <p>If your brand doesn't have a Wikidata entry, creating one is probably worth 30 minutes of your time. It's free, it establishes your brand as a real-world entity with a persistent identifier, and it gives AI models a canonical reference point when deciding who you are and what you're an authority on.</p>
+
+      <p>Ghost citations aren't going away. As AI search continues eating into organic click share, the difference between being cited with your name and being cited as an anonymous URL will matter more and more. The sites that solve this now will have a structural advantage that's genuinely hard for competitors to replicate quickly.</p>
+
+      <p>Get your name in the answer. That's the whole game.</p>
+
+      <div class="author-box">
+        <div class="author-box-avatar">JR</div>
+        <div class="author-box-body">
+          <h4>James Reyes — RankSorcery</h4>
+          <p>James has been doing SEO for longer than he'd like to admit. He runs RankSorcery and writes about the parts of search that don't make it into the standard playbooks. He's been wrong about a few predictions. He's been embarrassingly right about others.</p>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- SIDEBAR -->
+  <aside class="article-sidebar">
+
+    <!-- TOC -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📋 In This Guide</div>
+      <ul class="toc-list" id="toc">
+        <li><a href="#what-ghost-citations-are">What Ghost Citations Look Like</a></li>
+        <li><a href="#why-brand-familiarity-matters">Why AI Favors Familiar Brands</a></li>
+        <li><a href="#how-to-become-a-named-citation">How to Get Named Citations</a></li>
+        <li><a href="#the-llms-txt-angle">Does llms.txt Help?</a></li>
+        <li><a href="#measuring-ghost-citations">How to Track Ghost Citations</a></li>
+        <li><a href="#the-bigger-picture">Awareness vs. Attribution</a></li>
+        <li><a href="#what-to-do-this-week">What to Do This Week</a></li>
+      </ul>
+    </div>
+
+    <!-- Share -->
+    <div class="sidebar-widget">
+      <div class="widget-title">🔗 Share This</div>
+      <div class="share-btns">
+        <a class="share-btn share-btn-twitter" href="https://twitter.com/intent/tweet?text=Ghost%20Citations%3A%20When%20AI%20Search%20Uses%20Your%20Content%20But%20Forgets%20Your%20Name&url=https://ranksorcery.com/blog/ghost-citations-ai-search-brand-visibility-2026" target="_blank" rel="noopener">
+          𝕏 Twitter
+        </a>
+        <button class="share-btn share-btn-copy" onclick="copyLink()">
+          📋 Copy Link
+        </button>
+      </div>
+    </div>
+
+    <!-- Related -->
+    <div class="sidebar-widget">
+      <div class="widget-title">📚 Related Posts</div>
+      <a href="/blog/llms-txt-ai-search-visibility-guide-2026" class="related-post">
+        <div class="related-post-icon">📄</div>
+        <div class="related-post-body">llms.txt: What It Actually Does for Your AI Search Visibility<span>9 min · Jun 3</span></div>
+      </a>
+      <a href="/blog/perplexity-chatgpt-citation-seo-guide-2026" class="related-post">
+        <div class="related-post-icon">🔍</div>
+        <div class="related-post-body">Why Your Site Isn't Getting Cited in Perplexity or ChatGPT<span>12 min · May 31</span></div>
+      </a>
+      <a href="/blog/schema-markup-ai-search-2026" class="related-post">
+        <div class="related-post-icon">⚙️</div>
+        <div class="related-post-body">Schema Markup in 2026: The Fastest Path to AI Search Citations<span>10 min · May 8</span></div>
+      </a>
+    </div>
+
+    <!-- CTA widget -->
+    <div class="sidebar-widget" style="background:linear-gradient(135deg,rgba(232,184,75,0.07),rgba(10,191,188,0.04));border-color:rgba(232,184,75,0.2);text-align:center;">
+      <div style="font-size:2rem;margin-bottom:10px;">🤖</div>
+      <div style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;color:var(--text);margin-bottom:8px;">AI Search Visibility</div>
+      <p style="font-size:0.8rem;color:var(--muted);margin-bottom:14px;">See if AI search is citing you by name — or ghosting your brand</p>
+      <a href="https://ranksorcery.com/ai-search.html" style="display:inline-block;background:var(--accent);color:var(--bg);font-size:0.82rem;font-family:'Syne',sans-serif;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;transition:background .2s;">Check My Visibility →</a>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div style="max-width:1100px;margin:0 auto;">
+    <a href="https://ranksorcery.com/">✦ RankSorcery</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/">SEO Auditor</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/keyword-volume.html">Keyword Research</a> &nbsp;·&nbsp;
+    <a href="https://ranksorcery.com/background-remover.html">Background Remover</a> &nbsp;·&nbsp;
+    <a href="../blog.html">Blog</a> &nbsp;·&nbsp;
+    <a href="mailto:webmasterjamez@gmail.com">Contact</a>
+    <br><br>
+    © 2025–2026 RankSorcery — Free AI SEO &amp; Image Tools
+  </div>
+</footer>
+
+<script>
+function toggleMobileNav() {
+  document.getElementById('nav-mobile-menu').classList.toggle('open');
+  document.getElementById('nav-hamburger').classList.toggle('open');
+}
+window.addEventListener('scroll', function() {
+  const doc = document.documentElement;
+  const scrollTop = doc.scrollTop || document.body.scrollTop;
+  const scrollHeight = doc.scrollHeight - doc.clientHeight;
+  const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  document.getElementById('reading-progress').style.width = pct + '%';
+});
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.share-btn-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
