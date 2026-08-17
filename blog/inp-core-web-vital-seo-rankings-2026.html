@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INP: The Core Web Vital Google Is Punishing You For Right Now — RankSorcery</title>
+<meta name="description" content="Interaction to Next Paint is now a primary Google ranking signal — and 58% of mobile sites are failing it. Here's what INP is, why it matters, and how to fix it.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#E8B84B">
+<meta property="og:title" content="INP: The Core Web Vital Google Is Punishing You For Right Now — And 58% of Sites Are Failing">
+<meta property="og:description" content="Interaction to Next Paint is now a primary Google ranking signal. 58% of mobile sites are failing it. Here's what INP is, why it matters, and exactly how to fix it in 2026.">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-08-11">
+<meta property="article:author" content="RankSorcery Team">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="apple-touch-icon" sizes="180x180" href="fav/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="fav/favicon-32x32.png">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:    #0D1117;
+  --bg2:   #141B2D;
+  --bg3:   #1E2740;
+  --bg4:   #243050;
+  --border:  rgba(232,184,75,0.13);
+  --border2: rgba(232,184,75,0.22);
+  --border3: rgba(232,184,75,0.35);
+  --text:  #E8EAF0;
+  --muted: #8A93A8;
+  --muted2:#6A748A;
+  --accent:  #E8B84B;
+  --accent2: #F5D98A;
+  --accent3: #C9902A;
+  --glow:    rgba(232,184,75,0.15);
+  --teal:    #0ABFBC;
+  --teal2:   rgba(10,191,188,0.12);
+  --green:  #34d399;
+  --green2: rgba(52,211,153,0.12);
+  --red:    #f87171;
+  --amber:  #fbbf24;
+  --blue:   #60a5fa;
+  --purple: #a78bfa;
+  --purple2: rgba(167,139,250,0.12);
+  --cyan:   #0ABFBC;
+  --radius: 14px;
+}
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  padding-top: 64px;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .45;
+}
+nav.main-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 64px;
+  background: rgba(13,17,23,0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 800;
+  color: var(--accent); text-decoration: none; flex-shrink: 0;
+  letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; white-space: nowrap;
+}
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0;
+}
+.nav-links { display: flex; gap: 0.1rem; align-items: center; }
+.nav-links a {
+  color: var(--muted); text-decoration: none; font-size: 0.82rem;
+  font-weight: 500; transition: color 0.2s, background 0.2s;
+  padding: 0.35rem 0.65rem; border-radius: 6px; white-space: nowrap;
+}
+.nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.nav-links a.active { color: var(--accent); }
+.nav-cta {
+  background: var(--accent) !important; color: var(--bg) !important;
+  font-family: 'Syne', sans-serif; font-weight: 700 !important;
+  padding: 0.45rem 1.1rem !important; border-radius: 8px;
+  font-size: 0.82rem !important; white-space: nowrap; flex-shrink: 0;
+}
+.nav-hamburger {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px;
+}
+.nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.nav-mobile-menu {
+  display: none; position: fixed; top: 64px; left: 0; right: 0;
+  background: rgba(13,17,23,0.98); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border); padding: 1rem 1.5rem 1.5rem;
+  z-index: 190; flex-direction: column; opacity: 0; pointer-events: none;
+  transform: translateY(-6px); transition: transform 0.25s, opacity 0.25s;
+}
+.nav-mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: all; }
+.nav-mobile-menu a {
+  color: var(--muted); text-decoration: none; font-size: 0.95rem; font-weight: 500;
+  padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--border); transition: color 0.2s;
+}
+.article-wrap {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 80px;
+  display: grid; grid-template-columns: 1fr 300px; gap: 56px;
+  align-items: start; position: relative; z-index: 1;
+}
+.article-main { min-width: 0; }
+.article-hero {
+  background: linear-gradient(135deg, #0d1420 0%, #141B2D 60%, #0a1018 100%);
+  border: 1px solid var(--border); border-radius: 18px;
+  overflow: hidden; margin-bottom: 40px; position: relative;
+}
+.article-hero-graphic {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(52,211,153,0.15) 0%, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(167,139,250,0.12) 0%, transparent 45%);
+}
+.article-hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(232,184,75,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,184,75,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.article-hero-inner { position: relative; z-index: 1; padding: 52px 48px 44px; }
+.article-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px; font-size: 0.7rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+}
+.tag-purple { background: var(--purple2); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tag-cyan { background: var(--teal2); color: var(--teal); border: 1px solid rgba(10,191,188,0.25); }
+.tag-amber { background: rgba(232,184,75,0.1); color: var(--accent); border: 1px solid rgba(232,184,75,0.25); }
+.tag-green { background: var(--green2); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+.article-hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+  font-weight: 800; line-height: 1.15;
+  letter-spacing: -0.03em; color: var(--text);
+  margin-bottom: 16px;
+}
+.article-hero h1 span {
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.article-hero-meta {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  font-size: 0.8rem; color: var(--muted); margin-top: 20px;
+}
+.author-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; font-weight: 700; color: var(--bg); flex-shrink: 0;
+}
+.reading-bar { height: 3px; background: var(--border); border-radius: 999px; margin-bottom: 40px; overflow: hidden; }
+.reading-progress { height: 100%; width: 0%; background: linear-gradient(90deg, var(--green), var(--teal)); border-radius: 999px; transition: width 0.1s; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.78rem; color: var(--muted); margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.article-body { font-size: 1.02rem; line-height: 1.85; color: var(--text); }
+.article-body p { margin-bottom: 1.5rem; }
+.article-body h2 {
+  font-family: 'Syne', sans-serif; font-size: 1.55rem; font-weight: 800;
+  letter-spacing: -0.025em; color: var(--text); margin: 2.75rem 0 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+}
+.article-body h3 {
+  font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700;
+  color: var(--text); margin: 2rem 0 0.75rem;
+}
+.article-body h4 {
+  font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700;
+  color: var(--accent); margin: 1.5rem 0 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.article-body a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.article-body strong { color: var(--text); font-weight: 600; }
+.callout {
+  border-radius: 12px; padding: 1.25rem 1.5rem; margin: 2rem 0;
+  display: flex; gap: 1rem; align-items: flex-start;
+}
+.callout-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+.callout-body { flex: 1; font-size: 0.92rem; line-height: 1.7; }
+.callout-body strong { display: block; margin-bottom: 0.3rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.callout-gold { background: rgba(232,184,75,0.07); border: 1px solid rgba(232,184,75,0.2); }
+.callout-gold .callout-body strong { color: var(--accent); }
+.callout-teal { background: rgba(10,191,188,0.07); border: 1px solid rgba(10,191,188,0.2); }
+.callout-teal .callout-body strong { color: var(--teal); }
+.callout-green { background: var(--green2); border: 1px solid rgba(52,211,153,0.2); }
+.callout-green .callout-body strong { color: var(--green); }
+.callout-red { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+.callout-red .callout-body strong { color: var(--red); }
+.stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }
+.stat-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1rem; text-align: center;
+}
+.stat-val {
+  font-family: 'Syne', sans-serif; font-size: 1.9rem; font-weight: 800;
+  background: linear-gradient(120deg, var(--green), var(--teal));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  display: block; line-height: 1; margin-bottom: 6px;
+}
+.stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+.checklist { list-style: none; margin: 1.25rem 0 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.checklist li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; line-height: 1.6; }
+.checklist li::before {
+  content: '✓'; flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green2); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 800; margin-top: 2px;
+}
+.steps { display: flex; flex-direction: column; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.step {
+  display: flex; gap: 1.25rem; align-items: flex-start;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.25rem 1.5rem;
+}
+.step-num {
+  flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 800; color: var(--bg);
+}
+.step-body h4 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; text-transform: none; letter-spacing: 0; }
+.step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin: 0; }
+.compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+.compare-table th {
+  background: var(--bg3); padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.78rem;
+  text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.compare-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); }
+.compare-table .good { color: var(--green); font-weight: 600; }
+.compare-table .mid  { color: var(--amber); font-weight: 600; }
+.compare-table .bad  { color: var(--red); font-weight: 600; }
+.pull-quote {
+  border-left: 3px solid var(--green); padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 2rem 0; font-size: 1.1rem; font-style: italic;
+  color: var(--accent2); font-family: 'Syne', sans-serif; font-weight: 600; line-height: 1.5;
+}
+.inline-cta {
+  background: linear-gradient(135deg, rgba(52,211,153,0.07), rgba(10,191,188,0.04));
+  border: 1px solid rgba(52,211,153,0.2); border-radius: 14px;
+  padding: 1.75rem 2rem; margin: 2.5rem 0; text-align: center;
+}
+.inline-cta h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+.inline-cta p { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.1rem; }
+.inline-cta a {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--bg);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem;
+  padding: 0.7rem 1.5rem; border-radius: 8px; text-decoration: none;
+}
+.toc {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.5rem; margin-bottom: 40px;
+}
+.toc-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.toc li { font-size: 0.88rem; }
+.toc a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--accent); }
+.sidebar { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 20px; }
+.sidebar-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+.sidebar-card-title { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 1rem; }
+.tool-card-sm {
+  display: flex; gap: 0.75rem; padding: 0.85rem 1rem;
+  background: var(--bg3); border-radius: 10px; text-decoration: none;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+  margin-bottom: 0.6rem;
+}
+.tool-card-sm:hover { border-color: var(--border2); }
+.tool-card-sm-icon { width: 36px; height: 36px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.tool-card-sm-name { font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.tool-card-sm-desc { font-size: 0.73rem; color: var(--muted); line-height: 1.4; }
+.author-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.75rem; margin-top: 48px;
+  display: flex; gap: 1.25rem; align-items: flex-start;
+}
+.author-box-avatar {
+  width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--green), var(--teal));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; font-weight: 800; color: var(--bg);
+  font-family: 'Syne', sans-serif;
+}
+.author-box-name { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+.author-box-role { font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-bottom: 0.6rem; }
+.author-box-bio { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+footer.site-footer {
+  border-top: 1px solid var(--border); padding: 40px 24px;
+  text-align: center; color: var(--muted2); font-size: 0.8rem; position: relative; z-index: 1;
+}
+footer.site-footer a { color: var(--muted); text-decoration: none; }
+@media (max-width: 860px) {
+  .article-wrap { grid-template-columns: 1fr; gap: 32px; }
+  .sidebar { position: static; }
+  .stat-row { grid-template-columns: 1fr; }
+  .article-hero-inner { padding: 32px 24px 28px; }
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+}
+</style>
+</head>
+<body>
+
+<nav class="main-nav">
+  <a href="/" class="logo">
+    <div class="logo-icon">✦</div>
+    RankSorcery
+  </a>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/blog" class="active">Blog</a>
+    <a href="/seo-auditor">SEO Auditor</a>
+    <a href="/keyword-volume">Keywords</a>
+    <a href="/image-compressor">Image Tools</a>
+  </div>
+  <a href="/seo-auditor" class="nav-links nav-cta">Free Audit →</a>
+  <button class="nav-hamburger" onclick="this.classList.toggle('open');document.querySelector('.nav-mobile-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile-menu">
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/seo-auditor">SEO Auditor</a>
+  <a href="/keyword-volume">Keywords</a>
+  <a href="/image-compressor">Image Tools</a>
+</div>
+
+<div class="reading-bar"><div class="reading-progress" id="rp"></div></div>
+
+<main class="article-wrap">
+  <article class="article-main">
+
+    <nav class="breadcrumb">
+      <a href="/">Home</a>
+      <span>›</span>
+      <a href="/blog">Blog</a>
+      <span>›</span>
+      <span>Technical SEO</span>
+    </nav>
+
+    <div class="article-hero">
+      <div class="article-hero-graphic"></div>
+      <div class="article-hero-grid"></div>
+      <div class="article-hero-inner">
+        <div class="article-tags">
+          <span class="tag tag-amber">⚙️ Technical SEO</span>
+          <span class="tag tag-green">🔥 Trending August 2026</span>
+          <span class="tag tag-cyan">⚡ Core Web Vitals</span>
+        </div>
+        <h1>INP: The Core Web Vital Google Is <span>Punishing You For</span> Right Now — And 58% of Sites Are Failing</h1>
+        <div class="article-hero-meta">
+          <div class="author" style="display:flex;align-items:center;gap:8px;">
+            <div class="author-avatar">R</div>
+            <div><strong>RankSorcery Team</strong></div>
+          </div>
+          <span>·</span>
+          <span>📅 August 11, 2026</span>
+          <span>·</span>
+          <span>⏱ 13 min read</span>
+          <span>·</span>
+          <span>🔥 Trending</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <ol>
+        <li><a href="#section1">What INP Actually Is (And Why It's Not Just FID with a New Name)</a></li>
+        <li><a href="#section2">Why Google Made INP a Star Ranking Signal in 2026</a></li>
+        <li><a href="#section3">The Real Culprits Destroying Your INP Score</a></li>
+        <li><a href="#section4">How to Diagnose Your INP Problem</a></li>
+        <li><a href="#section5">The INP Fix Playbook: Step by Step</a></li>
+        <li><a href="#section6">What to Do Right Now</a></li>
+      </ol>
+    </div>
+
+    <div class="article-body">
+
+      <p>I want you to think about the last time you clicked a button on a website and nothing happened for a beat too long. That half-second pause where you weren't sure if the click registered. Maybe you clicked again, maybe the page jumped, and suddenly you were annoyed. That exact feeling — that tiny moment of friction — is what Google is now measuring, and it's costing websites rankings right now in August 2026.</p>
+
+      <p>The metric is called Interaction to Next Paint, or INP. Google made it an official Core Web Vital in March 2024 when it replaced the older First Input Delay (FID). But here's the thing that most site owners still haven't grasped: Google's March 2026 core update didn't just leave INP on the list — it <strong>increased its weight as a ranking signal</strong>. Sites that were borderline passing before are now getting hammered. And the numbers are ugly: according to research tracking 2026 field data, <strong>only 42% of mobile sites currently pass all three Core Web Vitals</strong>. That means more than half the web is failing on at least one metric, and INP is often the one to blame.</p>
+
+      <p>If you've noticed ranking instability in the past few weeks — particularly on mobile — INP should be your first stop. This article is going to explain what INP actually is (in plain terms), why it matters more than most SEOs realize, what's causing most sites to fail it, and how to fix it without a PhD in JavaScript optimization.</p>
+
+      <div class="stat-row">
+        <div class="stat-card"><span class="stat-val">58%</span><div class="stat-label">of mobile sites fail at least one Core Web Vital in 2026</div></div>
+        <div class="stat-card"><span class="stat-val">18%</span><div class="stat-label">of ranking changes in Google's March 2026 update correlated with CWV score changes</div></div>
+        <div class="stat-card"><span class="stat-val">34%</span><div class="stat-label">of sites that improved their CWV saw ranking gains within 28 days</div></div>
+      </div>
+
+      <h2 id="section1">What INP Actually Is (And Why It's Not Just FID with a New Name)</h2>
+
+      <p>The old metric, First Input Delay (FID), measured how long it took the browser to start processing the very first interaction a user made on your page. Sounds useful, right? Here's the problem: it only measured the <em>first</em> interaction, and it only measured the delay to start processing — not how long the actual processing took. So you could have a page where the first click responded instantly but every subsequent click was sluggish and laggy. FID would report a perfect score. Your users would hate the experience. Google was essentially measuring the wrong thing.</p>
+
+      <p>INP fixes this. Instead of looking at just the first interaction, INP measures <strong>all interactions</strong> on the page — every click, tap, and keyboard input — throughout the entire page lifecycle. It finds the worst-performing interaction (or close to it — there's a statistical adjustment for outliers) and reports that as your INP score. So if your page loads fast and feels snappy until the user scrolls down and hits a filter button in a product listing, and that filter takes 600ms to respond, your INP score reflects that real-world lag.</p>
+
+      <p>The thresholds are strict. To pass, your INP needs to be <strong>under 200 milliseconds</strong>. Between 200ms and 500ms is "Needs Improvement." Over 500ms is flat-out "Poor." And these aren't measured in lab conditions — Google uses real Chrome user data (the Chrome User Experience Report, or CrUX) to calculate your score. That means it's based on how actual visitors are experiencing your site right now, on real devices, on real network connections. There's no gaming it with a fast test machine in ideal conditions.</p>
+
+      <div class="callout callout-gold">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Quick Check</strong>
+          Open Google Search Console and go to Core Web Vitals. If you see a red or orange status for "Needs Improvement" or "Poor" pages, click through to see which metric is causing the issue. A lot of sites currently failing are failing specifically on INP, especially on mobile. This is your starting point before you do anything else.
+        </div>
+      </div>
+
+      <p>One thing worth understanding: INP uses a 75th percentile measurement. That means 75% of your real users need to experience an INP under 200ms for you to have a "Good" score. If you have a fast site for most users but terrible performance for 30% of visitors (maybe those on slower phones or connections), you can still fail. This is actually more representative of reality than most performance testing tools show you.</p>
+
+      <h2 id="section2">Why Google Made INP a Star Ranking Signal in 2026</h2>
+
+      <p>Google has been very clear for years that user experience signals matter for rankings. But for a long time, "user experience" in the algorithmic sense was pretty loosely defined. Core Web Vitals changed that by giving Google concrete, measurable signals tied directly to how users perceive page quality. INP is the signal most directly tied to how <em>interactive</em> and <em>responsive</em> a page feels — which is increasingly important as websites have gotten more complex and JavaScript-heavy.</p>
+
+      <p>Here's where 2026 gets interesting. The March 2026 core update — which was confirmed by multiple SEO tracking tools to have caused significant ranking volatility — specifically increased the weighting of Core Web Vitals signals. Research published after the update showed that <strong>18% of observed ranking changes correlated with CWV score changes</strong>. That's a substantial correlation for a technical signal. And among the three CWV metrics (LCP, INP, CLS), INP is the one most sites were already struggling with going into the update.</p>
+
+      <p>What's driving this? A few things. First, the web has gotten heavier. The median page weight across all websites is now around 2.3MB, with JavaScript payloads averaging 468KB — a number that has ballooned over the past few years as frameworks and third-party tools have multiplied. More JavaScript means more processing, more processing means slower interaction responses, slower interaction responses means poor INP. Second, mobile traffic now accounts for 62% of all web visits, and mobile devices are significantly more resource-constrained than desktops. A page that responds in 80ms on a MacBook might respond in 400ms on a budget Android phone. Google's field data captures both.</p>
+
+      <p>There's also a competitive angle that a lot of people are sleeping on. If 58% of sites are failing Core Web Vitals on mobile, that means there's a real opportunity for sites that pass to pull ahead. Google doesn't rank you against an absolute standard — it ranks you relative to your competitors. If your competitors' sites are sluggish and yours is snappy, that difference is now baked into the algorithm in a way it wasn't as heavily weighted two years ago.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🔍</div>
+        <div class="callout-body">
+          <strong>The Competitive Angle Nobody Talks About</strong>
+          Run your top 5 competitors through PageSpeed Insights and check their mobile INP scores. I'll bet at least 3 of them are failing. That's your window. If you can get your INP into the green while they're still sitting at 400ms, you're picking up a ranking signal advantage they're not even aware of yet.
+        </div>
+      </div>
+
+      <h2 id="section3">The Real Culprits Destroying Your INP Score</h2>
+
+      <p>I've seen a lot of sites go through INP audits and there are some patterns that come up almost every single time. The causes aren't mysterious — they're almost always the same handful of things. The frustrating part is that many of them were put there intentionally by marketing or development teams who didn't realize the performance cost they were creating.</p>
+
+      <h3>JavaScript: The Main Offender</h3>
+
+      <p>Heavy JavaScript is the number one INP killer, and it's specifically about <em>long tasks</em>. When JavaScript executes a long task on the browser's main thread, it blocks the browser from responding to user input during that time. Click something during a long task? The browser queues that interaction and processes it once the JavaScript finishes. That delay — between when you clicked and when the browser could even start responding — is what INP measures.</p>
+
+      <p>The most common culprits are: bloated JavaScript bundles that get downloaded and parsed all at once, third-party scripts (analytics, chat widgets, ad networks, cookie consent tools) that execute on the main thread, and heavy client-side rendering frameworks that do a lot of work on the user's device. If you're running a React or Next.js app with a lot of client-side hydration, you're particularly at risk — that hydration process can block the main thread for 300-800ms on mobile devices.</p>
+
+      <p>What makes this especially tricky is that the JavaScript that kills your INP often isn't your own code. It's that marketing pixel someone added six months ago, or the A/B testing script your CRO team installed, or the embedded social media widget in the footer. Each of these adds to main thread contention, and they compound on each other. A site with 8 third-party scripts is not twice as bad as a site with 4 — it can be four or five times worse because the scripts interfere with each other's execution.</p>
+
+      <h3>Images and Large Media That Block Rendering</h3>
+
+      <p>This one surprises people. Images don't run JavaScript, so how do they affect INP? The answer is that large, unoptimized images — especially ones loaded without proper sizing attributes — can cause layout shifts and reflows that trigger main thread work. When a browser has to recalculate the layout of a page because an image that was supposed to be 400px wide suddenly loads at a different size, that layout recalculation happens on the main thread and can create exactly the kind of blocking behavior that tanks INP.</p>
+
+      <p>Beyond layout issues, large image files can also eat up bandwidth and CPU cycles during decode, which competes with JavaScript execution. On a mobile device where CPU resources are shared, a browser decoding a 4MB uncompressed PNG while also trying to process a click event will always deprioritize the interaction. The image wins, your user waits, your INP score suffers.</p>
+
+      <p>The fix here is straightforward but often neglected: compress your images properly, set explicit width and height attributes on all images, and use modern formats like WebP or AVIF that decode faster. If you're running a content-heavy site and you haven't systematically compressed your images, you're almost certainly leaving INP points (and ranking potential) on the table. Tools like <a href="/image-compressor">RankSorcery's Image Compressor</a> can batch-compress images without perceptible quality loss — the kind of quick win that actually moves the needle on both performance and rankings.</p>
+
+      <ul class="checklist">
+        <li>Large JavaScript bundles executing on page load (especially third-party scripts)</li>
+        <li>Client-side rendering frameworks with heavy hydration (React, Angular, Vue with SSR)</li>
+        <li>Multiple third-party tags: analytics, ads, chat widgets, A/B testing tools</li>
+        <li>Unoptimized images without explicit dimensions causing layout recalculations</li>
+        <li>Synchronous event handlers that block the main thread on user interaction</li>
+        <li>CSS animations that trigger layout or paint (avoid animating width, height, or top/left)</li>
+        <li>Font loading that causes text reflow mid-interaction</li>
+      </ul>
+
+      <h2 id="section4">How to Diagnose Your INP Problem</h2>
+
+      <p>You can't fix what you can't measure, and the good news is that Google has made INP measurement reasonably accessible without needing to be a performance engineer. Here's where to start.</p>
+
+      <p><strong>Google Search Console (field data):</strong> This is your ground truth. Go to Core Web Vitals in Search Console and look at both desktop and mobile reports. It shows you which URLs are failing and which metric is the problem. This is based on real user data from Chrome, so it's what Google actually uses for ranking. The downside is that it can take 28 days to reflect changes you make, so it's not great for quick feedback loops.</p>
+
+      <p><strong>PageSpeed Insights (lab + field data):</strong> Enter any URL and you'll get both lab-measured performance and real-user field data for that specific page. The INP score is shown prominently. More importantly, PageSpeed Insights now shows you the specific interactions that caused the worst INP measurements — so you can see "this was your dropdown menu" instead of just "your INP is 380ms." That specificity is extremely useful for debugging.</p>
+
+      <p><strong>Chrome DevTools Performance Panel:</strong> If you want to go deep, this is where you do it. Record a session, interact with the page, and you can see exactly which JavaScript tasks are running, how long they take, and whether they're blocking input. Look for "Long Tasks" (anything over 50ms) highlighted in red on the timeline. These are your INP suspects.</p>
+
+      <p><strong>Web Vitals Chrome Extension:</strong> Install this for quick visual feedback while browsing. It shows INP in real time as you interact with a page, color-coded green/yellow/red. Useful for quickly identifying which interactions on a page are problematic without digging into DevTools every time.</p>
+
+      <div class="inline-cta">
+        <h3>Run a Full Technical SEO Audit on Your Site</h3>
+        <p>Get a comprehensive view of your site's technical health — including performance signals that affect your Core Web Vitals — with RankSorcery's free SEO Auditor.</p>
+        <a href="/seo-auditor">Run Free Audit →</a>
+      </div>
+
+      <p>One thing I want to emphasize: look at mobile data specifically. Desktop INP scores are almost always better because desktop CPUs are faster and desktop browsers have more resources. Your site might pass comfortably on desktop and be failing badly on mobile. Since Google predominantly uses mobile-first indexing, your mobile INP score is the one that matters most for rankings. Always test on a throttled mobile connection (PageSpeed Insights does this by default for mobile simulation) rather than just on your fast office Wi-Fi and a powerful laptop.</p>
+
+      <p>Also check your actual worst-performing pages, not just the homepage. A lot of sites have great performance on the homepage (which gets the most optimization attention) and terrible performance on category pages, product pages, or blog posts that are loaded with additional widgets and embeds. Those inner pages often have more organic search traffic than the homepage and deserve the same performance attention.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>INP Score</th>
+            <th>Status</th>
+            <th>Ranking Impact</th>
+            <th>Typical Cause</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Under 200ms</td><td class="good">✓ Good</td><td class="good">✓ Full CWV credit</td><td>Well-optimized JS, lean page</td></tr>
+          <tr><td>200ms – 500ms</td><td class="mid">~ Needs Improvement</td><td class="mid">~ Partial credit, at risk</td><td>Heavy third-party scripts, unoptimized images</td></tr>
+          <tr><td>Over 500ms</td><td class="bad">✗ Poor</td><td class="bad">✗ Ranking disadvantage</td><td>Bloated JS bundles, heavy client-side rendering</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="section5">The INP Fix Playbook: Step by Step</h2>
+
+      <p>Here's the honest reality: fixing INP is not always a quick afternoon project. Some improvements are fast and impactful; others require engineering time and architectural changes. I'll lay out both the quick wins you can get this week and the deeper fixes for sustained improvement.</p>
+
+      <div class="pull-quote">"The sites that are winning on INP in 2026 aren't the ones with the fanciest frameworks — they're the ones that ruthlessly cut everything the user doesn't actually need to interact with."</div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>Audit and Defer Your Third-Party Scripts</h4>
+            <p>Use a tool like Request Map or DebugBear to see every third-party script loading on your page. For each one, ask: does this need to run before the user can interact? Most analytics, social embeds, and marketing pixels don't. Load them with <code>defer</code> or <code>async</code>, or better yet, trigger them after the first user interaction (a technique called "lazy loading on interaction"). Removing or deferring just one heavy third-party script can often improve INP by 100-200ms on mobile.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Break Up Long JavaScript Tasks</h4>
+            <p>Any JavaScript task running for more than 50ms on the main thread is a long task. Break these up using <code>setTimeout</code> with zero delay, <code>requestIdleCallback</code>, or the Scheduler API (now well-supported in 2026). Splitting a 300ms task into six 50ms chunks with brief pauses between them allows the browser to process user interactions in those gaps — eliminating the input delay that INP measures.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>Compress and Properly Size All Your Images</h4>
+            <p>Go through your pages and identify every image that's being loaded at a larger size than it's displayed, and every image without explicit width and height attributes. Set dimensions on every image to prevent layout shifts. Convert large PNGs and JPEGs to WebP — you'll typically cut file sizes by 25-35% with no visible quality loss. Smaller images decode faster, consume less CPU, and compete less with JavaScript for resources. Use <a href="/image-compressor">RankSorcery's Image Compressor</a> to do this in bulk, and <a href="/image-resizer">Image Resizer</a> to ensure you're not serving oversized images.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>Optimize Your Event Handlers</h4>
+            <p>Check the JavaScript that runs when users click or tap things on your page. Event handlers that do heavy synchronous work (DOM manipulation, complex calculations, synchronous API calls) add directly to INP. Move expensive work off the main thread using Web Workers where possible, and avoid triggering synchronous layout thrashing (reading then immediately writing DOM properties in a loop).</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>Implement Code Splitting and Lazy Loading</h4>
+            <p>If you're running a JavaScript framework, ensure you're not loading the entire application bundle on every page. Code splitting means only loading the JavaScript actually needed for the current page, and lazy loading means deferring components and features until the user scrolls to them or triggers them. Reducing the amount of JS that runs on load directly reduces the main thread work that creates long tasks and poor INP scores.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>For sites running WordPress, the quick wins are often: deactivating plugins you don't actively need, enabling lazy loading for images (built into WordPress core since 5.5), switching to a faster hosting environment with better server response times, and using a CDN to reduce network latency for visitors who are geographically far from your server.</p>
+
+      <p>For ecommerce sites specifically, pay extra attention to product pages with filter and sort interactions, cart and checkout flows, and any page with real-time inventory or pricing updates. These are the interactions that are often the most JavaScript-heavy and the most likely to produce poor INP scores in real-user field data. They're also the pages that matter most for conversions, so fixing them is doubly valuable — better rankings and better user experience in the moments that matter for revenue.</p>
+
+      <h2 id="section6">What to Do Right Now</h2>
+
+      <p>Let me be direct about where to start. Open Google Search Console today. Click on Core Web Vitals. If you have any red or orange pages on mobile, that's your priority list. Don't get distracted by content strategy or backlinks until you know whether a technical problem is actively working against you in rankings.</p>
+
+      <p>Next, run your most important pages — homepage, top landing pages, category pages — through PageSpeed Insights on mobile. Look at the INP score. Anything over 200ms deserves attention. Anything over 500ms is actively costing you ranking. Make a list of your worst offenders and use the diagnostics — PageSpeed Insights will tell you which interactions caused the worst INP measurements and give you specific recommendations for what to fix.</p>
+
+      <p>Then look at your images. This is often the fastest, easiest win available. Unoptimized images are everywhere, they're fixable with the right tools, and the performance gains compound across your entire site. A few hours of image optimization work can meaningfully move both your INP scores (through reduced decode overhead and layout recalculation) and your Largest Contentful Paint scores at the same time. Use <a href="/image-compressor">RankSorcery's Image Compressor</a> to compress your images efficiently, and <a href="/image-resizer">Image Resizer</a> to make sure you're not serving a 2000px wide image in a 400px slot.</p>
+
+      <p>Finally — don't expect overnight results in Search Console. Field data takes time to accumulate and Google's ranking systems incorporate it over weeks, not days. The 34% of sites that saw ranking gains after CWV improvements in 2026 saw those gains within 28 days. That's a realistic timeline. Do the work now, track your changes, and give it a month before drawing conclusions. The sites that are improving their INP scores right now are positioning themselves ahead of competitors who haven't figured out why their rankings have been wobbly since March.</p>
+
+      <div class="callout callout-teal">
+        <div class="callout-icon">🚀</div>
+        <div class="callout-body">
+          <strong>Bottom Line</strong>
+          INP is now a primary Google ranking signal, 58% of mobile sites are failing Core Web Vitals, and sites that fix their INP scores are seeing real ranking gains within 28 days. Start with Search Console, identify your worst-performing pages on mobile, audit your JavaScript and images, and make the fixes before your competitors figure out what hit them.
+        </div>
+      </div>
+
+    </div><!-- /.article-body -->
+
+    <div class="author-box">
+      <div class="author-box-avatar">R</div>
+      <div>
+        <div class="author-box-name">RankSorcery Team</div>
+        <div class="author-box-role">SEO &amp; Digital Marketing</div>
+        <div class="author-box-bio">We build free SEO tools and write about what actually works in search — no fluff, no theory, just stuff you can use today. Based in Southeast Asia, ranking globally.</div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">🛠 Free Tools</div>
+      <a href="/seo-auditor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(232,184,75,0.12)">🔍</div>
+        <div><div class="tool-card-sm-name">SEO Auditor</div><div class="tool-card-sm-desc">Full site audit in seconds</div></div>
+      </a>
+      <a href="/keyword-volume" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(10,191,188,0.12)">📊</div>
+        <div><div class="tool-card-sm-name">Keyword Volume</div><div class="tool-card-sm-desc">Check search volume free</div></div>
+      </a>
+      <a href="/image-compressor" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(52,211,153,0.12)">🖼</div>
+        <div><div class="tool-card-sm-name">Image Compressor</div><div class="tool-card-sm-desc">Compress without losing quality</div></div>
+      </a>
+      <a href="/image-resizer" class="tool-card-sm">
+        <div class="tool-card-sm-icon" style="background:rgba(167,139,250,0.12)">↔️</div>
+        <div><div class="tool-card-sm-name">Image Resizer</div><div class="tool-card-sm-desc">Resize images for web fast</div></div>
+      </a>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-title">📚 Related Posts</div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <a href="/blog/core-web-vitals-page-speed-rankings-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Core Web Vitals and Page Speed: The Complete 2026 Rankings Guide →
+        </a>
+        <a href="/blog/google-q3-2026-core-update-prepare-site" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Google's Q3 2026 Core Update Is Coming — Here's How to Prepare →
+        </a>
+        <a href="/blog/image-seo-optimization-rankings-2026" style="color:var(--text);text-decoration:none;font-size:0.84rem;line-height:1.5;padding:0.75rem;background:var(--bg3);border-radius:9px;border:1px solid var(--border);display:block">
+          Image SEO Optimization: How Images Affect Your Rankings in 2026 →
+        </a>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<footer class="site-footer">
+  <p>© 2026 RankSorcery · <a href="/blog">Blog</a> · <a href="/seo-auditor">Tools</a> · Built for SEOs who want results, not theory.</p>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  const el = document.getElementById('rp');
+  if (!el) return;
+  const d = document.documentElement;
+  const pct = d.scrollTop / (d.scrollHeight - d.clientHeight) * 100;
+  el.style.width = pct + '%';
+});
+</script>
+</body>
+</html>
